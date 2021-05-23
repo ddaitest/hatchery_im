@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/busniess/home/tab1.dart';
+import 'package:hatchery_im/busniess/chat_home/chat_page.dart';
 import 'package:hatchery_im/common/log.dart';
-
-import '../../config.dart';
-import '../../routers.dart';
+import '../config.dart';
+import '../routers.dart';
 
 const mainTabs = [
-  TabInfo('首页', Icons.home_outlined, Icons.home),
-  TabInfo('服务', Icons.home_repair_service_outlined, Icons.home_repair_service),
-  TabInfo('周边', Icons.near_me_outlined, Icons.near_me),
+  TabInfo('消息', Icons.message_outlined, Icons.message),
+  TabInfo('联系人', Icons.group_outlined, Icons.group),
+  TabInfo('我的', Icons.account_circle_outlined, Icons.account_circle),
 ];
-
 
 class MainTab extends StatelessWidget {
   @override
@@ -30,7 +28,7 @@ class MainTab2 extends StatefulWidget {
 class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
-  List<Widget> _tabBodies = [Tab1(), Tab1(), Tab1()];
+  List<Widget> _tabBodies = [ChatPage(), ChatPage(), ChatPage()];
 
   var _pageController = PageController();
   int _tabIndex = 0;
@@ -72,9 +70,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("AAA"),
-        ),
         body: SafeArea(
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),
