@@ -4,12 +4,6 @@ import 'package:hatchery_im/common/log.dart';
 import '../config.dart';
 import '../routers.dart';
 
-const mainTabs = [
-  TabInfo('消息', Icons.message_outlined, Icons.message),
-  TabInfo('联系人', Icons.group_outlined, Icons.group),
-  TabInfo('我的', Icons.account_circle_outlined, Icons.account_circle),
-];
-
 class MainTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -84,6 +78,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
         bottomNavigationBar: BottomNavigationBar(
           // selectedLabelStyle: Flavors.textStyles.tabBarTextSelected,
           // unselectedLabelStyle: Flavors.textStyles.tabBarTextUnSelected,
+          selectedFontSize: 12.0,
+          unselectedFontSize: 12.0,
           currentIndex: _tabIndex,
           items: bottomTabs.map((e) => _navBarItem(e)).toList(),
           type: BottomNavigationBarType.fixed,
