@@ -11,3 +11,9 @@ class ChatUsers {
       @required this.image,
       @required this.time});
 }
+
+class ContactsUsers {
+  String? text;
+  String? image;
+  ContactsUsers({@required this.text, @required this.image});
+}

@@ -1,23 +1,11 @@
 import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 
-class ChatUsersListItem extends StatefulWidget {
+class ContactsUsersListItem extends StatelessWidget {
   final String? text;
-  final String? secondaryText;
   final String? image;
-  final String? time;
-  final bool? isMessageRead;
-  ChatUsersListItem(
-      {@required this.text,
-      @required this.secondaryText,
-      @required this.image,
-      @required this.time,
-      @required this.isMessageRead});
-  @override
-  _ChatUsersListState createState() => _ChatUsersListState();
-}
+  ContactsUsersListItem({@required this.text, @required this.image});
 
-class _ChatUsersListState extends State<ChatUsersListItem> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -34,8 +22,8 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
               child: Row(
                 children: <Widget>[
                   CircleAvatar(
-                    backgroundImage: AssetImage(widget.image!),
-                    maxRadius: 30,
+                    backgroundImage: AssetImage(image!),
+                    maxRadius: 20,
                   ),
                   SizedBox(
                     width: 16,
@@ -46,14 +34,9 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.text!),
+                          Text(text!),
                           SizedBox(
                             height: 6,
-                          ),
-                          Text(
-                            widget.secondaryText!,
-                            style: TextStyle(
-                                fontSize: 14, color: Colors.grey.shade500),
                           ),
                         ],
                       ),
@@ -61,14 +44,6 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
                   ),
                 ],
               ),
-            ),
-            Text(
-              widget.time!,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: widget.isMessageRead!
-                      ? Colors.pink
-                      : Colors.grey.shade500),
             ),
           ],
         ),

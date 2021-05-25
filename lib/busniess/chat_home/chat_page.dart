@@ -55,7 +55,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -92,7 +92,7 @@ class _ChatPageState extends State<ChatPage> {
                   ),
                   filled: true,
                   fillColor: Colors.grey.shade100,
-                  contentPadding: EdgeInsets.all(8),
+                  contentPadding: const EdgeInsets.all(8),
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(30),
                       borderSide: BorderSide(color: Colors.grey.shade100)),
@@ -102,10 +102,10 @@ class _ChatPageState extends State<ChatPage> {
             ListView.builder(
               itemCount: chatUsers.length,
               shrinkWrap: true,
-              padding: EdgeInsets.only(top: 16),
-              physics: NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(top: 16),
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return ChatUsersList(
+                return ChatUsersListItem(
                   text: chatUsers[index].text,
                   secondaryText: chatUsers[index].secondaryText,
                   image: chatUsers[index].image,

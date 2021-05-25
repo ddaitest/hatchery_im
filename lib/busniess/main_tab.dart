@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/chat_home/chat_page.dart';
+import 'package:hatchery_im/busniess/contacts/contacts_page.dart';
 import 'package:hatchery_im/common/log.dart';
 import '../config.dart';
 import '../routers.dart';
@@ -22,7 +23,7 @@ class MainTab2 extends StatefulWidget {
 class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
-  List<Widget> _tabBodies = [ChatPage(), ChatPage(), ChatPage()];
+  List<Widget> _tabBodies = [ChatPage(), ContactsPage(), ChatPage()];
 
   var _pageController = PageController();
   int _tabIndex = 0;
@@ -83,9 +84,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           currentIndex: _tabIndex,
           items: bottomTabs.map((e) => _navBarItem(e)).toList(),
           type: BottomNavigationBarType.fixed,
-          iconSize: 30.0,
-          //点击事件
-          onTap: _switchTab,
+          onTap: _switchTab, //点击事件
         ),
       ),
     );
@@ -103,12 +102,12 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     return BottomNavigationBarItem(
       icon: Icon(
         info.icon,
-        size: 30,
+        size: 20,
       ),
       label: info.label,
       activeIcon: Icon(
         info.activeIcon,
-        size: 30,
+        size: 20,
       ),
     );
   }
