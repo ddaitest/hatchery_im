@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
-import 'package:hatchery_im/common/contacts/contactsUsersList.dart';
+import 'package:hatchery_im/common/widget/contacts/contactsUsersList.dart';
 
 class ContactsPage extends StatelessWidget {
   final List<ContactsUsers> contactsUsers = [
@@ -48,20 +48,20 @@ class ContactsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SafeArea(
-              child: Padding(
+              child: Container(
                 padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
-                      "联系人(20)",
+                      "联系人(${contactsUsers.length})",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Icon(
-                      Icons.more_vert,
+                      Icons.add_circle_outline_outlined,
                       color: Colors.black,
-                      size: 20,
+                      size: 25,
                     ),
                   ],
                 ),

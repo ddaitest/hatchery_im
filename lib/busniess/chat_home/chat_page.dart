@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
-import 'package:hatchery_im/common/chat_home/chat.dart';
+import 'package:hatchery_im/common/widget/chat_home/chat.dart';
+import 'package:hatchery_im/common/widget/app_bar.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -54,48 +55,44 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarFactory.getMain('消息列表(10)', actions: [
+        Container(
+          padding: const EdgeInsets.only(right: 16),
+          child: Icon(
+            Icons.more_vert,
+            color: Colors.black,
+            size: 30,
+          ),
+        ),
+      ]),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(left: 16, right: 16, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      "消息列表(10)",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Icon(
-                      Icons.more_vert,
-                      color: Colors.black,
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+                child: TextField(
+                  enabled: false,
+                  decoration: InputDecoration(
+                    // border: InputBorder.none,
+                    hintText: "搜索...",
+                    hintStyle: TextStyle(color: Colors.grey.shade400),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: Colors.grey.shade400,
                       size: 20,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Search...",
-                  hintStyle: TextStyle(color: Colors.grey.shade400),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: Colors.grey.shade400,
-                    size: 20,
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                    contentPadding: const EdgeInsets.all(11),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  contentPadding: const EdgeInsets.all(8),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide(color: Colors.grey.shade100)),
                 ),
               ),
             ),

@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_message.dart';
 import 'package:hatchery_im/busniess/models/send_menu_items.dart';
-import 'package:hatchery_im/common/chat_detail/chat_detail_page_appbar.dart';
-import 'package:hatchery_im/common/chat_home/chat_bubble.dart';
+import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
+import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 
 enum MessageType {
   Sender,
