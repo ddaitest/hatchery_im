@@ -34,6 +34,7 @@ dependencies:
   equatable: ^2.0.0
   cached_network_image: ^3.0.0
   device_info: ^2.0.1
+  image_stack: ^2.0.1
 
 
   # The following adds the Cupertino Icons font to your application.

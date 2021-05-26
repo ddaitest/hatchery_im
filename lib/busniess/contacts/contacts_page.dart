@@ -2,7 +2,8 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
-import 'package:hatchery_im/common/widget/contacts/contactsUsersList.dart';
+import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
+import 'package:hatchery_im/common/widget/contacts/groupListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,6 +35,7 @@ class _ContactsState extends State<ContactsPage>
   };
   final List<ContactsUsers> contactsUsers = [];
   late TabController _tabController;
+  int tabIndex = 0;
 
   void initState() {
     super.initState();
@@ -76,9 +78,15 @@ class _ContactsState extends State<ContactsPage>
 
   _tabBarContainer() {
     return Container(
-        padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+        padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
         child: TabBar(
             controller: _tabController,
+            onTap: (value) {
+              setState(() {
+                tabIndex = value;
+                print("DEBUG=> LC $value");
+              });
+            },
             indicator: const BoxDecoration(),
             // unselectedLabelStyle: Flavors.textStyles.contactsIconTextUnSelect,
             tabs: <Widget>[
@@ -89,9 +97,7 @@ class _ContactsState extends State<ContactsPage>
   }
 
   _tabBarView(String imagePath, String iconText, int selectIndex) {
-    int _selectTabIndex = _tabController.index;
-    print("DEBUG=> LC $_selectTabIndex");
-    return Tab(
+    return Container(
       child: Column(
         children: [
           Image.asset(
@@ -102,7 +108,9 @@ class _ContactsState extends State<ContactsPage>
           SizedBox(height: 5.0.h),
           Text(
             iconText,
-            style: Flavors.textStyles.contactsIconTextSelect,
+            style: selectIndex == tabIndex
+                ? Flavors.textStyles.contactsIconTextSelect
+                : Flavors.textStyles.contactsIconTextUnSelect,
           )
         ],
       ),
@@ -133,23 +141,32 @@ class _ContactsState extends State<ContactsPage>
   }
 
   _groupListView() {
-    return GridView.builder(
-      itemCount: contactsUsers.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //横轴元素个数
-          crossAxisCount: 2,
-          //纵轴间距
-          mainAxisSpacing: 20.0,
-          //横轴间距
-          crossAxisSpacing: 10.0,
-          //子组件宽高长度比例
-          childAspectRatio: 1.0),
-      itemBuilder: (context, index) {
-        return ContactsUsersListItem(
-          text: contactsUsers[index].text,
-          image: contactsUsers[index].image,
-        );
-      },
+    return Container(
+      padding: const EdgeInsets.only(left: 38, right: 38, top: 23, bottom: 23),
+      child: GridView.builder(
+        itemCount: contactsUsers.length,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            //横轴元素个数
+            crossAxisCount: 2,
+            //纵轴间距
+            mainAxisSpacing: 20.0,
+            //横轴间距
+            crossAxisSpacing: 38.0,
+            //子组件宽高长度比例
+            childAspectRatio: 150 / 190),
+        itemBuilder: (context, index) {
+          return GroupListItem(
+            mainImageUrl: 'images/userImage2.jpeg',
+            groupName: '印度基友群',
+            groupMembersImageUrl: [
+              'images/userImage1.jpeg',
+              'images/userImage2.jpeg',
+              'images/userImage3.jpeg'
+            ],
+            membersNumber: 20,
+          );
+        },
+      ),
     );
   }
 }

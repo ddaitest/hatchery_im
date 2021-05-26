@@ -1,5 +1,6 @@
 import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ContactsUsersListItem extends StatelessWidget {
   final String? text;
@@ -26,7 +27,7 @@ class ContactsUsersListItem extends StatelessWidget {
                     maxRadius: 20,
                   ),
                   SizedBox(
-                    width: 16,
+                    width: 16.0.w,
                   ),
                   Expanded(
                     child: Container(
@@ -36,7 +37,7 @@ class ContactsUsersListItem extends StatelessWidget {
                         children: <Widget>[
                           Text(text!),
                           SizedBox(
-                            height: 6,
+                            height: 6.0.h,
                           ),
                         ],
                       ),

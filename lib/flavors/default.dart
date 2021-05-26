@@ -47,7 +47,17 @@ class TextStyles {
   final TextStyle contactsIconTextUnSelect = TextStyle(
       fontSize: 16.0.sp,
       fontWeight: FontWeight.w400,
-      color: Colors.grey.shade300);
+      color: Colors.grey.shade400);
+
+  final TextStyle groupMainName = TextStyle(
+      fontSize: 16.0.sp,
+      fontWeight: FontWeight.w500,
+      color: Color.fromRGBO(3, 3, 3, 1));
+
+  final TextStyle groupMembersNumberText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: Color.fromRGBO(169, 178, 199, 1));
 }
 
 class SizesInfo {
