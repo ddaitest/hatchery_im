@@ -3,6 +3,7 @@ import 'package:hatchery_im/routers.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'common/AppContext.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   if (Platform.isAndroid) {
@@ -25,14 +26,16 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      navigatorKey: App.navState,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ScreenUtilInit(
+      builder: () => MaterialApp(
+        title: 'Flutter Demo',
+        navigatorKey: App.navState,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        initialRoute: '/',
+        onGenerateRoute: Routers.generateRoute,
       ),
-      initialRoute: '/',
-      onGenerateRoute: Routers.generateRoute,
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/chat_home/chat.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
+import 'package:hatchery_im/common/widget/search/search_bar.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -71,31 +72,7 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            GestureDetector(
-              onTap: () {},
-              child: Container(
-                padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-                child: TextField(
-                  enabled: false,
-                  decoration: InputDecoration(
-                    // border: InputBorder.none,
-                    hintText: "搜索...",
-                    hintStyle: TextStyle(color: Colors.grey.shade400),
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey.shade400,
-                      size: 20,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade100,
-                    contentPadding: const EdgeInsets.all(11),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none),
-                  ),
-                ),
-              ),
-            ),
+            SearchBarView(),
             ListView.builder(
               itemCount: chatUsers.length,
               shrinkWrap: true,

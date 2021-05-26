@@ -7,7 +7,7 @@ class AppBarFactory {
       title: Text(
         title,
         style: TextStyle(
-            fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.bold),
+            fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: false,
       backgroundColor: Colors.white,
