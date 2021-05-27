@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -10,8 +10,8 @@ class Routers {
     switch (settings.name) {
       case '/':
         return CupertinoPageRoute(builder: (_) => MainTab());
-      // case '/agreementPage':
-      //   return CupertinoPageRoute(builder: (_) => AgreementPage());
+      case '/login':
+        return CupertinoPageRoute(builder: (_) => LoginPage());
       // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());
       // case '/feedback_list':

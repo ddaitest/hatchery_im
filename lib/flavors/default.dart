@@ -58,6 +58,21 @@ class TextStyles {
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w400,
       color: Color.fromRGBO(169, 178, 199, 1));
+
+  final TextStyle loginMainTitleText = TextStyle(
+      fontSize: 36.0.sp,
+      fontWeight: FontWeight.w500,
+      color: Color.fromRGBO(47, 128, 237, 1));
+
+  final TextStyle loginInputTitleText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: Color.fromRGBO(47, 128, 237, 1));
+
+  final TextStyle loginLinkText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w500,
+      color: Color.fromRGBO(47, 128, 237, 1));
 }
 
 class SizesInfo {
