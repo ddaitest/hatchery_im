@@ -43,6 +43,13 @@ class _ContactsState extends State<ContactsPage>
   }
 
   @override
+  void dispose() {
+    _tabController.dispose();
+    nameInfo.clear();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     nameInfo.forEach((key, value) {
       contactsUsers.add(ContactsUsers(

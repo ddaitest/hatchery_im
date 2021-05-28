@@ -31,30 +31,46 @@ class GroupListItem extends StatelessWidget {
               color: Color(0xFFFFFFFF),
               borderRadius: BorderRadius.circular((4.0))),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
-                  padding: const EdgeInsets.only(left: 42, right: 42, top: 19),
+                  padding: const EdgeInsets.only(left: 42, right: 42),
                   child: CircleAvatar(
                     backgroundImage: AssetImage(mainImageUrl!),
                     maxRadius: 33,
                   )),
-              Text(groupName!, style: Flavors.textStyles.groupMainName),
+              Container(
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Text(groupName!,
+                      style: Flavors.textStyles.groupMainName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis)),
               Text('$membersNumber 人',
                   style: Flavors.textStyles.groupMembersNumberText),
-              Container(
-                  padding:
-                      const EdgeInsets.only(left: 36.5, right: 36.5, top: 5),
-                  child: ImageStack(
-                    imageList: groupMembersImageUrl!,
-                    imageSource: ImageSource.Asset,
-                    showTotalCount: false,
-                    totalCount:
-                        3, // If larger than images.length, will show extra empty circle
-                    imageRadius: 28, // Radius of each images
-                    imageCount:
-                        3, // Maximum number of images to be shown in stack
-                    imageBorderWidth: 3, // Border width around the images
-                  ))
+              Expanded(
+                  child: Container(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage:
+                                AssetImage(groupMembersImageUrl![0]),
+                            maxRadius: 10,
+                          ),
+                          CircleAvatar(
+                            backgroundImage:
+                                AssetImage(groupMembersImageUrl![1]),
+                            maxRadius: 10,
+                          ),
+                          CircleAvatar(
+                            backgroundImage:
+                                AssetImage(groupMembersImageUrl![2]),
+                            maxRadius: 10,
+                          ),
+                        ],
+                      )))
             ],
           ),
         ));
