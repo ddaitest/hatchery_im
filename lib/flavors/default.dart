@@ -42,37 +42,38 @@ class ApiInfo {
 
 class TextStyles {
   final TextStyle contactsIconTextSelect = TextStyle(
-      fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: Color(0x8A000000));
+      fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
   final TextStyle contactsIconTextUnSelect = TextStyle(
       fontSize: 16.0.sp,
       fontWeight: FontWeight.w400,
-      color: Colors.grey.shade400);
+      color: ColorInfo().subtitleColor);
 
   final TextStyle groupMainName = TextStyle(
-      fontSize: 16.0.sp,
-      fontWeight: FontWeight.w500,
-      color: Color.fromRGBO(3, 3, 3, 1));
+      fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
   final TextStyle groupMembersNumberText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w400,
-      color: Color.fromRGBO(169, 178, 199, 1));
+      color: ColorInfo().subtitleColor);
 
   final TextStyle loginMainTitleText = TextStyle(
-      fontSize: 36.0.sp,
-      fontWeight: FontWeight.w500,
-      color: Color.fromRGBO(47, 128, 237, 1));
+      fontSize: 28.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+
+  final TextStyle loginSubTitleText = TextStyle(
+      fontSize: 16.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().subtitleColor);
 
   final TextStyle loginInputTitleText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w400,
-      color: Color.fromRGBO(47, 128, 237, 1));
+      color: ColorInfo().mainColor);
 
   final TextStyle loginLinkText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w500,
-      color: Color.fromRGBO(47, 128, 237, 1));
+      color: ColorInfo().mainColor);
 }
 
 class SizesInfo {
@@ -84,7 +85,11 @@ class SizesInfo {
 }
 
 class ColorInfo {
+  final mainColor = const Color.fromRGBO(45, 156, 219, 1);
+  final mainTextColor = Colors.white;
+  final mainBackGroundColor = Colors.white;
   final diver = Colors.black87;
-  final homeTabSelected = const Color(0xFF006EE7);
-  final homeTabUnSelected = const Color(0x8A000000);
+  final subtitleColor = Colors.grey.shade400;
+  get homeTabSelected => mainColor;
+  get homeTabUnSelected => diver;
 }

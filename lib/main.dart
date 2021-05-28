@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   if (Platform.isAndroid) {
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         navigatorKey: App.navState,
         theme: ThemeData(
+          textTheme: GoogleFonts.notoSansTextTheme(),
           primarySwatch: Colors.blue,
         ),
         initialRoute: '/login',
