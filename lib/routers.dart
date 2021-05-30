@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/login/login_page.dart';
+import 'package:hatchery_im/busniess/login/register_page.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -9,9 +10,11 @@ class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return CupertinoPageRoute(builder: (_) => MainTab());
+        return MaterialPageRoute(builder: (_) => MainTab());
       case '/login':
-        return CupertinoPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(builder: (_) => LoginPage());
+      case '/register':
+        return MaterialPageRoute(builder: (_) => RegisterPage());
       // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());
       // case '/feedback_list':

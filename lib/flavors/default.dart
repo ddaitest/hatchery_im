@@ -31,13 +31,10 @@ class StringsInfo {
 }
 
 class ApiInfo {
-  final String API_HOST = 'http://106.12.147.150:8080/';
-  final int RESPONSE_STATUS_CODE = 100000;
+  final String API_HOST = 'http://149.129.176.107:5858/api';
   final int API_CONNECT_TIMEOUT = 60000;
   final int API_RECEIVE_TIMEOUT = 60000;
   final String CONTENT_TYPE = 'application/json';
-  final String BASIC_AUTH =
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImlzcyI6IjM2ZmY2NjJmLTMwNDEtNWMxMC04YmRlLTY1ZTZmYjg2NTIzYiIsImV4cCI6MTYxNzg5MDkzM30.6-zJZ5Eoq83mx1KAdWs6Fr6gm4wkdXV49tlqKAKJOrU';
 }
 
 class TextStyles {
@@ -61,7 +58,7 @@ class TextStyles {
       fontSize: 28.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
   final TextStyle loginSubTitleText = TextStyle(
-      fontSize: 16.0.sp,
+      fontSize: 14.0.sp,
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
@@ -74,6 +71,11 @@ class TextStyles {
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w500,
       color: ColorInfo().mainColor);
+
+  final TextStyle loginInButtonText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {

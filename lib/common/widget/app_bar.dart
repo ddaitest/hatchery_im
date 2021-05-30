@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 
 class AppBarFactory {
   static AppBar getMain(String title, {List<Widget>? actions}) {
@@ -33,7 +34,7 @@ class AppBarFactory {
     );
   }
 
-  static AppBar getRoute(String title, String? routeName) {
+  static AppBar backButton(String title) {
     return AppBar(
       title: Text(
         title,
@@ -43,10 +44,10 @@ class AppBarFactory {
       centerTitle: true,
       backgroundColor: Colors.white,
       brightness: Brightness.light,
-      elevation: 0.5,
+      elevation: 0.0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back),
-        onPressed: () => Routers.navigateReplace(routeName!),
+        icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+        onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
       ),
       automaticallyImplyLeading: false,
     );
