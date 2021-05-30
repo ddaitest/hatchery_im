@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -121,6 +122,7 @@ class LoginPageState extends State<LoginPage> {
                       style: Flavors.textStyles.loginInButtonText,
                     ),
                     onPressed: () {
+                      submit(loginManager);
                       print("DEBUG => ");
                     }),
               ),
@@ -137,5 +139,14 @@ class LoginPageState extends State<LoginPage> {
         )),
       ));
     });
+  }
+
+  ///提交
+  submit(LoginManager loginManager) {
+    if (loginManager.loginInputKey.currentState!.validate()) {
+      var account = loginManager.accountController.text;
+      var password = loginManager.codeController.text;
+      App.manager<LoginManager>().submit(account, password);
+    }
   }
 }

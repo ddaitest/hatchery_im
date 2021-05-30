@@ -5,6 +5,10 @@ import 'package:flutter/services.dart';
 import 'common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:hatchery_im/manager/app_manager.dart';
+import 'package:hatchery_im/manager/loginManager.dart';
+import 'package:hatchery_im/manager/registerManager.dart';
 
 void main() {
   if (Platform.isAndroid) {
@@ -21,7 +25,16 @@ void main() {
   /// 强制竖屏
   // SystemChrome.setPreferredOrientations(
   //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AppManager()),
+        ChangeNotifierProvider(create: (_) => LoginManager()),
+        ChangeNotifierProvider(create: (_) => RegisterManager()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

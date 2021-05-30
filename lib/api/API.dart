@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
@@ -95,7 +95,8 @@ class API {
     };
     init();
     try {
-      Response response = await _dio.post("/users/login", data: body);
+      Response response =
+          await _dio.post("/users/login", data: json.encode(body));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");
