@@ -6,11 +6,13 @@ import 'common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:hatchery_im/manager/app_manager.dart';
+import 'package:hatchery_im/manager/appManager.dart';
+import 'package:hatchery_im/manager/splashManager.dart';
 import 'package:hatchery_im/manager/loginManager.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
     SystemUiOverlayStyle style = SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -23,12 +25,13 @@ void main() {
   }
 
   /// 强制竖屏
-  // SystemChrome.setPreferredOrientations(
-  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AppManager()),
+        ChangeNotifierProvider(create: (_) => SplashManager()),
         ChangeNotifierProvider(create: (_) => LoginManager()),
         ChangeNotifierProvider(create: (_) => RegisterManager()),
       ],
@@ -48,7 +51,7 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.notoSansTextTheme(),
           primarySwatch: Colors.blue,
         ),
-        initialRoute: '/login',
+        initialRoute: '/splash',
         onGenerateRoute: Routers.generateRoute,
       ),
     );

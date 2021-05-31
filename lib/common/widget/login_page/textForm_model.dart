@@ -40,10 +40,8 @@ class TextFormModel extends StatelessWidget {
       // ignore: missing_return
       validator: (value) {
         if (value == null || value.isEmpty) {
-          showToast('请输入您的$labelText');
           return '请输入您的$labelText';
         } else if (value.length > 20) {
-          showToast('$labelText格式不正确');
           return '$labelText格式不正确';
         }
         return null;

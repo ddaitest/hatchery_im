@@ -4,6 +4,7 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'ApiResult.dart';
+import 'package:hatchery_im/config.dart';
 
 extension ExtendedDio on Dio {
   initWrapper() {
@@ -34,14 +35,19 @@ class API {
     connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
     receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
     // headers: {"Authorization": Flavors.apiInfo.BASIC_AUTH},
-    queryParameters: commonParamMap,
+    queryParameters: commonParam(),
   )).initWrapper();
 
   static bool skipCheck = false;
 
-  static Map<String, dynamic> commonParamMap = DeviceInfo.info;
-
   static String clientId = Flavors.appId.client_id;
+
+  static commonParam() {
+    Map<String, dynamic> commonParamMap = DeviceInfo.info;
+    String token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    commonParamMap.putIfAbsent("token", () => token);
+    return commonParamMap;
+  }
 
   static init() {
     if (!skipCheck) {
@@ -97,6 +103,37 @@ class API {
     try {
       Response response =
           await _dio.post("/users/login", data: json.encode(body));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///上传图片
+  static Future<ApiResult> uploadImage(
+      String filePath, ProgressCallback callback) async {
+    init();
+    var name =
+        filePath.substring(filePath.lastIndexOf("/") + 1, filePath.length);
+    var suffix = name.substring(name.lastIndexOf(".") + 1, name.length);
+
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromFileSync(filePath, filename: name),
+    });
+    print(
+        "DDAI name=$name; suffix=$suffix; filePath=$filePath; formData=$formData");
+    print(
+        "DDAI formData.files.first.value.length=${formData.files.first.value.length}");
+    try {
+      Response response = await _dio.post("/files/upload", data: formData,
+          onSendProgress: (a, b) {
+        print("send >>> $a/$b");
+        callback(a, b);
+      }, onReceiveProgress: (a, b) {
+        print("receive <<< $a/$b");
+      });
+
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");

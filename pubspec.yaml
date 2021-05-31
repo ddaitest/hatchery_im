@@ -36,6 +36,8 @@ dependencies:
   device_info: ^2.0.1
   image_stack: ^2.0.1
   google_fonts: ^2.0.0
+  animated_text_kit: ^4.2.1
+  image_picker: ^0.7.3
 
 
   # The following adds the Cupertino Icons font to your application.

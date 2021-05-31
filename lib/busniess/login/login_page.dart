@@ -19,6 +19,12 @@ class LoginPageState extends State<LoginPage> {
   LoginManager _loginManager = LoginManager();
 
   @override
+  void initState() {
+    _loginManager.init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => _loginManager,

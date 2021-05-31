@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
+import 'package:hatchery_im/routers.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -56,7 +57,7 @@ class RegisterPageState extends State<RegisterPage> {
                     ),
                     TextFormModel(
                       registerManager.accountController,
-                      '账号',
+                      '登录账号',
                     ),
                     SizedBox(
                       height: 19.0.h,
@@ -84,26 +85,15 @@ class RegisterPageState extends State<RegisterPage> {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: TextButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              return Flavors.colorInfo.mainColor;
-                              // //设置按下时的背景颜色
-                              // if (states.contains(MaterialState.pressed)) {
-                              //   return Colors.blue[200];
-                              // }
-                              // //默认不使用背景颜色
-                              // return null;
-                            }),
-                          ),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Flavors.colorInfo.mainColor,
+                              textStyle: Flavors.textStyles.loginInButtonText),
                           child: Text(
                             "下一步",
-                            style: Flavors.textStyles.loginInButtonText,
                           ),
-                          onPressed: () {
-                            print("DEBUG => ");
-                          }),
+                          onPressed: () =>
+                              Routers.navigateTo('/register_detail')),
                     ),
                   ],
                 ),

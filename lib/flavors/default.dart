@@ -38,6 +38,11 @@ class ApiInfo {
 }
 
 class TextStyles {
+  final TextStyle splashLogoText = TextStyle(
+      fontSize: 52.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().mainTextColor);
+
   final TextStyle contactsIconTextSelect = TextStyle(
       fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 

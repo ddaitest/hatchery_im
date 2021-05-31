@@ -24,13 +24,17 @@ class LoginManager extends ChangeNotifier {
   TextEditingController get accountController => _accountController;
   TextEditingController get codeController => _codeController;
 
-  LoginManager() {}
+  /// 初始化
+  init() {
+    var aaa = SP.getString(SPKey.userInfo);
+    print("DEBUG=> ${jsonDecode(aaa)['token']}");
+  }
 
   Future<bool> submit(String account, String password) async {
     ApiResult result = await API.usersLogin(account, password);
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
-      SP.set(SPKey.userInfo, result.getData());
+      SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       Routers.navigateReplace('/');
     }
     return result.isSuccess();
