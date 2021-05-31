@@ -17,18 +17,12 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class LoginManager extends ChangeNotifier {
-  final GlobalKey<FormState> _loginInputKey = GlobalKey<FormState>();
-  final TextEditingController _accountController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
-  GlobalKey<FormState> get loginInputKey => _loginInputKey;
-  TextEditingController get accountController => _accountController;
-  TextEditingController get codeController => _codeController;
+  GlobalKey<FormState> loginInputKey = GlobalKey<FormState>();
+  TextEditingController accountController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
 
   /// 初始化
-  init() {
-    var aaa = SP.getString(SPKey.userInfo);
-    print("DEBUG=> ${jsonDecode(aaa)['token']}");
-  }
+  init() {}
 
   Future<bool> submit(String account, String password) async {
     ApiResult result = await API.usersLogin(account, password);
@@ -42,8 +36,8 @@ class LoginManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    _accountController.dispose();
-    _codeController.dispose();
+    accountController.dispose();
+    codeController.dispose();
     super.dispose();
   }
 }

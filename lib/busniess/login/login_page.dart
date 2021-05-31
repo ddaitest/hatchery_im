@@ -36,122 +36,204 @@ class LoginPageState extends State<LoginPage> {
     return Consumer(builder:
         (BuildContext context, LoginManager loginManager, Widget? child) {
       return Scaffold(
-          body: Container(
-        width: Flavors.sizesInfo.screenWidth,
-        height: Flavors.sizesInfo.screenHeight,
-        color: Flavors.colorInfo.mainBackGroundColor,
-        padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 200.0),
-        child: SingleChildScrollView(
-            child: Form(
-          key: loginManager.loginInputKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.only(bottom: 2.0),
-                child: Text(
-                  '登录',
-                  style: Flavors.textStyles.loginMainTitleText,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: RichText(
-                  text: TextSpan(children: <TextSpan>[
-                    TextSpan(
-                      text: '登录注册账号表示同意',
-                      style: Flavors.textStyles.loginSubTitleText,
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF73AEF5),
+                        Color(0xFF61A4F1),
+                        Color(0xFF478DE0),
+                        Color(0xFF398AE5),
+                      ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
                     ),
-                    TextSpan(
-                      text: '用户协议、隐私条款',
-                      style: Flavors.textStyles.loginLinkText,
-                    ),
-                  ]),
+                  ),
                 ),
-              ),
-              TextFormModel(loginManager.accountController, '账号'),
-              SizedBox(
-                height: 19.0.h,
-              ),
-              TextFormModel(
-                loginManager.codeController,
-                '密码',
-                hideText: true,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => Routers.navigateTo('/register'),
-                    child: Container(
-                      padding: const EdgeInsets.only(top: 13.0),
-                      child: RichText(
-                        text: TextSpan(children: <TextSpan>[
-                          TextSpan(
-                            text: '没有注册? ',
-                            style: Flavors.textStyles.loginSubTitleText,
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 120.0,
+                    ),
+                    child: Form(
+                      key: loginManager.loginInputKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '登录',
+                            style: Flavors.textStyles.loginMainTitleText,
                           ),
-                          TextSpan(
-                            text: '立即注册',
-                            style: Flavors.textStyles.loginLinkText,
+                          SizedBox(height: 30.0.h),
+                          _buildAccountTF(loginManager),
+                          SizedBox(
+                            height: 30.0.h,
                           ),
-                        ]),
+                          _buildPasswordTF(loginManager),
+                          _buildForgotPasswordBtn(),
+                          _buildLoginBtn(loginManager),
+                          _buildSignInWithText(),
+                          _buildSocialBtnRow(),
+                          _buildSignupBtn(),
+                        ],
                       ),
                     ),
                   ),
-                  Container(
-                      padding: const EdgeInsets.only(top: 13.0),
-                      child: Text(
-                        '手机验证码登录',
-                        style: Flavors.textStyles.loginLinkText,
-                      )),
-                ],
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.only(top: 20.0),
-                child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.resolveWith((states) {
-                        return Flavors.colorInfo.mainColor;
-                        // //设置按下时的背景颜色
-                        // if (states.contains(MaterialState.pressed)) {
-                        //   return Colors.blue[200];
-                        // }
-                        // //默认不使用背景颜色
-                        // return null;
-                      }),
-                    ),
-                    child: Text(
-                      "登 录",
-                      style: Flavors.textStyles.loginInButtonText,
-                    ),
-                    onPressed: () {
-                      submit(loginManager);
-                      print("DEBUG => ");
-                    }),
-              ),
-              Container(
-                alignment: Alignment.bottomCenter,
-                padding: const EdgeInsets.all(10),
-                child: TextButton(
-                    onPressed: () {},
-                    child:
-                        Text("忘记密码?", style: Flavors.textStyles.loginLinkText)),
-              )
-            ],
+                )
+              ],
+            ),
           ),
-        )),
-      ));
+        ),
+      );
     });
   }
 
+  Widget _buildAccountTF(loginManager) {
+    return TextFormModel(
+      '账号',
+      loginManager.accountController,
+      TextInputType.text,
+      Icons.account_circle,
+      '请输入账号',
+    );
+  }
+
+  Widget _buildPasswordTF(loginManager) {
+    return TextFormModel(
+      '密码',
+      loginManager.codeController,
+      TextInputType.visiblePassword,
+      Icons.lock,
+      '请输入密码',
+      hideText: true,
+    );
+  }
+
+  Widget _buildForgotPasswordBtn() {
+    return Container(
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () => print('Forgot Password Button Pressed'),
+        child: Text(
+          '忘记密码?',
+          style: Flavors.textStyles.loginLinkText,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginBtn(loginManager) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 15.0),
+      width: double.infinity,
+      child: TextButton(
+        style: ElevatedButton.styleFrom(
+          primary: Flavors.colorInfo.mainBackGroundColor,
+          textStyle: Flavors.textStyles.loginInButtonText,
+          elevation: 5.0,
+          padding: EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+        onPressed: () => _submit(loginManager),
+        child: Text(
+          '登 录',
+          style: Flavors.textStyles.loginInButtonText,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignInWithText() {
+    return Column(
+      children: <Widget>[
+        Text(
+          '- 或 -',
+          style: Flavors.textStyles.loginNormalText,
+        ),
+        SizedBox(height: 20.0.h),
+        Text(
+          '用以下方式登录',
+          style: Flavors.textStyles.loginNormalText,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSocialBtn(String imagePath) {
+    return GestureDetector(
+      onTap: () => print('Login with Phone'),
+      child: Container(
+        height: 60.0.h,
+        width: 60.0.w,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 2),
+              blurRadius: 6.0,
+            ),
+          ],
+        ),
+        child: Center(
+          child: Image.asset(
+            imagePath,
+            height: 30.0.h,
+            width: 30.0.w,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSocialBtnRow() {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      child: _buildSocialBtn(
+        'images/login_phone.png',
+      ),
+    );
+  }
+
+  Widget _buildSignupBtn() {
+    return GestureDetector(
+      onTap: () => Routers.navigateTo('/register'),
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: '没有账号? ',
+              style: Flavors.textStyles.loginNormalText,
+            ),
+            TextSpan(text: '立即注册', style: Flavors.textStyles.loginLinkText),
+          ],
+        ),
+      ),
+    );
+  }
+
   ///提交
-  submit(LoginManager loginManager) {
+  _submit(loginManager) {
     if (loginManager.loginInputKey.currentState!.validate()) {
-      var account = loginManager.accountController.text;
-      var password = loginManager.codeController.text;
+      String account = loginManager.accountController.text;
+      String password = loginManager.codeController.text;
+      print("$account $password");
       App.manager<LoginManager>().submit(account, password);
     }
   }

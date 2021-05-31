@@ -59,28 +59,31 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
+  final TextStyle loginNormalText = TextStyle(
+    fontSize: 14.0.sp,
+    color: ColorInfo().mainTextColor,
+    fontWeight: FontWeight.normal,
+  );
+
   final TextStyle loginMainTitleText = TextStyle(
-      fontSize: 28.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+      fontSize: 30.0.sp,
+      fontWeight: FontWeight.w500,
+      color: ColorInfo().mainTextColor);
 
   final TextStyle loginSubTitleText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
-  final TextStyle loginInputTitleText = TextStyle(
-      fontSize: 14.0.sp,
-      fontWeight: FontWeight.w400,
-      color: ColorInfo().mainColor);
-
   final TextStyle loginLinkText = TextStyle(
       fontSize: 14.0.sp,
-      fontWeight: FontWeight.w500,
-      color: ColorInfo().mainColor);
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().mainTextColor);
 
   final TextStyle loginInButtonText = TextStyle(
-      fontSize: 14.0.sp,
-      fontWeight: FontWeight.w400,
-      color: ColorInfo().mainTextColor);
+      fontSize: 18.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().btnTextColor);
 }
 
 class SizesInfo {
@@ -92,11 +95,12 @@ class SizesInfo {
 }
 
 class ColorInfo {
-  final mainColor = const Color.fromRGBO(45, 156, 219, 1);
+  final mainColor = const Color(0xFF478DE0);
   final mainTextColor = Colors.white;
   final mainBackGroundColor = Colors.white;
+  get btnTextColor => mainColor;
   final diver = Colors.black87;
-  final subtitleColor = Colors.grey.shade400;
+  final subtitleColor = Colors.white54;
   get homeTabSelected => mainColor;
   get homeTabUnSelected => diver;
 }

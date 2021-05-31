@@ -15,25 +15,14 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class RegisterManager extends ChangeNotifier {
-  final GlobalKey<FormState> _registerInputKey = GlobalKey<FormState>();
-  final TextEditingController _accountController = TextEditingController();
-  final TextEditingController _nickNameController = TextEditingController();
-  final TextEditingController _avatarController = TextEditingController();
-  final TextEditingController _codeController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  GlobalKey<FormState> get registerInputKey => _registerInputKey;
-  TextEditingController get accountController => _accountController;
-  TextEditingController get nickNameController => _nickNameController;
-  TextEditingController get avatarController => _avatarController;
-  TextEditingController get codeController => _codeController;
-  TextEditingController get notesController => _notesController;
-  TextEditingController get phoneController => _phoneController;
-  TextEditingController get emailController => _emailController;
-  TextEditingController get addressController => _addressController;
-
+  final GlobalKey<FormState> registerInputKey = GlobalKey<FormState>();
+  TextEditingController accountController = TextEditingController();
+  TextEditingController nickNameController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
+  TextEditingController notesController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
   String uploadUrl = "";
   double uploadProgress = 0.0;
 
@@ -57,14 +46,13 @@ class RegisterManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    _accountController.dispose();
-    _nickNameController.dispose();
-    _avatarController.dispose();
-    _codeController.dispose();
-    _notesController.dispose();
-    _phoneController.dispose();
-    _emailController.dispose();
-    _addressController.dispose();
+    accountController.dispose();
+    nickNameController.dispose();
+    codeController.dispose();
+    notesController.dispose();
+    phoneController.dispose();
+    emailController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 }

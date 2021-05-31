@@ -34,163 +34,155 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
     return Consumer(builder:
         (BuildContext context, RegisterManager registerManager, Widget? child) {
       return Scaffold(
-          appBar: AppBarFactory.backButton(''),
-          body: Container(
-            width: Flavors.sizesInfo.screenWidth,
-            height: Flavors.sizesInfo.screenHeight,
-            color: Flavors.colorInfo.mainBackGroundColor,
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
-            child: SingleChildScrollView(
-              child: Form(
-                key: registerManager.registerInputKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    // Container(
-                    //   padding: const EdgeInsets.only(bottom: 2.0),
-                    //   child: Text(
-                    //     '账号注册',
-                    //     style: Flavors.textStyles.loginMainTitleText,
-                    //   ),
-                    // ),
-                    // Container(
-                    //   padding: const EdgeInsets.only(top: 10.0, bottom: 12.0),
-                    //   child: Text(
-                    //     '填写详细注册资料来创建账号',
-                    //     style: Flavors.textStyles.loginSubTitleText,
-                    //   ),
-                    // ),
-                    TextFormModel(
-                      registerManager.accountController,
-                      '昵称(其他人看到的名字)',
-                    ),
-                    SizedBox(
-                      height: 19.0.h,
-                    ),
-                    TextFormModel(
-                      registerManager.codeController,
-                      '手机号',
-                    ),
-                    SizedBox(
-                      height: 19.0.h,
-                    ),
-                    TextFormModel(
-                      registerManager.codeController,
-                      '地址',
-                    ),
-                    SizedBox(
-                      height: 19.0.h,
-                    ),
-                    TextFormModel(
-                      registerManager.codeController,
-                      '电子邮箱',
-                      hideText: true,
-                    ),
-                    SizedBox(
-                      height: 19.0.h,
-                    ),
-                    TextFormModel(
-                      registerManager.codeController,
-                      '个人签名',
-                      hideText: true,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(top: 20.0, bottom: 10.0),
-                      child: RichText(
-                        text: TextSpan(children: <TextSpan>[
-                          TextSpan(
-                            text: '注册账号表示同意',
-                            style: Flavors.textStyles.loginSubTitleText,
-                          ),
-                          TextSpan(
-                            text: '用户协议、隐私条款',
-                            style: Flavors.textStyles.loginLinkText,
-                          ),
-                        ]),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: TextButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              return Flavors.colorInfo.mainColor;
-                            }),
-                          ),
-                          child: Text(
-                            "完成注册",
-                            style: Flavors.textStyles.loginInButtonText,
-                          ),
-                          onPressed: () {}),
-                    ),
-                  ],
-                ),
+        appBar: AppBarFactory.backButton('', actions: [
+          GestureDetector(
+            onTap: () {},
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                '跳过',
+                style: Flavors.textStyles.loginLinkText,
               ),
             ),
-          ));
+          )
+        ]),
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF73AEF5),
+                        Color(0xFF61A4F1),
+                        Color(0xFF478DE0),
+                        Color(0xFF398AE5),
+                      ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
+                    ),
+                  ),
+                ),
+                Container(
+                    height: double.infinity,
+                    child: SingleChildScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.0,
+                        vertical: 20.0,
+                      ),
+                      child: Form(
+                        key: registerManager.registerInputKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              '补充资料',
+                              style: Flavors.textStyles.loginMainTitleText,
+                            ),
+                            SizedBox(height: 20.0.h),
+                            _buildPhoneTF(registerManager),
+                            SizedBox(height: 10.0.h),
+                            _buildEmailTF(registerManager),
+                            SizedBox(height: 10.0.h),
+                            _buildNotesTF(registerManager),
+                            SizedBox(height: 10.0.h),
+                            _buildAddressTF(registerManager),
+                            _buildNextBtn(registerManager),
+                          ],
+                        ),
+                      ),
+                    ))
+              ],
+            ),
+          ),
+        ),
+      );
     });
   }
 
-  _avatarView() {
-    return CircleAvatar(
-      child: CachedNetworkImage(
-          imageUrl:
-              'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3686156064,2328177349&fm=26&gp=0.jpg'),
-      maxRadius: 30,
+  Widget _buildPhoneTF(registerManager) {
+    return TextFormModel(
+      '手机号（用于短信验证码登录）',
+      registerManager.accountController,
+      TextInputType.number,
+      Icons.phone_android,
+      '请输入手机号',
     );
   }
 
-  _showSheetMenu(BuildContext context) {
-    showCupertinoModalPopup<String>(
-      context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        title: const Text('选择图片'),
-        actions: <Widget>[
-          CupertinoActionSheetAction(
-              child: const Text('相册'),
-              onPressed: () => Navigator.pop(context, 'Gallery')),
-          CupertinoActionSheetAction(
-              child: const Text('照相机'),
-              onPressed: () => Navigator.pop(context, 'Camera')),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-            child: const Text('取消'),
-            // isDefaultAction: true,
-            onPressed: () => Navigator.pop(context)),
+  Widget _buildEmailTF(registerManager) {
+    return TextFormModel(
+      '电子邮箱',
+      registerManager.nickNameController,
+      TextInputType.emailAddress,
+      Icons.mail,
+      '请输入电子邮箱地址',
+    );
+  }
+
+  Widget _buildNotesTF(registerManager) {
+    return TextFormModel(
+      '个性签名',
+      registerManager.codeController,
+      TextInputType.text,
+      Icons.article,
+      '请输入个性签名',
+    );
+  }
+
+  Widget _buildAddressTF(registerManager) {
+    return TextFormModel(
+      '地址',
+      registerManager.codeController,
+      TextInputType.text,
+      Icons.location_on,
+      '请输入地址',
+    );
+  }
+
+  Widget _buildNextBtn(registerManager) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 35.0),
+      width: double.infinity,
+      child: TextButton(
+        style: ElevatedButton.styleFrom(
+          primary: Flavors.colorInfo.mainBackGroundColor,
+          textStyle: Flavors.textStyles.loginInButtonText,
+          elevation: 5.0,
+          padding: EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+        ),
+        onPressed: () => _submit(registerManager),
+        child: Text(
+          '完成注册',
+          style: Flavors.textStyles.loginInButtonText,
+        ),
       ),
-    ).then((String? value) {
-      if (value != null) {
-        getImageBy(value);
-      }
-    });
+    );
   }
 
-  Future getImageBy(String type) async {
-    var s = ImageSource.camera;
-    if (type == "Gallery") {
-      s = ImageSource.gallery;
+  ///提交
+  _submit(registerManager) {
+    if (registerManager.registerInputKey.currentState!.validate()) {
+      String account = registerManager.accountController.text;
+      String password = registerManager.codeController.text;
+      String nickName = registerManager.nickNameController.text;
+      String avatarUrl = registerManager.uploadUrl;
+      String notes = registerManager.notesController.text;
+      String phone = registerManager.phoneController.text;
+      String email = registerManager.emailController.text;
+      String address = registerManager.addressController.text;
+      print("test ${registerManager.aaa}");
+      // App.manager<RegisterManager>().submit(account, password);
     }
-    final pickedFile = await ImagePicker().getImage(source: s);
-    if (pickedFile == null) {
-      return null;
-    }
-    _imageFile = File(pickedFile.path);
-    print("DDAI _image.lengthSync=${_imageFile.lengthSync()}");
-    if (_imageFile.lengthSync() > 2080000) {
-      compressionImage(_imageFile.path).then((value) {
-        _uploadImage(_imageFile.path);
-      });
-    } else {
-      _uploadImage(_imageFile.path);
-    }
-  }
-
-  ///上传图片
-  _uploadImage(String filePath) {
-    App.manager<RegisterManager>().uploadImage(filePath).then((value) =>
-        ScaffoldMessenger.of(App.navState.currentContext!)
-            .showSnackBar(SnackBar(content: Text(value ? '上传成功' : "上传失败"))));
   }
 }

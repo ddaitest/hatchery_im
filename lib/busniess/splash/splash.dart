@@ -40,8 +40,23 @@ class _SplashPageState extends State<SplashPage> {
   Widget _fullScreenBackgroundView(splashManager) {
     print('DEBUG=> _fullScreenBackgroundView 重绘了。。。。。。。。。。');
     return Container(
+      height: double.infinity,
+      width: double.infinity,
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.only(top: 200.0),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF73AEF5),
+            Color(0xFF61A4F1),
+            Color(0xFF478DE0),
+            Color(0xFF398AE5),
+          ],
+          stops: [0.1, 0.4, 0.7, 0.9],
+        ),
+      ),
       child: DefaultTextStyle(
         style: Flavors.textStyles.splashLogoText,
         child: AnimatedTextKit(

@@ -34,7 +34,10 @@ class AppBarFactory {
     );
   }
 
-  static AppBar backButton(String title) {
+  static AppBar backButton(String title,
+      {Color backGroundColor = const Color(0xFF73AEF5),
+      Color backBtnColor = Colors.white,
+      List<Widget>? actions}) {
     return AppBar(
       title: Text(
         title,
@@ -42,14 +45,15 @@ class AppBarFactory {
             fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: backGroundColor,
       brightness: Brightness.light,
       elevation: 0.0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+        icon: Icon(Icons.arrow_back, size: 30.0, color: backBtnColor),
         onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
       ),
       automaticallyImplyLeading: false,
+      actions: actions ?? [],
     );
   }
 }

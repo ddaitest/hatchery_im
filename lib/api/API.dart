@@ -44,8 +44,8 @@ class API {
 
   static commonParam() {
     Map<String, dynamic> commonParamMap = DeviceInfo.info;
-    String token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    commonParamMap.putIfAbsent("token", () => token);
+    // String? token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    // if (token != null) commonParamMap.putIfAbsent("token", () => token);
     return commonParamMap;
   }
 
@@ -100,14 +100,15 @@ class API {
       "password": password,
     };
     init();
-    try {
-      Response response =
-          await _dio.post("/users/login", data: json.encode(body));
-      return ApiResult.of(response.data);
-    } catch (e) {
-      print("e = $e");
-      return ApiResult.error(e);
-    }
+    Response response =
+        await _dio.post("/users/login", data: json.encode(body));
+    return ApiResult.of(response.data);
+    // try {
+    //
+    // } catch (e) {
+    //   print("e = $e");
+    //   return ApiResult.error(e);
+    // }
   }
 
   ///上传图片
