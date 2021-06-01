@@ -17,11 +17,13 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class SplashManager extends ChangeNotifier {
+  String _token = '';
+
   /// 初始化
   init() {}
 
   goto() {
-    String _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
     Future.delayed(Duration.zero,
         () => Routers.navigateReplace(_token == '' ? '/login' : '/'));
   }
