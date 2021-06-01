@@ -29,7 +29,7 @@ class RegisterManager extends ChangeNotifier {
 
   Future<bool> uploadImage(String filePath) async {
     ApiResult result = await compressionImage(filePath)
-        .then((value) => API.uploadImage(value, (count, total) {
+        .then((value) => API_UPLOAD.uploadImage(value, (count, total) {
               uploadProgress = count.toDouble() / total.toDouble();
               print("DEBUG=> uploadProgress = $uploadProgress");
               notifyListeners();
@@ -38,6 +38,7 @@ class RegisterManager extends ChangeNotifier {
       final url = result.getData();
       if (url is String) {
         uploadUrl = url;
+        print("DEBUG=> uploadUrl = ${uploadUrl}");
         uploadProgress = 0.0;
         notifyListeners();
       }

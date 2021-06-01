@@ -29,82 +29,76 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => _registerManager,
-      child: _bodyContainer(),
-    );
+    return _bodyContainer();
   }
 
   _bodyContainer() {
-    return Consumer(builder:
-        (BuildContext context, RegisterManager registerManager, Widget? child) {
-      return Scaffold(
-        appBar: AppBarFactory.backButton(''),
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF73AEF5),
-                        Color(0xFF61A4F1),
-                        Color(0xFF478DE0),
-                        Color(0xFF398AE5),
-                      ],
-                      stops: [0.1, 0.4, 0.7, 0.9],
-                    ),
+    return Scaffold(
+      appBar: AppBarFactory.backButton(''),
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF73AEF5),
+                      Color(0xFF61A4F1),
+                      Color(0xFF478DE0),
+                      Color(0xFF398AE5),
+                    ],
+                    stops: [0.1, 0.4, 0.7, 0.9],
                   ),
                 ),
-                Container(
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40.0,
-                        vertical: 20.0,
+              ),
+              Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 20.0,
+                    ),
+                    child: Form(
+                      key: _registerManager.registerInputKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            '注册账号',
+                            style: Flavors.textStyles.loginMainTitleText,
+                          ),
+                          SizedBox(height: 20.0.h),
+                          _avatarView(),
+                          SizedBox(height: 10.0.h),
+                          Text(
+                            '添加照片',
+                            style: Flavors.textStyles.loginNormalText,
+                          ),
+                          SizedBox(height: 20.0.h),
+                          _buildAccountTF(_registerManager),
+                          SizedBox(height: 10.0.h),
+                          _buildNickNameTF(_registerManager),
+                          SizedBox(height: 10.0.h),
+                          _buildPasswordTF(_registerManager),
+                          _buildNextBtn(_registerManager),
+                          _buildSignInBtn(),
+                        ],
                       ),
-                      child: Form(
-                        key: registerManager.registerInputKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              '注册账号',
-                              style: Flavors.textStyles.loginMainTitleText,
-                            ),
-                            SizedBox(height: 20.0.h),
-                            _avatarView(registerManager),
-                            SizedBox(height: 10.0.h),
-                            Text(
-                              '添加照片',
-                              style: Flavors.textStyles.loginNormalText,
-                            ),
-                            SizedBox(height: 20.0.h),
-                            _buildAccountTF(registerManager),
-                            SizedBox(height: 10.0.h),
-                            _buildNickNameTF(registerManager),
-                            SizedBox(height: 10.0.h),
-                            _buildPasswordTF(registerManager),
-                            _buildNextBtn(registerManager),
-                            _buildSignInBtn(),
-                          ],
-                        ),
-                      ),
-                    ))
-              ],
-            ),
+                    ),
+                  ))
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget _buildAccountTF(registerManager) {
@@ -178,36 +172,56 @@ class RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _avatarView(registerManager) {
-    return Container(
-      child: _imageFile.path == ''
-          ? CircleAvatar(
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      offset: Offset(0, 2),
-                      blurRadius: 6.0,
-                    ),
-                  ],
-                ),
-                child: Center(
-                    child: IconButton(
-                  onPressed: () => _showSheetMenu(context),
-                  icon: Icon(Icons.photo_camera,
-                      color: Flavors.colorInfo.mainColor, size: 35),
-                )),
-              ),
-              maxRadius: 40,
-            )
-          : CircleAvatar(
-              backgroundImage:
-                  CachedNetworkImageProvider('${registerManager.uploadUrl}'),
-              maxRadius: 40,
+  Widget _avatarView() {
+    return Selector<RegisterManager, String>(
+      builder: (context, String value, child) {
+        print("DEBUG=> imageUrl $value");
+        return GestureDetector(
+          onTap: () => _showSheetMenu(context),
+          child: Container(
+            child: value == ''
+                ? _selectIconView()
+                : CachedNetworkImage(
+                    imageUrl: value,
+                    placeholder: (context, url) => _selectIconView(),
+                    imageBuilder: (context, imageProvider) {
+                      return CircleAvatar(
+                        backgroundImage: imageProvider,
+                        maxRadius: 40,
+                      );
+                    }),
+          ),
+        );
+      },
+      selector: (BuildContext context, RegisterManager manager) {
+        return manager.uploadUrl;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
+  }
+
+  Widget _selectIconView() {
+    return CircleAvatar(
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              offset: Offset(0, 2),
+              blurRadius: 6.0,
             ),
+          ],
+        ),
+        child: Center(
+            child: Icon(
+          Icons.photo_camera,
+          color: Flavors.colorInfo.mainColor,
+          size: 35,
+        )),
+      ),
+      maxRadius: 40,
     );
   }
 

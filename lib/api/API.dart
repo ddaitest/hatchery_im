@@ -40,8 +40,6 @@ class API {
 
   static bool skipCheck = false;
 
-  static String clientId = Flavors.appId.client_id;
-
   static commonParam() {
     Map<String, dynamic> commonParamMap = DeviceInfo.info;
     // String? token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
@@ -123,6 +121,66 @@ class API {
     try {
       Response response = await _dio.post("/resources/files/upload",
           data: formData, onSendProgress: (a, b) {
+        print("send >>> $a/$b");
+        callback(a, b);
+      }, onReceiveProgress: (a, b) {
+        print("receive <<< $a/$b");
+      });
+
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+}
+
+class API_UPLOAD {
+  static Dio _dio = Dio(BaseOptions(
+    baseUrl: Flavors.apiInfo.File_UPLOAD_PATH,
+    connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
+    receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
+    // headers: {"Authorization": Flavors.apiInfo.BASIC_AUTH},
+    queryParameters: commonParam(),
+  )).initWrapper();
+
+  static bool skipCheck = false;
+
+  static commonParam() {
+    Map<String, dynamic> commonParamMap = DeviceInfo.info;
+    // String? token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    // if (token != null) commonParamMap.putIfAbsent("token", () => token);
+    return commonParamMap;
+  }
+
+  static init() {
+    if (!skipCheck) {
+      isNetworkConnect().then((value) {
+        if (!value) {
+          showToast('网络未连接，请检查网络设置');
+        }
+      });
+    }
+  }
+
+  ///上传图片
+  static Future<ApiResult> uploadImage(
+      String filePath, ProgressCallback callback) async {
+    init();
+    var name =
+        filePath.substring(filePath.lastIndexOf("/") + 1, filePath.length);
+    var suffix = name.substring(name.lastIndexOf(".") + 1, name.length);
+
+    FormData formData = FormData.fromMap({
+      "file": MultipartFile.fromFileSync(filePath, filename: name),
+    });
+    print(
+        "DDAI name=$name; suffix=$suffix; filePath=$filePath; formData=$formData");
+    print(
+        "DDAI formData.files.first.value.length=${formData.files.first.value.length}");
+    try {
+      Response response = await _dio.post("/files/upload", data: formData,
+          onSendProgress: (a, b) {
         print("send >>> $a/$b");
         callback(a, b);
       }, onReceiveProgress: (a, b) {
