@@ -21,7 +21,9 @@ class SplashManager extends ChangeNotifier {
   init() {}
 
   goto() {
-    Future.delayed(Duration.zero, () => Routers.navigateReplace('/login'));
+    String _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    Future.delayed(Duration.zero,
+        () => Routers.navigateReplace(_token == '' ? '/login' : '/'));
   }
 
   @override
