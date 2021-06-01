@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'theme.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
 
 void showToast(String title,
@@ -16,8 +17,8 @@ void showToast(String title,
       toastLength: toastTime,
       gravity: showGravity,
       timeInSecForIosWeb: 1,
-      backgroundColor: Color(0x99000000),
-      textColor: Colors.white,
+      // backgroundColor: Color(0x99000000),
+      textColor: Flavors.colorInfo.diver,
       fontSize: 15.0);
 }
 

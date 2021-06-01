@@ -19,8 +19,8 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
-      case '/register_detail':
-        return MaterialPageRoute(builder: (_) => RegisterPageDetail());
+      // case '/register_detail':
+      //   return MaterialPageRoute(builder: (_) => RegisterPageDetail());
 
       // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());

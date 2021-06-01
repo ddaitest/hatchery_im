@@ -103,12 +103,6 @@ class API {
     Response response =
         await _dio.post("/users/login", data: json.encode(body));
     return ApiResult.of(response.data);
-    // try {
-    //
-    // } catch (e) {
-    //   print("e = $e");
-    //   return ApiResult.error(e);
-    // }
   }
 
   ///上传图片
@@ -127,8 +121,8 @@ class API {
     print(
         "DDAI formData.files.first.value.length=${formData.files.first.value.length}");
     try {
-      Response response = await _dio.post("/files/upload", data: formData,
-          onSendProgress: (a, b) {
+      Response response = await _dio.post("/resources/files/upload",
+          data: formData, onSendProgress: (a, b) {
         print("send >>> $a/$b");
         callback(a, b);
       }, onReceiveProgress: (a, b) {

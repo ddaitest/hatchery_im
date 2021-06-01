@@ -5,7 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/utils.dart';
 // import 'package:hatchery_im/api/entity.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
@@ -40,6 +41,28 @@ class RegisterManager extends ChangeNotifier {
         uploadProgress = 0.0;
         notifyListeners();
       }
+    }
+    return result.isSuccess();
+  }
+
+  Future<bool> submit(
+    String loginName,
+    String nickName,
+    String avatar,
+    String password,
+    String notes,
+    String phone,
+    String email,
+    String address,
+  ) async {
+    ApiResult result = await API.usersRegister(
+        loginName, nickName, avatar, password, notes, phone, email, address);
+    if (result.isSuccess()) {
+      print("DEBUG=> result.getData() ${result.getData()}");
+      Routers.navigateReplace('/login');
+      showToast('注册成功');
+    } else {
+      showToast('账号已注册,请更换账号后重试');
     }
     return result.isSuccess();
   }

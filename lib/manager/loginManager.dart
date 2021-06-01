@@ -6,7 +6,7 @@ import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hatchery_im/common/utils.dart';
 // import 'package:hatchery_im/api/entity.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
@@ -30,6 +30,8 @@ class LoginManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()}");
       SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       Routers.navigateReplace('/');
+    } else {
+      showToast('账号或密码错误');
     }
     return result.isSuccess();
   }

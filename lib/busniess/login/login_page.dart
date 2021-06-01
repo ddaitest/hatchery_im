@@ -8,6 +8,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/loginManager.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 
 class LoginPage extends StatefulWidget {
@@ -62,8 +63,8 @@ class LoginPageState extends State<LoginPage> {
                 Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 40.0,
                       vertical: 120.0,
                     ),
@@ -230,11 +231,13 @@ class LoginPageState extends State<LoginPage> {
 
   ///提交
   _submit(loginManager) {
-    if (loginManager.loginInputKey.currentState!.validate()) {
-      String account = loginManager.accountController.text;
-      String password = loginManager.codeController.text;
+    String account = loginManager.accountController.text;
+    String password = loginManager.codeController.text;
+    if (account != '' && password != '') {
       print("$account $password");
       App.manager<LoginManager>().submit(account, password);
+    } else {
+      showToast('账号或密码不能为空');
     }
   }
 }

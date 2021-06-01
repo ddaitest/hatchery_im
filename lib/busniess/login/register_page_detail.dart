@@ -14,13 +14,17 @@ import 'package:hatchery_im/manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 
 class RegisterPageDetail extends StatefulWidget {
+  final String account;
+  final String nickName;
+  final String password;
+  final String imageUrl;
+  RegisterPageDetail(this.account, this.nickName, this.password, this.imageUrl);
   @override
   RegisterPageDetailState createState() => RegisterPageDetailState();
 }
 
 class RegisterPageDetailState extends State<RegisterPageDetail> {
   RegisterManager _registerManager = RegisterManager();
-  File _imageFile = File('');
 
   @override
   Widget build(BuildContext context) {
@@ -34,18 +38,7 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
     return Consumer(builder:
         (BuildContext context, RegisterManager registerManager, Widget? child) {
       return Scaffold(
-        appBar: AppBarFactory.backButton('', actions: [
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                '跳过',
-                style: Flavors.textStyles.loginLinkText,
-              ),
-            ),
-          )
-        ]),
+        appBar: AppBarFactory.backButton(''),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: GestureDetector(
@@ -94,7 +87,8 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
                             _buildNotesTF(registerManager),
                             SizedBox(height: 10.0.h),
                             _buildAddressTF(registerManager),
-                            _buildNextBtn(registerManager),
+                            _buildFinishBtn(registerManager),
+                            _skipAndFinishBtn(registerManager),
                           ],
                         ),
                       ),
@@ -147,9 +141,9 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
     );
   }
 
-  Widget _buildNextBtn(registerManager) {
+  Widget _buildFinishBtn(registerManager) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 35.0),
+      padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: TextButton(
         style: ElevatedButton.styleFrom(
@@ -170,19 +164,36 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
     );
   }
 
+  Widget _skipAndFinishBtn(registerManager) {
+    return GestureDetector(
+      onTap: () => _submit(registerManager),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        child: Text(
+          '跳过并完成注册',
+          style: Flavors.textStyles.loginLinkText,
+        ),
+      ),
+    );
+  }
+
   ///提交
   _submit(registerManager) {
-    if (registerManager.registerInputKey.currentState!.validate()) {
-      String account = registerManager.accountController.text;
-      String password = registerManager.codeController.text;
-      String nickName = registerManager.nickNameController.text;
-      String avatarUrl = registerManager.uploadUrl;
-      String notes = registerManager.notesController.text;
-      String phone = registerManager.phoneController.text;
-      String email = registerManager.emailController.text;
-      String address = registerManager.addressController.text;
-      print("test ${registerManager.aaa}");
-      // App.manager<RegisterManager>().submit(account, password);
+    String loginName = widget.account;
+    String nickName = widget.nickName;
+    String avatarUrl = widget.imageUrl;
+    String password = widget.password;
+    String notes = registerManager.notesController.text ?? '';
+    String phone = registerManager.phoneController.text ?? '';
+    String email = registerManager.emailController.text ?? '';
+    String address = registerManager.addressController.text ?? '';
+    if (loginName != '' &&
+        nickName != '' &&
+        avatarUrl != '' &&
+        password != '') {
+      print("test ${widget.account}");
+      App.manager<RegisterManager>().submit(loginName, nickName, avatarUrl,
+          password, notes, phone, email, address);
     }
   }
 }

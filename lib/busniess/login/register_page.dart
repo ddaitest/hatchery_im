@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/busniess/login/register_page_detail.dart';
+import 'package:image_crop/image_crop.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -22,6 +25,7 @@ class RegisterPage extends StatefulWidget {
 class RegisterPageState extends State<RegisterPage> {
   RegisterManager _registerManager = RegisterManager();
   File _imageFile = File('');
+  final _cropKey = GlobalKey<CropState>();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,7 @@ class RegisterPageState extends State<RegisterPage> {
                               style: Flavors.textStyles.loginMainTitleText,
                             ),
                             SizedBox(height: 20.0.h),
-                            _avatarView(),
+                            _avatarView(registerManager),
                             SizedBox(height: 10.0.h),
                             Text(
                               '添加照片',
@@ -174,7 +178,7 @@ class RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _avatarView() {
+  Widget _avatarView(registerManager) {
     return Container(
       child: _imageFile.path == ''
           ? CircleAvatar(
@@ -200,8 +204,8 @@ class RegisterPageState extends State<RegisterPage> {
               maxRadius: 40,
             )
           : CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(
-                  'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3686156064,2328177349&fm=26&gp=0.jpg'),
+              backgroundImage:
+                  CachedNetworkImageProvider('${registerManager.uploadUrl}'),
               maxRadius: 40,
             ),
     );
@@ -254,14 +258,34 @@ class RegisterPageState extends State<RegisterPage> {
 
   ///上传图片
   _uploadImage(String filePath) {
-    App.manager<RegisterManager>().uploadImage(filePath).then((value) =>
-        ScaffoldMessenger.of(App.navState.currentContext!)
-            .showSnackBar(SnackBar(content: Text(value ? '上传成功' : "上传失败"))));
+    App.manager<RegisterManager>()
+        .uploadImage(filePath)
+        .then((value) => showToast(value ? '头像上传成功' : "头像上传失败"));
   }
 
   ///提交
   _nextStepBtn(registerManager) {
-    print("${registerManager.accountController.text}");
-    // Routers.navigateTo('/register_detail');
+    String account = registerManager.accountController.text;
+    String nickName = registerManager.nickNameController.text;
+    String password = registerManager.codeController.text;
+    String imageUrl = registerManager.uploadUrl;
+    print("$account $password");
+    if (account != '' &&
+        nickName != '' &&
+        password != '' &&
+        imageUrl != '' &&
+        registerManager.uploadUrl != '') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return RegisterPageDetail(account, nickName, password, imageUrl);
+      }));
+    } else {
+      showToast('请填写完信息后点击下一步');
+    }
+  }
+
+  @override
+  void dispose() {
+    _imageFile.delete();
+    super.dispose();
   }
 }
