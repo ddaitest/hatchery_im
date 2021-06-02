@@ -34,17 +34,13 @@ class _ContactsState extends State<ContactsPage>
     "Debra Hawkins": "8"
   };
   final List<ContactsUsers> contactsUsers = [];
-  late TabController _tabController;
-  int tabIndex = 0;
 
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: 2);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     nameInfo.clear();
     super.dispose();
   }
@@ -60,76 +56,23 @@ class _ContactsState extends State<ContactsPage>
     return Scaffold(
       appBar: AppBarFactory.getMain("联系人(${contactsUsers.length})", actions: [
         Container(
-          padding: const EdgeInsets.only(right: 16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Icon(
-            Icons.person_add_outlined,
+            Icons.person_add,
             color: Colors.black,
-            size: 25,
+            size: 30,
           ),
         ),
       ]),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SearchBarView(),
-            _tabBarContainer(),
-            _tabViewInfo(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _tabBarContainer() {
-    return Container(
-        padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
-        child: TabBar(
-            controller: _tabController,
-            onTap: (value) {
-              setState(() {
-                tabIndex = value;
-                print("DEBUG=> LC $value");
-              });
-            },
-            indicator: const BoxDecoration(),
-            // unselectedLabelStyle: Flavors.textStyles.contactsIconTextUnSelect,
-            tabs: <Widget>[
-              _tabBarView('images/new_friend.png', '新的朋友', 0),
-              _tabBarView('images/group.png', '群组', 1),
-              // _topViewItem('images/new_friend.png', '新的朋友', 2),
-            ]));
-  }
-
-  _tabBarView(String imagePath, String iconText, int selectIndex) {
-    return Container(
-      child: Column(
-        children: [
-          Image.asset(
-            imagePath,
-            height: 54.0.h,
-            width: 54.0.w,
-          ),
-          SizedBox(height: 5.0.h),
-          Text(
-            iconText,
-            style: selectIndex == tabIndex
-                ? Flavors.textStyles.contactsIconTextSelect
-                : Flavors.textStyles.contactsIconTextUnSelect,
-          )
+      body: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        children: <Widget>[
+          SearchBarView(),
+          _contactsListView(),
         ],
       ),
-    );
-  }
-
-  _tabViewInfo() {
-    return Container(
-      height: Flavors.sizesInfo.screenHeight,
-      child: TabBarView(
-          controller: _tabController,
-          children: [_contactsListView(), _groupListView()]),
     );
   }
 
@@ -137,43 +80,13 @@ class _ContactsState extends State<ContactsPage>
     return ListView.builder(
       itemCount: contactsUsers.length,
       shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         return ContactsUsersListItem(
           text: contactsUsers[index].text,
           image: contactsUsers[index].image,
         );
       },
-    );
-  }
-
-  _groupListView() {
-    return Container(
-      padding: const EdgeInsets.only(left: 38, right: 38, top: 23, bottom: 23),
-      child: GridView.builder(
-        itemCount: contactsUsers.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //横轴元素个数
-            crossAxisCount: 2,
-            //纵轴间距
-            mainAxisSpacing: 20.0,
-            //横轴间距
-            crossAxisSpacing: 38.0,
-            //子组件宽高长度比例
-            childAspectRatio: 150 / 190),
-        itemBuilder: (context, index) {
-          return GroupListItem(
-            mainImageUrl: 'images/userImage2.jpeg',
-            groupName: '印度基友群',
-            groupMembersImageUrl: [
-              'images/userImage1.jpeg',
-              'images/userImage2.jpeg',
-              'images/userImage3.jpeg'
-            ],
-            membersNumber: 20,
-          );
-        },
-      ),
     );
   }
 }

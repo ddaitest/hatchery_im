@@ -25,9 +25,10 @@ class TimeConfig {
 }
 
 const mainTabs = [
-  TabInfo('消息', Icons.message_outlined, Icons.message),
-  TabInfo('联系人', Icons.group_outlined, Icons.group),
-  TabInfo('我的', Icons.account_circle_outlined, Icons.account_circle),
+  TabInfo('消息', Icons.chat_bubble_outline, Icons.chat_bubble_outline),
+  TabInfo('联系人', Icons.account_circle_outlined, Icons.account_circle_outlined),
+  TabInfo('群组', Icons.group, Icons.group),
+  TabInfo('我的', Icons.perm_identity, Icons.perm_identity),
 ];
 
 class TabInfo {

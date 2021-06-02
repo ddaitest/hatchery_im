@@ -60,6 +60,9 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
+  final TextStyle groupMembersMoreText = TextStyle(
+      fontSize: 10.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+
   final TextStyle loginNormalText = TextStyle(
     fontSize: 14.0.sp,
     color: ColorInfo().mainTextColor,

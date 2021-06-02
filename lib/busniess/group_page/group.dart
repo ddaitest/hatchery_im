@@ -34,17 +34,13 @@ class _GroupPageState extends State<GroupPage>
     "Debra Hawkins": "8"
   };
   final List<ContactsUsers> contactsUsers = [];
-  late TabController _tabController;
-  int tabIndex = 0;
 
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: 2);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
     nameInfo.clear();
     super.dispose();
   }
@@ -58,91 +54,25 @@ class _GroupPageState extends State<GroupPage>
       ));
     });
     return Scaffold(
-      appBar: AppBarFactory.getMain("联系人(${contactsUsers.length})", actions: [
+      appBar: AppBarFactory.getMain("群组(${contactsUsers.length})", actions: [
         Container(
-          padding: const EdgeInsets.only(right: 16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Icon(
-            Icons.person_add_outlined,
+            Icons.group_add,
             color: Colors.black,
-            size: 25,
+            size: 30,
           ),
         ),
       ]),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SearchBarView(),
-            _tabViewInfo(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  _tabBarContainer() {
-    return Container(
-        padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
-        child: TabBar(
-            controller: _tabController,
-            onTap: (value) {
-              setState(() {
-                tabIndex = value;
-                print("DEBUG=> LC $value");
-              });
-            },
-            indicator: const BoxDecoration(),
-            // unselectedLabelStyle: Flavors.textStyles.contactsIconTextUnSelect,
-            tabs: <Widget>[
-              _tabBarView('images/new_friend.png', '新的朋友', 0),
-              _tabBarView('images/group.png', '群组', 1),
-              // _topViewItem('images/new_friend.png', '新的朋友', 2),
-            ]));
-  }
-
-  _tabBarView(String imagePath, String iconText, int selectIndex) {
-    return Container(
-      child: Column(
-        children: [
-          Image.asset(
-            imagePath,
-            height: 54.0.h,
-            width: 54.0.w,
-          ),
-          SizedBox(height: 5.0.h),
-          Text(
-            iconText,
-            style: selectIndex == tabIndex
-                ? Flavors.textStyles.contactsIconTextSelect
-                : Flavors.textStyles.contactsIconTextUnSelect,
-          )
+      body: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        shrinkWrap: true,
+        children: <Widget>[
+          SearchBarView(),
+          _groupListView(),
         ],
       ),
-    );
-  }
-
-  _tabViewInfo() {
-    return Container(
-      height: Flavors.sizesInfo.screenHeight,
-      child: TabBarView(
-          controller: _tabController,
-          children: [_contactsListView(), _groupListView()]),
-    );
-  }
-
-  _contactsListView() {
-    return ListView.builder(
-      itemCount: contactsUsers.length,
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemBuilder: (context, index) {
-        return ContactsUsersListItem(
-          text: contactsUsers[index].text,
-          image: contactsUsers[index].image,
-        );
-      },
     );
   }
 
@@ -150,7 +80,9 @@ class _GroupPageState extends State<GroupPage>
     return Container(
       padding: const EdgeInsets.only(left: 38, right: 38, top: 23, bottom: 23),
       child: GridView.builder(
+        shrinkWrap: true,
         itemCount: contactsUsers.length,
+        physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             //横轴元素个数
             crossAxisCount: 2,

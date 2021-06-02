@@ -16,21 +16,9 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
-class SplashManager extends ChangeNotifier {
-  String? _userInfoData;
-  String _token = '';
-
+class ContactsManager extends ChangeNotifier {
   /// 初始化
   init() {}
-
-  goto() {
-    _userInfoData = SP.getString(SPKey.userInfo);
-    if (_userInfoData != null) {
-      _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    }
-    Future.delayed(Duration.zero,
-        () => Routers.navigateReplace(_token == '' ? '/login' : '/'));
-  }
 
   @override
   void dispose() {

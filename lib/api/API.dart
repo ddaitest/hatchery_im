@@ -34,17 +34,21 @@ class API {
     baseUrl: Flavors.apiInfo.API_HOST,
     connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
     receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
-    // headers: {"Authorization": Flavors.apiInfo.BASIC_AUTH},
-    queryParameters: commonParam(),
+    headers: {"BEE_token": _checkToken()},
+    queryParameters: commonParamMap,
   )).initWrapper();
 
   static bool skipCheck = false;
+  static String? _userInfoData;
+  static String _token = '';
+  static Map<String, dynamic> commonParamMap = DeviceInfo.info;
 
-  static commonParam() {
-    Map<String, dynamic> commonParamMap = DeviceInfo.info;
-    // String? token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    // if (token != null) commonParamMap.putIfAbsent("token", () => token);
-    return commonParamMap;
+  static _checkToken() {
+    _userInfoData = SP.getString(SPKey.userInfo);
+    if (_userInfoData != null) {
+      _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    }
+    return _token;
   }
 
   static init() {
@@ -68,7 +72,7 @@ class API {
     String email,
     String address,
   ) async {
-    Map<String, dynamic> body = {
+    Map<String, String> body = {
       "loginName": loginName,
       "nickName": nickName,
       "icon": avatar,
@@ -93,7 +97,7 @@ class API {
     String loginName,
     String password,
   ) async {
-    Map<String, dynamic> body = {
+    Map<String, String> body = {
       "loginName": loginName,
       "password": password,
     };
@@ -103,35 +107,21 @@ class API {
     return ApiResult.of(response.data);
   }
 
-  ///上传图片
-  static Future<ApiResult> uploadImage(
-      String filePath, ProgressCallback callback) async {
+  ///获取好友列表
+  static Future<ApiResult> getFriendsData(
+    int current,
+    int status, {
+    int size = 999,
+  }) async {
+    Map<String, int> queryParam = {
+      "size": size,
+      "current": current,
+      "status": status
+    };
     init();
-    var name =
-        filePath.substring(filePath.lastIndexOf("/") + 1, filePath.length);
-    var suffix = name.substring(name.lastIndexOf(".") + 1, name.length);
-
-    FormData formData = FormData.fromMap({
-      "file": MultipartFile.fromFileSync(filePath, filename: name),
-    });
-    print(
-        "DDAI name=$name; suffix=$suffix; filePath=$filePath; formData=$formData");
-    print(
-        "DDAI formData.files.first.value.length=${formData.files.first.value.length}");
-    try {
-      Response response = await _dio.post("/resources/files/upload",
-          data: formData, onSendProgress: (a, b) {
-        print("send >>> $a/$b");
-        callback(a, b);
-      }, onReceiveProgress: (a, b) {
-        print("receive <<< $a/$b");
-      });
-
-      return ApiResult.of(response.data);
-    } catch (e) {
-      print("e = $e");
-      return ApiResult.error(e);
-    }
+    Response response =
+        await _dio.post("/users/login", queryParameters: queryParam);
+    return ApiResult.of(response.data);
   }
 }
 
@@ -141,17 +131,12 @@ class API_UPLOAD {
     connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
     receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
     // headers: {"Authorization": Flavors.apiInfo.BASIC_AUTH},
-    queryParameters: commonParam(),
+    queryParameters: commonParamMap,
   )).initWrapper();
 
   static bool skipCheck = false;
 
-  static commonParam() {
-    Map<String, dynamic> commonParamMap = DeviceInfo.info;
-    // String? token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    // if (token != null) commonParamMap.putIfAbsent("token", () => token);
-    return commonParamMap;
-  }
+  static Map<String, dynamic> commonParamMap = DeviceInfo.info;
 
   static init() {
     if (!skipCheck) {

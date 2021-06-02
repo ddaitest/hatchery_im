@@ -32,16 +32,18 @@ class GroupListItem extends StatelessWidget {
               borderRadius: BorderRadius.circular((4.0))),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
-                  padding: const EdgeInsets.only(left: 42, right: 42),
+                  padding:
+                      const EdgeInsets.only(left: 42.0, right: 42.0, top: 20.0),
                   child: CircleAvatar(
                     backgroundImage: AssetImage(mainImageUrl!),
                     maxRadius: 33,
                   )),
               Container(
-                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 8.5, bottom: 8.5),
                   child: Text(groupName!,
                       style: Flavors.textStyles.groupMainName,
                       maxLines: 1,
@@ -50,24 +52,37 @@ class GroupListItem extends StatelessWidget {
                   style: Flavors.textStyles.groupMembersNumberText),
               Expanded(
                   child: Container(
-                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           CircleAvatar(
                             backgroundImage:
                                 AssetImage(groupMembersImageUrl![0]),
-                            maxRadius: 10,
+                            maxRadius: 12,
                           ),
                           CircleAvatar(
                             backgroundImage:
                                 AssetImage(groupMembersImageUrl![1]),
-                            maxRadius: 10,
+                            maxRadius: 12,
                           ),
                           CircleAvatar(
                             backgroundImage:
                                 AssetImage(groupMembersImageUrl![2]),
-                            maxRadius: 10,
+                            maxRadius: 12,
+                          ),
+                          CircleAvatar(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white70,
+                              ),
+                              child: Center(
+                                  child: Text('+${membersNumber! - 3}',
+                                      style: Flavors
+                                          .textStyles.groupMembersMoreText)),
+                            ),
+                            maxRadius: 12,
                           ),
                         ],
                       )))
