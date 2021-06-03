@@ -25,7 +25,6 @@ class ChatUsersListItem extends StatefulWidget {
 class _ChatUsersListState extends State<ChatUsersListItem> {
   @override
   void initState() {
-    print('token ${jsonDecode(SP.getString(SPKey.userInfo))['token']}');
     super.initState();
   }
 
