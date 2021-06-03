@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class ApiResult {
   int code = 0;
   String info = "";
@@ -24,8 +26,14 @@ class ApiResult {
     return parsed['result'];
   }
 
-  List<O> getDataList<O, I>(O function(Map<String, dynamic> value)) {
-    var data = getData();
+  List<O> getDataList<O, I>(O function(Map<String, dynamic> value),
+      {int type = 0}) {
+    var data;
+    if (type != 0) {
+      data = getData()['datas'];
+    } else {
+      data = getData();
+    }
     if (data == null) {
       return <O>[];
     } else {

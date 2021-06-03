@@ -7,7 +7,7 @@ import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +17,26 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class ContactsManager extends ChangeNotifier {
+  //联系人列表 数据
+  List<Friends> friendsList = [];
+
   /// 初始化
-  init() {}
+  init() {
+    _queryFriendsRes();
+  }
+
+  _queryFriendsRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getFriendsListData(size, current).then((value) {
+      if (value.isSuccess()) {
+        friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
+        print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
+        notifyListeners();
+      }
+    });
+  }
 
   @override
   void dispose() {

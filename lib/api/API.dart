@@ -11,7 +11,7 @@ extension ExtendedDio on Dio {
     InterceptorsWrapper wrapper =
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.uri} ');
-      print('HTTP.onRequest: ${options.data} ');
+      print('HTTP.onRequest headers: ${options.headers} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
       print(
@@ -34,7 +34,7 @@ class API {
     baseUrl: Flavors.apiInfo.API_HOST,
     connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
     receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
-    headers: {"BEE_token": _checkToken()},
+    headers: {"BEE_TOKEN": _token},
     queryParameters: commonParamMap,
   )).initWrapper();
 
@@ -52,6 +52,7 @@ class API {
   }
 
   static init() {
+    _checkToken();
     if (!skipCheck) {
       isNetworkConnect().then((value) {
         if (!value) {
@@ -108,19 +109,17 @@ class API {
   }
 
   ///获取好友列表
-  static Future<ApiResult> getFriendsData(
+  static Future<ApiResult> getFriendsListData(
+    int size,
     int current,
-    int status, {
-    int size = 999,
-  }) async {
+  ) async {
     Map<String, int> queryParam = {
       "size": size,
       "current": current,
-      "status": status
     };
     init();
     Response response =
-        await _dio.post("/users/login", queryParameters: queryParam);
+        await _dio.get("/roster/page", queryParameters: queryParam);
     return ApiResult.of(response.data);
   }
 }

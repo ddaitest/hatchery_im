@@ -6,6 +6,9 @@ import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
 import 'package:hatchery_im/common/widget/contacts/groupListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
+import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:provider/provider.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -15,55 +18,32 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsState extends State<ContactsPage>
     with SingleTickerProviderStateMixin {
-  final Map<String, String> nameInfo = {
-    "Jane Russel": "1",
-    "Glady's Murphy": "2",
-    "Jorge Henry": "3",
-    "Jorge Henry": "4",
-    "Philip Fox": "5",
-    "Jacob Pena": "6",
-    "Philip Fox": "7",
-    "Debra Hawkins": "8",
-    "Jane Russel": "1",
-    "Glady's Murphy": "2",
-    "Jorge Henry": "3",
-    "Jorge Henry": "4",
-    "Philip Fox": "5",
-    "Jacob Pena": "6",
-    "Philip Fox": "7",
-    "Debra Hawkins": "8"
-  };
-  final List<ContactsUsers> contactsUsers = [];
-
+  ContactsManager _contactsManager = ContactsManager();
   void initState() {
+    _contactsManager.init();
     super.initState();
   }
 
   @override
   void dispose() {
-    nameInfo.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    nameInfo.forEach((key, value) {
-      contactsUsers.add(ContactsUsers(
-        text: key,
-        image: "images/userImage$value.jpeg",
-      ));
-    });
     return Scaffold(
-      appBar: AppBarFactory.getMain("联系人(${contactsUsers.length})", actions: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Icon(
-            Icons.person_add,
-            color: Colors.black,
-            size: 30,
-          ),
-        ),
-      ]),
+      appBar: AppBarFactory.getMain(
+          "联系人(${_contactsManager.friendsList.length})",
+          actions: [
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Icon(
+                Icons.person_add,
+                color: Colors.black,
+                size: 30,
+              ),
+            ),
+          ]),
       backgroundColor: Colors.white,
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -77,16 +57,16 @@ class _ContactsState extends State<ContactsPage>
   }
 
   _contactsListView() {
-    return ListView.builder(
-      itemCount: contactsUsers.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return ContactsUsersListItem(
-          text: contactsUsers[index].text,
-          image: contactsUsers[index].image,
-        );
+    return Selector<ContactsManager, List<Friends>>(
+      builder: (BuildContext context, List<Friends> value, Widget? child) {
+        print("DEBUG=> _FriendsView 重绘了。。。。。");
+        return ContactsUsersListItem(value);
       },
+      selector: (BuildContext context, ContactsManager contactsManager) {
+        return contactsManager.friendsList;
+      },
+      shouldRebuild: (pre, next) =>
+          ((pre != next) || (pre.length != next.length)),
     );
   }
 }
