@@ -9,6 +9,7 @@ import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -18,9 +19,9 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsState extends State<ContactsPage>
     with SingleTickerProviderStateMixin {
-  ContactsManager _contactsManager = ContactsManager();
+  final manager = App.manager<ContactsManager>();
   void initState() {
-    _contactsManager.init();
+    manager.init();
     super.initState();
   }
 
@@ -32,18 +33,17 @@ class _ContactsState extends State<ContactsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarFactory.getMain(
-          "联系人(${_contactsManager.friendsList.length})",
-          actions: [
-            Container(
-              padding: const EdgeInsets.all(16.0),
-              child: Icon(
-                Icons.person_add,
-                color: Colors.black,
-                size: 30,
-              ),
-            ),
-          ]),
+      appBar:
+          AppBarFactory.getMain("联系人(${manager.friendsList.length})", actions: [
+        Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Icon(
+            Icons.person_add,
+            color: Colors.black,
+            size: 30,
+          ),
+        ),
+      ]),
       backgroundColor: Colors.white,
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),

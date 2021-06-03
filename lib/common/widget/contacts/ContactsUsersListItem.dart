@@ -1,6 +1,7 @@
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ContactsUsersListItem extends StatelessWidget {
@@ -28,7 +29,8 @@ class ContactsUsersListItem extends StatelessWidget {
                   child: Row(
                     children: <Widget>[
                       CircleAvatar(
-                        backgroundImage: AssetImage(friendsLists[0].icon),
+                        backgroundImage: CachedNetworkImageProvider(
+                            friendsLists[index].icon),
                         maxRadius: 20,
                       ),
                       SizedBox(

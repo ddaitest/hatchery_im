@@ -10,6 +10,7 @@ import 'package:hatchery_im/manager/appManager.dart';
 import 'package:hatchery_im/manager/splashManager.dart';
 import 'package:hatchery_im/manager/loginManager.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
+import 'package:hatchery_im/manager/contactsManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SplashManager()),
         ChangeNotifierProvider(create: (_) => LoginManager()),
         ChangeNotifierProvider(create: (_) => RegisterManager()),
+        ChangeNotifierProvider(create: (_) => ContactsManager()),
       ],
       child: MyApp(),
     ),
