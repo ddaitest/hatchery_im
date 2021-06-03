@@ -25,6 +25,7 @@ class GroupListItem extends StatelessWidget {
         },
         child: Container(
           width: 150.0.w,
+          padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
           decoration: BoxDecoration(
               border:
                   Border.all(color: Color.fromRGBO(236, 240, 250, 1), width: 1),

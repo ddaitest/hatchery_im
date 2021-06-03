@@ -64,7 +64,7 @@ class _GroupPageState extends State<GroupPage>
           ),
         ),
       ]),
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -78,7 +78,7 @@ class _GroupPageState extends State<GroupPage>
 
   _groupListView() {
     return Container(
-      padding: const EdgeInsets.only(left: 38, right: 38, top: 23, bottom: 23),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
       child: GridView.builder(
         shrinkWrap: true,
         itemCount: contactsUsers.length,
@@ -87,9 +87,9 @@ class _GroupPageState extends State<GroupPage>
             //横轴元素个数
             crossAxisCount: 2,
             //纵轴间距
-            mainAxisSpacing: 20.0,
+            mainAxisSpacing: 16.0,
             //横轴间距
-            crossAxisSpacing: 38.0,
+            crossAxisSpacing: 16.0,
             //子组件宽高长度比例
             childAspectRatio: 150 / 190),
         itemBuilder: (context, index) {

@@ -33,8 +33,7 @@ class _ContactsState extends State<ContactsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBarFactory.getMain("联系人(${manager.friendsList.length})", actions: [
+      appBar: AppBarFactory.getMain("联系人", actions: [
         Container(
           padding: const EdgeInsets.all(16.0),
           child: Icon(
@@ -44,13 +43,48 @@ class _ContactsState extends State<ContactsPage>
           ),
         ),
       ]),
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         children: <Widget>[
           SearchBarView(),
+          _newFriendsView(),
+          SizedBox(
+            height: 16.0.w,
+          ),
           _contactsListView(),
+        ],
+      ),
+    );
+  }
+
+  _newFriendsView() {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundImage: AssetImage('images/new_friends.png'),
+                  maxRadius: 20,
+                ),
+                SizedBox(
+                  width: 16.0.w,
+                ),
+                Container(
+                  color: Colors.transparent,
+                  child: Text(
+                    '新的朋友',
+                    style: Flavors.textStyles.friendsText,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

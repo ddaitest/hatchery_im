@@ -1,5 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/common/tools.dart';
 
 class ChatUsersListItem extends StatefulWidget {
   final String? text;
@@ -19,6 +24,12 @@ class ChatUsersListItem extends StatefulWidget {
 
 class _ChatUsersListState extends State<ChatUsersListItem> {
   @override
+  void initState() {
+    print('token ${jsonDecode(SP.getString(SPKey.userInfo))['token']}');
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -27,7 +38,8 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
         }));
       },
       child: Container(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+        color: Colors.white,
+        padding: EdgeInsets.only(left: 16, right: 16, top: 15, bottom: 10),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -52,8 +64,7 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
                           ),
                           Text(
                             widget.secondaryText!,
-                            style: TextStyle(
-                                fontSize: 14, color: Colors.grey.shade500),
+                            style: Flavors.textStyles.groupMembersNumberText,
                           ),
                         ],
                       ),

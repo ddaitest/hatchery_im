@@ -55,13 +55,13 @@ class TextStyles {
   final TextStyle groupMainName = TextStyle(
       fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
-  final TextStyle groupMembersNumberText = TextStyle(
-      fontSize: 14.0.sp,
-      fontWeight: FontWeight.w400,
-      color: ColorInfo().subtitleColor);
+  final TextStyle groupMembersNumberText =
+      TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
 
   final TextStyle groupMembersMoreText = TextStyle(
-      fontSize: 10.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+      fontSize: 9.0.sp,
+      fontWeight: FontWeight.w500,
+      color: ColorInfo().mainTextColor);
 
   final TextStyle loginNormalText = TextStyle(
     fontSize: 14.0.sp,
@@ -88,6 +88,9 @@ class TextStyles {
       fontSize: 18.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().btnTextColor);
+
+  final TextStyle friendsText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
 }
 
 class SizesInfo {
@@ -102,9 +105,10 @@ class ColorInfo {
   final mainColor = const Color(0xFF478DE0);
   final mainTextColor = Colors.white;
   final mainBackGroundColor = Colors.white;
+  final dividerColor = Colors.black12;
   get btnTextColor => mainColor;
   final diver = Colors.black87;
-  final subtitleColor = Colors.white54;
+  final subtitleColor = Colors.grey.shade500;
   get homeTabSelected => mainColor;
   get homeTabUnSelected => diver;
 }

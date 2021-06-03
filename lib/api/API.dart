@@ -4,6 +4,7 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'ApiResult.dart';
+import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/config.dart';
 
 extension ExtendedDio on Dio {
@@ -11,11 +12,16 @@ extension ExtendedDio on Dio {
     InterceptorsWrapper wrapper =
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.uri} ');
-      print('HTTP.onRequest headers: ${options.headers} ');
+      print('HTTP.headers: ${options.headers} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
       print(
           'HTTP.onResponse: statusCode = ${response.statusCode} ;data = ${response.data} ');
+      if (response.statusCode == 403) {
+        showToast('请重新登录');
+        SP.delete(SPKey.userInfo);
+        Routers.navigateReplace('/login');
+      }
       return handler.next(response); // continue
     }, onError: (DioError e, handler) {
       print('HTTP.onError: = ${e.message} ');
@@ -34,7 +40,6 @@ class API {
     baseUrl: Flavors.apiInfo.API_HOST,
     connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
     receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
-    headers: {"BEE_TOKEN": _token},
     queryParameters: commonParamMap,
   )).initWrapper();
 
@@ -103,9 +108,14 @@ class API {
       "password": password,
     };
     init();
-    Response response =
-        await _dio.post("/users/login", data: json.encode(body));
-    return ApiResult.of(response.data);
+    try {
+      Response response =
+          await _dio.post("/users/login", data: json.encode(body));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
   }
 
   ///获取好友列表
@@ -118,9 +128,17 @@ class API {
       "current": current,
     };
     init();
-    Response response =
-        await _dio.get("/roster/page", queryParameters: queryParam);
-    return ApiResult.of(response.data);
+    try {
+      Response response = await _dio.get("/roster/page",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
   }
 }
 

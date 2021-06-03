@@ -47,7 +47,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => MaterialApp(
-        title: 'Flutter Demo',
         navigatorKey: App.navState,
         theme: ThemeData(
           textTheme: GoogleFonts.notoSansTextTheme(),

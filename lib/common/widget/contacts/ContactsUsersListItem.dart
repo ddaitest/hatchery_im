@@ -3,6 +3,8 @@ import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/common/widget/loading_view.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 
 class ContactsUsersListItem extends StatelessWidget {
   final List<Friends> friendsLists;
@@ -11,7 +13,7 @@ class ContactsUsersListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: friendsLists.length,
+      itemCount: friendsLists.isNotEmpty ? friendsLists.length : 10,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
@@ -22,35 +24,51 @@ class ContactsUsersListItem extends StatelessWidget {
             }));
           },
           child: Container(
+            color: Colors.white,
             padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
             child: Row(
               children: <Widget>[
                 Expanded(
                   child: Row(
                     children: <Widget>[
-                      CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(
-                            friendsLists[index].icon),
-                        maxRadius: 20,
-                      ),
+                      friendsLists.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: friendsLists[index].icon,
+                              placeholder: (context, url) => CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('images/default_avatar.png'),
+                                    maxRadius: 20,
+                                  ),
+                              errorWidget: (context, url, error) =>
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('images/default_avatar.png'),
+                                    maxRadius: 20,
+                                  ),
+                              imageBuilder: (context, imageProvider) {
+                                return CircleAvatar(
+                                  backgroundImage: imageProvider,
+                                  maxRadius: 20,
+                                );
+                              })
+                          : CircleAvatar(
+                              backgroundImage:
+                                  AssetImage('images/default_avatar.png'),
+                              maxRadius: 20,
+                            ),
                       SizedBox(
                         width: 16.0.w,
                       ),
-                      Expanded(
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(friendsLists[index].remarks != null
-                                  ? friendsLists[index].remarks!
-                                  : friendsLists[index].nickName),
-                              SizedBox(
-                                height: 6.0.h,
-                              ),
-                            ],
-                          ),
-                        ),
+                      Container(
+                        color: Colors.transparent,
+                        child: friendsLists.isNotEmpty
+                            ? Text(
+                                friendsLists[index].remarks != null
+                                    ? friendsLists[index].remarks!
+                                    : friendsLists[index].nickName,
+                                style: Flavors.textStyles.friendsText,
+                              )
+                            : LoadingView(),
                       ),
                     ],
                   ),

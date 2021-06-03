@@ -11,7 +11,7 @@ class AppBarFactory {
             fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: false,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       brightness: Brightness.light,
       elevation: 0.0,
       automaticallyImplyLeading: false,
@@ -27,10 +27,10 @@ class AppBarFactory {
             fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       brightness: Brightness.light,
       automaticallyImplyLeading: true,
-      elevation: 0.5,
+      elevation: 0.0,
     );
   }
 
