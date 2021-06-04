@@ -56,16 +56,6 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarFactory.getMain('消息列表(10)', actions: [
-        Container(
-          padding: const EdgeInsets.only(right: 16),
-          child: Icon(
-            Icons.more_vert,
-            color: Colors.black,
-            size: 30,
-          ),
-        ),
-      ]),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(

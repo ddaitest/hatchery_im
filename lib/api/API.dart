@@ -140,6 +140,29 @@ class API {
       return ApiResult.error(e);
     }
   }
+
+  ///获取群列表
+  static Future<ApiResult> getGroupListData(
+    int size,
+    int current,
+  ) async {
+    Map<String, int> queryParam = {
+      "size": size,
+      "current": current,
+    };
+    init();
+    try {
+      Response response = await _dio.get("/groups/page",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
 }
 
 class API_UPLOAD {

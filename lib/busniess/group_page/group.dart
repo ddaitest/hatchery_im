@@ -54,17 +54,6 @@ class _GroupPageState extends State<GroupPage>
       ));
     });
     return Scaffold(
-      appBar: AppBarFactory.getMain("群组(${contactsUsers.length})", actions: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Icon(
-            Icons.group_add,
-            color: Colors.black,
-            size: 30,
-          ),
-        ),
-      ]),
-      // backgroundColor: Colors.white,
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,

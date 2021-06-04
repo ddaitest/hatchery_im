@@ -33,17 +33,6 @@ class _ContactsState extends State<ContactsPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarFactory.getMain("联系人", actions: [
-        Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Icon(
-            Icons.person_add,
-            color: Colors.black,
-            size: 30,
-          ),
-        ),
-      ]),
-      // backgroundColor: Colors.white,
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,

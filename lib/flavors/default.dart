@@ -91,6 +91,18 @@ class TextStyles {
 
   final TextStyle friendsText = TextStyle(
       fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
+
+  final TextStyle meNickNameText = TextStyle(
+      fontSize: 19.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+
+  final TextStyle meNotesText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w300, color: ColorInfo().diver);
+
+  final TextStyle meListTitleText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
+
+  final TextStyle meListSettingText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w300, color: ColorInfo().diver);
 }
 
 class SizesInfo {

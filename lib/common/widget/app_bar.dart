@@ -45,11 +45,11 @@ class AppBarFactory {
             fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: true,
-      backgroundColor: backGroundColor,
+      backgroundColor: Colors.transparent,
       brightness: Brightness.light,
       elevation: 0.0,
       leading: IconButton(
-        icon: Icon(Icons.arrow_back, size: 30.0, color: backBtnColor),
+        icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
         onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
       ),
       automaticallyImplyLeading: false,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/chat_home/chat_page.dart';
 import 'package:hatchery_im/busniess/contacts/contacts_page.dart';
 import 'package:hatchery_im/busniess/group_page/group.dart';
+import 'package:hatchery_im/busniess/profile_page/my_profile.dart';
+import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/log.dart';
 import '../config.dart';
 import '../routers.dart';
@@ -28,11 +30,14 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     ChatPage(),
     ContactsPage(),
     GroupPage(),
-    ChatPage()
+    MyProfilePage()
   ];
 
   var _pageController = PageController();
   int _tabIndex = 0;
+
+  String title = '';
+  IconData? appBarActionsIcon;
 
   @override
   void initState() {
@@ -45,6 +50,31 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       });
     });
     super.initState();
+  }
+
+  _setAppBarInfo() {
+    switch (_tabIndex) {
+      case 0:
+        title = '消息列表';
+        appBarActionsIcon = Icons.more_vert;
+        break;
+      case 1:
+        title = '联系人';
+        appBarActionsIcon = Icons.person_add;
+        break;
+      case 2:
+        title = '群组';
+        appBarActionsIcon = Icons.group_add;
+        break;
+      case 3:
+        title = '我的';
+        appBarActionsIcon = null;
+        break;
+      default:
+        title = '';
+        appBarActionsIcon = null;
+        break;
+    }
   }
 
   @override
@@ -71,6 +101,16 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        appBar: AppBarFactory.getMain(title, actions: [
+          Container(
+            padding: const EdgeInsets.only(right: 16),
+            child: Icon(
+              appBarActionsIcon,
+              color: Colors.black,
+              size: 30,
+            ),
+          ),
+        ]),
         body: SafeArea(
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),
@@ -81,7 +121,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             // },
           ),
         ),
-        backgroundColor: Colors.white,
         bottomNavigationBar: BottomNavigationBar(
           // selectedLabelStyle: Flavors.textStyles.tabBarTextSelected,
           // unselectedLabelStyle: Flavors.textStyles.tabBarTextUnSelected,
@@ -100,6 +139,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     setState(() {
       Log.log("DEBUG=>$index", color: LColor.RED);
       _tabIndex = index;
+      _setAppBarInfo();
       _pageController.jumpToPage(index);
     });
   }

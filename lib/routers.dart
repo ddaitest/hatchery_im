@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'package:hatchery_im/busniess/login/register_page.dart';
 import 'package:hatchery_im/busniess/login/register_page_detail.dart';
+import 'package:hatchery_im/busniess/profile_page/profile_edit_page.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
@@ -19,8 +20,8 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
-      // case '/register_detail':
-      //   return MaterialPageRoute(builder: (_) => RegisterPageDetail());
+      case '/profile_edit':
+        return MaterialPageRoute(builder: (_) => ProfileEditPage());
 
       // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());
