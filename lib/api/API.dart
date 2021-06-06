@@ -163,6 +163,31 @@ class API {
       return ApiResult.error(e);
     }
   }
+
+  ///创建群组
+  static Future<ApiResult> createNewGroup(
+    String groupName,
+    String groupDescription,
+    String groupIcon,
+    String notes,
+    List<dynamic> members,
+  ) async {
+    Map<String, dynamic> body = {
+      "groupName": groupName,
+      "groupDescription": groupDescription,
+      "groupIcon": groupIcon,
+      "notes": notes,
+      "members": members,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/create", data: body);
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
 }
 
 class API_UPLOAD {

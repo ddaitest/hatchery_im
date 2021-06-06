@@ -5,6 +5,7 @@ import 'package:hatchery_im/busniess/group_page/group.dart';
 import 'package:hatchery_im/busniess/profile_page/my_profile.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/routers.dart';
 import '../config.dart';
 import '../routers.dart';
 
@@ -35,9 +36,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   var _pageController = PageController();
   int _tabIndex = 0;
-
-  String title = '';
-  IconData? appBarActionsIcon;
+  String title = '消息列表';
+  IconData? appBarActionsIcon = Icons.more_vert;
 
   @override
   void initState() {
@@ -71,8 +71,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
         appBarActionsIcon = null;
         break;
       default:
-        title = '';
-        appBarActionsIcon = null;
+        title = '消息列表';
+        appBarActionsIcon = Icons.more_vert;
         break;
     }
   }
@@ -103,11 +103,12 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       child: Scaffold(
         appBar: AppBarFactory.getMain(title, actions: [
           Container(
-            padding: const EdgeInsets.only(right: 16),
-            child: Icon(
-              appBarActionsIcon,
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(
+              onPressed: () => Routers.navigateTo('/create_group'),
+              icon: Icon(appBarActionsIcon),
               color: Colors.black,
-              size: 30,
+              iconSize: 30,
             ),
           ),
         ]),

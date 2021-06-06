@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
-import 'package:hatchery_im/common/widget/contacts/groupListItem.dart';
+import 'package:hatchery_im/common/widget/groups/groupListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';

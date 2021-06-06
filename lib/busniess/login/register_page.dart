@@ -23,7 +23,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class RegisterPageState extends State<RegisterPage> {
-  RegisterManager _registerManager = RegisterManager();
+  final manager = App.manager<RegisterManager>();
   File _imageFile = File('');
   final _cropKey = GlobalKey<CropState>();
 
@@ -67,7 +67,7 @@ class RegisterPageState extends State<RegisterPage> {
                       vertical: 20.0,
                     ),
                     child: Form(
-                      key: _registerManager.registerInputKey,
+                      key: manager.registerInputKey,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -83,12 +83,12 @@ class RegisterPageState extends State<RegisterPage> {
                             style: Flavors.textStyles.loginNormalText,
                           ),
                           SizedBox(height: 20.0.h),
-                          _buildAccountTF(_registerManager),
+                          _buildAccountTF(manager),
                           SizedBox(height: 10.0.h),
-                          _buildNickNameTF(_registerManager),
+                          _buildNickNameTF(manager),
                           SizedBox(height: 10.0.h),
-                          _buildPasswordTF(_registerManager),
-                          _buildNextBtn(_registerManager),
+                          _buildPasswordTF(manager),
+                          _buildNextBtn(manager),
                           _buildSignInBtn(),
                         ],
                       ),

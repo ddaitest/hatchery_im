@@ -1,12 +1,16 @@
+import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
-import 'package:hatchery_im/common/widget/contacts/groupListItem.dart';
+import 'package:hatchery_im/common/widget/groups/groupListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/manager/groupsManager.dart';
+import 'package:provider/provider.dart';
 
 class GroupPage extends StatefulWidget {
   @override
@@ -34,8 +38,10 @@ class _GroupPageState extends State<GroupPage>
     "Debra Hawkins": "8"
   };
   final List<ContactsUsers> contactsUsers = [];
+  final manager = App.manager<GroupsManager>();
 
   void initState() {
+    manager.init();
     super.initState();
   }
 
@@ -65,35 +71,19 @@ class _GroupPageState extends State<GroupPage>
     );
   }
 
-  _groupListView() {
-    return Container(
-      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
-      child: GridView.builder(
-        shrinkWrap: true,
-        itemCount: contactsUsers.length,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            //横轴元素个数
-            crossAxisCount: 2,
-            //纵轴间距
-            mainAxisSpacing: 16.0,
-            //横轴间距
-            crossAxisSpacing: 16.0,
-            //子组件宽高长度比例
-            childAspectRatio: 150 / 190),
-        itemBuilder: (context, index) {
-          return GroupListItem(
-            mainImageUrl: 'images/userImage2.jpeg',
-            groupName: '印度基友群',
-            groupMembersImageUrl: [
-              'images/userImage1.jpeg',
-              'images/userImage2.jpeg',
-              'images/userImage3.jpeg'
-            ],
-            membersNumber: 20,
-          );
-        },
-      ),
+  Widget _groupListView() {
+    return Selector<GroupsManager, List<Groups>>(
+      builder: (BuildContext context, List<Groups> value, Widget? child) {
+        print("DEBUG=> _FriendsView 重绘了。。。。。");
+        return Container(
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+            child: GroupListItem(value));
+      },
+      selector: (BuildContext context, GroupsManager groupsManager) {
+        return groupsManager.groupsList;
+      },
+      shouldRebuild: (pre, next) =>
+          ((pre != next) || (pre.length != next.length)),
     );
   }
 }

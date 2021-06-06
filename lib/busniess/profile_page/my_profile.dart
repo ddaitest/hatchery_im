@@ -48,7 +48,7 @@ class MyProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: 50.0.h,
+              // height: 50.0.h,
               // padding: const EdgeInsets.only(top: 20.0, left: 6.0, right: 6.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
