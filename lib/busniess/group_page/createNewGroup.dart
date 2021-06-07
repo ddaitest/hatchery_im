@@ -6,11 +6,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 
 class CreateNewGroupPage extends StatefulWidget {
   @override
@@ -26,19 +27,19 @@ class _CreateNewGroupState extends State<CreateNewGroupPage> {
 
   _bodyContainer() {
     return Scaffold(
+        appBar: AppBarFactory.backButton('创建群组'),
         body: SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: <Widget>[
-          _groupAvatarView(),
-          _groupSettingView(),
-          Container(
-            height: 20.0.h,
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: <Widget>[
+              _topView(),
+              Container(
+                height: 20.0.h,
+              ),
+              // _middleView()
+            ],
           ),
-          // _middleView()
-        ],
-      ),
-    ));
+        ));
   }
 
   Widget _groupAvatarView() {
@@ -63,15 +64,16 @@ class _CreateNewGroupState extends State<CreateNewGroupPage> {
   }
 
   Widget _topView() {
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        _groupSettingView(),
-        Positioned(
-          bottom: 300.0,
-          child: _groupAvatarView(),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.only(top: 150),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.topCenter,
+        children: [
+          _groupSettingView(),
+          Positioned(top: -150.0, child: _groupAvatarView())
+        ],
+      ),
     );
   }
 
