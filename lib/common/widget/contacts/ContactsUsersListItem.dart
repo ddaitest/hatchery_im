@@ -26,54 +26,49 @@ class ContactsUsersListItem extends StatelessWidget {
           child: Container(
             color: Colors.white,
             padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      friendsLists.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: friendsLists[index].icon,
-                              placeholder: (context, url) => CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('images/default_avatar.png'),
-                                    maxRadius: 20,
-                                  ),
-                              errorWidget: (context, url, error) =>
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('images/default_avatar.png'),
-                                    maxRadius: 20,
-                                  ),
-                              imageBuilder: (context, imageProvider) {
-                                return CircleAvatar(
-                                  backgroundImage: imageProvider,
-                                  maxRadius: 20,
-                                );
-                              })
-                          : CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('images/default_avatar.png'),
+            child: Expanded(
+              child: Row(
+                children: <Widget>[
+                  friendsLists.isNotEmpty
+                      ? CachedNetworkImage(
+                          imageUrl: friendsLists[index].icon,
+                          placeholder: (context, url) => CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('images/default_avatar.png'),
+                                maxRadius: 20,
+                              ),
+                          errorWidget: (context, url, error) => CircleAvatar(
+                                backgroundImage:
+                                    AssetImage('images/default_avatar.png'),
+                                maxRadius: 20,
+                              ),
+                          imageBuilder: (context, imageProvider) {
+                            return CircleAvatar(
+                              backgroundImage: imageProvider,
                               maxRadius: 20,
-                            ),
-                      SizedBox(
-                        width: 16.0.w,
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        child: friendsLists.isNotEmpty
-                            ? Text(
-                                friendsLists[index].remarks != null
-                                    ? friendsLists[index].remarks!
-                                    : friendsLists[index].nickName,
-                                style: Flavors.textStyles.friendsText,
-                              )
-                            : LoadingView(),
-                      ),
-                    ],
+                            );
+                          })
+                      : CircleAvatar(
+                          backgroundImage:
+                              AssetImage('images/default_avatar.png'),
+                          maxRadius: 20,
+                        ),
+                  SizedBox(
+                    width: 16.0.w,
                   ),
-                ),
-              ],
+                  Container(
+                    color: Colors.transparent,
+                    child: friendsLists.isNotEmpty
+                        ? Text(
+                            friendsLists[index].remarks != null
+                                ? friendsLists[index].remarks!
+                                : friendsLists[index].nickName,
+                            style: Flavors.textStyles.friendsText,
+                          )
+                        : LoadingView(),
+                  ),
+                ],
+              ),
             ),
           ),
         );

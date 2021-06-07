@@ -20,6 +20,32 @@ class NewGroupsManager extends ChangeNotifier {
   String groupAvatarUrl = '';
   double uploadProgress = 0.0;
 
+  GlobalKey<FormState> settingInputKey = GlobalKey<FormState>();
+  TextEditingController groupNameController = TextEditingController();
+  TextEditingController groupNotesController = TextEditingController();
+  TextEditingController groupDescriptionController = TextEditingController();
+  //联系人列表 数据
+  List<Friends> friendsList = [];
+  List<String> selectFriendsList = [];
+
+  /// 初始化
+  init() {
+    _queryFriendsRes();
+  }
+
+  _queryFriendsRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getFriendsListData(size, current).then((value) {
+      if (value.isSuccess()) {
+        friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
+        print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
+        notifyListeners();
+      }
+    });
+  }
+
   // /// 初始化
   // init() {}
   //
@@ -55,6 +81,7 @@ class NewGroupsManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()}");
       Routers.navigateReplace('/login');
       showToast('创建群组成功');
+      groupAvatarUrl = '';
     } else {
       showToast('创建群组失败');
     }

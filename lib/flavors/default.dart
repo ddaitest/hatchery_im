@@ -103,6 +103,16 @@ class TextStyles {
 
   final TextStyle meListSettingText = TextStyle(
       fontSize: 15.0.sp, fontWeight: FontWeight.w300, color: ColorInfo().diver);
+
+  final TextStyle newGroupSettingTitleText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.normal,
+      color: ColorInfo().mainColor);
+
+  final TextStyle newGroupNextBtnText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().btnTextColor);
 }
 
 class SizesInfo {

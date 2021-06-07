@@ -5,6 +5,7 @@ import 'package:hatchery_im/busniess/login/register_page.dart';
 import 'package:hatchery_im/busniess/login/register_page_detail.dart';
 import 'package:hatchery_im/busniess/profile_page/profile_edit_page.dart';
 import 'package:hatchery_im/busniess/group_page/createNewGroup.dart';
+import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
@@ -24,7 +25,9 @@ class Routers {
       case '/profile_edit':
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
       case '/create_group':
-        return MaterialPageRoute(builder: (_) => CreateNewGroupPage());
+        return MaterialPageRoute(builder: (_) => NewGroupPage());
+      case '/create_group_detail':
+        return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
 
       // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());

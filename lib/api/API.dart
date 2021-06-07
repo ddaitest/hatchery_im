@@ -11,7 +11,7 @@ extension ExtendedDio on Dio {
   initWrapper() {
     InterceptorsWrapper wrapper =
         InterceptorsWrapper(onRequest: (options, handler) {
-      print('HTTP.onRequest: ${options.uri} ');
+      print('HTTP.onRequest: ${options.data} ');
       print('HTTP.headers: ${options.headers} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
@@ -181,7 +181,11 @@ class API {
     };
     init();
     try {
-      Response response = await _dio.post("/groups/create", data: body);
+      Response response = await _dio.post("/groups/create",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");

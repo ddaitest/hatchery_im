@@ -48,9 +48,12 @@ class AppBarFactory {
       backgroundColor: Colors.transparent,
       brightness: Brightness.light,
       elevation: 0.0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
-        onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
+      leading: Container(
+        padding: const EdgeInsets.all(6.0),
+        child: IconButton(
+          icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+          onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
+        ),
       ),
       automaticallyImplyLeading: false,
       actions: actions ?? [],
