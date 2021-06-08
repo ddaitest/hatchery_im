@@ -37,7 +37,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   var _pageController = PageController();
   int _tabIndex = 0;
   String title = '消息列表';
-  IconData? appBarActionsIcon = Icons.more_vert;
 
   @override
   void initState() {
@@ -56,23 +55,18 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     switch (_tabIndex) {
       case 0:
         title = '消息列表';
-        appBarActionsIcon = Icons.more_vert;
         break;
       case 1:
         title = '联系人';
-        appBarActionsIcon = Icons.person_add;
         break;
       case 2:
         title = '群组';
-        appBarActionsIcon = Icons.group_add;
         break;
       case 3:
         title = '我的';
-        appBarActionsIcon = null;
         break;
       default:
         title = '消息列表';
-        appBarActionsIcon = Icons.more_vert;
         break;
     }
   }
@@ -85,10 +79,10 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   void handleClick(String value) {
     switch (value) {
-      case '物业介绍':
+      case '添加好友':
         break;
-      case '商务合作':
-        // todo
+      case '创建群组':
+        Routers.navigateTo("/create_group");
         break;
       case '关于与帮助':
         Routers.navigateTo("/about");
@@ -102,14 +96,17 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBarFactory.getMain(title, actions: [
-          Container(
-            padding: const EdgeInsets.only(right: 10),
-            child: IconButton(
-              onPressed: () => Routers.navigateTo('/create_group'),
-              icon: Icon(appBarActionsIcon),
-              color: Colors.black,
-              iconSize: 30,
-            ),
+          PopupMenuButton<String>(
+            onSelected: handleClick,
+            icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
+            itemBuilder: (BuildContext context) {
+              return {'添加好友', '创建群组'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
           ),
         ]),
         body: SafeArea(

@@ -34,7 +34,8 @@ class RegisterPageState extends State<RegisterPage> {
 
   _bodyContainer() {
     return Scaffold(
-      appBar: AppBarFactory.backButton(''),
+      appBar: AppBarFactory.backButton('',
+          backGroundColor: const Color(0xFF73AEF5)),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(

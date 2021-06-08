@@ -55,7 +55,7 @@ class TextFormModel extends StatelessWidget {
               ),
               hintText: hintText,
               errorMaxLines: 1,
-              hintStyle: Flavors.textStyles.loginSubTitleText,
+              hintStyle: Flavors.textStyles.hintTextText,
             ),
           ),
         ),

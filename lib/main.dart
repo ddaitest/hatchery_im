@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         navigatorKey: App.navState,
         theme: ThemeData(
           textTheme: GoogleFonts.notoSansTextTheme(),
-          primarySwatch: Colors.blue,
+          // primarySwatch: Colors.blue,
         ),
         initialRoute: '/splash',
         onGenerateRoute: Routers.generateRoute,

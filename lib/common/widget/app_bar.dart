@@ -3,7 +3,8 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 
 class AppBarFactory {
-  static AppBar getMain(String title, {List<Widget>? actions}) {
+  static AppBar getMain(String title,
+      {Color backGroundColorList = Colors.transparent, List<Widget>? actions}) {
     return AppBar(
       title: Text(
         title,
@@ -11,7 +12,7 @@ class AppBarFactory {
             fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: false,
-      backgroundColor: Colors.transparent,
+      backgroundColor: backGroundColorList,
       brightness: Brightness.light,
       elevation: 0.0,
       automaticallyImplyLeading: false,
@@ -35,7 +36,7 @@ class AppBarFactory {
   }
 
   static AppBar backButton(String title,
-      {Color backGroundColor = const Color(0xFF73AEF5),
+      {Color backGroundColor = Colors.transparent,
       Color backBtnColor = Colors.white,
       List<Widget>? actions}) {
     return AppBar(
@@ -45,7 +46,7 @@ class AppBarFactory {
             fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: backGroundColor,
       brightness: Brightness.light,
       elevation: 0.0,
       leading: Container(

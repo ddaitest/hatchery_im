@@ -33,7 +33,7 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return ChatDetailPage();
+          return ChatDetailPage('', 'Jacob Pena');
         }));
       },
       child: Container(

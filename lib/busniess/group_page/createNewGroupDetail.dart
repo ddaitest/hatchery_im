@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:provider/provider.dart';
@@ -238,7 +239,7 @@ class NewGroupDetailPage extends StatelessWidget {
       manager.submit(groupName, groupDescription, grouopImageUrl, groupNotes,
           manager.selectFriendsList);
     } else {
-      showToast('群名称或群成员不能为空');
+      showToast('群名称或群成员不能为空', showGravity: ToastGravity.BOTTOM);
     }
   }
 }

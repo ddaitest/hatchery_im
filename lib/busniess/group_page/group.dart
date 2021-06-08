@@ -17,27 +17,7 @@ class GroupPage extends StatefulWidget {
   _GroupPageState createState() => _GroupPageState();
 }
 
-class _GroupPageState extends State<GroupPage>
-    with SingleTickerProviderStateMixin {
-  final Map<String, String> nameInfo = {
-    "Jane Russel": "1",
-    "Glady's Murphy": "2",
-    "Jorge Henry": "3",
-    "Jorge Henry": "4",
-    "Philip Fox": "5",
-    "Jacob Pena": "6",
-    "Philip Fox": "7",
-    "Debra Hawkins": "8",
-    "Jane Russel": "1",
-    "Glady's Murphy": "2",
-    "Jorge Henry": "3",
-    "Jorge Henry": "4",
-    "Philip Fox": "5",
-    "Jacob Pena": "6",
-    "Philip Fox": "7",
-    "Debra Hawkins": "8"
-  };
-  final List<ContactsUsers> contactsUsers = [];
+class _GroupPageState extends State<GroupPage> {
   final manager = App.manager<GroupsManager>();
 
   void initState() {
@@ -47,18 +27,11 @@ class _GroupPageState extends State<GroupPage>
 
   @override
   void dispose() {
-    nameInfo.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    nameInfo.forEach((key, value) {
-      contactsUsers.add(ContactsUsers(
-        text: key,
-        image: "images/userImage$value.jpeg",
-      ));
-    });
     return Scaffold(
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -74,7 +47,7 @@ class _GroupPageState extends State<GroupPage>
   Widget _groupListView() {
     return Selector<GroupsManager, List<Groups>>(
       builder: (BuildContext context, List<Groups> value, Widget? child) {
-        print("DEBUG=> _FriendsView 重绘了。。。。。");
+        print("DEBUG=> _groupListView 重绘了。。。。。");
         return Container(
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
             child: GroupListItem(value));

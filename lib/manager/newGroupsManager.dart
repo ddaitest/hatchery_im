@@ -10,6 +10,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/busniess/main_tab.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
@@ -79,9 +81,10 @@ class NewGroupsManager extends ChangeNotifier {
         groupName, groupDescription, groupIcon, notes, members);
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
-      Routers.navigateReplace('/login');
       showToast('创建群组成功');
       groupAvatarUrl = '';
+      Navigator.of(App.navState.currentContext!).pop();
+      Navigator.of(App.navState.currentContext!).pop();
     } else {
       showToast('创建群组失败');
     }

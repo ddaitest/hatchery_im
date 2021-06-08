@@ -13,27 +13,29 @@ class GroupListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return groupsLists.isNotEmpty
-        ? GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return ChatDetailPage();
-              }));
-            },
-            child: GridView.builder(
-                shrinkWrap: true,
-                itemCount: groupsLists.length,
-                physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    //横轴元素个数
-                    crossAxisCount: 2,
-                    //纵轴间距
-                    mainAxisSpacing: 16.0,
-                    //横轴间距
-                    crossAxisSpacing: 16.0,
-                    //子组件宽高长度比例
-                    childAspectRatio: 150 / 190),
-                itemBuilder: (context, index) {
-                  return Container(
+        ? GridView.builder(
+            shrinkWrap: true,
+            itemCount: groupsLists.length,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //横轴元素个数
+                crossAxisCount: 2,
+                //纵轴间距
+                mainAxisSpacing: 16.0,
+                //横轴间距
+                crossAxisSpacing: 16.0,
+                //子组件宽高长度比例
+                childAspectRatio: 150 / 190),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ChatDetailPage(groupsLists[index].group.icon,
+                          groupsLists[index].group.groupName);
+                    }));
+                  },
+                  child: Container(
                     width: 150.0.w,
                     padding: EdgeInsets.only(
                         left: 16, right: 16, top: 10, bottom: 10),
@@ -44,33 +46,33 @@ class GroupListItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular((4.0))),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         /// 群头像，没有头像则返回top3Members中的三个头像合集
-                        groupsLists[index].group.icon != ''
+                        groupsLists[index].group.icon != null
                             ? Container(
                                 padding: const EdgeInsets.only(
-                                    left: 42.0, right: 42.0, top: 20.0),
+                                    left: 32.0, right: 32.0, top: 10.0),
                                 child: _netWorkAvatar(
-                                    groupsLists[index].group.icon!, 33.0),
+                                    groupsLists[index].group.icon!, 40.0),
                               )
                             : Container(
                                 padding: const EdgeInsets.only(
-                                    left: 42.0, right: 42.0, top: 20.0),
+                                    left: 32.0, right: 32.0, top: 10.0),
                                 child: _noGroupAvatar(
                                     groupsLists[index].top3Members)),
 
                         /// 群名字
                         Container(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 8.5, bottom: 8.5),
+                            padding: const EdgeInsets.only(left: 10, right: 10),
                             child: Text(groupsLists[index].group.groupName!,
                                 style: Flavors.textStyles.groupMainName,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis)),
 
                         /// 群简介
-                        Text('${groupsLists[index].group.notes}',
+                        Text(
+                            '${groupsLists[index].group.groupDescription ?? ''}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Flavors.textStyles.groupMembersNumberText),
@@ -89,8 +91,8 @@ class GroupListItem extends StatelessWidget {
                                 )))
                       ],
                     ),
-                  );
-                }))
+                  ));
+            })
         : Container();
   }
 
@@ -141,29 +143,28 @@ class GroupListItem extends StatelessWidget {
 
   Widget _noGroupAvatar(List<GroupsTop3Members> top3Members) {
     return Container(
-      width: 66.0.w,
-      height: 66.0.h,
+      // width: 60.0.w,
+      height: 80.0.h,
       decoration: BoxDecoration(
         color: Flavors.colorInfo.mainTextColor,
-        shape: BoxShape.circle,
-        border: Border.all(color: Flavors.colorInfo.dividerColor),
       ),
       child: Stack(
         alignment: Alignment.topCenter,
         // textDirection: TextDirection.rtl,
         children: [
           Positioned(
-            child: _netWorkAvatar(top3Members[2].icon!, 12.0),
+            child: _netWorkAvatar(top3Members[2].icon!, 15.0),
             top: 10.0,
           ),
           Positioned(
             top: 25.0,
             bottom: 10.0,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _netWorkAvatar(top3Members[0].icon!, 12.0),
-                _netWorkAvatar(top3Members[1].icon!, 12.0),
+                _netWorkAvatar(top3Members[0].icon!, 15.0),
+                SizedBox(width: 5.0.w),
+                _netWorkAvatar(top3Members[1].icon!, 15.0),
               ],
             ),
           ),

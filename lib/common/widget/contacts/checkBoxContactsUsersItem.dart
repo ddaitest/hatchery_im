@@ -39,80 +39,71 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem>
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        bool valueChoose = false;
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ChatDetailPage();
-            }));
-          },
-          child: Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-            child: Row(
-              children: <Widget>[
-                Checkbox(
-                    activeColor: Flavors.colorInfo.mainColor,
-                    value: _isChecked[index],
-                    onChanged: (value) {
-                      setState(() {
-                        _isChecked[index] = value!;
-                        if (_isChecked[index]) {
-                          widget.manager.selectFriendsList
-                              .add(widget.friendsLists[index].friendId);
-                        } else {
-                          widget.manager.selectFriendsList
-                              .remove(widget.friendsLists[index].friendId);
-                        }
-                      });
-                    }),
-                Expanded(
-                  child: Row(
-                    children: <Widget>[
-                      widget.friendsLists.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: widget.friendsLists[index].icon,
-                              placeholder: (context, url) => CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('images/default_avatar.png'),
-                                    maxRadius: 20,
-                                  ),
-                              errorWidget: (context, url, error) =>
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('images/default_avatar.png'),
-                                    maxRadius: 20,
-                                  ),
-                              imageBuilder: (context, imageProvider) {
-                                return CircleAvatar(
-                                  backgroundImage: imageProvider,
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+          child: Row(
+            children: <Widget>[
+              Checkbox(
+                  activeColor: Flavors.colorInfo.mainColor,
+                  value: _isChecked[index],
+                  onChanged: (value) {
+                    setState(() {
+                      _isChecked[index] = value!;
+                      if (_isChecked[index]) {
+                        widget.manager.selectFriendsList
+                            .add(widget.friendsLists[index].friendId);
+                      } else {
+                        widget.manager.selectFriendsList
+                            .remove(widget.friendsLists[index].friendId);
+                      }
+                    });
+                  }),
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    widget.friendsLists.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: widget.friendsLists[index].icon,
+                            placeholder: (context, url) => CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/default_avatar.png'),
                                   maxRadius: 20,
-                                );
-                              })
-                          : CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('images/default_avatar.png'),
-                              maxRadius: 20,
-                            ),
-                      SizedBox(
-                        width: 16.0.w,
-                      ),
-                      Container(
-                        color: Colors.transparent,
-                        child: widget.friendsLists.isNotEmpty
-                            ? Text(
-                                widget.friendsLists[index].remarks != null
-                                    ? widget.friendsLists[index].remarks!
-                                    : widget.friendsLists[index].nickName,
-                                style: Flavors.textStyles.friendsText,
-                              )
-                            : LoadingView(),
-                      ),
-                    ],
-                  ),
+                                ),
+                            errorWidget: (context, url, error) => CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/default_avatar.png'),
+                                  maxRadius: 20,
+                                ),
+                            imageBuilder: (context, imageProvider) {
+                              return CircleAvatar(
+                                backgroundImage: imageProvider,
+                                maxRadius: 20,
+                              );
+                            })
+                        : CircleAvatar(
+                            backgroundImage:
+                                AssetImage('images/default_avatar.png'),
+                            maxRadius: 20,
+                          ),
+                    SizedBox(
+                      width: 16.0.w,
+                    ),
+                    Container(
+                      color: Colors.transparent,
+                      child: widget.friendsLists.isNotEmpty
+                          ? Text(
+                              widget.friendsLists[index].remarks != null
+                                  ? widget.friendsLists[index].remarks!
+                                  : widget.friendsLists[index].nickName,
+                              style: Flavors.textStyles.friendsText,
+                            )
+                          : LoadingView(),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

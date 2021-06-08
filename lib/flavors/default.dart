@@ -79,6 +79,11 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
+  final TextStyle hintTextText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().mainTextColor);
+
   final TextStyle loginLinkText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.bold,
