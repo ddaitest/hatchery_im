@@ -52,7 +52,10 @@ class GroupListItem extends StatelessWidget {
                         groupsLists[index].group.icon != null
                             ? Container(
                                 padding: const EdgeInsets.only(
-                                    left: 32.0, right: 32.0, top: 10.0),
+                                    left: 32.0,
+                                    right: 32.0,
+                                    top: 20.0,
+                                    bottom: 20.0),
                                 child: _netWorkAvatar(
                                     groupsLists[index].group.icon!, 40.0),
                               )
