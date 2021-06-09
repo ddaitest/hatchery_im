@@ -66,13 +66,22 @@ class _ChatBubbleState extends State<ChatBubble> {
         SizedBox(width: 5.0.w),
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(10),
             color: widget.chatMessage!.type == MessageType.Receiver
                 ? Colors.white
-                : Colors.grey.shade300,
+                : Flavors.colorInfo.mainColor,
           ),
-          padding: EdgeInsets.all(16),
-          child: Text(widget.chatMessage!.message!),
+          padding: EdgeInsets.all(10),
+          child: Container(
+            width: Flavors.sizesInfo.screenWidth - 100.0.w,
+            child: Text(
+                '《金瓶梅》书名由书中三个女主人公潘金莲、李瓶儿、庞春梅名字中各取一字合成。小说题材由《水浒传》中武松杀嫂一段演化而来，通过对兼有官僚、恶霸、富商三种身份的市侩势力代表人物西门庆及其家庭罪恶生活的描述，再现了当时社会民间生活的面貌，描绘了一个上至朝廷擅权专政的太师，下至地方官僚恶霸乃至市井地痞、流氓、帮闲所构成的鬼蜮世界，揭露了明代中叶社会的黑暗和腐败，具有深刻的认识价值。',
+                maxLines: 10,
+                softWrap: true,
+                style: widget.chatMessage!.type == MessageType.Receiver
+                    ? Flavors.textStyles.chatBubbleReceiverText
+                    : Flavors.textStyles.chatBubbleSenderText),
+          ),
         )
       ],
     );

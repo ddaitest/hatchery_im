@@ -121,6 +121,12 @@ class TextStyles {
 
   final TextStyle chatDetailAppBarNameText = TextStyle(
       fontSize: 15.0.sp, fontWeight: FontWeight.w600, color: ColorInfo().diver);
+
+  final TextStyle chatBubbleSenderText = TextStyle(
+      fontSize: 13.0.sp, color: ColorInfo().mainTextColor, height: 1.5);
+
+  final TextStyle chatBubbleReceiverText =
+      TextStyle(fontSize: 13.0.sp, color: ColorInfo().diver, height: 1.5);
 }
 
 class SizesInfo {
