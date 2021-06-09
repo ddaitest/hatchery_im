@@ -59,6 +59,7 @@ class _NewGroupState extends State<NewGroupPage>
         shrinkWrap: true,
         children: <Widget>[
           SearchBarView(),
+          _tipsView(),
           SizedBox(
             height: 16.0.w,
           ),
@@ -68,7 +69,17 @@ class _NewGroupState extends State<NewGroupPage>
     );
   }
 
-  _contactsListView() {
+  Widget _tipsView() {
+    return Container(
+      padding: const EdgeInsets.only(left: 16.0, top: 6.0),
+      child: Text(
+        '请至少选择两名好友作为群成员',
+        style: Flavors.textStyles.loginSubTitleText,
+      ),
+    );
+  }
+
+  Widget _contactsListView() {
     return Selector<NewGroupsManager, List<Friends>>(
       builder: (BuildContext context, List<Friends> value, Widget? child) {
         print("DEBUG=> _FriendsView 重绘了。。。。。");

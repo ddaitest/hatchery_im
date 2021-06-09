@@ -122,8 +122,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
         bottomNavigationBar: BottomNavigationBar(
           // selectedLabelStyle: Flavors.textStyles.tabBarTextSelected,
           // unselectedLabelStyle: Flavors.textStyles.tabBarTextUnSelected,
-          selectedFontSize: 12.0,
-          unselectedFontSize: 12.0,
+          // selectedFontSize: 12.0,
+          // unselectedFontSize: 12.0,
           currentIndex: _tabIndex,
           items: bottomTabs.map((e) => _navBarItem(e)).toList(),
           type: BottomNavigationBarType.fixed,
@@ -146,12 +146,12 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     return BottomNavigationBarItem(
       icon: Icon(
         info.icon,
-        size: 25,
+        size: 35,
       ),
-      label: info.label,
+      title: Container(),
       activeIcon: Icon(
         info.activeIcon,
-        size: 25,
+        size: 35,
       ),
     );
   }

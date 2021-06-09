@@ -41,23 +41,31 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem>
       itemBuilder: (context, index) {
         return Container(
           color: Colors.white,
-          padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+          padding: EdgeInsets.only(left: 6, right: 6, top: 10, bottom: 10),
           child: Row(
             children: <Widget>[
               Checkbox(
                   activeColor: Flavors.colorInfo.mainColor,
                   value: _isChecked[index],
+                  fillColor: MaterialStateProperty.resolveWith(
+                      (Set<MaterialState> states) {
+                    return Flavors.colorInfo.mainColor;
+                  }),
                   onChanged: (value) {
-                    setState(() {
-                      _isChecked[index] = value!;
-                      if (_isChecked[index]) {
-                        widget.manager.selectFriendsList
-                            .add(widget.friendsLists[index].friendId);
-                      } else {
-                        widget.manager.selectFriendsList
-                            .remove(widget.friendsLists[index].friendId);
-                      }
-                    });
+                    if (widget.friendsLists.isNotEmpty) {
+                      setState(() {
+                        _isChecked[index] = value!;
+                        if (_isChecked[index]) {
+                          widget.manager.selectFriendsList
+                              .add(widget.friendsLists[index].friendId);
+                        } else {
+                          widget.manager.selectFriendsList
+                              .remove(widget.friendsLists[index].friendId);
+                        }
+                      });
+                    } else {
+                      return;
+                    }
                   }),
               Expanded(
                 child: Row(

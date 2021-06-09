@@ -25,16 +25,16 @@ class TimeConfig {
 }
 
 const mainTabs = [
-  TabInfo('消息', Icons.chat_bubble_outline, Icons.chat_bubble_outline),
-  TabInfo('联系人', Icons.account_circle_outlined, Icons.account_circle_outlined),
-  TabInfo('群组', Icons.group_outlined, Icons.group_outlined),
-  TabInfo('我的', Icons.perm_identity, Icons.perm_identity),
+  TabInfo(Icons.messenger_outline, Icons.messenger),
+  TabInfo(Icons.account_circle_outlined, Icons.account_circle),
+  TabInfo(Icons.group_outlined, Icons.group),
+  TabInfo(Icons.perm_identity, Icons.person),
 ];
 
 class TabInfo {
-  final String label;
+  final String? label;
   final IconData icon;
   final IconData activeIcon;
 
-  const TabInfo(this.label, this.icon, this.activeIcon);
+  const TabInfo(this.icon, this.activeIcon, {this.label});
 }

@@ -11,9 +11,8 @@ enum MessageType {
 }
 
 class ChatDetailPage extends StatefulWidget {
-  final String? avatarUrl;
   final String? name;
-  ChatDetailPage(this.avatarUrl, this.name);
+  ChatDetailPage(this.name);
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -106,7 +105,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar(widget.avatarUrl, widget.name),
+      appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.name),
       body: Stack(
         children: <Widget>[
           ListView.builder(

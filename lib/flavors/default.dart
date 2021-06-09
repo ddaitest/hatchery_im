@@ -118,6 +118,9 @@ class TextStyles {
       fontSize: 14.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().btnTextColor);
+
+  final TextStyle chatDetailAppBarNameText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w600, color: ColorInfo().diver);
 }
 
 class SizesInfo {

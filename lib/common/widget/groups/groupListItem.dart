@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:image_stack/image_stack.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 class GroupListItem extends StatelessWidget {
   final List<Groups> groupsLists;
@@ -31,8 +33,8 @@ class GroupListItem extends StatelessWidget {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return ChatDetailPage(groupsLists[index].group.icon,
-                          groupsLists[index].group.groupName);
+                      return ChatDetailPage(
+                          '${groupsLists[index].group.groupName} (${groupsLists[index].membersCount})');
                     }));
                   },
                   child: Container(
@@ -96,7 +98,7 @@ class GroupListItem extends StatelessWidget {
                     ),
                   ));
             })
-        : Container();
+        : IndicatorView();
   }
 
   Widget _netWorkAvatar(String avatarUrl, double radius) {

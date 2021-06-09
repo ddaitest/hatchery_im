@@ -1,92 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 
-class ChatDetailPageAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  final String? avatarUrl;
-  final String? name;
-  ChatDetailPageAppBar(this.avatarUrl, this.name);
-  @override
-  Widget build(BuildContext context) {
+class ChatDetailPageAppBar {
+  static AppBar chatDetailAppBar(String? name) {
     return AppBar(
       elevation: 0,
       automaticallyImplyLeading: false,
+      centerTitle: true,
       backgroundColor: Colors.white,
-      flexibleSpace: SafeArea(
-        child: Container(
-          padding: EdgeInsets.only(right: 16),
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Colors.black,
-                ),
-              ),
-              SizedBox(
-                width: 2,
-              ),
-              avatarUrl != ''
-                  ? CachedNetworkImage(
-                      imageUrl: avatarUrl!,
-                      placeholder: (context, url) => CircleAvatar(
-                            backgroundImage:
-                                AssetImage('images/default_avatar.png'),
-                            maxRadius: 20,
-                          ),
-                      errorWidget: (context, url, error) => CircleAvatar(
-                            backgroundImage:
-                                AssetImage('images/default_avatar.png'),
-                            maxRadius: 20,
-                          ),
-                      imageBuilder: (context, imageProvider) {
-                        return CircleAvatar(
-                          backgroundImage: imageProvider,
-                          maxRadius: 20,
-                        );
-                      })
-                  : CircleAvatar(
-                      backgroundImage: AssetImage('images/default_avatar.png'),
-                      maxRadius: 20,
-                    ),
-              SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      name!,
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "Online",
-                      style: TextStyle(color: Colors.green, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                Icons.more_vert,
-                color: Colors.grey.shade700,
-              ),
-            ],
-          ),
+      brightness: Brightness.light,
+      title: Text(
+        name!,
+        style: Flavors.textStyles.chatDetailAppBarNameText,
+        softWrap: true,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+      leading: Container(
+        padding: const EdgeInsets.all(6.0),
+        child: IconButton(
+          icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+          onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
         ),
       ),
+      actions: [
+        Container(
+          padding: const EdgeInsets.only(right: 9.0),
+          child: Icon(Icons.more_vert, size: 30, color: Colors.black),
+        )
+      ],
     );
   }
-
-  @override
-  // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
