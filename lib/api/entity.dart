@@ -133,3 +133,33 @@ class MyProfile {
       _$MyProfileFromJson(json);
   Map<String, dynamic> toJson() => _$MyProfileToJson(this);
 }
+
+@JsonSerializable()
+class FriendsHistoryMessages {
+  int id;
+  String type;
+  String userMsgID;
+  String sender;
+  String nick;
+  String receiver;
+  String icon;
+  String source;
+  String content;
+  String contentType;
+  String createTime;
+  FriendsHistoryMessages(
+      this.id,
+      this.type,
+      this.userMsgID,
+      this.sender,
+      this.nick,
+      this.receiver,
+      this.icon,
+      this.source,
+      this.content,
+      this.contentType,
+      this.createTime);
+  factory FriendsHistoryMessages.fromJson(Map<String, dynamic> json) =>
+      _$FriendsHistoryMessagesFromJson(json);
+  Map<String, dynamic> toJson() => _$FriendsHistoryMessagesToJson(this);
+}

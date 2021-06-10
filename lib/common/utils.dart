@@ -17,7 +17,7 @@ void showToast(String title,
       toastLength: toastTime,
       gravity: showGravity,
       timeInSecForIosWeb: 1,
-      // backgroundColor: Color(0x99000000),
+      backgroundColor: Colors.grey[200],
       textColor: Flavors.colorInfo.diver,
       fontSize: 15.0);
 }

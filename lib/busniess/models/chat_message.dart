@@ -3,6 +3,6 @@ import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 
 class ChatMessage {
   String? message;
-  MessageType? type;
+  MessageBelongType? type;
   ChatMessage({@required this.message, @required this.type});
 }

@@ -139,3 +139,36 @@ Map<String, dynamic> _$MyProfileToJson(MyProfile instance) => <String, dynamic>{
       'updateTime': instance.updateTime,
       'createTime': instance.createTime,
     };
+
+FriendsHistoryMessages _$FriendsHistoryMessagesFromJson(
+    Map<String, dynamic> json) {
+  return FriendsHistoryMessages(
+    json['id'] as int,
+    json['type'] as String,
+    json['userMsgID'] as String,
+    json['sender'] as String,
+    json['nick'] as String,
+    json['receiver'] as String,
+    json['icon'] as String,
+    json['source'] as String,
+    json['content'] as String,
+    json['contentType'] as String,
+    json['createTime'] as String,
+  );
+}
+
+Map<String, dynamic> _$FriendsHistoryMessagesToJson(
+        FriendsHistoryMessages instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'type': instance.type,
+      'userMsgID': instance.userMsgID,
+      'sender': instance.sender,
+      'nick': instance.nick,
+      'receiver': instance.receiver,
+      'icon': instance.icon,
+      'source': instance.source,
+      'content': instance.content,
+      'contentType': instance.contentType,
+      'createTime': instance.createTime,
+    };

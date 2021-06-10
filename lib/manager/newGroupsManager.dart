@@ -53,7 +53,7 @@ class NewGroupsManager extends ChangeNotifier {
   //
   Future<bool> uploadImage(String filePath) async {
     ApiResult result = await compressionImage(filePath)
-        .then((value) => API_UPLOAD.uploadImage(value, (count, total) {
+        .then((value) => API.uploadImage(value, (count, total) {
               uploadProgress = count.toDouble() / total.toDouble();
               print("DEBUG=> uploadProgress = $uploadProgress");
               notifyListeners();

@@ -7,45 +7,25 @@ import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/chatDetailManager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';
+import 'package:hatchery_im/api/entity.dart';
 
-enum MessageType {
+enum MessageBelongType {
   Sender,
   Receiver,
 }
 
 class ChatDetailPage extends StatefulWidget {
-  final String? name;
-  ChatDetailPage(this.name);
+  final Friends friendInfo;
+  ChatDetailPage(this.friendInfo);
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
   TextEditingController textEditingController = TextEditingController();
-  List<ChatMessage> chatMessage = [
-    ChatMessage(message: "Hi John", type: MessageType.Receiver),
-    ChatMessage(message: "Hope you are doin good", type: MessageType.Receiver),
-    ChatMessage(
-        message: "Hello Jane, I'm good what about you",
-        type: MessageType.Sender),
-    ChatMessage(
-        message: "I'm fine, Working from home", type: MessageType.Receiver),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
-    ChatMessage(message: "Hi John", type: MessageType.Receiver),
-    ChatMessage(message: "Hope you are doin good", type: MessageType.Receiver),
-    ChatMessage(
-        message:
-            "Hello Jane, I'm good what about you Hello Jane, I'm good what about you Hello Jane, I'm good what about you Hello Jane, I'm good what about you",
-        type: MessageType.Sender),
-    ChatMessage(
-        message: "I'm fine, Working from home", type: MessageType.Receiver),
-    ChatMessage(
-        message:
-            "Oh! Nice. Same here man Oh! Nice. Same here man Oh! Nice. Same here man Oh! Nice. Same here man",
-        type: MessageType.Sender),
-  ];
-
+  final manager = App.manager<ChatDetailManager>();
   List<SendMenuItems> menuItems = [
     SendMenuItems(
         text: "Photos & Videos", icons: Icons.image, color: Colors.amber),
@@ -59,13 +39,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
+    manager.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.name),
+      appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.friendInfo.nickName),
       backgroundColor: Colors.grey[100],
       floatingActionButton: _sendBtnView(),
       body: Column(
@@ -78,19 +59,38 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return Flexible(
-      child: ListView.builder(
-        itemCount: chatMessage.length,
-        shrinkWrap: true,
-        reverse: true,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        physics: const BouncingScrollPhysics(),
-        itemBuilder: (context, index) {
-          return ChatBubble(
-            chatMessage: chatMessage[index],
-          );
-        },
-      ),
+    return Selector<ChatDetailManager, List<FriendsHistoryMessages>>(
+      builder: (BuildContext context, List<FriendsHistoryMessages> value,
+          Widget? child) {
+        return Flexible(
+          child: ListView.builder(
+            itemCount: value.length,
+            shrinkWrap: true,
+            reverse: true,
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return ChatBubble(
+                avatarPicUrl: manager.myProfileData!.userID!
+                            .compareTo(value[index].sender) ==
+                        0
+                    ? '${manager.myProfileData!.icon}'
+                    : '${widget.friendInfo.icon}',
+                messageBelongType: manager.myProfileData!.userID!
+                            .compareTo(value[index].sender) ==
+                        0
+                    ? MessageBelongType.Sender
+                    : MessageBelongType.Receiver,
+                friendsHistoryMessages: value[index],
+              );
+            },
+          ),
+        );
+      },
+      selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+        return chatDetailManager.messagesList;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
     );
   }
 

@@ -207,30 +207,6 @@ class API {
       return ApiResult.error(e);
     }
   }
-}
-
-class API_UPLOAD {
-  static Dio _dio = Dio(BaseOptions(
-    baseUrl: Flavors.apiInfo.File_UPLOAD_PATH,
-    connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
-    receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
-    // headers: {"Authorization": Flavors.apiInfo.BASIC_AUTH},
-    queryParameters: commonParamMap,
-  )).initWrapper();
-
-  static bool skipCheck = false;
-
-  static Map<String, dynamic> commonParamMap = DeviceInfo.info;
-
-  static init() {
-    if (!skipCheck) {
-      isNetworkConnect().then((value) {
-        if (!value) {
-          showToast('网络未连接，请检查网络设置');
-        }
-      });
-    }
-  }
 
   ///上传图片
   static Future<ApiResult> uploadImage(
@@ -256,6 +232,29 @@ class API_UPLOAD {
         print("receive <<< $a/$b");
       });
 
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取单聊离线消息
+  static Future<ApiResult> messageHistoryWithFriend(
+      String friendID, int current, int size, int currentMsgID) async {
+    init();
+    Map<String, dynamic> queryParam = {
+      "friendID": friendID,
+      "current": current,
+      "size": size,
+      "currentMsgID": currentMsgID
+    };
+    try {
+      Response response = await _dio.get("/messages/chat/history",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");
