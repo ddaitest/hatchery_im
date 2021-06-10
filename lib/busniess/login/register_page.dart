@@ -25,7 +25,6 @@ class RegisterPage extends StatefulWidget {
 class RegisterPageState extends State<RegisterPage> {
   final manager = App.manager<RegisterManager>();
   File _imageFile = File('');
-  final _cropKey = GlobalKey<CropState>();
 
   @override
   Widget build(BuildContext context) {
@@ -300,7 +299,6 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    _imageFile.delete();
     super.dispose();
   }
 }

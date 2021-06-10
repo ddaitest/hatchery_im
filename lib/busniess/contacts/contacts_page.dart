@@ -88,8 +88,7 @@ class _ContactsState extends State<ContactsPage>
       selector: (BuildContext context, ContactsManager contactsManager) {
         return contactsManager.friendsList;
       },
-      shouldRebuild: (pre, next) =>
-          ((pre != next) || (pre.length != next.length)),
+      shouldRebuild: (pre, next) => (pre != next),
     );
   }
 }

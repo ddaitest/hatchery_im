@@ -35,11 +35,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     ChatMessage(message: "Hi John", type: MessageType.Receiver),
     ChatMessage(message: "Hope you are doin good", type: MessageType.Receiver),
     ChatMessage(
-        message: "Hello Jane, I'm good what about you",
+        message:
+            "Hello Jane, I'm good what about you Hello Jane, I'm good what about you Hello Jane, I'm good what about you Hello Jane, I'm good what about you",
         type: MessageType.Sender),
     ChatMessage(
         message: "I'm fine, Working from home", type: MessageType.Receiver),
-    ChatMessage(message: "Oh! Nice. Same here man", type: MessageType.Sender),
+    ChatMessage(
+        message:
+            "Oh! Nice. Same here man Oh! Nice. Same here man Oh! Nice. Same here man Oh! Nice. Same here man",
+        type: MessageType.Sender),
   ];
 
   List<SendMenuItems> menuItems = [
@@ -78,6 +82,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       child: ListView.builder(
         itemCount: chatMessage.length,
         shrinkWrap: true,
+        reverse: true,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) {
@@ -144,7 +149,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _sendBtnView() {
     return Container(
-      padding: EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 20),
       child: FloatingActionButton(
         onPressed: () {},
         child: Icon(

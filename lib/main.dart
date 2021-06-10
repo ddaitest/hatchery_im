@@ -14,6 +14,7 @@ import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
 import 'package:hatchery_im/manager/newGroupsManager.dart';
 import 'package:hatchery_im/manager/myProfileManager.dart';
+import 'package:hatchery_im/manager/chatDetailManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +43,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => GroupsManager()),
         ChangeNotifierProvider(create: (_) => NewGroupsManager()),
         ChangeNotifierProvider(create: (_) => MyProfileManager()),
+        ChangeNotifierProvider(create: (_) => ChatDetailManager()),
       ],
       child: MyApp(),
     ),

@@ -6,6 +6,7 @@ import 'package:hatchery_im/busniess/profile_page/my_profile.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/utils.dart';
 import '../config.dart';
 import '../routers.dart';
 
@@ -158,10 +159,10 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   Future<bool> _onWillPop() async {
     if (nextKickBackExitApp) {
-      // exitApp();
+      exitApp();
       return true;
     } else {
-      // showToast('再按一次退出APP');
+      showToast('再按一次退出APP');
       nextKickBackExitApp = true;
       Future.delayed(
         const Duration(seconds: 2),

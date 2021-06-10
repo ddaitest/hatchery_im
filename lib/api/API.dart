@@ -20,7 +20,7 @@ extension ExtendedDio on Dio {
       if (response.statusCode == 403) {
         showToast('请重新登录');
         SP.delete(SPKey.userInfo);
-        Routers.navigateReplace('/login');
+        Routers.navigateAndRemoveUntil('/login');
       }
       return handler.next(response); // continue
     }, onError: (DioError e, handler) {
@@ -91,6 +91,21 @@ class API {
     init();
     try {
       Response response = await _dio.post("/users/create", data: body);
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取好友列表
+  static Future<ApiResult> getConfig() async {
+    init();
+    try {
+      Response response = await _dio.get("/config/system/info",
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");

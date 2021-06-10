@@ -127,6 +127,9 @@ class TextStyles {
 
   final TextStyle chatBubbleReceiverText =
       TextStyle(fontSize: 13.0.sp, color: ColorInfo().diver, height: 1.5);
+
+  final TextStyle logOutBtnText =
+      TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {
@@ -141,6 +144,7 @@ class ColorInfo {
   final mainColor = const Color(0xFF478DE0);
   final mainTextColor = Colors.white;
   final mainBackGroundColor = Colors.white;
+  final redColor = Colors.red;
   final dividerColor = Colors.black12;
   get btnTextColor => mainColor;
   final diver = Colors.black87;

@@ -78,6 +78,13 @@ class Routers {
     return App.navState.currentState!.pushNamed(routeName, arguments: arg);
   }
 
+  static Future<dynamic> navigateAndRemoveUntil(String routeName,
+      {Object? arg}) {
+    return App.navState.currentState!.pushNamedAndRemoveUntil(
+        routeName, (Route<dynamic> route) => false,
+        arguments: arg);
+  }
+
   static Future<dynamic> navigateReplace(String routeName, {Object? arg}) {
     Log.log("navigateReplace $routeName", color: LColor.RED);
     return App.navState.currentState!

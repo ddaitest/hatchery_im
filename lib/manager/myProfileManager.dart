@@ -30,8 +30,15 @@ class MyProfileManager extends ChangeNotifier {
     } else {
       showToast('请重新登录');
       SP.delete(SPKey.userInfo);
-      Future.delayed(Duration(seconds: 1), () => Routers.navigateReplace('/'));
+      Future.delayed(
+          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }
+  }
+
+  logOut() {
+    SP.delete(SPKey.userInfo);
+    Future.delayed(
+        Duration.zero, () => Routers.navigateAndRemoveUntil('/login'));
   }
 
   @override

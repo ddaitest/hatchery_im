@@ -29,7 +29,8 @@ class MyProfilePage extends StatelessWidget {
             Container(
               height: 20.0.h,
             ),
-            _middleView()
+            _middleView(),
+            _logOutBtn(myProfileManager),
           ],
         ),
       ));
@@ -56,7 +57,7 @@ class MyProfilePage extends StatelessWidget {
                 children: [
                   myProfileManager.myProfileData != ''
                       ? CachedNetworkImage(
-                          imageUrl: myProfileManager.myProfileData.icon,
+                          imageUrl: myProfileManager.myProfileData.icon ?? '',
                           placeholder: (context, url) => CircleAvatar(
                                 backgroundImage:
                                     AssetImage('images/default_avatar.png'),
@@ -184,5 +185,27 @@ class MyProfilePage extends StatelessWidget {
             ),
           ],
         ));
+  }
+
+  Widget _logOutBtn(myProfileManager) {
+    return Container(
+      padding: const EdgeInsets.only(top: 100.0),
+      width: 200.0.w,
+      child: TextButton(
+        style: ElevatedButton.styleFrom(
+          primary: Flavors.colorInfo.redColor,
+          elevation: 0.5,
+          padding: const EdgeInsets.all(10.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+        ),
+        onPressed: () => myProfileManager.logOut(),
+        child: Text(
+          '退出登录',
+          style: Flavors.textStyles.logOutBtnText,
+        ),
+      ),
+    );
   }
 }

@@ -60,7 +60,7 @@ class RegisterManager extends ChangeNotifier {
         loginName, nickName, avatar, password, notes, phone, email, address);
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
-      Routers.navigateReplace('/login');
+      Routers.navigateAndRemoveUntil('/login');
       showToast('注册成功');
     } else {
       showToast('账号已注册,请更换账号后重试');

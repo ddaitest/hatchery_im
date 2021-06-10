@@ -29,7 +29,7 @@ class LoginManager extends ChangeNotifier {
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
       SP.set(SPKey.userInfo, jsonEncode(result.getData()));
-      Routers.navigateReplace('/');
+      Routers.navigateAndRemoveUntil('/');
     } else {
       showToast('账号或密码错误');
     }

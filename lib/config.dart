@@ -6,7 +6,7 @@ class SPKey {
   static final String showAgreement = 'ShowAgreement';
   static final String splashAD = 'splashAD';
   static final String userInfo = 'userInfo';
-  static final String popTimes = 'popTimes';
+  static final String config = 'config';
   static final String CONFIG_KEY = 'configKey';
   static final String upgrade = 'upgrade';
 

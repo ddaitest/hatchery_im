@@ -24,12 +24,26 @@ class SplashManager extends ChangeNotifier {
   init() {}
 
   goto() {
+    _checkToken();
+
+    Future.delayed(Duration.zero,
+        () => Routers.navigateAndRemoveUntil(_token == '' ? '/login' : '/'));
+  }
+
+  void _checkToken() {
     _userInfoData = SP.getString(SPKey.userInfo);
     if (_userInfoData != null) {
       _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+      getConfig();
     }
-    Future.delayed(Duration.zero,
-        () => Routers.navigateReplace(_token == '' ? '/login' : '/'));
+  }
+
+  Future<bool> getConfig() async {
+    ApiResult result = await API.getConfig();
+    if (result.isSuccess()) {
+      SP.set(SPKey.config, jsonEncode(result.getData()));
+    }
+    return result.isSuccess();
   }
 
   @override

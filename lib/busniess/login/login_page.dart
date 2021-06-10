@@ -17,20 +17,36 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  LoginManager _loginManager = LoginManager();
+  bool nextKickBackExitApp = false;
 
   @override
   void initState() {
-    _loginManager.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => _loginManager,
-      child: _bodyContainer(),
-    );
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: ChangeNotifierProvider(
+          create: (context) => LoginManager(),
+          child: _bodyContainer(),
+        ));
+  }
+
+  Future<bool> _onWillPop() async {
+    if (nextKickBackExitApp) {
+      exitApp();
+      return true;
+    } else {
+      showToast('再按一次退出APP');
+      nextKickBackExitApp = true;
+      Future.delayed(
+        const Duration(seconds: 2),
+        () => nextKickBackExitApp = false,
+      );
+      return false;
+    }
   }
 
   _bodyContainer() {
