@@ -187,3 +187,56 @@ Future<DialogDemoAction?>? showLoadingDialog(
 closeLoadingDialog(BuildContext context) {
   Navigator.pop(context, DialogDemoAction.cancel);
 }
+
+checkMessageTime(String createTime) {
+  DateTime _responseCreateTime = DateTime.parse(createTime);
+  DateTime _timeNow = DateTime.now();
+  String _finalShowTime = '';
+  int differenceTime = _responseCreateTime.difference(_timeNow).inDays;
+  print("DEBUG=> differenceTime $differenceTime");
+  if (differenceTime == 0) {
+    _finalShowTime =
+        '${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+  } else if (differenceTime == 1) {
+    _finalShowTime =
+        '昨天 ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+  } else if (differenceTime > 1 && differenceTime <= 7) {
+    _finalShowTime =
+        '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+  } else {
+    _finalShowTime =
+        '${_responseCreateTime.year}-${_responseCreateTime.month}-${_responseCreateTime.day} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+  }
+  return _finalShowTime;
+}
+
+weekDay(int weekNumbers) {
+  String weekCN = '';
+  switch (weekNumbers) {
+    case 1:
+      weekCN = '星期一';
+      break;
+    case 2:
+      weekCN = '星期二';
+      break;
+    case 3:
+      weekCN = '星期三';
+      break;
+    case 4:
+      weekCN = '星期四';
+      break;
+    case 5:
+      weekCN = '星期五';
+      break;
+    case 6:
+      weekCN = '星期六';
+      break;
+    case 7:
+      weekCN = '星期日';
+      break;
+    default:
+      weekCN = '';
+      break;
+  }
+  return weekCN;
+}

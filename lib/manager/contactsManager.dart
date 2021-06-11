@@ -32,7 +32,7 @@ class ContactsManager extends ChangeNotifier {
     API.getFriendsListData(size, current).then((value) {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
-        print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
+        print('DEBUG=>  _queryFriendsRes ${friendsList}');
         notifyListeners();
       }
     });

@@ -241,7 +241,7 @@ class API {
 
   ///获取单聊离线消息
   static Future<ApiResult> messageHistoryWithFriend(
-      String friendID, int current, int size, int currentMsgID) async {
+      {String? friendID, int? current, int? size, int? currentMsgID}) async {
     init();
     Map<String, dynamic> queryParam = {
       "friendID": friendID,
@@ -250,6 +250,7 @@ class API {
       "currentMsgID": currentMsgID
     };
     try {
+      if (currentMsgID == 0) queryParam.remove("currentMsgID");
       Response response = await _dio.get("/messages/chat/history",
           queryParameters: queryParam,
           options: Options(

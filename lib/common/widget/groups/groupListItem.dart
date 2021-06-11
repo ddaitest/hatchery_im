@@ -7,9 +7,12 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:image_stack/image_stack.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
+import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 
 class GroupListItem extends StatelessWidget {
   final List<Groups> groupsLists;
+  final manager = App.manager<ContactsManager>();
   GroupListItem(this.groupsLists);
 
   @override
@@ -33,8 +36,7 @@ class GroupListItem extends StatelessWidget {
                   onTap: () {
                     Navigator.push(context,
                         MaterialPageRoute(builder: (context) {
-                      return ChatDetailPage(
-                          '${groupsLists[index].group.groupName} (${groupsLists[index].membersCount})');
+                      return ChatDetailPage(manager.friendsList[0]);
                     }));
                   },
                   child: Container(

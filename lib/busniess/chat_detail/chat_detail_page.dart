@@ -40,7 +40,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   void initState() {
     manager.init();
+    manager.queryFriendsHistoryMessages(widget.friendInfo.friendId, 0);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    manager.messagesList.clear();
+    super.dispose();
   }
 
   @override
@@ -50,6 +57,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       backgroundColor: Colors.grey[100],
       floatingActionButton: _sendBtnView(),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           _messageInfoView(),
           _inputView(),
@@ -66,7 +74,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           child: ListView.builder(
             itemCount: value.length,
             shrinkWrap: true,
-            reverse: true,
             padding: EdgeInsets.only(top: 10, bottom: 10),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
@@ -97,9 +104,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget _inputView() {
     return Container(
       padding: const EdgeInsets.only(left: 16, top: 10.0, bottom: 10.0),
-      constraints: BoxConstraints(
-        maxHeight: 300.0.h,
-      ),
+      constraints: BoxConstraints(maxHeight: 300.0.h, minHeight: 50.0.h),
       width: Flavors.sizesInfo.screenWidth,
       color: Colors.white,
       child: Row(

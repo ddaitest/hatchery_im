@@ -27,14 +27,19 @@ class ChatDetailManager extends ChangeNotifier {
     _getStoredForMyProfileData();
   }
 
-  queryFriendsHistoryMessages(String friendId,
-      {int current = 0, int size = 50, int? currentMsgID}) async {
+  queryFriendsHistoryMessages(String friendId, int? currentMsgID,
+      {int current = 0, int size = 50}) async {
     API
-        .messageHistoryWithFriend(friendId, current, size, currentMsgID!)
+        .messageHistoryWithFriend(
+            friendID: friendId,
+            size: size,
+            current: current,
+            currentMsgID: currentMsgID!)
         .then((value) {
       if (value.isSuccess()) {
-        // friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
-        // print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
+        messagesList = value
+            .getDataList((m) => FriendsHistoryMessages.fromJson(m), type: 0);
+        print('DEBUG=>  queryFriendsHistoryMessages ${messagesList}');
         notifyListeners();
       }
     });
@@ -59,6 +64,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   @override
   void dispose() {
+    messagesList.clear();
     super.dispose();
   }
 }

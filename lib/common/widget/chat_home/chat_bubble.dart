@@ -6,6 +6,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/common/utils.dart';
 
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
@@ -24,13 +25,12 @@ class _ChatBubbleState extends State<ChatBubble> {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-        child: _chatBubbleView(
-            'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3436121203,3749922833&fm=26&gp=0.jpg'));
+        child: _chatBubbleView('${widget.avatarPicUrl}'));
   }
 
   Widget _chatBubbleView(String? avatarUrl) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       textDirection: widget.messageBelongType == MessageBelongType.Receiver
           ? TextDirection.ltr
           : TextDirection.rtl,
@@ -52,7 +52,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                 maxRadius: 20,
               );
             }),
-        SizedBox(width: 5.0.w),
+        SizedBox(width: 10.0.w),
         Column(
           crossAxisAlignment:
               widget.messageBelongType == MessageBelongType.Receiver
@@ -68,7 +68,9 @@ class _ChatBubbleState extends State<ChatBubble> {
               ),
               padding: EdgeInsets.all(10),
               child: Container(
-                width: Flavors.sizesInfo.screenWidth - 100.0.w,
+                constraints: BoxConstraints(
+                  maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
+                ),
                 child: Text('${widget.friendsHistoryMessages.content}',
                     maxLines: 10,
                     softWrap: true,
@@ -78,10 +80,10 @@ class _ChatBubbleState extends State<ChatBubble> {
                             : Flavors.textStyles.chatBubbleSenderText),
               ),
             ),
-            SizedBox(
-              height: 5.0.h,
-            ),
-            Text('${widget.friendsHistoryMessages.createTime}',
+            SizedBox(height: 5.0.h),
+            Text(
+                // '${checkMessageTime(widget.friendsHistoryMessages.createTime)}',
+                '${widget.friendsHistoryMessages.createTime}',
                 maxLines: 10,
                 softWrap: true,
                 style: Flavors.textStyles.chatBubbleTimeText),

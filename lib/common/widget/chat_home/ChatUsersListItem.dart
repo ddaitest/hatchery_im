@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ChatUsersListItem extends StatefulWidget {
@@ -24,6 +26,7 @@ class ChatUsersListItem extends StatefulWidget {
 }
 
 class _ChatUsersListState extends State<ChatUsersListItem> {
+  final manager = App.manager<ContactsManager>();
   @override
   void initState() {
     super.initState();
@@ -33,9 +36,9 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ChatDetailPage('Jacob Pena');
-          }));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) {
+          //   return ChatDetailPage(manager.friendsList[0]);
+          // }));
         },
         child: Slidable(
           actionPane: SlidableDrawerActionPane(),

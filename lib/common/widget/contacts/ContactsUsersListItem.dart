@@ -20,7 +20,7 @@ class ContactsUsersListItem extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ChatDetailPage(friendsLists[index].nickName);
+              return ChatDetailPage(friendsLists[index]);
             }));
           },
           child: Container(
