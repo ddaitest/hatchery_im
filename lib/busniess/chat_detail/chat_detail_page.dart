@@ -74,6 +74,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           child: ListView.builder(
             itemCount: value.length,
             shrinkWrap: true,
+            reverse: true,
             padding: EdgeInsets.only(top: 10, bottom: 10),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {

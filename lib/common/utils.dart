@@ -192,8 +192,11 @@ checkMessageTime(String createTime) {
   DateTime _responseCreateTime = DateTime.parse(createTime);
   DateTime _timeNow = DateTime.now();
   String _finalShowTime = '';
-  int differenceTime = _responseCreateTime.difference(_timeNow).inDays;
-  print("DEBUG=> differenceTime $differenceTime");
+  int differenceTime = int.parse(
+          '${_timeNow.year}${_timeNow.month}${_timeNow.day}') -
+      int.parse(
+          '${_responseCreateTime.year}${_responseCreateTime.month}${_responseCreateTime.day}');
+  print("DEBUG=> differenceTime ${differenceTime.abs()}");
   if (differenceTime == 0) {
     _finalShowTime =
         '${_responseCreateTime.hour}:${_responseCreateTime.minute}';
