@@ -39,7 +39,11 @@ class ChatDetailManager extends ChangeNotifier {
       if (value.isSuccess()) {
         messagesList = value
             .getDataList((m) => FriendsHistoryMessages.fromJson(m), type: 0);
-        print('DEBUG=>  queryFriendsHistoryMessages ${messagesList}');
+        messagesList = messagesList.reversed.toList();
+        messagesList.forEach((element) {
+          print('DEBUG=>  queryFriendsHistoryMessages ${element.createTime}');
+        });
+
         notifyListeners();
       }
     });
