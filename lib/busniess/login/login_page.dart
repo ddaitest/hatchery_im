@@ -17,20 +17,36 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  LoginManager _loginManager = LoginManager();
+  bool nextKickBackExitApp = false;
 
   @override
   void initState() {
-    _loginManager.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => _loginManager,
-      child: _bodyContainer(),
-    );
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: ChangeNotifierProvider(
+          create: (context) => LoginManager(),
+          child: _bodyContainer(),
+        ));
+  }
+
+  Future<bool> _onWillPop() async {
+    if (nextKickBackExitApp) {
+      exitApp();
+      return true;
+    } else {
+      showToast('再按一次退出APP');
+      nextKickBackExitApp = true;
+      Future.delayed(
+        const Duration(seconds: 2),
+        () => nextKickBackExitApp = false,
+      );
+      return false;
+    }
   }
 
   _bodyContainer() {
@@ -178,8 +194,8 @@ class LoginPageState extends State<LoginPage> {
     return GestureDetector(
       onTap: () => print('Login with Phone'),
       child: Container(
-        height: 60.0.h,
-        width: 60.0.w,
+        height: 55.0.h,
+        width: 55.0.w,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white,
@@ -187,7 +203,7 @@ class LoginPageState extends State<LoginPage> {
             BoxShadow(
               color: Colors.black26,
               offset: Offset(0, 2),
-              blurRadius: 6.0,
+              blurRadius: 2.0,
             ),
           ],
         ),
@@ -196,7 +212,7 @@ class LoginPageState extends State<LoginPage> {
             imagePath,
             height: 30.0.h,
             width: 30.0.w,
-            fit: BoxFit.cover,
+            fit: BoxFit.fill,
           ),
         ),
       ),
@@ -205,7 +221,7 @@ class LoginPageState extends State<LoginPage> {
 
   Widget _buildSocialBtnRow() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: _buildSocialBtn(
         'images/login_phone.png',
       ),

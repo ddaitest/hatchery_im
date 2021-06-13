@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_users.dart';
-import 'package:hatchery_im/common/widget/chat_home/chat.dart';
+import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 
@@ -13,60 +13,49 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<ChatUsers> chatUsers = [
     ChatUsers(
-        text: "Jane Russel",
-        secondaryText: "Awesome Setup",
+        text: "加勒比海带",
+        secondaryText: "开黑吗？",
         image: "images/userImage1.jpeg",
-        time: "Now"),
+        time: "现在"),
     ChatUsers(
         text: "Glady's Murphy",
         secondaryText: "That's Great",
         image: "images/userImage2.jpeg",
-        time: "Yesterday"),
+        time: "昨天"),
     ChatUsers(
         text: "Jorge Henry",
         secondaryText: "Hey where are you?",
         image: "images/userImage3.jpeg",
-        time: "31 Mar"),
+        time: "5月31日"),
     ChatUsers(
         text: "Philip Fox",
         secondaryText: "Busy! Call me in 20 mins",
         image: "images/userImage4.jpeg",
-        time: "28 Mar"),
+        time: "5月19日"),
     ChatUsers(
         text: "Debra Hawkins",
         secondaryText: "Thankyou, It's awesome",
         image: "images/userImage5.jpeg",
-        time: "23 Mar"),
+        time: "4月11日"),
     ChatUsers(
         text: "Jacob Pena",
         secondaryText: "will update you in evening",
         image: "images/userImage6.jpeg",
-        time: "17 Mar"),
+        time: "5月17日"),
     ChatUsers(
         text: "Andrey Jones",
         secondaryText: "Can you please share the file?",
         image: "images/userImage7.jpeg",
-        time: "24 Feb"),
+        time: "今天"),
     ChatUsers(
         text: "John Wick",
         secondaryText: "How are you?",
         image: "images/userImage8.jpeg",
-        time: "18 Feb"),
+        time: "一年前"),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarFactory.getMain('消息列表(10)', actions: [
-        Container(
-          padding: const EdgeInsets.only(right: 16),
-          child: Icon(
-            Icons.more_vert,
-            color: Colors.black,
-            size: 30,
-          ),
-        ),
-      ]),
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -76,7 +65,6 @@ class _ChatPageState extends State<ChatPage> {
             ListView.builder(
               itemCount: chatUsers.length,
               shrinkWrap: true,
-              padding: const EdgeInsets.only(top: 16),
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return ChatUsersListItem(

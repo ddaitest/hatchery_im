@@ -55,10 +55,13 @@ class TextStyles {
   final TextStyle groupMainName = TextStyle(
       fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
-  final TextStyle groupMembersNumberText = TextStyle(
-      fontSize: 14.0.sp,
-      fontWeight: FontWeight.w400,
-      color: ColorInfo().subtitleColor);
+  final TextStyle groupMembersNumberText =
+      TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
+
+  final TextStyle groupMembersMoreText = TextStyle(
+      fontSize: 9.0.sp,
+      fontWeight: FontWeight.w500,
+      color: ColorInfo().mainTextColor);
 
   final TextStyle loginNormalText = TextStyle(
     fontSize: 14.0.sp,
@@ -76,6 +79,11 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
+  final TextStyle hintTextText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().mainTextColor);
+
   final TextStyle loginLinkText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.bold,
@@ -85,6 +93,46 @@ class TextStyles {
       fontSize: 18.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().btnTextColor);
+
+  final TextStyle friendsText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
+
+  final TextStyle meNickNameText = TextStyle(
+      fontSize: 19.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+
+  final TextStyle meNotesText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w300, color: ColorInfo().diver);
+
+  final TextStyle meListTitleText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
+
+  final TextStyle meListSettingText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w300, color: ColorInfo().diver);
+
+  final TextStyle newGroupSettingTitleText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.normal,
+      color: ColorInfo().mainColor);
+
+  final TextStyle newGroupNextBtnText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().btnTextColor);
+
+  final TextStyle chatDetailAppBarNameText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w600, color: ColorInfo().diver);
+
+  final TextStyle chatBubbleSenderText = TextStyle(
+      fontSize: 13.0.sp, color: ColorInfo().mainTextColor, height: 1.5);
+
+  final TextStyle chatBubbleReceiverText =
+      TextStyle(fontSize: 13.0.sp, color: ColorInfo().diver, height: 1.5);
+
+  final TextStyle chatBubbleTimeText =
+      TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
+
+  final TextStyle logOutBtnText =
+      TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {
@@ -99,9 +147,11 @@ class ColorInfo {
   final mainColor = const Color(0xFF478DE0);
   final mainTextColor = Colors.white;
   final mainBackGroundColor = Colors.white;
+  final redColor = Colors.red;
+  final dividerColor = Colors.black12;
   get btnTextColor => mainColor;
   final diver = Colors.black87;
-  final subtitleColor = Colors.white54;
+  final subtitleColor = Colors.grey.shade500;
   get homeTabSelected => mainColor;
   get homeTabUnSelected => diver;
 }

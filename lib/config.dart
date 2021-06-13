@@ -6,7 +6,7 @@ class SPKey {
   static final String showAgreement = 'ShowAgreement';
   static final String splashAD = 'splashAD';
   static final String userInfo = 'userInfo';
-  static final String popTimes = 'popTimes';
+  static final String config = 'config';
   static final String CONFIG_KEY = 'configKey';
   static final String upgrade = 'upgrade';
 
@@ -25,15 +25,16 @@ class TimeConfig {
 }
 
 const mainTabs = [
-  TabInfo('消息', Icons.message_outlined, Icons.message),
-  TabInfo('联系人', Icons.group_outlined, Icons.group),
-  TabInfo('我的', Icons.account_circle_outlined, Icons.account_circle),
+  TabInfo(Icons.messenger_outline, Icons.messenger),
+  TabInfo(Icons.account_circle_outlined, Icons.account_circle),
+  TabInfo(Icons.group_outlined, Icons.group),
+  TabInfo(Icons.perm_identity, Icons.person),
 ];
 
 class TabInfo {
-  final String label;
+  final String? label;
   final IconData icon;
   final IconData activeIcon;
 
-  const TabInfo(this.label, this.icon, this.activeIcon);
+  const TabInfo(this.icon, this.activeIcon, {this.label});
 }

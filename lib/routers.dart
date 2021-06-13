@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'package:hatchery_im/busniess/login/register_page.dart';
 import 'package:hatchery_im/busniess/login/register_page_detail.dart';
+import 'package:hatchery_im/busniess/profile_page/profile_edit_page.dart';
+import 'package:hatchery_im/busniess/group_page/createNewGroup.dart';
+import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'package:hatchery_im/busniess/test/TestPage.dart';
+import 'package:hatchery_im/busniess/group_page/group.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -20,12 +24,18 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
+      case '/group':
+        return MaterialPageRoute(builder: (_) => GroupPage());
+      case '/profile_edit':
+        return MaterialPageRoute(builder: (_) => ProfileEditPage());
+      case '/create_group':
+        return MaterialPageRoute(builder: (_) => NewGroupPage());
+      case '/create_group_detail':
+        return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
-      // case '/register_detail':
-      //   return MaterialPageRoute(builder: (_) => RegisterPageDetail());
 
-      // case '/splash':
+    // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());
       // case '/feedback_list':
       //   return CupertinoPageRoute(builder: (_) => FeedbackListPage());
@@ -69,6 +79,13 @@ class Routers {
   ///一般跳转，无参数
   static Future<dynamic> navigateTo(String routeName, {Object? arg}) {
     return App.navState.currentState!.pushNamed(routeName, arguments: arg);
+  }
+
+  static Future<dynamic> navigateAndRemoveUntil(String routeName,
+      {Object? arg}) {
+    return App.navState.currentState!.pushNamedAndRemoveUntil(
+        routeName, (Route<dynamic> route) => false,
+        arguments: arg);
   }
 
   static Future<dynamic> navigateReplace(String routeName, {Object? arg}) {

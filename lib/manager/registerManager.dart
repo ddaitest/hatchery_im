@@ -29,7 +29,7 @@ class RegisterManager extends ChangeNotifier {
 
   Future<bool> uploadImage(String filePath) async {
     ApiResult result = await compressionImage(filePath)
-        .then((value) => API_UPLOAD.uploadImage(value, (count, total) {
+        .then((value) => API.uploadImage(value, (count, total) {
               uploadProgress = count.toDouble() / total.toDouble();
               print("DEBUG=> uploadProgress = $uploadProgress");
               notifyListeners();
@@ -60,7 +60,7 @@ class RegisterManager extends ChangeNotifier {
         loginName, nickName, avatar, password, notes, phone, email, address);
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
-      Routers.navigateReplace('/login');
+      Routers.navigateAndRemoveUntil('/login');
       showToast('注册成功');
     } else {
       showToast('账号已注册,请更换账号后重试');

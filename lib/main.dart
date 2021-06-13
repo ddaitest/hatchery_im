@@ -10,6 +10,11 @@ import 'package:hatchery_im/manager/appManager.dart';
 import 'package:hatchery_im/manager/splashManager.dart';
 import 'package:hatchery_im/manager/loginManager.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
+import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/manager/groupsManager.dart';
+import 'package:hatchery_im/manager/newGroupsManager.dart';
+import 'package:hatchery_im/manager/myProfileManager.dart';
+import 'package:hatchery_im/manager/chatDetailManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +39,11 @@ void main() {
         ChangeNotifierProvider(create: (_) => SplashManager()),
         ChangeNotifierProvider(create: (_) => LoginManager()),
         ChangeNotifierProvider(create: (_) => RegisterManager()),
+        ChangeNotifierProvider(create: (_) => ContactsManager()),
+        ChangeNotifierProvider(create: (_) => GroupsManager()),
+        ChangeNotifierProvider(create: (_) => NewGroupsManager()),
+        ChangeNotifierProvider(create: (_) => MyProfileManager()),
+        ChangeNotifierProvider(create: (_) => ChatDetailManager()),
       ],
       child: MyApp(),
     ),
@@ -45,11 +55,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => MaterialApp(
-        title: 'Flutter Demo',
         navigatorKey: App.navState,
         theme: ThemeData(
           textTheme: GoogleFonts.notoSansTextTheme(),
-          primarySwatch: Colors.blue,
+          // primarySwatch: Colors.blue,
         ),
         // initialRoute: '/splash',
         initialRoute: '/test',

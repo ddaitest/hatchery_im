@@ -3,7 +3,8 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 
 class AppBarFactory {
-  static AppBar getMain(String title, {List<Widget>? actions}) {
+  static AppBar getMain(String title,
+      {Color backGroundColorList = Colors.transparent, List<Widget>? actions}) {
     return AppBar(
       title: Text(
         title,
@@ -11,7 +12,7 @@ class AppBarFactory {
             fontSize: 20.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: false,
-      backgroundColor: Colors.white,
+      backgroundColor: backGroundColorList,
       brightness: Brightness.light,
       elevation: 0.0,
       automaticallyImplyLeading: false,
@@ -27,15 +28,15 @@ class AppBarFactory {
             fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w500),
       ),
       centerTitle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       brightness: Brightness.light,
       automaticallyImplyLeading: true,
-      elevation: 0.5,
+      elevation: 0.0,
     );
   }
 
   static AppBar backButton(String title,
-      {Color backGroundColor = const Color(0xFF73AEF5),
+      {Color backGroundColor = Colors.transparent,
       Color backBtnColor = Colors.white,
       List<Widget>? actions}) {
     return AppBar(
@@ -48,9 +49,12 @@ class AppBarFactory {
       backgroundColor: backGroundColor,
       brightness: Brightness.light,
       elevation: 0.0,
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back, size: 30.0, color: backBtnColor),
-        onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
+      leading: Container(
+        padding: const EdgeInsets.all(6.0),
+        child: IconButton(
+          icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+          onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
+        ),
       ),
       automaticallyImplyLeading: false,
       actions: actions ?? [],

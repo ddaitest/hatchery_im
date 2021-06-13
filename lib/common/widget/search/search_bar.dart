@@ -7,7 +7,7 @@ class SearchBarView extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Container(
-        padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+        padding: EdgeInsets.all(16.0),
         child: TextField(
           enabled: false,
           decoration: InputDecoration(
@@ -19,7 +19,7 @@ class SearchBarView extends StatelessWidget {
               size: 20,
             ),
             filled: true,
-            fillColor: Colors.grey.shade100,
+            fillColor: Colors.white,
             contentPadding: const EdgeInsets.all(11),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
