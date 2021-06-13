@@ -10,6 +10,10 @@ class Log {
   static final String _ANSI_WHITE = "\u001B[37m";
   static final String _ANSI_Magenta = "\033[35;1m";
 
+  static yellow(String msg) {
+    log(msg, color: LColor.YELLOW);
+  }
+
   static log(String msg, {LColor color = LColor.WHITE}) {
     switch (color) {
       case LColor.WHITE:
