@@ -81,7 +81,8 @@ class _ChatBubbleState extends State<ChatBubble> {
       case "TEXT":
         {
           // finalView = _imageMessageView();
-          finalView = _textMessageView();
+          // finalView = _textMessageView();
+          finalView = _voiceMessageView();
         }
         break;
       case "IMAGE":
@@ -96,7 +97,7 @@ class _ChatBubbleState extends State<ChatBubble> {
         break;
       case "VOICE":
         {
-          finalView = _textMessageView();
+          finalView = _voiceMessageView();
         }
         break;
       case "FILE":
@@ -196,5 +197,34 @@ class _ChatBubbleState extends State<ChatBubble> {
             ),
           );
         });
+  }
+
+  Widget _voiceMessageView() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: widget.messageBelongType == MessageBelongType.Receiver
+            ? Colors.white
+            : Flavors.colorInfo.mainColor,
+      ),
+      padding: EdgeInsets.all(10),
+      child: Container(
+        height: 20.0.h,
+        width: 200.0.w,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text('01:35', style: Flavors.textStyles.chatBubbleSenderText),
+            Container(
+              height: 5.0.h,
+              width: 120.0.w,
+              color: Flavors.colorInfo.mainBackGroundColor,
+            ),
+            Icon(Icons.play_circle_outline,
+                color: Flavors.colorInfo.mainBackGroundColor)
+          ],
+        ),
+      ),
+    );
   }
 }

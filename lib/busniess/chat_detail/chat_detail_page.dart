@@ -159,8 +159,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       child: FloatingActionButton(
         onPressed: () {},
         child: Icon(
-          Icons.send,
+          Icons.keyboard_voice,
           color: Colors.white,
+          size: 30.0,
         ),
         backgroundColor: Colors.pink,
         elevation: 0,
