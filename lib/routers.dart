@@ -4,6 +4,7 @@ import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'package:hatchery_im/busniess/login/register_page.dart';
 import 'package:hatchery_im/busniess/login/register_page_detail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
+import 'package:hatchery_im/busniess/test/TestPage.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -19,6 +20,8 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
+      case '/test':
+        return MaterialPageRoute(builder: (_) => TestPage());
       // case '/register_detail':
       //   return MaterialPageRoute(builder: (_) => RegisterPageDetail());
 
