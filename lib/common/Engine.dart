@@ -100,6 +100,7 @@ class Engine {
     forceStop = true;
     _channel?.sink.close();
     _channel = null;
+    _stopHeartBeat();
   }
 
   sendProtocol(Map<String, dynamic> object) {

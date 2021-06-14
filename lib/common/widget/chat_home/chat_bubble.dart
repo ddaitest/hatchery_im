@@ -81,8 +81,8 @@ class _ChatBubbleState extends State<ChatBubble> {
       case "TEXT":
         {
           // finalView = _imageMessageView();
-          // finalView = _textMessageView();
-          finalView = _voiceMessageView();
+          finalView = _textMessageView();
+          // finalView = _voiceMessageView();
         }
         break;
       case "IMAGE":

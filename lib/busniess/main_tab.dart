@@ -85,8 +85,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       case '创建群组':
         Routers.navigateTo("/create_group");
         break;
-      case '关于与帮助':
-        Routers.navigateTo("/about");
+      case 'TestPage':
+        Routers.navigateTo("/test");
         break;
     }
   }
@@ -101,7 +101,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             onSelected: handleClick,
             icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
             itemBuilder: (BuildContext context) {
-              return {'添加好友', '创建群组'}.map((String choice) {
+              return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),

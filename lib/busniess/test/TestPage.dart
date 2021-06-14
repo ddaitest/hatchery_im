@@ -39,7 +39,7 @@ class TestState extends State<TestPage> {
   Engine engine = Engine.getInstance();
 
   test0() {
-    engine.init('ws://149.129.176.107:5889/ws', "userId");
+    engine.init('ws://149.129.176.107:5889/ws', "U202115215031100001");
   }
 
   test1() {
@@ -50,9 +50,10 @@ class TestState extends State<TestPage> {
   test2() {
     var data = Map<String, dynamic>();
     data["msg_id"] = "10001";
-    data["user_id"] = "1";
+    data["user_id"] = "U202115215031100001";
     data["type"] = "AUTH";
-    data["token"] = "1";
+    data["token"] =
+        "F65E6D12A9E36E624D847EC0F5B64E8ED4CBE5AEB962C0902BA9DCFD6A00561BDEC8847F6ED8E68D8675AE5D21C1FA7FE2D9792C5741180B18A47D2F235B6ADCD201F2482807825D2B569421AAD22D5656439FABBF3C1F68199B6566AF5DB5A75D7AA044668AA66911ABEC56C00E13DDDA9E02B9F445ABBFD32162A0CC06B05D53AFD686189DECDC6163D0519E9393BE91A583399B13E73A50DD827C710E0AA085423B18D87854E6932433F33943EB20C2B9A341F3E2D1480693D72901EDBE54AA5A5822F08E4D3BD09D78B00A19DF7831E888B1DD9CFFE4A0F947F57A973C816595F6FB5678FE379AB49099D106E7B0923BC8079C8B809CDCD6D9F76BB0EC5200A3E7EFA502C3BB0D1D7CA9952BA614";
     data["source"] = "ANDROID";
     data["device_id"] = "device_id_123";
     data["login_ip"] = "1.2.3.4";
@@ -69,7 +70,17 @@ class TestState extends State<TestPage> {
     engine.disconnect();
   }
 
-  send1(){
-
+  send1() {
+    var data = Map<String, dynamic>();
+    data["msg_id"] = "10001";
+    data["type"] = "CHAT";
+    data["to"] = "U202114522384900001";
+    data["nick"] = "nick";
+    data["frome"] = "U202115215031100001";
+    data["icon"] = "icon";
+    data["source"] = "ANDROID";
+    data["content"] = "DDDDDDDDDDDDDDDDDD";
+    data["content_type"] = "TEXT";
+    engine.sendProtocol(data);
   }
 }
