@@ -203,9 +203,6 @@ checkMessageTime(String createTime) {
   } else if (differenceTime == 1) {
     _finalShowTime =
         '昨天 ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
-  } else if (differenceTime > 1 && differenceTime <= 7) {
-    _finalShowTime =
-        '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
   } else {
     _finalShowTime =
         '${_responseCreateTime.year}-${_responseCreateTime.month}-${_responseCreateTime.day} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';

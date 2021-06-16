@@ -131,6 +131,12 @@ class TextStyles {
   final TextStyle chatBubbleTimeText =
       TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
 
+  final TextStyle chatBubbleVoiceSenderText =
+      TextStyle(fontSize: 13.0.sp, color: ColorInfo().mainTextColor);
+
+  final TextStyle chatBubbleVoiceReceiverText =
+      TextStyle(fontSize: 13.0.sp, color: ColorInfo().blueGrey);
+
   final TextStyle logOutBtnText =
       TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);
 }
@@ -149,6 +155,8 @@ class ColorInfo {
   final mainBackGroundColor = Colors.white;
   final redColor = Colors.red;
   final dividerColor = Colors.black12;
+  final blueGrey = Colors.blueGrey;
+  final lightGrep = Colors.grey[300];
   get btnTextColor => mainColor;
   final diver = Colors.black87;
   final subtitleColor = Colors.grey.shade500;

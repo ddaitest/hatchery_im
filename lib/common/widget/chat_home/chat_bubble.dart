@@ -1,4 +1,4 @@
-import 'package:hatchery_im/busniess/models/chat_message.dart';
+import 'dart:async';
 import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
+import 'package:hatchery_im/common/widget/chat_detail/voiceMessageView.dart';
 
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
@@ -22,6 +23,8 @@ class ChatBubble extends StatefulWidget {
 }
 
 class _ChatBubbleState extends State<ChatBubble> {
+  String exampleAudioFilePath =
+      'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -61,7 +64,8 @@ class _ChatBubbleState extends State<ChatBubble> {
                   ? CrossAxisAlignment.start
                   : CrossAxisAlignment.end,
           children: [
-            switchMessageTypeView(widget.friendsHistoryMessages.contentType),
+            switchMessageTypeView(widget.friendsHistoryMessages.contentType,
+                widget.messageBelongType),
             SizedBox(height: 5.0.h),
             Text(
                 '${checkMessageTime(widget.friendsHistoryMessages.createTime)}',
@@ -75,14 +79,15 @@ class _ChatBubbleState extends State<ChatBubble> {
     );
   }
 
-  Widget switchMessageTypeView(String messageType) {
+  Widget switchMessageTypeView(
+      String messageType, MessageBelongType belongType) {
     Widget finalView;
     switch (messageType) {
       case "TEXT":
         {
           // finalView = _imageMessageView();
-          finalView = _textMessageView();
-          // finalView = _voiceMessageView();
+          // finalView = _textMessageView();
+          finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
         }
         break;
       case "IMAGE":
@@ -92,48 +97,48 @@ class _ChatBubbleState extends State<ChatBubble> {
         break;
       case "VIDEO":
         {
-          finalView = _textMessageView();
+          finalView = _textMessageView(belongType);
         }
         break;
       case "VOICE":
         {
-          finalView = _voiceMessageView();
+          finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
         }
         break;
       case "FILE":
         {
-          finalView = _textMessageView();
+          finalView = _textMessageView(belongType);
         }
         break;
       case "URL":
         {
-          finalView = _textMessageView();
+          finalView = _textMessageView(belongType);
         }
         break;
       case "CARD":
         {
-          finalView = _textMessageView();
+          finalView = _textMessageView(belongType);
         }
         break;
       case "STICKER":
         {
-          finalView = _textMessageView();
+          finalView = _textMessageView(belongType);
         }
         break;
       default:
         {
-          finalView = _textMessageView();
+          finalView = _textMessageView(belongType);
         }
         break;
     }
     return finalView;
   }
 
-  Widget _textMessageView() {
+  Widget _textMessageView(MessageBelongType belongType) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
-        color: widget.messageBelongType == MessageBelongType.Receiver
+        color: belongType == MessageBelongType.Receiver
             ? Colors.white
             : Flavors.colorInfo.mainColor,
       ),
@@ -197,34 +202,5 @@ class _ChatBubbleState extends State<ChatBubble> {
             ),
           );
         });
-  }
-
-  Widget _voiceMessageView() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: widget.messageBelongType == MessageBelongType.Receiver
-            ? Colors.white
-            : Flavors.colorInfo.mainColor,
-      ),
-      padding: EdgeInsets.all(10),
-      child: Container(
-        height: 20.0.h,
-        width: 200.0.w,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text('01:35', style: Flavors.textStyles.chatBubbleSenderText),
-            Container(
-              height: 5.0.h,
-              width: 120.0.w,
-              color: Flavors.colorInfo.mainBackGroundColor,
-            ),
-            Icon(Icons.play_circle_outline,
-                color: Flavors.colorInfo.mainBackGroundColor)
-          ],
-        ),
-      ),
-    );
   }
 }

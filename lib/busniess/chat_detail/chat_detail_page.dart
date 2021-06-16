@@ -138,7 +138,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               controller: textEditingController,
               maxLines: null,
               minLines: 1,
-              maxLength: 125,
+              maxLength: 140,
               keyboardType: TextInputType.multiline,
               cursorColor: Flavors.colorInfo.mainColor,
               decoration: InputDecoration(

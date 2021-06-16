@@ -74,9 +74,9 @@ class TestState extends State<TestPage> {
     var data = Map<String, dynamic>();
     data["msg_id"] = "10001";
     data["type"] = "CHAT";
-    data["to"] = "U202114522384900001";
+    data["to"] = "U202115215031100001";
     data["nick"] = "nick";
-    data["frome"] = "U202115215031100001";
+    data["from"] = "U202114522384900001";
     data["icon"] = "icon";
     data["source"] = "ANDROID";
     data["content"] = "DDDDDDDDDDDDDDDDDD";
