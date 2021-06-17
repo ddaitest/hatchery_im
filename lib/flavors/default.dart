@@ -132,10 +132,10 @@ class TextStyles {
       TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
 
   final TextStyle chatBubbleVoiceSenderText =
-      TextStyle(fontSize: 13.0.sp, color: ColorInfo().mainTextColor);
+      TextStyle(fontSize: 15.0.sp, color: ColorInfo().mainTextColor);
 
   final TextStyle chatBubbleVoiceReceiverText =
-      TextStyle(fontSize: 13.0.sp, color: ColorInfo().blueGrey);
+      TextStyle(fontSize: 15.0.sp, color: ColorInfo().blueGrey);
 
   final TextStyle logOutBtnText =
       TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);

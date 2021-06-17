@@ -209,7 +209,7 @@ class API {
   }
 
   ///上传图片
-  static Future<ApiResult> uploadImage(
+  static Future<ApiResult> uploadFile(
       String filePath, ProgressCallback callback) async {
     init();
     var name =

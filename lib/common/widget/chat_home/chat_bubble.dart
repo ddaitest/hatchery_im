@@ -7,8 +7,9 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/common/widget/imageDetail.dart';
 import 'package:hatchery_im/common/widget/chat_detail/voiceMessageView.dart';
+import 'package:hatchery_im/common/widget/chat_detail/imageMessageView.dart';
+import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
@@ -24,7 +25,11 @@ class ChatBubble extends StatefulWidget {
 
 class _ChatBubbleState extends State<ChatBubble> {
   String exampleAudioFilePath =
-      'https://luan.xyz/files/audio/ambient_c_motion.mp3';
+      'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
+  String imageTestUrl =
+      'https://img0.baidu.com/it/u=2407531684,1522315943&fm=11&fmt=auto&gp=0.jpg';
+  String videoTestUrl =
+      'https://vd4.bdstatic.com/mda-kfeejrf38q7chb72/hd/mda-kfeejrf38q7chb72.mp4';
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -59,17 +64,15 @@ class _ChatBubbleState extends State<ChatBubble> {
             }),
         SizedBox(width: 10.0.w),
         Column(
-          crossAxisAlignment:
-              widget.messageBelongType == MessageBelongType.Receiver
-                  ? CrossAxisAlignment.start
-                  : CrossAxisAlignment.end,
+          crossAxisAlignment: _createTimePosition(
+              widget.friendsHistoryMessages.contentType,
+              widget.messageBelongType),
           children: [
             switchMessageTypeView(widget.friendsHistoryMessages.contentType,
                 widget.messageBelongType),
             SizedBox(height: 5.0.h),
             Text(
                 '${checkMessageTime(widget.friendsHistoryMessages.createTime)}',
-                // '${widget.friendsHistoryMessages.createTime}',
                 maxLines: 10,
                 softWrap: true,
                 style: Flavors.textStyles.chatBubbleTimeText),
@@ -85,19 +88,20 @@ class _ChatBubbleState extends State<ChatBubble> {
     switch (messageType) {
       case "TEXT":
         {
-          // finalView = _imageMessageView();
-          // finalView = _textMessageView();
-          finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
+          // finalView = ImageMessageWidget(imageTestUrl, belongType);
+          finalView = _textMessageView(belongType);
+          // finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
+          // finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
         break;
       case "IMAGE":
         {
-          finalView = _imageMessageView();
+          finalView = ImageMessageWidget(imageTestUrl, belongType);
         }
         break;
       case "VIDEO":
         {
-          finalView = _textMessageView(belongType);
+          finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
         break;
       case "VOICE":
@@ -157,50 +161,16 @@ class _ChatBubbleState extends State<ChatBubble> {
     );
   }
 
-  Widget _imageMessageView() {
-    return CachedNetworkImage(
-        width: 130.0.w,
-        fit: BoxFit.cover,
-        imageUrl:
-            'https://img0.baidu.com/it/u=2407531684,1522315943&fm=11&fmt=auto&gp=0.jpg',
-        // imageUrl: widget.friendsHistoryMessages.content,
-        placeholder: (context, url) => Container(
-              width: 150.0.w,
-              height: 100.0.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Flavors.colorInfo.mainBackGroundColor,
-              ),
-              child: Center(
-                child: CupertinoActivityIndicator(),
-              ),
-            ),
-        errorWidget: (context, url, error) => Container(
-              width: 150.0.w,
-              height: 100.0.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Flavors.colorInfo.mainBackGroundColor,
-              ),
-              child: Center(
-                child: Icon(Icons.image_not_supported_outlined, size: 40),
-              ),
-            ),
-        imageBuilder: (context, imageProvider) {
-          return GestureDetector(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => ImageDetailViewPage(image: imageProvider))),
-            child: Container(
-              constraints:
-                  BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image(image: imageProvider, fit: BoxFit.cover),
-              ),
-            ),
-          );
-        });
+  CrossAxisAlignment _createTimePosition(
+      String messageType, MessageBelongType belongType) {
+    if (messageType == 'IMAGE' && messageType == 'VIDEO') {
+      return CrossAxisAlignment.center;
+    } else {
+      if (belongType == MessageBelongType.Receiver) {
+        return CrossAxisAlignment.end;
+      } else {
+        return CrossAxisAlignment.start;
+      }
+    }
   }
 }

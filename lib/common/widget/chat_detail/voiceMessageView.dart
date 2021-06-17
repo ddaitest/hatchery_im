@@ -25,7 +25,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
   StreamSubscription? _durationSubscription;
   StreamSubscription? _positionSubscription;
   String? _durationText;
-  String get _positionText => _audioPosition?.toString().split('.').first ?? '';
   bool get _isPlaying => _playerState == PlayerState.PLAYING;
   bool get _isPaused => _playerState == PlayerState.PAUSED;
   @override
@@ -36,36 +35,22 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print("DEBUG=> _durationText ${_durationText}");
     return _voiceMessageView(widget.messageBelongType);
-    // print("DEBUG=> _durationText $_durationText");
-    // if (_durationText == '') {
-    //   return Container();
-    // } else {
-    //
-    // }
   }
 
   void _initAudioPlayer() {
     _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
     _audioPlayer.setUrl(widget.voiceMessageUrl);
     _audioPlayer.onDurationChanged.listen((duration) {
-      if (_durationText == '')
-        setState(() {
-          _durationText = durationTransform(duration.inSeconds);
-        });
-      // _countDownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      //   int _currentTime = duration.inSeconds;
-      //   if (timer.tick == duration.inSeconds) {
-      //     _countDownTimer!.cancel();
-      //     _countDownTimer = null;
-      //   } else {
-      //     setState(() => _currentTime--);
-      //   }
-      // });
+      if (_durationText == null) _audioDuration = duration;
+      setState(() {
+        _durationText = durationTransform(duration.inSeconds);
+      });
     });
     _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
           _audioPosition = p;
+          if (_audioPosition != null && _audioDuration != null)
+            _voiceCountDownTime();
         }));
 
     _audioPlayer.onPlayerStateChanged.listen((state) {
@@ -129,17 +114,17 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
         ),
         padding: EdgeInsets.all(10),
         child: Container(
-          height: 20.0.h,
+          height: 30.0.h,
           width: 200.0.w,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(_durationText ?? '...',
                   style: belongType == MessageBelongType.Receiver
                       ? Flavors.textStyles.chatBubbleVoiceReceiverText
                       : Flavors.textStyles.chatBubbleVoiceSenderText),
               Container(
-                width: 100.0.w,
+                width: 120.0.w,
                 child: LinearProgressIndicator(
                   backgroundColor: Flavors.colorInfo.lightGrep,
                   valueColor: AlwaysStoppedAnimation(
@@ -156,8 +141,11 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
                       : 0.02,
                 ),
               ),
-              Icon(Icons.play_circle_outline,
-                  size: 25.0,
+              Icon(
+                  _playerState == PlayerState.PLAYING
+                      ? Icons.pause_circle_outline
+                      : Icons.play_circle_outline,
+                  size: 30.0,
                   color: belongType == MessageBelongType.Receiver
                       ? Flavors.colorInfo.blueGrey
                       : Flavors.colorInfo.mainBackGroundColor)
@@ -166,6 +154,25 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
         ),
       ),
     );
+  }
+
+  void _voiceCountDownTime() {
+    if (_audioPosition != null && _audioDuration != null) {
+      int? _finalTimeSeconds =
+          _audioDuration!.inSeconds - _audioPosition!.inSeconds;
+      if (_finalTimeSeconds > 0) {
+        _durationText = durationTransform(_finalTimeSeconds);
+      } else if (_finalTimeSeconds == 0) {
+        voiceFinishReset();
+      } else {
+        voiceFinishReset();
+      }
+    }
+  }
+
+  void voiceFinishReset() {
+    _durationText = durationTransform(_audioDuration!.inSeconds);
+    _stop();
   }
 
   @override
