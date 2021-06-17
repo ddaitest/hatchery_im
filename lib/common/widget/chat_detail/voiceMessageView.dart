@@ -50,9 +50,10 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
     _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
     _audioPlayer.setUrl(widget.voiceMessageUrl);
     _audioPlayer.onDurationChanged.listen((duration) {
-      setState(() {
-        _durationText = durationTransform(duration.inSeconds);
-      });
+      if (_durationText == '')
+        setState(() {
+          _durationText = durationTransform(duration.inSeconds);
+        });
       // _countDownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       //   int _currentTime = duration.inSeconds;
       //   if (timer.tick == duration.inSeconds) {
@@ -86,7 +87,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
     final result = await _audioPlayer.play(widget.voiceMessageUrl,
         isLocal: false, position: playPosition);
     if (result == 1) {
-      print("DEBUG=> OK $result");
       setState(() => _playerState = PlayerState.PLAYING);
     }
 
