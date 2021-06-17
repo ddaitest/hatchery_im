@@ -24,7 +24,7 @@ class ChatBubble extends StatefulWidget {
 
 class _ChatBubbleState extends State<ChatBubble> {
   String exampleAudioFilePath =
-      'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
+      'https://luan.xyz/files/audio/ambient_c_motion.mp3';
   @override
   Widget build(BuildContext context) {
     return Container(

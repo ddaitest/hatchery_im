@@ -196,13 +196,15 @@ checkMessageTime(String createTime) {
           '${_timeNow.year}${_timeNow.month}${_timeNow.day}') -
       int.parse(
           '${_responseCreateTime.year}${_responseCreateTime.month}${_responseCreateTime.day}');
-  print("DEBUG=> differenceTime ${differenceTime.abs()}");
   if (differenceTime == 0) {
     _finalShowTime =
         '${_responseCreateTime.hour}:${_responseCreateTime.minute}';
   } else if (differenceTime == 1) {
     _finalShowTime =
         '昨天 ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+  } else if (differenceTime > 1 && differenceTime <= 7) {
+    _finalShowTime =
+        '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
   } else {
     _finalShowTime =
         '${_responseCreateTime.year}-${_responseCreateTime.month}-${_responseCreateTime.day} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
@@ -239,4 +241,11 @@ weekDay(int weekNumbers) {
       break;
   }
   return weekCN;
+}
+
+//时间转换 将秒转换为小时分钟
+String? durationTransform(int seconds) {
+  var d = Duration(seconds: seconds);
+  List<String> parts = d.toString().split(':');
+  return '${parts[1]}:${parts[2].split('.')[0]}';
 }
