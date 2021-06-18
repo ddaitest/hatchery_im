@@ -17,7 +17,10 @@ class VideoMessageWidget extends StatefulWidget {
   _VideoMessageWidgetState createState() => _VideoMessageWidgetState();
 }
 
-class _VideoMessageWidgetState extends State<VideoMessageWidget> {
+class _VideoMessageWidgetState extends State<VideoMessageWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late FlickManager flickManager;
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _VideoMessageWidgetState extends State<VideoMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return _voiceMessageView(widget.messageBelongType);
   }
 

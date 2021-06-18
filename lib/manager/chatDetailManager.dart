@@ -28,7 +28,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   queryFriendsHistoryMessages(String friendId, int? currentMsgID,
-      {int current = 0, int size = 10}) async {
+      {int current = 0, int size = 100}) async {
     API
         .messageHistoryWithFriend(
             friendID: friendId,

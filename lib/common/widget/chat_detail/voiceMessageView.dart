@@ -15,10 +15,11 @@ class VoiceMessageWidget extends StatefulWidget {
   _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();
 }
 
-class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
+class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   late AudioPlayer _audioPlayer;
-  Timer? _countDownTimer;
-  PlayerState? _audioPlayerState;
   PlayerState _playerState = PlayerState.STOPPED;
   Duration? _audioDuration;
   Duration? _audioPosition;
@@ -26,7 +27,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
   StreamSubscription? _positionSubscription;
   String? _durationText;
   bool get _isPlaying => _playerState == PlayerState.PLAYING;
-  bool get _isPaused => _playerState == PlayerState.PAUSED;
   @override
   void initState() {
     _initAudioPlayer();
@@ -35,6 +35,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return _voiceMessageView(widget.messageBelongType);
   }
 
@@ -56,7 +57,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
     _audioPlayer.onPlayerStateChanged.listen((state) {
       if (mounted) {
         setState(() {
-          _audioPlayerState = state;
+          _playerState = state;
         });
       }
     });
@@ -112,14 +113,14 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
               ? Colors.white
               : Flavors.colorInfo.mainColor,
         ),
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Container(
-          height: 30.0.h,
+          height: 25.0.h,
           width: 200.0.w,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(_durationText ?? '...',
+              Text(_durationText ?? '....',
                   style: belongType == MessageBelongType.Receiver
                       ? Flavors.textStyles.chatBubbleVoiceReceiverText
                       : Flavors.textStyles.chatBubbleVoiceSenderText),
@@ -177,7 +178,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
 
   @override
   void dispose() {
-    // _countDownTimer?.cancel();
     _audioPlayer.dispose();
     _durationSubscription?.cancel();
     _positionSubscription?.cancel();

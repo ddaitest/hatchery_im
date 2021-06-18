@@ -23,15 +23,13 @@ class ChatBubble extends StatefulWidget {
   _ChatBubbleState createState() => _ChatBubbleState();
 }
 
-class _ChatBubbleState extends State<ChatBubble> {
-  String exampleAudioFilePath =
-      'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
-  String imageTestUrl =
-      'https://img0.baidu.com/it/u=2407531684,1522315943&fm=11&fmt=auto&gp=0.jpg';
-  String videoTestUrl =
-      'https://vd4.bdstatic.com/mda-kfeejrf38q7chb72/hd/mda-kfeejrf38q7chb72.mp4';
+class _ChatBubbleState extends State<ChatBubble>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
         child: _chatBubbleView('${widget.avatarPicUrl}'));
@@ -46,8 +44,7 @@ class _ChatBubbleState extends State<ChatBubble> {
           : TextDirection.rtl,
       children: [
         CachedNetworkImage(
-            imageUrl: avatarUrl ??
-                'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3436121203,3749922833&fm=26&gp=0.jpg',
+            imageUrl: avatarUrl!,
             placeholder: (context, url) => CircleAvatar(
                   backgroundImage: AssetImage('images/default_avatar.png'),
                   maxRadius: 20,
@@ -64,9 +61,7 @@ class _ChatBubbleState extends State<ChatBubble> {
             }),
         SizedBox(width: 10.0.w),
         Column(
-          crossAxisAlignment: _createTimePosition(
-              widget.friendsHistoryMessages.contentType,
-              widget.messageBelongType),
+          crossAxisAlignment: _createTimePosition(widget.messageBelongType),
           children: [
             switchMessageTypeView(widget.friendsHistoryMessages.contentType,
                 widget.messageBelongType),
@@ -96,17 +91,20 @@ class _ChatBubbleState extends State<ChatBubble> {
         break;
       case "IMAGE":
         {
-          finalView = ImageMessageWidget(imageTestUrl, belongType);
+          finalView = ImageMessageWidget(
+              widget.friendsHistoryMessages.content, belongType);
         }
         break;
       case "VIDEO":
         {
-          finalView = VideoMessageWidget(videoTestUrl, belongType);
+          finalView = VideoMessageWidget(
+              widget.friendsHistoryMessages.content, belongType);
         }
         break;
       case "VOICE":
         {
-          finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
+          finalView = VoiceMessageWidget(
+              widget.friendsHistoryMessages.content, belongType);
         }
         break;
       case "FILE":
@@ -146,7 +144,7 @@ class _ChatBubbleState extends State<ChatBubble> {
             ? Colors.white
             : Flavors.colorInfo.mainColor,
       ),
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Container(
         constraints: BoxConstraints(
           maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
@@ -161,16 +159,11 @@ class _ChatBubbleState extends State<ChatBubble> {
     );
   }
 
-  CrossAxisAlignment _createTimePosition(
-      String messageType, MessageBelongType belongType) {
-    if (messageType == 'IMAGE' && messageType == 'VIDEO') {
-      return CrossAxisAlignment.center;
+  CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
+    if (belongType == MessageBelongType.Receiver) {
+      return CrossAxisAlignment.end;
     } else {
-      if (belongType == MessageBelongType.Receiver) {
-        return CrossAxisAlignment.end;
-      } else {
-        return CrossAxisAlignment.start;
-      }
+      return CrossAxisAlignment.start;
     }
   }
 }

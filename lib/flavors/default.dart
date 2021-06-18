@@ -139,6 +139,11 @@ class TextStyles {
 
   final TextStyle logOutBtnText =
       TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);
+
+  final TextStyle homeTabBubbleText = TextStyle(
+      fontSize: 11.0.sp,
+      color: ColorInfo().mainTextColor,
+      fontWeight: FontWeight.w400);
 }
 
 class SizesInfo {
@@ -156,7 +161,7 @@ class ColorInfo {
   final redColor = Colors.red;
   final dividerColor = Colors.black12;
   final blueGrey = Colors.blueGrey;
-  final lightGrep = Colors.grey[300];
+  final lightGrep = Colors.grey[400];
   get btnTextColor => mainColor;
   final diver = Colors.black87;
   final subtitleColor = Colors.grey.shade500;

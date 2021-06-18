@@ -6,7 +6,9 @@ import 'package:hatchery_im/busniess/profile_page/my_profile.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:badges/badges.dart';
 import '../config.dart';
 import '../routers.dart';
 
@@ -121,10 +123,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          // selectedLabelStyle: Flavors.textStyles.tabBarTextSelected,
-          // unselectedLabelStyle: Flavors.textStyles.tabBarTextUnSelected,
-          // selectedFontSize: 12.0,
-          // unselectedFontSize: 12.0,
           currentIndex: _tabIndex,
           items: bottomTabs.map((e) => _navBarItem(e)).toList(),
           type: BottomNavigationBarType.fixed,
@@ -145,15 +143,18 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   BottomNavigationBarItem _navBarItem(TabInfo info) {
     return BottomNavigationBarItem(
-      icon: Icon(
-        info.icon,
-        size: 35,
+      icon: Badge(
+        position: BadgePosition.topEnd(top: -12, end: -12),
+        showBadge: info.index == 0 ? true : false,
+        elevation: 0.5,
+        badgeContent: Text('99', style: Flavors.textStyles.homeTabBubbleText),
+        animationType: BadgeAnimationType.scale,
+        child: Icon(
+          _tabIndex != info.index ? info.icon : info.activeIcon,
+          size: 35,
+        ),
       ),
       title: Container(),
-      activeIcon: Icon(
-        info.activeIcon,
-        size: 35,
-      ),
     );
   }
 

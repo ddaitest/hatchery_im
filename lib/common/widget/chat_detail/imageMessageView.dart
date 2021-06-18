@@ -17,7 +17,10 @@ class ImageMessageWidget extends StatefulWidget {
   _ImageMessageWidgetState createState() => _ImageMessageWidgetState();
 }
 
-class _ImageMessageWidgetState extends State<ImageMessageWidget> {
+class _ImageMessageWidgetState extends State<ImageMessageWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   @override
   void initState() {
     super.initState();
@@ -25,6 +28,7 @@ class _ImageMessageWidgetState extends State<ImageMessageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return _imageMessageView(widget.messageBelongType);
   }
 

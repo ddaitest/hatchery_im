@@ -25,16 +25,17 @@ class TimeConfig {
 }
 
 const mainTabs = [
-  TabInfo(Icons.messenger_outline, Icons.messenger),
-  TabInfo(Icons.account_circle_outlined, Icons.account_circle),
-  TabInfo(Icons.group_outlined, Icons.group),
-  TabInfo(Icons.perm_identity, Icons.person),
+  TabInfo(Icons.messenger_outline, Icons.messenger, 0),
+  TabInfo(Icons.account_circle_outlined, Icons.account_circle, 1),
+  TabInfo(Icons.group_outlined, Icons.group, 2),
+  TabInfo(Icons.perm_identity, Icons.person, 3),
 ];
 
 class TabInfo {
   final String? label;
   final IconData icon;
   final IconData activeIcon;
+  final int index;
 
-  const TabInfo(this.icon, this.activeIcon, {this.label});
+  const TabInfo(this.icon, this.activeIcon, this.index, {this.label});
 }

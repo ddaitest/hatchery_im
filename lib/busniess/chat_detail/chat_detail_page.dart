@@ -27,14 +27,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   TextEditingController textEditingController = TextEditingController();
   final manager = App.manager<ChatDetailManager>();
   List<SendMenuItems> menuItems = [
+    SendMenuItems(text: "照片", icons: Icons.image, color: Colors.amber),
+    SendMenuItems(text: "视频", icons: Icons.camera_alt, color: Colors.orange),
     SendMenuItems(
-        text: "Photos & Videos", icons: Icons.image, color: Colors.amber),
-    SendMenuItems(
-        text: "Document", icons: Icons.insert_drive_file, color: Colors.blue),
-    SendMenuItems(text: "Audio", icons: Icons.music_note, color: Colors.orange),
-    SendMenuItems(
-        text: "Location", icons: Icons.location_on, color: Colors.green),
-    SendMenuItems(text: "Contact", icons: Icons.person, color: Colors.purple),
+        text: "文件", icons: Icons.insert_drive_file, color: Colors.blue),
+    SendMenuItems(text: "位置", icons: Icons.location_on, color: Colors.green),
+    SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
   ];
 
   @override
@@ -73,7 +71,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         return Flexible(
           child: ListView.builder(
             itemCount: value.length,
-            shrinkWrap: true,
             reverse: true,
             padding: EdgeInsets.only(top: 10, bottom: 10),
             physics: const BouncingScrollPhysics(),

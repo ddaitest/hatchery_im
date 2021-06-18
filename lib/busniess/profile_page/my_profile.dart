@@ -137,7 +137,6 @@ class MyProfilePage extends StatelessWidget {
   Widget _settingModelView(String leadingImagePath, String text,
       {String settingText = ''}) {
     return Container(
-        height: 50.0.h,
         color: Colors.white,
         child: Column(
           children: <Widget>[

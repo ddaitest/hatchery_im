@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/config.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/common/Engine.dart';
@@ -12,6 +13,29 @@ class TestPage extends StatefulWidget {
 
 class TestState extends State<TestPage> {
   String _message = "...";
+  String textTest =
+      "鲁迅（1881年9月25日～1936年10月19日），原名周樟寿，后改名周树人，字豫山，后改字豫才，浙江绍兴人。著名文学家、思想家、革命家、教育家 [179]  、民主战士，新文化运动的重要参与者，中国现代文学的奠基人之一。";
+  String voiceTestUrl =
+      'https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3';
+  String imageTestUrl =
+      'https://img0.baidu.com/it/u=2407531684,1522315943&fm=11&fmt=auto&gp=0.jpg';
+  String videoTestUrl =
+      'https://vd4.bdstatic.com/mda-kfeejrf38q7chb72/hd/mda-kfeejrf38q7chb72.mp4';
+  static String? _userInfoData;
+  static String _token = '';
+  var data = Map<String, dynamic>();
+  // String to = "U202115215031100001";
+  // String from = "U202114522384900001";
+  String to = "U202114522384900001";
+  String from = "U202115215031100001";
+
+  static _checkToken() {
+    _userInfoData = SP.getString(SPKey.userInfo);
+    if (_userInfoData != null) {
+      _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    }
+    return _token;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +50,20 @@ class TestState extends State<TestPage> {
           ElevatedButton(onPressed: test2, child: Text("SEND")),
           ElevatedButton(onPressed: test3, child: Text("SEND_请求认证消息")),
           ElevatedButton(onPressed: test4, child: Text("CLOSE")),
-          ElevatedButton(onPressed: send1, child: Text("SEND_1")),
-          ElevatedButton(onPressed: send1, child: Text("SEND_2")),
-          ElevatedButton(onPressed: send1, child: Text("SEND_3")),
-          ElevatedButton(onPressed: send1, child: Text("SEND_4")),
-          ElevatedButton(onPressed: send1, child: Text("SEND_5"))
+          ElevatedButton(
+              onPressed: () => sendMessageModel("TEXT"),
+              child: Text("SEND_TEXT")),
+          ElevatedButton(
+              onPressed: () => sendMessageModel("IMAGE"),
+              child: Text("SEND_IMAGE")),
+          ElevatedButton(
+              onPressed: () => sendMessageModel("VIDEO"),
+              child: Text("SEND_VIDEO")),
+          ElevatedButton(
+              onPressed: () => sendMessageModel("VOICE"),
+              child: Text("SEND_VOICE")),
+          ElevatedButton(
+              onPressed: () => sendMessageModel("TEXT"), child: Text("SEND_5"))
         ],
       ),
     );
@@ -52,8 +85,7 @@ class TestState extends State<TestPage> {
     data["msg_id"] = "10001";
     data["user_id"] = "U202115215031100001";
     data["type"] = "AUTH";
-    data["token"] =
-        "F65E6D12A9E36E624D847EC0F5B64E8ED4CBE5AEB962C0902BA9DCFD6A00561BDEC8847F6ED8E68D8675AE5D21C1FA7FE2D9792C5741180B18A47D2F235B6ADCD201F2482807825D2B569421AAD22D5656439FABBF3C1F68199B6566AF5DB5A75D7AA044668AA66911ABEC56C00E13DDDA9E02B9F445ABBFD32162A0CC06B05D53AFD686189DECDC6163D0519E9393BE91A583399B13E73A50DD827C710E0AA085423B18D87854E6932433F33943EB20C2B9A341F3E2D1480693D72901EDBE54AA5A5822F08E4D3BD09D78B00A19DF7831E888B1DD9CFFE4A0F947F57A973C816595F6FB5678FE379AB49099D106E7B0923BC8079C8B809CDCD6D9F76BB0EC5200A3E7EFA502C3BB0D1D7CA9952BA614";
+    data["token"] = _checkToken();
     data["source"] = "ANDROID";
     data["device_id"] = "device_id_123";
     data["login_ip"] = "1.2.3.4";
@@ -70,17 +102,56 @@ class TestState extends State<TestPage> {
     engine.disconnect();
   }
 
-  send1() {
-    var data = Map<String, dynamic>();
-    data["msg_id"] = "10001";
-    data["type"] = "CHAT";
-    data["to"] = "U202115215031100001";
-    data["nick"] = "nick";
-    data["from"] = "U202114522384900001";
-    data["icon"] = "icon";
-    data["source"] = "ANDROID";
-    data["content"] = "DDDDDDDDDDDDDDDDDD";
-    data["content_type"] = "TEXT";
-    engine.sendProtocol(data);
+  sendMessageModel(String messageType) {
+    switch (messageType) {
+      case "TEXT":
+        data["msg_id"] = "10001";
+        data["type"] = "CHAT";
+        data["to"] = to;
+        data["nick"] = "nick";
+        data["from"] = from;
+        data["icon"] = "icon";
+        data["source"] = "ANDROID";
+        data["content"] = textTest;
+        data["content_type"] = messageType;
+        engine.sendProtocol(data);
+        break;
+      case "IMAGE":
+        data["msg_id"] = "10001";
+        data["type"] = "CHAT";
+        data["to"] = to;
+        data["nick"] = "nick";
+        data["from"] = from;
+        data["icon"] = "icon";
+        data["source"] = "ANDROID";
+        data["content"] = imageTestUrl;
+        data["content_type"] = messageType;
+        engine.sendProtocol(data);
+        break;
+      case "VIDEO":
+        data["msg_id"] = "10001";
+        data["type"] = "CHAT";
+        data["to"] = to;
+        data["nick"] = "nick";
+        data["from"] = from;
+        data["icon"] = "icon";
+        data["source"] = "ANDROID";
+        data["content"] = videoTestUrl;
+        data["content_type"] = messageType;
+        engine.sendProtocol(data);
+        break;
+      case "VOICE":
+        data["msg_id"] = "10001";
+        data["type"] = "CHAT";
+        data["to"] = to;
+        data["nick"] = "nick";
+        data["from"] = from;
+        data["icon"] = "icon";
+        data["source"] = "ANDROID";
+        data["content"] = voiceTestUrl;
+        data["content_type"] = messageType;
+        engine.sendProtocol(data);
+        break;
+    }
   }
 }

@@ -18,7 +18,9 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsState extends State<ContactsPage>
-    with SingleTickerProviderStateMixin {
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   final manager = App.manager<ContactsManager>();
   void initState() {
     manager.init();
@@ -32,6 +34,7 @@ class _ContactsState extends State<ContactsPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
