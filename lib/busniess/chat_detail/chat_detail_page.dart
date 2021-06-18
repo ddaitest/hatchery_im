@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 enum MessageBelongType {
   Sender,
@@ -53,7 +54,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Scaffold(
       appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.friendInfo.nickName),
       backgroundColor: Colors.grey[100],
-      floatingActionButton: _sendBtnView(),
+      floatingActionButton: _voiceRecordBtnView(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -150,11 +151,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  Widget _sendBtnView() {
+  Widget _voiceRecordBtnView() {
     return Container(
       padding: const EdgeInsets.only(bottom: 20),
       child: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          _voiceRecordView();
+        },
         child: Icon(
           Icons.keyboard_voice,
           color: Colors.white,
@@ -226,5 +229,44 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             ),
           );
         });
+  }
+
+  _voiceRecordView() {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black87,
+      builder: (BuildContext context) {
+        return Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 150.0.w,
+              height: 60.0.h,
+              padding: const EdgeInsets.only(
+                  right: 30.0, left: 30.0, top: 20.0, bottom: 20.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Flavors.colorInfo.mainColor,
+              ),
+              child: LoadingIndicator(
+                  indicatorType: Indicator.lineScale,
+                  color: Flavors.colorInfo.mainBackGroundColor),
+            ),
+            SizedBox(height: 100.0),
+            GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Icon(Icons.cancel_outlined,
+                  size: 50.0, color: Colors.grey[400]),
+            ),
+          ],
+        ));
+      },
+    );
+  }
+
+  _closeVoiceRecord() {
+    Navigator.pop(context);
   }
 }
