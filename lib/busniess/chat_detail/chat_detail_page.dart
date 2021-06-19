@@ -56,7 +56,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       backgroundColor: Colors.grey[100],
       floatingActionButton: _voiceRecordBtnView(),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           _messageInfoView(),
           _inputView(),
@@ -102,34 +101,29 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _inputView() {
     return Container(
-      padding: const EdgeInsets.only(left: 16, top: 10.0, bottom: 10.0),
-      constraints: BoxConstraints(maxHeight: 300.0.h, minHeight: 50.0.h),
-      width: Flavors.sizesInfo.screenWidth,
+      padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+      constraints: BoxConstraints(maxHeight: 300.0.h),
       color: Colors.white,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           /// 点击先收起键盘
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
+          RawMaterialButton(
+            onPressed: () {
               FocusScope.of(context).requestFocus(FocusNode());
               showModal();
             },
-            child: Container(
-              height: 30.0.h,
-              width: 30.0.w,
-              decoration: BoxDecoration(
-                color: Colors.blueGrey,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 21,
-              ),
+            elevation: 0.5,
+            fillColor: Colors.blueGrey,
+            padding: EdgeInsets.all(5.0),
+            shape: CircleBorder(),
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 21,
             ),
           ),
-          SizedBox(width: 13.0.w),
+          // SizedBox(width: 13.0.w),
           Container(
             width: Flavors.sizesInfo.screenWidth - 140.0.w,
             child: TextField(
@@ -137,7 +131,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               maxLines: null,
               minLines: 1,
               maxLength: 140,
-              keyboardType: TextInputType.multiline,
+              keyboardType: TextInputType.name,
               cursorColor: Flavors.colorInfo.mainColor,
               decoration: InputDecoration(
                   hintText: "请输入文字...",
@@ -156,7 +150,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       padding: const EdgeInsets.only(bottom: 20),
       child: FloatingActionButton(
         onPressed: () {
-          _voiceRecordView();
+          FocusScope.of(context).requestFocus(FocusNode());
+          showVoiceCord();
         },
         child: Icon(
           Icons.keyboard_voice,
@@ -226,6 +221,61 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   )
                 ],
               ),
+            ),
+          );
+        });
+  }
+
+  void showVoiceCord() {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return Container(
+            height: Flavors.sizesInfo.screenHeight / 4,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                Container(
+                    decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20)),
+                )),
+                Positioned(
+                    top: -20.0,
+                    child: RawMaterialButton(
+                      onPressed: () {},
+                      elevation: 0.5,
+                      fillColor: Colors.pink,
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    )),
+                Positioned(
+                    top: -20.0,
+                    child: RawMaterialButton(
+                      onPressed: () {},
+                      elevation: 0.5,
+                      fillColor: Colors.pink,
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                      child: Icon(
+                        Icons.cancel_outlined,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    )),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
             ),
           );
         });

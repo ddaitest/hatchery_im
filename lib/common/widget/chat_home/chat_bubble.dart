@@ -138,6 +138,9 @@ class _ChatBubbleState extends State<ChatBubble>
 
   Widget _textMessageView(MessageBelongType belongType) {
     return Container(
+      constraints: BoxConstraints(
+        maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: belongType == MessageBelongType.Receiver
@@ -145,17 +148,12 @@ class _ChatBubbleState extends State<ChatBubble>
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Container(
-        constraints: BoxConstraints(
-          maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
-        ),
-        child: Text('${widget.friendsHistoryMessages.content}',
-            maxLines: 10,
-            softWrap: true,
-            style: widget.messageBelongType == MessageBelongType.Receiver
-                ? Flavors.textStyles.chatBubbleReceiverText
-                : Flavors.textStyles.chatBubbleSenderText),
-      ),
+      child: Text('${widget.friendsHistoryMessages.content}',
+          maxLines: 10,
+          softWrap: true,
+          style: widget.messageBelongType == MessageBelongType.Receiver
+              ? Flavors.textStyles.chatBubbleReceiverText
+              : Flavors.textStyles.chatBubbleSenderText),
     );
   }
 
