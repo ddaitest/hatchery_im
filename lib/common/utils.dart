@@ -249,3 +249,30 @@ String? durationTransform(int seconds) {
   List<String> parts = d.toString().split(':');
   return '${parts[1]}:${parts[2].split('.')[0]}';
 }
+
+/// 创建目录
+folderCreate(String filepath) async {
+  var file = Directory(filepath);
+  try {
+    bool exists = await file.exists();
+    if (!exists) {
+      await file.create();
+    }
+  } catch (e) {
+    print(e);
+  }
+}
+
+/// 删除文件
+void deleteFile(String path) {
+  Directory directory = Directory(path);
+  if (directory.existsSync()) {
+    List<FileSystemEntity> files = directory.listSync();
+    if (files.length > 0) {
+      files.forEach((file) {
+        file.deleteSync();
+      });
+    }
+    directory.deleteSync();
+  }
+}

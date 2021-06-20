@@ -49,6 +49,10 @@ dependencies:
   video_player: ^2.1.6
   badges: ^2.0.1
   loading_indicator: ^2.1.1
+  vibration: ^1.7.4-nullsafety.0
+  record: ^2.1.1
+  permission_handler: ^8.1.1
+  path_provider: ^2.0.2
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/models/chat_message.dart';
+import 'package:vibration/vibration.dart';
 import 'package:hatchery_im/busniess/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
 import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
@@ -11,6 +12,7 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:hatchery_im/common/utils.dart';
 
 enum MessageBelongType {
   Sender,
@@ -46,6 +48,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   void dispose() {
     manager.messagesList.clear();
+    manager.isVoiceModel = false;
+    manager.cancelTimer();
     super.dispose();
   }
 
@@ -54,11 +58,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Scaffold(
       appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.friendInfo.nickName),
       backgroundColor: Colors.grey[100],
-      floatingActionButton: _voiceRecordBtnView(),
       body: Column(
         children: <Widget>[
           _messageInfoView(),
-          _inputView(),
+          _inputMainView(),
         ],
       ),
     );
@@ -68,6 +71,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Selector<ChatDetailManager, List<FriendsHistoryMessages>>(
       builder: (BuildContext context, List<FriendsHistoryMessages> value,
           Widget? child) {
+        print("DEBUG=> _messageInfoView _messageInfoView");
         return Flexible(
           child: ListView.builder(
             itemCount: value.length,
@@ -99,67 +103,132 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  Widget _inputView() {
-    return Container(
-      padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-      constraints: BoxConstraints(maxHeight: 300.0.h),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
+  Widget _inputMainView() {
+    return Selector<ChatDetailManager, bool>(
+      builder: (BuildContext context, bool value, Widget? child) {
+        return Container(
+          padding: const EdgeInsets.only(
+              left: 10.0, right: 10.0, top: 2.0, bottom: 2.0),
+          constraints: BoxConstraints(minHeight: 50.0.h, maxHeight: 300.0.h),
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              value ? _voiceRecordView() : _moreBtnView(),
+              value
+                  ? Container(
+                      height: 50.0.h,
+                    )
+                  : _textInputView(),
+              Container(
+                constraints: BoxConstraints(maxHeight: 300.0.h),
+                height: 50.0.h,
+                child: VerticalDivider(
+                  color: Colors.grey[400],
+                  indent: 0.5,
+                  endIndent: 0.5,
+                  width: 0.5,
+                  thickness: 0.5,
+                ),
+              ),
+              _voiceRecordBtnView(value),
+            ],
+          ),
+        );
+      },
+      selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+        return chatDetailManager.isVoiceModel;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
+  }
+
+  Widget _moreBtnView() {
+    return GestureDetector(
+        onTap: () {
           /// 点击先收起键盘
-          RawMaterialButton(
-            onPressed: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-              showModal();
-            },
-            elevation: 0.5,
-            fillColor: Colors.blueGrey,
-            padding: EdgeInsets.all(5.0),
-            shape: CircleBorder(),
-            child: Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 21,
-            ),
-          ),
-          // SizedBox(width: 13.0.w),
-          Container(
-            width: Flavors.sizesInfo.screenWidth - 140.0.w,
-            child: TextField(
-              controller: textEditingController,
-              maxLines: null,
-              minLines: 1,
-              maxLength: 140,
-              keyboardType: TextInputType.name,
-              cursorColor: Flavors.colorInfo.mainColor,
-              decoration: InputDecoration(
-                  hintText: "请输入文字...",
-                  counterText: '',
-                  hintStyle: TextStyle(color: Colors.grey.shade500),
-                  border: InputBorder.none),
-            ),
-          ),
-        ],
+          FocusScope.of(context).requestFocus(FocusNode());
+          showModal();
+        },
+        child: Container(
+          // padding: const EdgeInsets.only(bottom: 20),
+          child: Image.asset('images/moreBtn.png', height: 30.0, width: 30.0),
+        ));
+  }
+
+  Widget _textInputView() {
+    return Container(
+      width: Flavors.sizesInfo.screenWidth - 140.0.w,
+      child: TextField(
+        controller: textEditingController,
+        maxLines: null,
+        minLines: 1,
+        maxLength: 140,
+        keyboardType: TextInputType.name,
+        cursorColor: Flavors.colorInfo.mainColor,
+        decoration: InputDecoration(
+            hintText: "请输入文字...",
+            counterText: '',
+            hintStyle: TextStyle(color: Colors.grey.shade500),
+            border: InputBorder.none),
       ),
     );
   }
 
-  Widget _voiceRecordBtnView() {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: FloatingActionButton(
-        onPressed: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-          showVoiceCord();
-        },
-        child: Icon(
-          Icons.keyboard_voice,
-          color: Colors.white,
-          size: 30.0,
-        ),
-        backgroundColor: Colors.pink,
-        elevation: 0,
+  Widget _voiceRecordView() {
+    return Selector<ChatDetailManager, int>(
+      builder: (BuildContext context, int value, Widget? child) {
+        return Container(
+            width: Flavors.sizesInfo.screenWidth - 140.0.w,
+            height: 50.0.h,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                manager.isRecording
+                    ? Container(
+                        height: 20.0,
+                        child: LoadingIndicator(
+                          indicatorType: Indicator.ballScaleMultiple,
+                          color: Colors.red,
+                        ),
+                      )
+                    : Icon(Icons.lens, color: Colors.red, size: 20.0),
+                SizedBox(
+                  width: 20.0.w,
+                ),
+                Text("${durationTransform(value)}"),
+              ],
+            ));
+      },
+      selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+        return chatDetailManager.recordTiming;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
+  }
+
+  Widget _voiceRecordBtnView(bool isVoice) {
+    return GestureDetector(
+      onLongPress: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+        Vibration.vibrate(duration: 100);
+        manager.changeInputView();
+        manager.timingStartMethod();
+        manager.startVoiceRecord(widget.friendInfo.friendId);
+      },
+      onLongPressEnd: (LongPressEndDetails details) {
+        print("DEBUG=> ${details.localPosition.dx}");
+        Vibration.vibrate(duration: 100);
+        manager.changeInputView();
+        manager.cancelTimer();
+        manager.stopVoiceRecord();
+      },
+      child: Container(
+        // padding: const EdgeInsets.only(bottom: 20),
+        child: Image.asset(
+            isVoice ? 'images/keyboard.png' : 'images/recordAudioBtn.png',
+            height: 30.0,
+            width: 30.0),
       ),
     );
   }
@@ -281,7 +350,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         });
   }
 
-  _voiceRecordView() {
+  _voiceRecordView1() {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -314,9 +383,5 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         ));
       },
     );
-  }
-
-  _closeVoiceRecord() {
-    Navigator.pop(context);
   }
 }

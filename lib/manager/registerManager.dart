@@ -29,7 +29,7 @@ class RegisterManager extends ChangeNotifier {
 
   Future<bool> uploadImage(String filePath) async {
     ApiResult result = await compressionImage(filePath)
-        .then((value) => API.uploadFile(value, (count, total) {
+        .then((value) => ApiForFileService.uploadFile(value, (count, total) {
               uploadProgress = count.toDouble() / total.toDouble();
               print("DEBUG=> uploadProgress = $uploadProgress");
               notifyListeners();

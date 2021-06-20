@@ -3,13 +3,15 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:record/record.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:hatchery_im/api/entity.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +22,13 @@ import '../config.dart';
 
 class ChatDetailManager extends ChangeNotifier {
   MyProfile? myProfileData;
+  bool isVoiceModel = false;
+  bool isRecording = false;
   List<FriendsHistoryMessages> messagesList = [];
+  String? voicePath;
+  String? voiceUrl;
+  Timer? timer;
+  int recordTiming = 0;
 
   /// 初始化
   init() {
@@ -61,9 +69,84 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  @override
-  void dispose() {
-    messagesList.clear();
-    super.dispose();
+  changeInputView() {
+    if (isVoiceModel) {
+      isVoiceModel = false;
+    } else {
+      isVoiceModel = true;
+    }
+    notifyListeners();
+  }
+
+  startVoiceRecord(String friendId) async {
+    bool result = await Record.hasPermission();
+    var status = await Permission.storage.status;
+    DateTime _timeNow = DateTime.now();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    String voiceTempPath = '$tempPath/voiceFiles/';
+    folderCreate(voiceTempPath);
+    voicePath =
+        '$voiceTempPath${friendId}_${_timeNow.millisecondsSinceEpoch}.m4a';
+
+    if (result && status.isDenied) {
+      await Record.start(
+        path: '$voicePath', // required
+      );
+      isRecording = true;
+    } else {
+      showToast('没有录音或者存储权限，请在系统设置中开启');
+      isRecording = false;
+    }
+    notifyListeners();
+  }
+
+  stopVoiceRecord() async {
+    await Record.stop();
+    isRecording = false;
+    if (voicePath != null) {
+      uploadVoiceFile(voicePath!);
+    } else {
+      showToast('录制时间太短');
+    }
+    notifyListeners();
+  }
+
+  pauseVoiceRecord() async {
+    await Record.pause();
+    isRecording = false;
+    notifyListeners();
+  }
+
+  resumeVoiceRecord() async {
+    await Record.resume();
+    isRecording = true;
+    notifyListeners();
+  }
+
+  timingStartMethod() {
+    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      recordTiming++;
+      notifyListeners();
+    });
+  }
+
+  cancelTimer() {
+    timer?.cancel();
+    recordTiming = 0;
+    isRecording = false;
+  }
+
+  uploadVoiceFile(String filePath) async {
+    ApiResult result =
+        await ApiForFileService.uploadFile(filePath, (count, total) {});
+    if (result.isSuccess()) {
+      final url = result.getData();
+      if (url is String) {
+        voiceUrl = url;
+        print("DEBUG=> voiceUrl = ${voiceUrl}");
+        notifyListeners();
+      }
+    }
   }
 }
