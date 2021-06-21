@@ -10,6 +10,7 @@ import 'package:hatchery_im/manager/appManager.dart';
 import 'package:hatchery_im/manager/splashManager.dart';
 import 'package:hatchery_im/manager/loginManager.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
+import 'package:hatchery_im/manager/chatHomeManager.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
 import 'package:hatchery_im/manager/newGroupsManager.dart';
@@ -44,6 +45,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => NewGroupsManager()),
         ChangeNotifierProvider(create: (_) => MyProfileManager()),
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
+        ChangeNotifierProvider(create: (_) => ChatHomeManager()),
       ],
       child: MyApp(),
     ),

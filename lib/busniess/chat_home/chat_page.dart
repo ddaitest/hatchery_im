@@ -56,6 +56,7 @@ class _ChatPageState extends State<ChatPage>
         image: "images/userImage8.jpeg",
         time: "一年前"),
   ];
+
   @override
   Widget build(BuildContext context) {
     super.build(context);

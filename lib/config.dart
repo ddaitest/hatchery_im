@@ -39,3 +39,12 @@ class TabInfo {
 
   const TabInfo(this.icon, this.activeIcon, this.index, {this.label});
 }
+
+class SlideActionInfo {
+  final String? label;
+  final IconData icon;
+  final Color iconColor;
+  final VoidCallback? onTap;
+
+  const SlideActionInfo(this.label, this.icon, this.iconColor, {this.onTap});
+}

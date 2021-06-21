@@ -41,7 +41,15 @@ class _ContactsState extends State<ContactsPage>
         shrinkWrap: true,
         children: <Widget>[
           SearchBarView(),
-          _newFriendsView(),
+          _addFriendsView(),
+          Divider(
+            height: 0.5,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+            color: Flavors.colorInfo.dividerColor,
+          ),
+          _newFriendsApply(),
           SizedBox(
             height: 16.0.w,
           ),
@@ -51,35 +59,50 @@ class _ContactsState extends State<ContactsPage>
     );
   }
 
-  _newFriendsView() {
+  _addFriendsView() {
     return Container(
-      color: Colors.white,
-      padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: Row(
-              children: <Widget>[
-                CircleAvatar(
-                  backgroundImage: AssetImage('images/new_friends.png'),
-                  maxRadius: 20,
-                ),
-                SizedBox(
-                  width: 16.0.w,
-                ),
-                Container(
-                  color: Colors.transparent,
-                  child: Text(
-                    '添加朋友',
-                    style: Flavors.textStyles.friendsText,
-                  ),
-                ),
-              ],
+        color: Colors.white,
+        padding: EdgeInsets.only(top: 10, bottom: 10),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Colors.pink,
+            maxRadius: 20,
+            child: Center(
+              child: Icon(
+                Icons.person_add,
+                color: Colors.white,
+              ),
             ),
           ),
-        ],
-      ),
-    );
+          title: Text(
+            '添加朋友',
+            style: Flavors.textStyles.friendsText,
+          ),
+          trailing: Container(width: 30.0.w),
+        ));
+  }
+
+  _newFriendsApply() {
+    return Container(
+        color: Colors.white,
+        padding: EdgeInsets.only(top: 10, bottom: 10),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Colors.blue,
+            maxRadius: 20,
+            child: Center(
+              child: Icon(
+                Icons.contact_phone,
+                color: Colors.white,
+              ),
+            ),
+          ),
+          title: Text(
+            '好友申请',
+            style: Flavors.textStyles.friendsText,
+          ),
+          trailing: Container(width: 30.0.w),
+        ));
   }
 
   _contactsListView() {

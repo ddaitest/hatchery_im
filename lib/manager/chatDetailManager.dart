@@ -109,6 +109,7 @@ class ChatDetailManager extends ChangeNotifier {
       uploadVoiceFile(voicePath!);
     } else {
       showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
+      if (voicePath != null) deleteFile(voicePath!);
     }
     notifyListeners();
   }

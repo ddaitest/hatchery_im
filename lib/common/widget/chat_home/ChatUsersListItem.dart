@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/common/tools.dart';
-import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/manager/chatHomeManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -26,7 +26,7 @@ class ChatUsersListItem extends StatefulWidget {
 }
 
 class _ChatUsersListState extends State<ChatUsersListItem> {
-  final manager = App.manager<ContactsManager>();
+  final manager = App.manager<ChatHomeManager>();
   @override
   void initState() {
     super.initState();
@@ -41,37 +41,10 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
           // }));
         },
         child: Slidable(
-          actionPane: SlidableDrawerActionPane(),
+          actionPane: SlidableScrollActionPane(),
           actionExtentRatio: 0.25,
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              iconWidget: Container(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: Text('置顶', style: Flavors.textStyles.chatHomeSlideText),
-              ),
-              color: Flavors.colorInfo.mainColor,
-              icon: Icons.upload_rounded,
-              onTap: () {},
-            ),
-            IconSlideAction(
-              iconWidget: Container(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child:
-                      Text('不提醒', style: Flavors.textStyles.chatHomeSlideText)),
-              color: Flavors.colorInfo.blueGrey,
-              icon: Icons.notifications_off,
-              onTap: () {},
-            ),
-            IconSlideAction(
-              iconWidget: Container(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child:
-                      Text('删除', style: Flavors.textStyles.chatHomeSlideText)),
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () {},
-            ),
-          ],
+          secondaryActions:
+              manager.slideAction.map((e) => slideActionModel(e)).toList(),
           child: Container(
             color: Colors.white,
             padding: EdgeInsets.only(left: 16, right: 16, top: 15, bottom: 10),
@@ -121,5 +94,17 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
             ),
           ),
         ));
+  }
+
+  Widget slideActionModel(SlideActionInfo slideActionInfo) {
+    return IconSlideAction(
+      iconWidget: Container(
+          padding: const EdgeInsets.only(top: 5.0),
+          child: Text('${slideActionInfo.label}',
+              style: Flavors.textStyles.chatHomeSlideText)),
+      color: slideActionInfo.iconColor,
+      icon: slideActionInfo.icon,
+      onTap: slideActionInfo.onTap,
+    );
   }
 }
