@@ -101,7 +101,16 @@ class _ContactsState extends State<ContactsPage>
             '好友申请',
             style: Flavors.textStyles.friendsText,
           ),
-          trailing: Container(width: 30.0.w),
+          trailing: Container(
+            width: 30.0.w,
+            child: CircleAvatar(
+              backgroundColor: Colors.red,
+              maxRadius: 10,
+              child: Center(
+                child: Text('5', style: Flavors.textStyles.homeTabBubbleText),
+              ),
+            ),
+          ),
         ));
   }
 
