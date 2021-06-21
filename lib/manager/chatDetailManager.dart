@@ -104,10 +104,11 @@ class ChatDetailManager extends ChangeNotifier {
   stopVoiceRecord() async {
     await Record.stop();
     isRecording = false;
-    if (voicePath != null) {
+    print("DEBUG=> $recordTiming");
+    if (recordTiming >= 2) {
       uploadVoiceFile(voicePath!);
     } else {
-      showToast('录制时间太短');
+      showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
     }
     notifyListeners();
   }

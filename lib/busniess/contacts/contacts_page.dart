@@ -70,7 +70,7 @@ class _ContactsState extends State<ContactsPage>
                 Container(
                   color: Colors.transparent,
                   child: Text(
-                    '新的朋友',
+                    '添加朋友',
                     style: Flavors.textStyles.friendsText,
                   ),
                 ),

@@ -137,11 +137,19 @@ class TextStyles {
   final TextStyle chatBubbleVoiceReceiverText =
       TextStyle(fontSize: 15.0.sp, color: ColorInfo().blueGrey);
 
+  final TextStyle chatVoiceTimerText = TextStyle(
+      fontSize: 15.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);
+
   final TextStyle logOutBtnText =
       TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);
 
   final TextStyle homeTabBubbleText = TextStyle(
       fontSize: 11.0.sp,
+      color: ColorInfo().mainTextColor,
+      fontWeight: FontWeight.w400);
+
+  final TextStyle chatHomeSlideText = TextStyle(
+      fontSize: 13.0.sp,
       color: ColorInfo().mainTextColor,
       fontWeight: FontWeight.w400);
 }

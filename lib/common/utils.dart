@@ -245,6 +245,7 @@ weekDay(int weekNumbers) {
 
 //时间转换 将秒转换为小时分钟
 String? durationTransform(int seconds) {
+  /// 时区问题 +8小时即可
   var d = Duration(seconds: seconds);
   List<String> parts = d.toString().split(':');
   return '${parts[1]}:${parts[2].split('.')[0]}';

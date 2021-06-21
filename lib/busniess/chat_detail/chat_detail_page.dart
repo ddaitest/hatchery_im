@@ -119,6 +119,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ? Container(
                       height: 50.0.h,
                     )
+                  : _emojiBtnView(),
+              value
+                  ? Container(
+                      height: 50.0.h,
+                    )
                   : _textInputView(),
               Container(
                 constraints: BoxConstraints(maxHeight: 300.0.h),
@@ -150,10 +155,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           FocusScope.of(context).requestFocus(FocusNode());
           showModal();
         },
-        child: Container(
-          // padding: const EdgeInsets.only(bottom: 20),
-          child: Image.asset('images/moreBtn.png', height: 30.0, width: 30.0),
-        ));
+        child: Image.asset('images/moreBtn.png'));
+  }
+
+  Widget _emojiBtnView() {
+    return GestureDetector(
+        onTap: () {
+          /// 点击先收起键盘
+          FocusScope.of(context).requestFocus(FocusNode());
+          showModal();
+        },
+        child: Image.asset('images/emojiBtn.png'));
   }
 
   Widget _textInputView() {
@@ -184,19 +196,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                manager.isRecording
-                    ? Container(
-                        height: 20.0,
-                        child: LoadingIndicator(
-                          indicatorType: Indicator.ballScaleMultiple,
-                          color: Colors.red,
-                        ),
-                      )
-                    : Icon(Icons.lens, color: Colors.red, size: 20.0),
+                Container(
+                  height: 20.0,
+                  child: LoadingIndicator(
+                    indicatorType: Indicator.ballScaleMultiple,
+                    color: Colors.red,
+                  ),
+                ),
                 SizedBox(
                   width: 20.0.w,
                 ),
-                Text("${durationTransform(value)}"),
+                Text("${durationTransform(value)}",
+                    style: Flavors.textStyles.chatVoiceTimerText),
               ],
             ));
       },
@@ -217,11 +228,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         manager.startVoiceRecord(widget.friendInfo.friendId);
       },
       onLongPressEnd: (LongPressEndDetails details) {
-        print("DEBUG=> ${details.localPosition.dx}");
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
-        manager.cancelTimer();
         manager.stopVoiceRecord();
+        manager.cancelTimer();
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),
@@ -293,95 +303,5 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             ),
           );
         });
-  }
-
-  void showVoiceCord() {
-    showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (context) {
-          return Container(
-            height: Flavors.sizesInfo.screenHeight / 4,
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                Container(
-                    decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      topLeft: Radius.circular(20)),
-                )),
-                Positioned(
-                    top: -20.0,
-                    child: RawMaterialButton(
-                      onPressed: () {},
-                      elevation: 0.5,
-                      fillColor: Colors.pink,
-                      padding: EdgeInsets.all(15.0),
-                      shape: CircleBorder(),
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    )),
-                Positioned(
-                    top: -20.0,
-                    child: RawMaterialButton(
-                      onPressed: () {},
-                      elevation: 0.5,
-                      fillColor: Colors.pink,
-                      padding: EdgeInsets.all(15.0),
-                      shape: CircleBorder(),
-                      child: Icon(
-                        Icons.cancel_outlined,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    )),
-                SizedBox(
-                  height: 10,
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  _voiceRecordView1() {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.black87,
-      builder: (BuildContext context) {
-        return Container(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 150.0.w,
-              height: 60.0.h,
-              padding: const EdgeInsets.only(
-                  right: 30.0, left: 30.0, top: 20.0, bottom: 20.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: Flavors.colorInfo.mainColor,
-              ),
-              child: LoadingIndicator(
-                  indicatorType: Indicator.lineScale,
-                  color: Flavors.colorInfo.mainBackGroundColor),
-            ),
-            SizedBox(height: 100.0),
-            GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: Icon(Icons.cancel_outlined,
-                  size: 50.0, color: Colors.grey[400]),
-            ),
-          ],
-        ));
-      },
-    );
   }
 }

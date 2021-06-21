@@ -45,13 +45,28 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
           actionExtentRatio: 0.25,
           secondaryActions: <Widget>[
             IconSlideAction(
-              caption: '置顶',
+              iconWidget: Container(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Text('置顶', style: Flavors.textStyles.chatHomeSlideText),
+              ),
               color: Flavors.colorInfo.mainColor,
               icon: Icons.upload_rounded,
               onTap: () {},
             ),
             IconSlideAction(
-              caption: '删除',
+              iconWidget: Container(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child:
+                      Text('不提醒', style: Flavors.textStyles.chatHomeSlideText)),
+              color: Flavors.colorInfo.blueGrey,
+              icon: Icons.notifications_off,
+              onTap: () {},
+            ),
+            IconSlideAction(
+              iconWidget: Container(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child:
+                      Text('删除', style: Flavors.textStyles.chatHomeSlideText)),
               color: Colors.red,
               icon: Icons.delete,
               onTap: () {},
