@@ -11,10 +11,25 @@ import 'package:hatchery_im/common/utils.dart';
 
 class MyProfileManager extends ChangeNotifier {
   MyProfile? myProfileData;
+  String cacheSize = "";
 
   /// 初始化
   MyProfileManager() {
     _getStoredForMyProfileData();
+    checkCacheSize();
+  }
+
+  checkCacheSize() {
+    CacheInfo().loadCache().then((value) {
+      cacheSize = value;
+      notifyListeners();
+    });
+  }
+
+  deleteCacheData() {
+    CacheInfo().clearCache();
+    cacheSize = "0.00B";
+    notifyListeners();
   }
 
   _getStoredForMyProfileData() async {

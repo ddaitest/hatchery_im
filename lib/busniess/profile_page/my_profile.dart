@@ -4,6 +4,7 @@ import 'package:hatchery_im/manager/myProfileManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,13 +24,13 @@ class MyProfilePage extends StatelessWidget {
       return Scaffold(
           body: Container(
         width: Flavors.sizesInfo.screenWidth,
-        child: Column(
+        child: ListView(
           children: <Widget>[
             _topView(myProfileManager),
             Container(
               height: 20.0.h,
             ),
-            _middleView(),
+            _middleView(myProfileManager),
             _logOutBtn(myProfileManager),
           ],
         ),
@@ -122,20 +123,25 @@ class MyProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _middleView() {
+  Widget _middleView(myProfileManager) {
     return Column(
       children: <Widget>[
         _settingModelView('images/fav.png', "收藏"),
         _settingModelView('images/notice.png', "消息通知"),
         _settingModelView('images/language.png', "语言", settingText: '中文'),
-        _settingModelView('images/support.png', "技术支持"),
+        _settingModelView('images/support.png', "清理缓存",
+            settingText: '${myProfileManager.cacheSize}', onTap: () {
+          if (myProfileManager.cacheSize != "0.00B" &&
+              myProfileManager.cacheSize != "")
+            myProfileManager.deleteCacheData();
+        }),
         _settingModelView('images/setting.png', "关于"),
       ],
     );
   }
 
   Widget _settingModelView(String leadingImagePath, String text,
-      {String settingText = ''}) {
+      {String settingText = '', GestureTapCallback? onTap}) {
     return Container(
         color: Colors.white,
         child: Column(
@@ -154,7 +160,7 @@ class MyProfilePage extends StatelessWidget {
               ),
               trailing: Container(
                 padding: const EdgeInsets.only(right: 8.0, top: 4.0),
-                width: 80.0.w,
+                width: 100.0.w,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
@@ -173,7 +179,7 @@ class MyProfilePage extends StatelessWidget {
                   ],
                 ),
               ),
-              onTap: () {},
+              onTap: onTap,
             ),
             Divider(
               height: 0.5,
@@ -188,8 +194,7 @@ class MyProfilePage extends StatelessWidget {
 
   Widget _logOutBtn(myProfileManager) {
     return Container(
-      padding: const EdgeInsets.only(top: 100.0),
-      width: 200.0.w,
+      padding: const EdgeInsets.only(right: 50.0, left: 50.0, top: 50.0),
       child: TextButton(
         style: ElevatedButton.styleFrom(
           primary: Flavors.colorInfo.redColor,

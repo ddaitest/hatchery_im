@@ -152,6 +152,9 @@ class TextStyles {
       fontSize: 13.0.sp,
       color: ColorInfo().mainTextColor,
       fontWeight: FontWeight.w400);
+
+  final TextStyle searchBtnText = TextStyle(
+      fontSize: 16.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);
 }
 
 class SizesInfo {

@@ -11,14 +11,13 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/routers.dart';
 
-class ContactsPage extends StatefulWidget {
+class SearchNewContactsPage extends StatefulWidget {
   @override
-  _ContactsState createState() => _ContactsState();
+  _SearchNewContactsPageState createState() => _SearchNewContactsPageState();
 }
 
-class _ContactsState extends State<ContactsPage>
+class _SearchNewContactsPageState extends State<SearchNewContactsPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
@@ -41,22 +40,29 @@ class _ContactsState extends State<ContactsPage>
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         children: <Widget>[
-          SearchBarView(),
-          _addFriendsView(),
-          Divider(
-            height: 0.5,
-            thickness: 0.5,
-            indent: 10,
-            endIndent: 10,
-            color: Flavors.colorInfo.dividerColor,
-          ),
-          _newFriendsApply(),
-          SizedBox(
-            height: 16.0.w,
-          ),
-          _contactsListView(),
+          _topBarView(),
         ],
       ),
+    );
+  }
+
+  Widget _topBarView() {
+    return Row(
+      children: [
+        Container(
+          width: Flavors.sizesInfo.screenWidth - 70.0.w,
+          child: SearchBarView(
+            searchHintText: "通过账号/手机号搜索朋友",
+            isEnabled: true,
+            padding: const EdgeInsets.only(
+                left: 16.0, right: 0.0, top: 16.0, bottom: 16.0),
+            isAutofocus: true,
+          ),
+        ),
+        TextButton(
+            onPressed: () {},
+            child: Text('取消', style: Flavors.textStyles.searchBtnText)),
+      ],
     );
   }
 
@@ -65,7 +71,6 @@ class _ContactsState extends State<ContactsPage>
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          onTap: () => Routers.navigateTo('/search_new_contacts'),
           leading: CircleAvatar(
             backgroundColor: Colors.pink,
             maxRadius: 20,

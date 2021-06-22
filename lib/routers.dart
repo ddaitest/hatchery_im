@@ -9,6 +9,7 @@ import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'package:hatchery_im/busniess/test/TestPage.dart';
 import 'package:hatchery_im/busniess/group_page/group.dart';
+import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -32,10 +33,12 @@ class Routers {
         return MaterialPageRoute(builder: (_) => NewGroupPage());
       case '/create_group_detail':
         return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
+      case '/search_new_contacts':
+        return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
 
-    // case '/splash':
+      // case '/splash':
       //   return CupertinoPageRoute(builder: (_) => SplashPage());
       // case '/feedback_list':
       //   return CupertinoPageRoute(builder: (_) => FeedbackListPage());

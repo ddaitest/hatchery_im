@@ -70,11 +70,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   changeInputView() {
-    if (isVoiceModel) {
-      isVoiceModel = false;
-    } else {
-      isVoiceModel = true;
-    }
+    isVoiceModel = !isVoiceModel;
     notifyListeners();
   }
 
@@ -87,8 +83,9 @@ class ChatDetailManager extends ChangeNotifier {
     String voiceTempPath = '$tempPath/voiceFiles/';
     folderCreate(voiceTempPath);
     voicePath =
-        '$voiceTempPath${friendId}_${_timeNow.millisecondsSinceEpoch}.m4a';
+        '$voiceTempPath${friendId}_${_timeNow.millisecondsSinceEpoch}.mp3';
 
+    print("DEBUG=> $result / ${status.isDenied}");
     if (result && status.isDenied) {
       await Record.start(
         path: '$voicePath', // required
@@ -97,34 +94,38 @@ class ChatDetailManager extends ChangeNotifier {
     } else {
       showToast('没有录音或者存储权限，请在系统设置中开启');
       isRecording = false;
+      cancelTimer();
     }
-    notifyListeners();
   }
 
   stopVoiceRecord() async {
     await Record.stop();
-    isRecording = false;
-    print("DEBUG=> $recordTiming");
-    if (recordTiming >= 2) {
-      uploadVoiceFile(voicePath!);
+  }
+
+  checkTimeLength() {
+    print("DEBUG=> recordTiming $recordTiming");
+    if (recordTiming >= 3) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        uploadVoiceFile(voicePath!);
+      });
     } else {
       showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
       if (voicePath != null) deleteFile(voicePath!);
     }
-    notifyListeners();
+    cancelTimer();
   }
 
-  pauseVoiceRecord() async {
-    await Record.pause();
-    isRecording = false;
-    notifyListeners();
-  }
-
-  resumeVoiceRecord() async {
-    await Record.resume();
-    isRecording = true;
-    notifyListeners();
-  }
+  // pauseVoiceRecord() async {
+  //   await Record.pause();
+  //   isRecording = false;
+  //   notifyListeners();
+  // }
+  //
+  // resumeVoiceRecord() async {
+  //   await Record.resume();
+  //   isRecording = true;
+  //   notifyListeners();
+  // }
 
   timingStartMethod() {
     timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {

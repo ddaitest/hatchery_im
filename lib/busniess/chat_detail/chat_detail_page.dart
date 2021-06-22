@@ -231,7 +231,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
         manager.stopVoiceRecord();
-        manager.cancelTimer();
+        manager.checkTimeLength();
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),
