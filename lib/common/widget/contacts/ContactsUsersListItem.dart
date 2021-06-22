@@ -84,7 +84,7 @@ class SearchContactsUsersListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: newContactsList.isNotEmpty ? newContactsList.length : 5,
+      itemCount: newContactsList.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
@@ -93,51 +93,38 @@ class SearchContactsUsersListItem extends StatelessWidget {
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ListTile(
             dense: true,
-            leading: newContactsList.isNotEmpty
-                ? CachedNetworkImage(
-                    imageUrl: newContactsList[index].icon,
-                    placeholder: (context, url) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 30,
-                        ),
-                    errorWidget: (context, url, error) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 30,
-                        ),
-                    imageBuilder: (context, imageProvider) {
-                      return CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 30,
-                      );
-                    })
-                : CircleAvatar(
-                    backgroundImage: AssetImage('images/default_avatar.png'),
+            leading: CachedNetworkImage(
+                imageUrl: newContactsList[index].icon,
+                placeholder: (context, url) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 30,
+                    ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 30,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
                     maxRadius: 30,
-                  ),
+                  );
+                }),
             title: Container(
               color: Colors.transparent,
-              child: newContactsList.isNotEmpty
-                  ? Text(newContactsList[index].nickName,
-                      style: Flavors.textStyles.searchContactsNameText,
-                      softWrap: true,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis)
-                  : LoadingView(),
+              child: Text(newContactsList[index].nickName,
+                  style: Flavors.textStyles.searchContactsNameText,
+                  softWrap: true,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
             ),
             subtitle: Container(
               color: Colors.transparent,
-              padding: const EdgeInsets.only(top: 5.0),
-              child: newContactsList.isNotEmpty
-                  ? Text(
-                      newContactsList[index].notes ??
-                          'ASDASDASDASASDASDASDASASDASDASDASASDASDASDASASDASDASDASASDASDASDASASDASDASDAS',
-                      style: Flavors.textStyles.searchContactsNotesText,
-                      softWrap: true,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis)
-                  : LoadingView(),
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(newContactsList[index].notes ?? '这家伙很懒什么也没有写',
+                  style: Flavors.textStyles.searchContactsNotesText,
+                  softWrap: true,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
             ),
             trailing: Container(
               color: Colors.transparent,
