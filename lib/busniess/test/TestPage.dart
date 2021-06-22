@@ -60,8 +60,13 @@ class TestState extends State<TestPage> {
   }
 
   test3() {
+    //发送认证
     engine.sendProtocol(
         Protocols.auth("source", "userId", "token", "deviceId", "loginIp")
+            .toJson());
+    //发送 消息
+    engine.sendProtocol(
+        Protocols.sendMessage("from", "nick", "to", "icon", "source", "content", "contentType")
             .toJson());
   }
 

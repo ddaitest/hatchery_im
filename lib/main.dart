@@ -60,8 +60,8 @@ class MyApp extends StatelessWidget {
           textTheme: GoogleFonts.notoSansTextTheme(),
           // primarySwatch: Colors.blue,
         ),
-        // initialRoute: '/splash',
-        initialRoute: '/test',
+        initialRoute: '/splash',
+        // initialRoute: '/test',
         onGenerateRoute: Routers.generateRoute,
       ),
     );

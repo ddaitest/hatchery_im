@@ -1,4 +1,4 @@
-package com.daivp.hatchery_im
+package com.daivp.hatchery
 
 import io.flutter.embedding.android.FlutterActivity
 

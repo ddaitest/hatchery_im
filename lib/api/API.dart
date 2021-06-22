@@ -43,6 +43,13 @@ class API {
     queryParameters: commonParamMap,
   )).initWrapper();
 
+  static Dio _dio2 = Dio(BaseOptions(
+    baseUrl: Flavors.apiInfo.File_UPLOAD_PATH,
+    connectTimeout: Flavors.apiInfo.API_CONNECT_TIMEOUT,
+    receiveTimeout: Flavors.apiInfo.API_RECEIVE_TIMEOUT,
+    queryParameters: commonParamMap,
+  )).initWrapper();
+
   static bool skipCheck = false;
   static String? _userInfoData;
   static String _token = '';
@@ -224,7 +231,7 @@ class API {
     print(
         "DDAI formData.files.first.value.length=${formData.files.first.value.length}");
     try {
-      Response response = await _dio.post("/files/upload", data: formData,
+      Response response = await _dio2.post("/files/upload", data: formData,
           onSendProgress: (a, b) {
         print("send >>> $a/$b");
         callback(a, b);
