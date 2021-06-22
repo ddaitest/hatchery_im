@@ -17,7 +17,6 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class LoginManager extends ChangeNotifier {
-  GlobalKey<FormState> loginInputKey = GlobalKey<FormState>();
   TextEditingController accountController = TextEditingController();
   TextEditingController codeController = TextEditingController();
 

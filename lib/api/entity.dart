@@ -163,3 +163,17 @@ class FriendsHistoryMessages {
       _$FriendsHistoryMessagesFromJson(json);
   Map<String, dynamic> toJson() => _$FriendsHistoryMessagesToJson(this);
 }
+
+@JsonSerializable()
+class SearchNewContactsInfo {
+  String userID = '';
+  String loginName = '';
+  String nickName = '';
+  String icon = '';
+  var notes;
+  SearchNewContactsInfo(
+      this.userID, this.loginName, this.nickName, this.icon, this.notes);
+  factory SearchNewContactsInfo.fromJson(Map<String, dynamic> json) =>
+      _$SearchNewContactsInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$SearchNewContactsInfoToJson(this);
+}

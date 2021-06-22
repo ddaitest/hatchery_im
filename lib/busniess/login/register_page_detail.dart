@@ -63,36 +63,34 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
                   ),
                 ),
                 Container(
-                    height: double.infinity,
-                    child: SingleChildScrollView(
-                      physics: AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 40.0,
-                        vertical: 20.0,
-                      ),
-                      child: Form(
-                        key: registerManager.registerInputKey,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              '补充资料',
-                              style: Flavors.textStyles.loginMainTitleText,
-                            ),
-                            SizedBox(height: 20.0.h),
-                            _buildPhoneTF(registerManager),
-                            SizedBox(height: 10.0.h),
-                            _buildEmailTF(registerManager),
-                            SizedBox(height: 10.0.h),
-                            _buildNotesTF(registerManager),
-                            SizedBox(height: 10.0.h),
-                            _buildAddressTF(registerManager),
-                            _buildFinishBtn(registerManager),
-                            _skipAndFinishBtn(registerManager),
-                          ],
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 20.0,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '补充资料',
+                          style: Flavors.textStyles.loginMainTitleText,
                         ),
-                      ),
-                    ))
+                        SizedBox(height: 20.0.h),
+                        _buildPhoneTF(registerManager),
+                        SizedBox(height: 10.0.h),
+                        _buildEmailTF(registerManager),
+                        SizedBox(height: 10.0.h),
+                        _buildNotesTF(registerManager),
+                        SizedBox(height: 10.0.h),
+                        _buildAddressTF(registerManager),
+                        _buildFinishBtn(registerManager),
+                        _skipAndFinishBtn(registerManager),
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
           ),

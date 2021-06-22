@@ -66,32 +66,29 @@ class RegisterPageState extends State<RegisterPage> {
                       horizontal: 40.0,
                       vertical: 20.0,
                     ),
-                    child: Form(
-                      key: manager.registerInputKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '注册账号',
-                            style: Flavors.textStyles.loginMainTitleText,
-                          ),
-                          SizedBox(height: 20.0.h),
-                          _avatarView(),
-                          SizedBox(height: 10.0.h),
-                          Text(
-                            '添加照片',
-                            style: Flavors.textStyles.loginNormalText,
-                          ),
-                          SizedBox(height: 20.0.h),
-                          _buildAccountTF(manager),
-                          SizedBox(height: 10.0.h),
-                          _buildNickNameTF(manager),
-                          SizedBox(height: 10.0.h),
-                          _buildPasswordTF(manager),
-                          _buildNextBtn(manager),
-                          _buildSignInBtn(),
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '注册账号',
+                          style: Flavors.textStyles.loginMainTitleText,
+                        ),
+                        SizedBox(height: 20.0.h),
+                        _avatarView(),
+                        SizedBox(height: 10.0.h),
+                        Text(
+                          '添加照片',
+                          style: Flavors.textStyles.loginNormalText,
+                        ),
+                        SizedBox(height: 20.0.h),
+                        _buildAccountTF(manager),
+                        SizedBox(height: 10.0.h),
+                        _buildNickNameTF(manager),
+                        SizedBox(height: 10.0.h),
+                        _buildPasswordTF(manager),
+                        _buildNextBtn(manager),
+                        _buildSignInBtn(),
+                      ],
                     ),
                   ))
             ],

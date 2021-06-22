@@ -76,3 +76,77 @@ class ContactsUsersListItem extends StatelessWidget {
     );
   }
 }
+
+class SearchContactsUsersListItem extends StatelessWidget {
+  final List<SearchNewContactsInfo> newContactsList;
+  SearchContactsUsersListItem(this.newContactsList);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: newContactsList.isNotEmpty ? newContactsList.length : 5,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: ListTile(
+            dense: true,
+            leading: newContactsList.isNotEmpty
+                ? CachedNetworkImage(
+                    imageUrl: newContactsList[index].icon,
+                    placeholder: (context, url) => CircleAvatar(
+                          backgroundImage:
+                              AssetImage('images/default_avatar.png'),
+                          maxRadius: 30,
+                        ),
+                    errorWidget: (context, url, error) => CircleAvatar(
+                          backgroundImage:
+                              AssetImage('images/default_avatar.png'),
+                          maxRadius: 30,
+                        ),
+                    imageBuilder: (context, imageProvider) {
+                      return CircleAvatar(
+                        backgroundImage: imageProvider,
+                        maxRadius: 30,
+                      );
+                    })
+                : CircleAvatar(
+                    backgroundImage: AssetImage('images/default_avatar.png'),
+                    maxRadius: 30,
+                  ),
+            title: Container(
+              color: Colors.transparent,
+              child: newContactsList.isNotEmpty
+                  ? Text(newContactsList[index].nickName,
+                      style: Flavors.textStyles.searchContactsNameText,
+                      softWrap: true,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis)
+                  : LoadingView(),
+            ),
+            subtitle: Container(
+              color: Colors.transparent,
+              padding: const EdgeInsets.only(top: 5.0),
+              child: newContactsList.isNotEmpty
+                  ? Text(
+                      newContactsList[index].notes ??
+                          'ASDASDASDASASDASDASDASASDASDASDASASDASDASDASASDASDASDASASDASDASDASASDASDASDAS',
+                      style: Flavors.textStyles.searchContactsNotesText,
+                      softWrap: true,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis)
+                  : LoadingView(),
+            ),
+            trailing: Container(
+              color: Colors.transparent,
+              width: 40.0.w,
+              child: Text('好友'),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

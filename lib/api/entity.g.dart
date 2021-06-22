@@ -172,3 +172,24 @@ Map<String, dynamic> _$FriendsHistoryMessagesToJson(
       'contentType': instance.contentType,
       'createTime': instance.createTime,
     };
+
+SearchNewContactsInfo _$SearchNewContactsInfoFromJson(
+    Map<String, dynamic> json) {
+  return SearchNewContactsInfo(
+    json['userID'] as String,
+    json['loginName'] as String,
+    json['nickName'] as String,
+    json['icon'] as String,
+    json['notes'],
+  );
+}
+
+Map<String, dynamic> _$SearchNewContactsInfoToJson(
+        SearchNewContactsInfo instance) =>
+    <String, dynamic>{
+      'userID': instance.userID,
+      'loginName': instance.loginName,
+      'nickName': instance.nickName,
+      'icon': instance.icon,
+      'notes': instance.notes,
+    };

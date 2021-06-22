@@ -133,6 +133,27 @@ class API {
     }
   }
 
+  ///搜索好友
+  static Future<ApiResult> searchNewContacts(
+    String searchKey,
+  ) async {
+    Map<String, String> queryParam = {
+      "searchStr": searchKey,
+    };
+    init();
+    try {
+      Response response = await _dio.get("/users/search",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取好友列表
   static Future<ApiResult> getFriendsListData(
     int size,

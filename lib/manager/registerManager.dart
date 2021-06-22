@@ -16,7 +16,6 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class RegisterManager extends ChangeNotifier {
-  final GlobalKey<FormState> registerInputKey = GlobalKey<FormState>();
   TextEditingController accountController = TextEditingController();
   TextEditingController nickNameController = TextEditingController();
   TextEditingController codeController = TextEditingController();

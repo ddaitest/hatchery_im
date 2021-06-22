@@ -84,31 +84,28 @@ class LoginPageState extends State<LoginPage> {
                       horizontal: 40.0,
                       vertical: 120.0,
                     ),
-                    child: Form(
-                      key: loginManager.loginInputKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            '登录',
-                            style: Flavors.textStyles.loginMainTitleText,
-                          ),
-                          SizedBox(height: 30.0.h),
-                          _buildAccountTF(loginManager),
-                          SizedBox(
-                            height: 30.0.h,
-                          ),
-                          _buildPasswordTF(loginManager),
-                          _buildForgotPasswordBtn(),
-                          _buildLoginBtn(loginManager),
-                          _buildSignInWithText(),
-                          _buildSocialBtnRow(),
-                          _buildSignupBtn(),
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '登录',
+                          style: Flavors.textStyles.loginMainTitleText,
+                        ),
+                        SizedBox(height: 30.0.h),
+                        _buildAccountTF(loginManager),
+                        SizedBox(
+                          height: 30.0.h,
+                        ),
+                        _buildPasswordTF(loginManager),
+                        _buildForgotPasswordBtn(),
+                        _buildLoginBtn(loginManager),
+                        _buildSignInWithText(),
+                        _buildSocialBtnRow(),
+                        _buildSignupBtn(),
+                      ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

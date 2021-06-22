@@ -154,7 +154,17 @@ class TextStyles {
       fontWeight: FontWeight.w400);
 
   final TextStyle searchBtnText = TextStyle(
-      fontSize: 16.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);
+      fontSize: 16.0.sp,
+      color: ColorInfo().mainColor,
+      fontWeight: FontWeight.w400);
+
+  final TextStyle searchContactsNameText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
+
+  final TextStyle searchContactsNotesText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().subtitleColor);
 }
 
 class SizesInfo {

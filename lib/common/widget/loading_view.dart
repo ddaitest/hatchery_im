@@ -14,7 +14,7 @@ class LoadingView extends StatelessWidget {
 
   Widget _getContainerView() {
     return SkeletonAnimation(
-      shimmerColor: Colors.grey[300]!,
+      shimmerColor: Colors.transparent,
       borderRadius: BorderRadius.circular(20),
       child: Container(
         width: viewWidth!.h,
