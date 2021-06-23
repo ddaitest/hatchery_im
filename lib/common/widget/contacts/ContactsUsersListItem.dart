@@ -140,7 +140,10 @@ class SearchContactsUsersList extends StatelessWidget {
 
 class NewContactsUsersList extends StatelessWidget {
   final List<FriendsApplicationInfo> contactsApplicationList;
-  NewContactsUsersList(this.contactsApplicationList);
+  final Function? agreeBtnTap;
+  final Function? denyBtnTap;
+  NewContactsUsersList(
+      this.contactsApplicationList, this.agreeBtnTap, this.denyBtnTap);
 
   @override
   Widget build(BuildContext context) {
@@ -181,18 +184,44 @@ class NewContactsUsersList extends StatelessWidget {
             subtitle: Container(
               color: Colors.transparent,
               padding: const EdgeInsets.only(top: 10.0),
-              child: Text(contactsApplicationList[index].remarks ?? '',
+              child: Text(contactsApplicationList[index].remarks ?? '对方什么都没有说',
                   style: Flavors.textStyles.searchContactsNotesText,
                   softWrap: true,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis),
             ),
             trailing: Container(
-              color: Colors.transparent,
-              // width: 40.0.w,
-              child: TextButton(
-                onPressed: () {},
-                child: Text('同意'),
+              width: Flavors.sizesInfo.screenWidth / 3,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => agreeBtnTap,
+                    style: ElevatedButton.styleFrom(
+                      primary: Flavors.colorInfo.mainColor,
+                      elevation: 0.5,
+                      padding: const EdgeInsets.all(10.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: Text('同意',
+                        style: Flavors.textStyles.contactsApplicationText),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => denyBtnTap,
+                    style: ElevatedButton.styleFrom(
+                      primary: Flavors.colorInfo.redColor,
+                      elevation: 0.5,
+                      padding: const EdgeInsets.all(10.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                    child: Text('拒绝',
+                        style: Flavors.textStyles.contactsApplicationText),
+                  ),
+                ],
               ),
             ),
           ),

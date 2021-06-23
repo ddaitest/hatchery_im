@@ -170,6 +170,9 @@ class TextStyles {
       fontSize: 14.0.sp,
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
+
+  final TextStyle contactsApplicationText =
+      TextStyle(color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {

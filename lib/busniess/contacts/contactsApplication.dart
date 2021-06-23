@@ -45,7 +45,13 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
         physics: const BouncingScrollPhysics(),
         // shrinkWrap: true,
         children: <Widget>[
+          SizedBox(
+            height: 16.0.w,
+          ),
           _addFriendsView(),
+          SizedBox(
+            height: 16.0.w,
+          ),
           _contactsListView(),
         ],
       ),
@@ -89,7 +95,11 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
         ),
       );
     } else {
-      return NewContactsUsersList(widget.newContactsApplicationList);
+      return NewContactsUsersList(
+        widget.newContactsApplicationList,
+        null,
+        null,
+      );
     }
   }
 }
