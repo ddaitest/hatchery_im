@@ -1,3 +1,4 @@
+import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class _SearchNewContactsPageState extends State<SearchNewContactsPage>
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
+      appBar: AppBarFactory.backButton('添加朋友'),
       body: ListView(
         physics: const BouncingScrollPhysics(),
         // shrinkWrap: true,
@@ -88,7 +90,7 @@ class _SearchNewContactsPageState extends State<SearchNewContactsPage>
       builder: (BuildContext context, List<SearchNewContactsInfo> value,
           Widget? child) {
         print("DEBUG=> _FriendsView 重绘了。。。。。");
-        return SearchContactsUsersListItem(value);
+        return SearchContactsUsersList(value);
       },
       selector: (BuildContext context,
           SearchNewContactsManager searchNewContactsManager) {

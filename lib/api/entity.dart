@@ -23,6 +23,24 @@ class Friends {
 }
 
 @JsonSerializable()
+class FriendsApplicationInfo {
+  final String friendId;
+  final String? remarks;
+  final String icon;
+  final String nickName;
+  final int status;
+  FriendsApplicationInfo(
+      {required this.friendId,
+      this.remarks,
+      required this.icon,
+      required this.nickName,
+      required this.status});
+  factory FriendsApplicationInfo.fromJson(Map<String, dynamic> json) =>
+      _$FriendsApplicationInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$FriendsApplicationInfoToJson(this);
+}
+
+@JsonSerializable()
 class Groups {
   GroupsInfo group;
   int membersCount = 0;

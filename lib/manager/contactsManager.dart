@@ -19,10 +19,13 @@ import '../config.dart';
 class ContactsManager extends ChangeNotifier {
   //联系人列表 数据
   List<Friends> friendsList = [];
+  //好友申请 数据
+  List<FriendsApplicationInfo> contactsApplicationList = [];
 
   /// 初始化
   init() {
     _queryFriendsRes();
+    _queryNewFriendsApplicationRes();
   }
 
   _queryFriendsRes({
@@ -33,6 +36,21 @@ class ContactsManager extends ChangeNotifier {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         print('DEBUG=>  _queryFriendsRes ${friendsList}');
+        notifyListeners();
+      }
+    });
+  }
+
+  _queryNewFriendsApplicationRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getNewFriendsApplicationListData(size, current).then((value) {
+      if (value.isSuccess()) {
+        contactsApplicationList = value
+            .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
+        print(
+            'DEBUG=>  getNewFriendsApplicationListData ${contactsApplicationList}');
         notifyListeners();
       }
     });

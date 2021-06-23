@@ -6,9 +6,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 
-class ContactsUsersListItem extends StatelessWidget {
+class ContactsUsersList extends StatelessWidget {
   final List<Friends> friendsLists;
-  ContactsUsersListItem(this.friendsLists);
+  ContactsUsersList(this.friendsLists);
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +77,9 @@ class ContactsUsersListItem extends StatelessWidget {
   }
 }
 
-class SearchContactsUsersListItem extends StatelessWidget {
+class SearchContactsUsersList extends StatelessWidget {
   final List<SearchNewContactsInfo> newContactsList;
-  SearchContactsUsersListItem(this.newContactsList);
+  SearchContactsUsersList(this.newContactsList);
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +130,70 @@ class SearchContactsUsersListItem extends StatelessWidget {
               color: Colors.transparent,
               width: 40.0.w,
               child: Text('好友'),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class NewContactsUsersList extends StatelessWidget {
+  final List<FriendsApplicationInfo> contactsApplicationList;
+  NewContactsUsersList(this.contactsApplicationList);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: contactsApplicationList.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: ListTile(
+            dense: true,
+            leading: CachedNetworkImage(
+                imageUrl: contactsApplicationList[index].icon,
+                placeholder: (context, url) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 20,
+                  );
+                }),
+            title: Container(
+              color: Colors.transparent,
+              child: Text(contactsApplicationList[index].nickName,
+                  style: Flavors.textStyles.searchContactsNameText,
+                  softWrap: true,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            subtitle: Container(
+              color: Colors.transparent,
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(contactsApplicationList[index].remarks ?? '',
+                  style: Flavors.textStyles.searchContactsNotesText,
+                  softWrap: true,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            trailing: Container(
+              color: Colors.transparent,
+              // width: 40.0.w,
+              child: TextButton(
+                onPressed: () {},
+                child: Text('同意'),
+              ),
             ),
           ),
         );

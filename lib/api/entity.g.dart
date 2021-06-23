@@ -24,6 +24,27 @@ Map<String, dynamic> _$FriendsToJson(Friends instance) => <String, dynamic>{
       'status': instance.status,
     };
 
+FriendsApplicationInfo _$FriendsApplicationInfoFromJson(
+    Map<String, dynamic> json) {
+  return FriendsApplicationInfo(
+    friendId: json['friendId'] as String,
+    remarks: json['remarks'] as String?,
+    icon: json['icon'] as String,
+    nickName: json['nickName'] as String,
+    status: json['status'] as int,
+  );
+}
+
+Map<String, dynamic> _$FriendsApplicationInfoToJson(
+        FriendsApplicationInfo instance) =>
+    <String, dynamic>{
+      'friendId': instance.friendId,
+      'remarks': instance.remarks,
+      'icon': instance.icon,
+      'nickName': instance.nickName,
+      'status': instance.status,
+    };
+
 Groups _$GroupsFromJson(Map<String, dynamic> json) {
   return Groups(
     GroupsInfo.fromJson(json['group'] as Map<String, dynamic>),

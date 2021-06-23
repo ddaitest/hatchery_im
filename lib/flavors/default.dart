@@ -39,6 +39,11 @@ class ApiInfo {
 }
 
 class TextStyles {
+  final TextStyle noDataText = TextStyle(
+      fontSize: 16.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().subtitleColor);
+
   final TextStyle splashLogoText = TextStyle(
       fontSize: 52.0.sp,
       fontWeight: FontWeight.bold,

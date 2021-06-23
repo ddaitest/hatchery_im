@@ -12,6 +12,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -60,7 +61,7 @@ class _ContactsState extends State<ContactsPage>
     );
   }
 
-  _addFriendsView() {
+  Widget _addFriendsView() {
     return Container(
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -84,43 +85,60 @@ class _ContactsState extends State<ContactsPage>
         ));
   }
 
-  _newFriendsApply() {
-    return Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: Colors.blue,
-            maxRadius: 20,
-            child: Center(
-              child: Icon(
-                Icons.contact_phone,
-                color: Colors.white,
+  Widget _newFriendsApply() {
+    return Selector<ContactsManager, List<FriendsApplicationInfo>>(
+      builder: (BuildContext context, List<FriendsApplicationInfo> value,
+          Widget? child) {
+        print("DEBUG=> _FriendsView 重绘了。。。。。");
+        return Container(
+            color: Colors.white,
+            padding: EdgeInsets.only(top: 10, bottom: 10),
+            child: ListTile(
+              // onTap: () =>
+              //     Routers.navigateTo("/contacts_application", arg: value),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => ContactsApplicationPage(value))),
+              leading: CircleAvatar(
+                backgroundColor: Colors.blue,
+                maxRadius: 20,
+                child: Center(
+                  child: Icon(
+                    Icons.contact_phone,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-            ),
-          ),
-          title: Text(
-            '好友申请',
-            style: Flavors.textStyles.friendsText,
-          ),
-          trailing: Container(
-            width: 30.0.w,
-            child: CircleAvatar(
-              backgroundColor: Colors.red,
-              maxRadius: 10,
-              child: Center(
-                child: Text('5', style: Flavors.textStyles.homeTabBubbleText),
+              title: Text(
+                '好友申请',
+                style: Flavors.textStyles.friendsText,
               ),
-            ),
-          ),
-        ));
+              trailing: Container(
+                width: 30.0.w,
+                child: CircleAvatar(
+                  backgroundColor: Colors.red,
+                  maxRadius: 10,
+                  child: Center(
+                    child: Text('${value.length}',
+                        style: Flavors.textStyles.homeTabBubbleText),
+                  ),
+                ),
+              ),
+            ));
+      },
+      selector: (BuildContext context, ContactsManager contactsManager) {
+        return contactsManager.contactsApplicationList;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
   }
 
-  _contactsListView() {
+  Widget _contactsListView() {
     return Selector<ContactsManager, List<Friends>>(
       builder: (BuildContext context, List<Friends> value, Widget? child) {
         print("DEBUG=> _FriendsView 重绘了。。。。。");
-        return ContactsUsersListItem(value);
+        return ContactsUsersList(value);
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
         return contactsManager.friendsList;
