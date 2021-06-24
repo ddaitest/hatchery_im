@@ -83,6 +83,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   void handleClick(String value) {
     switch (value) {
       case '添加好友':
+        Routers.navigateTo('/search_new_contacts');
         break;
       case '创建群组':
         Routers.navigateTo("/create_group");
