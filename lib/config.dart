@@ -44,7 +44,7 @@ class SlideActionInfo {
   final String? label;
   final IconData icon;
   final Color iconColor;
-  final VoidCallback? onTap;
+  final Function? onTap;
 
   const SlideActionInfo(this.label, this.icon, this.iconColor, {this.onTap});
 }

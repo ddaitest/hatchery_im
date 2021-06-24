@@ -104,7 +104,7 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
               style: Flavors.textStyles.chatHomeSlideText)),
       color: slideActionInfo.iconColor,
       icon: slideActionInfo.icon,
-      onTap: slideActionInfo.onTap,
+      onTap: () => slideActionInfo.onTap,
     );
   }
 }

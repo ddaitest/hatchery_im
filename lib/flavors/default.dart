@@ -171,8 +171,11 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       color: ColorInfo().subtitleColor);
 
-  final TextStyle contactsApplicationText =
-      TextStyle(color: ColorInfo().mainTextColor);
+  final TextStyle contactsApplicationAgreeText =
+      TextStyle(color: ColorInfo().mainColor);
+
+  final TextStyle contactsApplicationDenyText =
+      TextStyle(color: ColorInfo().redColor);
 }
 
 class SizesInfo {

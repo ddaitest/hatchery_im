@@ -28,11 +28,13 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
   bool get wantKeepAlive => true;
   final manager = App.manager<ContactsApplicationManager>();
   void initState() {
+    manager.init();
     super.initState();
   }
 
   @override
   void dispose() {
+    manager.slideAction.clear();
     super.dispose();
   }
 
@@ -96,10 +98,7 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
       );
     } else {
       return NewContactsUsersList(
-        widget.newContactsApplicationList,
-        null,
-        null,
-      );
+          widget.newContactsApplicationList, null, manager.slideAction);
     }
   }
 }

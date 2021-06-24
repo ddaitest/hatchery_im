@@ -17,8 +17,12 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class ContactsApplicationManager extends ChangeNotifier {
+  List<SlideActionInfo> slideAction = [];
+
   /// 初始化
-  init() {}
+  init() {
+    _addSlideAction();
+  }
 
   // querySearchNewContactsData() async {
   //   API.searchNewContacts(searchController!.text).then((value) {
@@ -30,6 +34,24 @@ class ContactsApplicationManager extends ChangeNotifier {
   //     }
   //   });
   // }
+
+  void _addSlideAction() {
+    slideAction.add(
+      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red, onTap: denyBtnTap),
+    );
+    slideAction.add(
+      SlideActionInfo('忽略', Icons.alarm_off, Flavors.colorInfo.mainColor,
+          onTap: ignoreBtnTap),
+    );
+  }
+
+  Function? denyBtnTap() {
+    return null;
+  }
+
+  Function? ignoreBtnTap() {
+    return null;
+  }
 
   @override
   void dispose() {

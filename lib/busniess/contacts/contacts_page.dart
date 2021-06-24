@@ -114,17 +114,19 @@ class _ContactsState extends State<ContactsPage>
                 '好友申请',
                 style: Flavors.textStyles.friendsText,
               ),
-              trailing: Container(
-                width: 30.0.w,
-                child: CircleAvatar(
-                  backgroundColor: Colors.red,
-                  maxRadius: 10,
-                  child: Center(
-                    child: Text('${value.length}',
-                        style: Flavors.textStyles.homeTabBubbleText),
-                  ),
-                ),
-              ),
+              trailing: value.isNotEmpty
+                  ? Container(
+                      width: 30.0.w,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.red,
+                        maxRadius: 10,
+                        child: Center(
+                          child: Text('${value.length}',
+                              style: Flavors.textStyles.homeTabBubbleText),
+                        ),
+                      ),
+                    )
+                  : Container(width: 30.0.w),
             ));
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
