@@ -50,7 +50,7 @@ class GroupListItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular((4.0))),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         /// 群头像，没有头像则返回top3Members中的三个头像合集
                         groupsLists[index].group.icon != null
@@ -77,9 +77,11 @@ class GroupListItem extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis)),
 
+                        SizedBox(height: 10.0.h),
+
                         /// 群简介
                         Text(
-                            '${groupsLists[index].group.groupDescription ?? ''}',
+                            '${groupsLists[index].group.groupDescription ?? '没有群简介'}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Flavors.textStyles.groupMembersNumberText),

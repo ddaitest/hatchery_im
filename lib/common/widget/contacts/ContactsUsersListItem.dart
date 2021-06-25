@@ -144,11 +144,13 @@ class NewContactsUsersList extends StatelessWidget {
   final List<FriendsApplicationInfo> contactsApplicationList;
   final Function? agreeBtnTap;
   final List<SlideActionInfo> slideAction;
-  NewContactsUsersList(
-      this.contactsApplicationList, this.agreeBtnTap, this.slideAction);
+  final Function? replyNewContactsResTap;
+  NewContactsUsersList(this.contactsApplicationList, this.agreeBtnTap,
+      this.slideAction, this.replyNewContactsResTap);
 
   @override
   Widget build(BuildContext context) {
+    _addSlideAction();
     return ListView.builder(
       itemCount: contactsApplicationList.length,
       shrinkWrap: true,
@@ -219,5 +221,16 @@ class NewContactsUsersList extends StatelessWidget {
       icon: slideActionInfo.icon,
       onTap: () => slideActionInfo.onTap,
     );
+  }
+
+  void _addSlideAction() {
+    slideAction.add(
+      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red,
+          onTap: replyNewContactsResTap),
+    );
+    // slideAction.add(
+    //   SlideActionInfo('忽略', Icons.alarm_off, Flavors.colorInfo.mainColor,
+    //       onTap: ignoreBtnTap),
+    // );
   }
 }

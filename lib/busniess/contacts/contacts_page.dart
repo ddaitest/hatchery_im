@@ -13,6 +13,8 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:hatchery_im/common/utils.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -24,6 +26,9 @@ class _ContactsState extends State<ContactsPage>
   @override
   bool get wantKeepAlive => true;
   final manager = App.manager<ContactsManager>();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   void initState() {
     manager.init();
     super.initState();
@@ -34,29 +39,34 @@ class _ContactsState extends State<ContactsPage>
     super.dispose();
   }
 
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    manager.refreshData();
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: <Widget>[
-          SearchBarView(),
-          _addFriendsView(),
-          Divider(
-            height: 0.5,
-            thickness: 0.5,
-            indent: 10,
-            endIndent: 10,
-            color: Flavors.colorInfo.dividerColor,
-          ),
-          _newFriendsApply(),
-          SizedBox(
-            height: 16.0.w,
-          ),
-          _contactsListView(),
-        ],
+      body: SmartRefresher(
+        enablePullDown: true,
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        child: ListView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          shrinkWrap: true,
+          children: <Widget>[
+            SearchBarView(),
+            _addFriendsView(),
+            dividerViewCommon(),
+            _newFriendsApply(),
+            SizedBox(
+              height: 16.0.w,
+            ),
+            _contactsListView(),
+          ],
+        ),
       ),
     );
   }
@@ -66,7 +76,8 @@ class _ContactsState extends State<ContactsPage>
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          onTap: () => Routers.navigateTo('/search_new_contacts'),
+          onTap: () => Routers.navigateTo('/search_new_contacts')
+              .then((value) => value ? manager.refreshData() : null),
           leading: CircleAvatar(
             backgroundColor: Colors.pink,
             maxRadius: 20,
@@ -97,9 +108,10 @@ class _ContactsState extends State<ContactsPage>
               // onTap: () =>
               //     Routers.navigateTo("/contacts_application", arg: value),
               onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => ContactsApplicationPage(value))),
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ContactsApplicationPage(value)))
+                  .then((value) => value ? manager.refreshData() : null),
               leading: CircleAvatar(
                 backgroundColor: Colors.blue,
                 maxRadius: 20,

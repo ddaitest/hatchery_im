@@ -181,13 +181,7 @@ class MyProfilePage extends StatelessWidget {
               ),
               onTap: onTap,
             ),
-            Divider(
-              height: 0.5,
-              thickness: 0.5,
-              color: Flavors.colorInfo.dividerColor,
-              indent: 30,
-              endIndent: 30,
-            ),
+            dividerViewCommon(),
           ],
         ));
   }

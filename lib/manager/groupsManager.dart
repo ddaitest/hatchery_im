@@ -20,6 +20,8 @@ class GroupsManager extends ChangeNotifier {
   //联系人列表 数据
   List<Groups> groupsList = [];
 
+  List<FriendsApplicationInfo> groupApplicationList = [];
+
   /// 初始化
   init() {
     _queryGroupsRes();

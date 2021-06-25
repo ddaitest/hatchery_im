@@ -38,17 +38,19 @@ class _SearchNewContactsPageState extends State<SearchNewContactsPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBarFactory.backButton('添加朋友'),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        // shrinkWrap: true,
-        children: <Widget>[
-          _topBarView(),
-          _contactsListView(),
-        ],
-      ),
-    );
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          appBar: AppBarFactory.backButton('添加朋友'),
+          body: ListView(
+            physics: const BouncingScrollPhysics(),
+            // shrinkWrap: true,
+            children: <Widget>[
+              _topBarView(),
+              _contactsListView(),
+            ],
+          ),
+        ));
   }
 
   Widget _topBarView() {
@@ -98,5 +100,10 @@ class _SearchNewContactsPageState extends State<SearchNewContactsPage>
       },
       shouldRebuild: (pre, next) => (pre != next),
     );
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.of(App.navState.currentContext!).pop(true);
+    return true;
   }
 }

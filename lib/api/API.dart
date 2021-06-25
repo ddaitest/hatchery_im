@@ -177,7 +177,7 @@ class API {
     }
   }
 
-  ///获取好友列表
+  ///好友申请数据
   static Future<ApiResult> getNewFriendsApplicationListData(
     int size,
     int current,
@@ -190,6 +190,29 @@ class API {
     try {
       Response response = await _dio.get("/roster/friends/applications",
           queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///好友申请回复
+  ///status： -1 拒绝；0：同意
+  static Future<ApiResult> replyNewContactsRes(String friendId, int status,
+      {String notes = ''}) async {
+    Map<String, dynamic> body = {
+      "friendId": friendId,
+      "notes": notes,
+      "status": status,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/roster/reply",
+          data: json.encode(body),
           options: Options(
             headers: {"BEE_TOKEN": _token},
           ));

@@ -185,6 +185,16 @@ Future<DialogDemoAction?>? showLoadingDialog(
       });
 }
 
+dividerViewCommon() {
+  return Divider(
+    height: 0.5,
+    thickness: 0.5,
+    indent: 10,
+    endIndent: 10,
+    color: Flavors.colorInfo.dividerColor,
+  );
+}
+
 closeLoadingDialog(BuildContext context) {
   Navigator.pop(context, DialogDemoAction.cancel);
 }

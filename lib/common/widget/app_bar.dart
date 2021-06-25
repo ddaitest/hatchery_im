@@ -53,7 +53,7 @@ class AppBarFactory {
         padding: const EdgeInsets.all(6.0),
         child: IconButton(
           icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
-          onPressed: () => Navigator.of(App.navState.currentContext!).pop(),
+          onPressed: () => Navigator.of(App.navState.currentContext!).pop(true),
         ),
       ),
       automaticallyImplyLeading: false,

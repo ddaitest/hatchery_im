@@ -13,8 +13,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
-import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsManager extends ChangeNotifier {
   //联系人列表 数据
@@ -54,6 +53,11 @@ class ContactsManager extends ChangeNotifier {
         notifyListeners();
       }
     });
+  }
+
+  void refreshData() {
+    _queryFriendsRes();
+    _queryNewFriendsApplicationRes();
   }
 
   @override

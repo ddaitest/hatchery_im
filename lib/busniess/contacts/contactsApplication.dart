@@ -28,7 +28,6 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
   bool get wantKeepAlive => true;
   final manager = App.manager<ContactsApplicationManager>();
   void initState() {
-    manager.init();
     super.initState();
   }
 
@@ -41,23 +40,25 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      appBar: AppBarFactory.backButton('好友申请'),
-      body: ListView(
-        physics: const BouncingScrollPhysics(),
-        // shrinkWrap: true,
-        children: <Widget>[
-          SizedBox(
-            height: 16.0.w,
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          appBar: AppBarFactory.backButton('好友申请'),
+          body: ListView(
+            physics: const BouncingScrollPhysics(),
+            // shrinkWrap: true,
+            children: <Widget>[
+              SizedBox(
+                height: 16.0.w,
+              ),
+              _addFriendsView(),
+              SizedBox(
+                height: 16.0.w,
+              ),
+              _contactsListView(),
+            ],
           ),
-          _addFriendsView(),
-          SizedBox(
-            height: 16.0.w,
-          ),
-          _contactsListView(),
-        ],
-      ),
-    );
+        ));
   }
 
   Widget _addFriendsView() {
@@ -98,7 +99,12 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
       );
     } else {
       return NewContactsUsersList(
-          widget.newContactsApplicationList, null, manager.slideAction);
+          widget.newContactsApplicationList, null, manager.slideAction, null);
     }
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.of(App.navState.currentContext!).pop(true);
+    return true;
   }
 }
