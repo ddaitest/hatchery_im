@@ -58,6 +58,8 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem>
                         if (_isChecked[index]) {
                           widget.manager.selectFriendsList
                               .add(widget.friendsLists[index].friendId);
+                          widget.manager.selectContactsLists
+                              .add(widget.friendsLists[index]);
                         } else {
                           widget.manager.selectFriendsList
                               .remove(widget.friendsLists[index].friendId);

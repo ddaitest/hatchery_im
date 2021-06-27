@@ -40,6 +40,10 @@ class GroupsManager extends ChangeNotifier {
     });
   }
 
+  void refreshData() {
+    _queryGroupsRes();
+  }
+
   @override
   void dispose() {
     super.dispose();

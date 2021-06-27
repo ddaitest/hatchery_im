@@ -12,6 +12,8 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 class GroupPage extends StatefulWidget {
@@ -24,6 +26,8 @@ class _GroupPageState extends State<GroupPage>
   @override
   bool get wantKeepAlive => true;
   final manager = App.manager<GroupsManager>();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   void initState() {
     manager.init();
@@ -35,25 +39,33 @@ class _GroupPageState extends State<GroupPage>
     super.dispose();
   }
 
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    manager.refreshData();
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: ListView(
+        body: SmartRefresher(
+      enablePullDown: true,
+      controller: _refreshController,
+      onRefresh: _onRefresh,
+      child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         children: <Widget>[
           SearchBarView(),
           _createGroupsView(),
-          dividerViewCommon(),
-          _addGroupsView(),
-          dividerViewCommon(),
-          _newGroupsApply(),
+          // dividerViewCommon(),
+          // _newGroupsApply(),
           SizedBox(height: 10.0.h),
           _groupListView(),
         ],
       ),
-    );
+    ));
   }
 
   Widget _groupListView() {
@@ -72,40 +84,15 @@ class _GroupPageState extends State<GroupPage>
     );
   }
 
-  Widget _addGroupsView() {
-    return Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: ListTile(
-          // onTap: () => Routers.navigateTo('/search_new_contacts')
-          //     .then((value) => value ? manager.refreshData() : null),
-          leading: CircleAvatar(
-            backgroundColor: Colors.pink,
-            maxRadius: 20,
-            child: Center(
-              child: Icon(
-                Icons.group_add,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          title: Text(
-            '查找群组',
-            style: Flavors.textStyles.friendsText,
-          ),
-          trailing: Container(width: 30.0.w),
-        ));
-  }
-
   Widget _createGroupsView() {
     return Container(
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          // onTap: () => Routers.navigateTo('/search_new_contacts')
-          //     .then((value) => value ? manager.refreshData() : null),
+          onTap: () => Routers.navigateTo('/create_group')
+              .then((value) => value ? manager.refreshData() : null),
           leading: CircleAvatar(
-            backgroundColor: Colors.blueGrey,
+            backgroundColor: Colors.pink,
             maxRadius: 20,
             child: Center(
               child: Icon(
@@ -126,7 +113,6 @@ class _GroupPageState extends State<GroupPage>
     return Selector<GroupsManager, List<FriendsApplicationInfo>>(
       builder: (BuildContext context, List<FriendsApplicationInfo> value,
           Widget? child) {
-        print("DEBUG=> _FriendsView 重绘了。。。。。");
         return Container(
             color: Colors.white,
             padding: EdgeInsets.only(top: 10, bottom: 10),

@@ -100,7 +100,6 @@ class _ContactsState extends State<ContactsPage>
     return Selector<ContactsManager, List<FriendsApplicationInfo>>(
       builder: (BuildContext context, List<FriendsApplicationInfo> value,
           Widget? child) {
-        print("DEBUG=> _FriendsView 重绘了。。。。。");
         return Container(
             color: Colors.white,
             padding: EdgeInsets.only(top: 10, bottom: 10),

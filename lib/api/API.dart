@@ -223,6 +223,25 @@ class API {
     }
   }
 
+  ///入群申请
+  static Future<ApiResult> replyNewGroupRes(String merberlogID) async {
+    Map<String, dynamic> body = {
+      "merberlogID": merberlogID,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/groups/approve",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取群列表
   static Future<ApiResult> getGroupListData(
     int size,

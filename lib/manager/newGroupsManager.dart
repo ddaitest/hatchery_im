@@ -21,6 +21,7 @@ import '../config.dart';
 class NewGroupsManager extends ChangeNotifier {
   String groupAvatarUrl = '';
   double uploadProgress = 0.0;
+  List<Friends> selectContactsLists = [];
 
   GlobalKey<FormState> settingInputKey = GlobalKey<FormState>();
   TextEditingController groupNameController = TextEditingController();
@@ -48,9 +49,6 @@ class NewGroupsManager extends ChangeNotifier {
     });
   }
 
-  // /// 初始化
-  // init() {}
-  //
   Future<bool> uploadImage(String filePath) async {
     ApiResult result = await compressionImage(filePath)
         .then((value) => ApiForFileService.uploadFile(value, (count, total) {
@@ -89,6 +87,12 @@ class NewGroupsManager extends ChangeNotifier {
       showToast('创建群组失败');
     }
     return result.isSuccess();
+  }
+
+  void addSelectContactsIntoList(Friends friendsIndex) {
+    selectContactsLists.add(friendsIndex);
+    print("DEBUG=> selectContactsLists $selectContactsLists");
+    notifyListeners();
   }
 
   @override
