@@ -56,17 +56,13 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem>
                       setState(() {
                         _isChecked[index] = value!;
                         if (_isChecked[index]) {
-                          widget.manager.selectFriendsList
-                              .add(widget.friendsLists[index].friendId);
-                          widget.manager.selectContactsLists
-                              .add(widget.friendsLists[index]);
+                          widget.manager.addSelectedFriendsIntoList(
+                              widget.friendsLists[index]);
                         } else {
                           widget.manager.selectFriendsList
-                              .remove(widget.friendsLists[index].friendId);
+                              .remove(widget.friendsLists[index]);
                         }
                       });
-                    } else {
-                      return;
                     }
                   }),
               Expanded(

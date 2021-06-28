@@ -33,62 +33,67 @@ class _NewGroupState extends State<NewGroupPage>
 
   @override
   void dispose() {
-    manager.selectContactsLists.clear();
     manager.selectFriendsList.clear();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarFactory.backButton('创建群组', actions: [
-        Container(
-            padding: const EdgeInsets.all(6.0),
-            child: TextButton(
-              onPressed: () {
-                if (manager.selectFriendsList.length < 2) {
-                  showToast('最少选择2名好友');
-                } else {
-                  Routers.navigateTo('/create_group_detail');
-                }
-              },
-              child: Text(
-                '下一步',
-                style: Flavors.textStyles.newGroupNextBtnText,
+    return ChangeNotifierProvider(
+        create: (context) => manager,
+        child: Scaffold(
+          appBar: AppBarFactory.backButton('创建群组', actions: [
+            Container(
+                padding: const EdgeInsets.all(6.0),
+                child: TextButton(
+                  onPressed: () {
+                    if (manager.selectFriendsList.length < 2) {
+                      showToast('最少选择2名好友');
+                    } else {
+                      Routers.navigateTo('/create_group_detail');
+                    }
+                  },
+                  child: Text(
+                    '下一步',
+                    style: Flavors.textStyles.newGroupNextBtnText,
+                  ),
+                )),
+          ]),
+          body: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: <Widget>[
+              SearchBarView(isEnabled: true),
+              _tipsView("已选择的好友"),
+              _selectedContactsView(),
+              SizedBox(
+                height: 10.0.w,
               ),
-            )),
-      ]),
-      body: ListView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        shrinkWrap: true,
-        children: <Widget>[
-          SearchBarView(isEnabled: true),
-          _tipsView("已选择的好友"),
-          _selectedContactsView(),
-          SizedBox(
-            height: 10.0.w,
+              _tipsView("请至少选择两名好友作为群成员"),
+              _contactsListView(),
+            ],
           ),
-          _tipsView("请至少选择两名好友作为群成员"),
-          _contactsListView(),
-        ],
-      ),
-    );
+        ));
   }
 
   Widget _selectedContactsView() {
-    List<Widget> selectList = [];
-    manager.selectContactsLists.forEach((element) {
-      selectList.add(_selectContactsItem(element.icon));
+    return Consumer(builder: (BuildContext context,
+        NewGroupsManager newGroupsManager, Widget? child) {
+      print("DEBUG=> value value ${newGroupsManager.selectFriendsList}");
+      List<Widget> selectList = [];
+      newGroupsManager.selectFriendsList.forEach((element) {
+        selectList.add(_selectContactsItem(element.icon));
+      });
+      return Container(
+        color: Colors.white,
+        padding: const EdgeInsets.all(16.0),
+        child: Wrap(
+          spacing: 10, //主轴上子控件的间距
+          runSpacing: 5, //交叉轴上子控件之间的间距
+          children: selectList, //要显示的子控件集合
+        ),
+      );
     });
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(16.0),
-      child: Wrap(
-        spacing: 10, //主轴上子控件的间距
-        runSpacing: 5, //交叉轴上子控件之间的间距
-        children: selectList, //要显示的子控件集合
-      ),
-    );
   }
 
   Widget _selectContactsItem(String imageUrl) {

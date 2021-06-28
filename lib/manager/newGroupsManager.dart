@@ -21,7 +21,6 @@ import '../config.dart';
 class NewGroupsManager extends ChangeNotifier {
   String groupAvatarUrl = '';
   double uploadProgress = 0.0;
-  List<Friends> selectContactsLists = [];
 
   GlobalKey<FormState> settingInputKey = GlobalKey<FormState>();
   TextEditingController groupNameController = TextEditingController();
@@ -29,7 +28,7 @@ class NewGroupsManager extends ChangeNotifier {
   TextEditingController groupDescriptionController = TextEditingController();
   //联系人列表 数据
   List<Friends> friendsList = [];
-  List<String> selectFriendsList = [];
+  List<Friends> selectFriendsList = [];
 
   /// 初始化
   init() {
@@ -89,9 +88,9 @@ class NewGroupsManager extends ChangeNotifier {
     return result.isSuccess();
   }
 
-  void addSelectContactsIntoList(Friends friendsIndex) {
-    selectContactsLists.add(friendsIndex);
-    print("DEBUG=> selectContactsLists $selectContactsLists");
+  void addSelectedFriendsIntoList(Friends friends) {
+    selectFriendsList.add(friends);
+    print("DEBUG=> selectContactsLists ${selectFriendsList.length}");
     notifyListeners();
   }
 
