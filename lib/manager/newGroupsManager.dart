@@ -21,7 +21,6 @@ import '../config.dart';
 class NewGroupsManager extends ChangeNotifier {
   String groupAvatarUrl = '';
   double uploadProgress = 0.0;
-
   GlobalKey<FormState> settingInputKey = GlobalKey<FormState>();
   TextEditingController groupNameController = TextEditingController();
   TextEditingController groupNotesController = TextEditingController();
@@ -35,14 +34,18 @@ class NewGroupsManager extends ChangeNotifier {
     _queryFriendsRes();
   }
 
+  NewGroupsManager() {
+    init();
+  }
+
   _queryFriendsRes({
     int size = 999,
-    int current = 0,
+    int page = 0,
   }) async {
-    API.getFriendsListData(size, current).then((value) {
+    API.getFriendsListData(size, page).then((value) {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
-        print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
+        // print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
         notifyListeners();
       }
     });
@@ -80,8 +83,8 @@ class NewGroupsManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()}");
       showToast('创建群组成功');
       groupAvatarUrl = '';
-      Navigator.of(App.navState.currentContext!).pop();
-      Navigator.of(App.navState.currentContext!).pop();
+      Navigator.of(App.navState.currentContext!).pop(true);
+      Navigator.of(App.navState.currentContext!).pop(true);
     } else {
       showToast('创建群组失败');
     }
@@ -90,14 +93,17 @@ class NewGroupsManager extends ChangeNotifier {
 
   void addSelectedFriendsIntoList(Friends friends) {
     selectFriendsList.add(friends);
-    print("DEBUG=> selectContactsLists ${selectFriendsList.length}");
+    notifyListeners();
+  }
+
+  void removeSelectedFriendsIntoList(Friends friends) {
+    selectFriendsList.remove(friends);
     notifyListeners();
   }
 
   @override
   void dispose() {
-    groupAvatarUrl = '';
-    uploadProgress = 0.0;
+    selectFriendsList.clear();
     super.dispose();
   }
 }

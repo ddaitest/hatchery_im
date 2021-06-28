@@ -157,11 +157,11 @@ class API {
   ///获取好友列表
   static Future<ApiResult> getFriendsListData(
     int size,
-    int current,
+    int page,
   ) async {
     Map<String, int> queryParam = {
       "size": size,
-      "current": current,
+      "page": page,
     };
     init();
     try {
@@ -180,11 +180,11 @@ class API {
   ///好友申请数据
   static Future<ApiResult> getNewFriendsApplicationListData(
     int size,
-    int current,
+    int page,
   ) async {
     Map<String, int> queryParam = {
       "size": size,
-      "current": current,
+      "page": page,
     };
     init();
     try {
@@ -245,11 +245,11 @@ class API {
   ///获取群列表
   static Future<ApiResult> getGroupListData(
     int size,
-    int current,
+    int page,
   ) async {
     Map<String, int> queryParam = {
       "size": size,
-      "current": current,
+      "page": page,
     };
     init();
     try {
@@ -296,11 +296,11 @@ class API {
 
   ///获取单聊离线消息
   static Future<ApiResult> messageHistoryWithFriend(
-      {String? friendID, int? current, int? size, int? currentMsgID}) async {
+      {String? friendID, int? page, int? size, int? currentMsgID}) async {
     init();
     Map<String, dynamic> queryParam = {
       "friendID": friendID,
-      "current": current,
+      "page": page,
       "size": size,
       "currentMsgID": currentMsgID
     };

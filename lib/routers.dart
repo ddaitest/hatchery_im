@@ -32,8 +32,8 @@ class Routers {
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
       case '/create_group':
         return MaterialPageRoute(builder: (_) => NewGroupPage());
-      case '/create_group_detail':
-        return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
+      // case '/create_group_detail':
+      //   return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       // case '/contacts_application':

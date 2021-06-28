@@ -36,12 +36,12 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   queryFriendsHistoryMessages(String friendId, int? currentMsgID,
-      {int current = 0, int size = 100}) async {
+      {int page = 0, int size = 100}) async {
     API
         .messageHistoryWithFriend(
             friendID: friendId,
             size: size,
-            current: current,
+            page: page,
             currentMsgID: currentMsgID!)
         .then((value) {
       if (value.isSuccess()) {

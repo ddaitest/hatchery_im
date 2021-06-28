@@ -102,6 +102,11 @@ class TextStyles {
   final TextStyle friendsText = TextStyle(
       fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
 
+  final TextStyle friendsSubtitleText = TextStyle(
+      fontSize: 13.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().subtitleColor);
+
   final TextStyle meNickNameText = TextStyle(
       fontSize: 19.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 

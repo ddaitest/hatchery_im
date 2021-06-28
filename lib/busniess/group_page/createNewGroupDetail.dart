@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +19,8 @@ import 'package:hatchery_im/routers.dart';
 
 class NewGroupDetailPage extends StatelessWidget {
   final manager = App.manager<NewGroupsManager>();
+  final List<Friends> selectedFriends;
+  NewGroupDetailPage(this.selectedFriends);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,6 @@ class NewGroupDetailPage extends StatelessWidget {
   }
 
   _bodyContainer() {
-    print("DEBUG=> manager.selectFriendsList ${manager.selectFriendsList}");
     return Scaffold(
       appBar: AppBarFactory.backButton('填写群资料', actions: [
         Container(
@@ -230,14 +232,19 @@ class NewGroupDetailPage extends StatelessWidget {
     String groupDescription = manager.groupDescriptionController.text;
     String groupNotes = manager.groupNotesController.text;
     String grouopImageUrl = manager.groupAvatarUrl;
+    List<String> friendsId = [];
+    print("DEBUG=> manager.selectFriendsList ${selectedFriends}");
+    selectedFriends.forEach((element) {
+      friendsId.add(element.friendId);
+    });
     print('${groupName}');
     print('${groupDescription}');
     print('${groupNotes}');
     print('${grouopImageUrl}');
-    print('${manager.selectFriendsList}');
+    print('${selectedFriends}');
     if (groupName != '' || manager.selectFriendsList.length < 2) {
-      manager.submit(groupName, groupDescription, grouopImageUrl, groupNotes,
-          manager.selectFriendsList);
+      manager.submit(
+          groupName, groupDescription, grouopImageUrl, groupNotes, friendsId);
     } else {
       showToast('群名称或群成员不能为空', showGravity: ToastGravity.BOTTOM);
     }
