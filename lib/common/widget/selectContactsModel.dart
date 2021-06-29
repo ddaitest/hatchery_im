@@ -8,59 +8,60 @@ import 'package:hatchery_im/common/widget/groups/groupListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
-import 'package:hatchery_im/manager/newGroupsManager.dart';
-import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
+import 'package:hatchery_im/manager/selectContactsModelManager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 
-class NewGroupPage extends StatefulWidget {
+class SelectContactsModelPage extends StatefulWidget {
+  final String titleText;
+  final int leastSelected;
+  final String nextPageBtnText;
+  final String tipsText;
+  final Widget nextPageBtnTapWidget;
+  SelectContactsModelPage(
+      {required this.titleText,
+      required this.leastSelected,
+      required this.nextPageBtnText,
+      required this.tipsText,
+      required this.nextPageBtnTapWidget});
+
   @override
-  _NewGroupState createState() => _NewGroupState();
+  _SelectContactsModelState createState() => _SelectContactsModelState();
 }
 
-class _NewGroupState extends State<NewGroupPage> {
-  final manager = App.manager<NewGroupsManager>();
-
-  @override
-  void dispose() {
-    manager.groupAvatarUrl = '';
-    manager.uploadProgress = 0.0;
-    super.dispose();
-  }
-
+class _SelectContactsModelState extends State<SelectContactsModelPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => NewGroupsManager(),
+        create: (context) => SelectContactsModelManager(),
         child: Consumer(
-          builder: (BuildContext context, NewGroupsManager newGroupsManager,
+          builder: (BuildContext context,
+              SelectContactsModelManager selectContactsModelManager,
               Widget? child) {
             return WillPopScope(
                 onWillPop: _onWillPop,
                 child: Scaffold(
-                    appBar: AppBarFactory.backButton('创建群组', actions: [
+                    appBar: AppBarFactory
+                        .backButton('${widget.titleText}', actions: [
                       Container(
                           padding: const EdgeInsets.all(6.0),
                           child: TextButton(
-                            onPressed: () {
-                              if (newGroupsManager.selectFriendsList.length <
-                                  2) {
-                                showToast('最少选择2名好友');
-                              } else {
-                                Navigator.push(
+                            onPressed: () => selectContactsModelManager
+                                        .selectFriendsList.length <
+                                    widget.leastSelected
+                                ? showToast('最少选择${widget.leastSelected}名好友')
+                                : Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => NewGroupDetailPage(
-                                            newGroupsManager
-                                                .selectFriendsList)));
-                              }
-                            },
+                                        builder: (_) =>
+                                            widget.nextPageBtnTapWidget)),
                             child: Text(
-                              '下一步',
+                              '${widget.nextPageBtnText}',
                               style: Flavors.textStyles.newGroupNextBtnText,
                             ),
                           )),
@@ -69,28 +70,32 @@ class _NewGroupState extends State<NewGroupPage> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
                       children: <Widget>[
-                        SearchBarView(isEnabled: true),
-                        newGroupsManager.selectFriendsList.isNotEmpty
+                        // SearchBarView(
+                        //     searchHintText: "搜索好友",
+                        //     textEditingController:
+                        //         selectContactsModelManager.searchController,
+                        //     isEnabled: true),
+                        selectContactsModelManager.selectFriendsList.isNotEmpty
                             ? _tipsView("已选择的好友")
                             : Container(),
-                        _selectedContactsView(newGroupsManager),
+                        _selectedContactsView(selectContactsModelManager),
                         SizedBox(
                           height: 10.0.w,
                         ),
-                        _tipsView("请至少选择两名好友作为群成员"),
-                        _contactsListView(newGroupsManager),
+                        _tipsView("${widget.tipsText}"),
+                        _contactsListView(selectContactsModelManager),
                       ],
                     )));
           },
         ));
   }
 
-  Widget _selectedContactsView(newGroupsManager) {
+  Widget _selectedContactsView(selectContactsModelManager) {
     List<Widget> selectList = [];
-    newGroupsManager.selectFriendsList.forEach((element) {
+    selectContactsModelManager.selectFriendsList.forEach((element) {
       selectList.add(_selectContactsItem(element.icon));
     });
-    return newGroupsManager.selectFriendsList.isNotEmpty
+    return selectContactsModelManager.selectFriendsList.isNotEmpty
         ? Container(
             color: Colors.white,
             padding: const EdgeInsets.all(16.0),
@@ -134,10 +139,10 @@ class _NewGroupState extends State<NewGroupPage> {
     );
   }
 
-  Widget _contactsListView(newGroupsManager) {
-    return newGroupsManager.friendsList.isNotEmpty
+  Widget _contactsListView(selectContactsModelManager) {
+    return selectContactsModelManager.friendsList.isNotEmpty
         ? CheckBoxContactsUsersItem(
-            newGroupsManager.friendsList, newGroupsManager)
+            selectContactsModelManager.friendsList, selectContactsModelManager)
         : Container();
   }
 

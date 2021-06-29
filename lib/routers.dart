@@ -4,7 +4,6 @@ import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'package:hatchery_im/busniess/login/register_page.dart';
 import 'package:hatchery_im/busniess/login/register_page_detail.dart';
 import 'package:hatchery_im/busniess/profile_page/profile_edit_page.dart';
-import 'package:hatchery_im/busniess/group_page/createNewGroup.dart';
 import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'package:hatchery_im/busniess/test/TestPage.dart';
@@ -30,8 +29,6 @@ class Routers {
         return MaterialPageRoute(builder: (_) => GroupPage());
       case '/profile_edit':
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
-      case '/create_group':
-        return MaterialPageRoute(builder: (_) => NewGroupPage());
       // case '/create_group_detail':
       //   return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
       case '/search_new_contacts':

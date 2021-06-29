@@ -18,14 +18,11 @@ import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import '../config.dart';
 
-class NewGroupsManager extends ChangeNotifier {
-  String groupAvatarUrl = '';
-  double uploadProgress = 0.0;
-  TextEditingController groupNameController = TextEditingController();
-  TextEditingController groupNotesController = TextEditingController();
-  TextEditingController groupDescriptionController = TextEditingController();
+class SelectContactsModelManager extends ChangeNotifier {
+  TextEditingController searchController = TextEditingController();
   //联系人列表 数据
   List<Friends> friendsList = [];
+  // checkBox选择的联系人
   List<Friends> selectFriendsList = [];
 
   /// 初始化
@@ -33,7 +30,7 @@ class NewGroupsManager extends ChangeNotifier {
     _queryFriendsRes();
   }
 
-  NewGroupsManager() {
+  SelectContactsModelManager() {
     init();
   }
 
@@ -50,46 +47,6 @@ class NewGroupsManager extends ChangeNotifier {
     });
   }
 
-  Future<bool> uploadImage(String filePath) async {
-    ApiResult result = await compressionImage(filePath)
-        .then((value) => ApiForFileService.uploadFile(value, (count, total) {
-              uploadProgress = count.toDouble() / total.toDouble();
-              print("DEBUG=> uploadProgress = $uploadProgress");
-              notifyListeners();
-            }));
-    if (result.isSuccess()) {
-      final url = result.getData();
-      if (url is String) {
-        groupAvatarUrl = url;
-        print("DEBUG=> uploadUrl = ${groupAvatarUrl}");
-        uploadProgress = 0.0;
-        notifyListeners();
-      }
-    }
-    return result.isSuccess();
-  }
-
-  Future<bool> submit(
-    String groupName,
-    String groupDescription,
-    String groupIcon,
-    String notes,
-    List<dynamic> members,
-  ) async {
-    ApiResult result = await API.createNewGroup(
-        groupName, groupDescription, groupIcon, notes, members);
-    if (result.isSuccess()) {
-      print("DEBUG=> result.getData() ${result.getData()}");
-      showToast('创建群组成功');
-      groupAvatarUrl = '';
-      Navigator.of(App.navState.currentContext!).pop(true);
-      Navigator.of(App.navState.currentContext!).pop(true);
-    } else {
-      showToast('创建群组失败');
-    }
-    return result.isSuccess();
-  }
-
   void addSelectedFriendsIntoList(Friends friends) {
     selectFriendsList.add(friends);
     notifyListeners();
@@ -103,6 +60,7 @@ class NewGroupsManager extends ChangeNotifier {
   @override
   void dispose() {
     selectFriendsList.clear();
+    searchController.dispose();
     super.dispose();
   }
 }

@@ -10,6 +10,9 @@ import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
+import 'package:hatchery_im/manager/selectContactsModelManager.dart';
+import 'package:hatchery_im/common/widget/selectContactsModel.dart';
+import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -25,12 +28,13 @@ class _GroupPageState extends State<GroupPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final manager = App.manager<GroupsManager>();
+  final groupsManager = App.manager<GroupsManager>();
+  final selectContactsModelManager = App.manager<SelectContactsModelManager>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
   void initState() {
-    manager.init();
+    groupsManager.init();
     super.initState();
   }
 
@@ -41,7 +45,7 @@ class _GroupPageState extends State<GroupPage>
 
   void _onRefresh() async {
     await Future.delayed(Duration(milliseconds: 500));
-    manager.refreshData();
+    groupsManager.refreshData();
     _refreshController.refreshCompleted();
   }
 
@@ -89,8 +93,18 @@ class _GroupPageState extends State<GroupPage>
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          onTap: () => Routers.navigateTo('/create_group')
-              .then((value) => value ? manager.refreshData() : null),
+          onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => SelectContactsModelPage(
+                            titleText: '创建群组',
+                            tipsText: '请至少选择两名好友作为群成员',
+                            leastSelected: 2,
+                            nextPageBtnText: '下一步',
+                            nextPageBtnTapWidget: NewGroupDetailPage(
+                                selectContactsModelManager.selectFriendsList),
+                          )))
+              .then((value) => value ? groupsManager.refreshData() : null),
           leading: CircleAvatar(
             backgroundColor: Colors.pink,
             maxRadius: 20,

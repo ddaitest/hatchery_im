@@ -29,18 +29,18 @@ class NewGroupDetailPage extends StatelessWidget {
 
   _bodyContainer() {
     return Scaffold(
-      appBar: AppBarFactory.backButton('填写群资料', actions: [
-        Container(
-            padding: const EdgeInsets.all(6.0),
-            child: TextButton(
-              onPressed: () => _submitBtn(),
-              child: Text(
-                '完成',
-                style: Flavors.textStyles.newGroupNextBtnText,
-              ),
-            )),
-      ]),
-      body: Container(
+        appBar: AppBarFactory.backButton('填写群资料', actions: [
+          Container(
+              padding: const EdgeInsets.all(6.0),
+              child: TextButton(
+                onPressed: () => _submitBtn(),
+                child: Text(
+                  '完成',
+                  style: Flavors.textStyles.newGroupNextBtnText,
+                ),
+              )),
+        ]),
+        body: Container(
           height: double.infinity,
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -48,27 +48,24 @@ class NewGroupDetailPage extends StatelessWidget {
               horizontal: 40.0,
               vertical: 20.0,
             ),
-            child: Form(
-              key: manager.settingInputKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 20.0.h),
-                  _avatarView(),
-                  SizedBox(height: 10.0.h),
-                  Text('添加照片',
-                      style: Flavors.textStyles.newGroupSettingTitleText),
-                  SizedBox(height: 20.0.h),
-                  _buildGroupNameTF(),
-                  SizedBox(height: 20.0.h),
-                  _buildGroupDescriptionTF(),
-                  SizedBox(height: 30.0.h),
-                  _notificationSwitchView(),
-                ],
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(height: 20.0.h),
+                _avatarView(),
+                SizedBox(height: 10.0.h),
+                Text('添加照片',
+                    style: Flavors.textStyles.newGroupSettingTitleText),
+                SizedBox(height: 20.0.h),
+                _buildGroupNameTF(),
+                SizedBox(height: 20.0.h),
+                _buildGroupDescriptionTF(),
+                SizedBox(height: 30.0.h),
+                _notificationSwitchView(),
+              ],
             ),
-          )),
-    );
+          ),
+        ));
   }
 
   Widget _buildGroupNameTF() {

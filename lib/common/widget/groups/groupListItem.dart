@@ -53,21 +53,14 @@ class GroupListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         /// 群头像，没有头像则返回top3Members中的三个头像合集
-                        groupsLists[index].group.icon != null
-                            ? Container(
-                                padding: const EdgeInsets.only(
-                                    left: 32.0,
-                                    right: 32.0,
-                                    top: 20.0,
-                                    bottom: 20.0),
-                                child: _netWorkAvatar(
-                                    groupsLists[index].group.icon!, 40.0),
-                              )
-                            : Container(
-                                padding: const EdgeInsets.only(
-                                    left: 32.0, right: 32.0, top: 10.0),
-                                child: _noGroupAvatar(
-                                    groupsLists[index].top3Members)),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 32.0, right: 32.0, top: 10.0),
+                          child: groupsLists[index].group.icon != null
+                              ? _netWorkAvatar(
+                                  groupsLists[index].group.icon!, 40.0)
+                              : _noGroupAvatar(groupsLists[index].top3Members),
+                        ),
 
                         /// 群名字
                         Container(
@@ -77,27 +70,24 @@ class GroupListItem extends StatelessWidget {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis)),
 
-                        SizedBox(height: 10.0.h),
-
                         /// 群简介
                         Text(
                             '${groupsLists[index].group.groupDescription ?? '没有群简介'}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Flavors.textStyles.groupMembersNumberText),
+                        SizedBox(height: 10.0.h),
 
                         /// 前三名群成员头像
-                        Expanded(
-                            child: Container(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: _groupMembersAvatar(
-                                      groupsLists[index].top3Members,
-                                      groupsLists[index].membersCount),
-                                )))
+                        Container(
+                            padding:
+                                const EdgeInsets.only(left: 10.0, right: 10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: _groupMembersAvatar(
+                                  groupsLists[index].top3Members,
+                                  groupsLists[index].membersCount),
+                            ))
                       ],
                     ),
                   ));
