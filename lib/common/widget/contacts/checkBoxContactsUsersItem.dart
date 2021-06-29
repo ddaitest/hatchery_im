@@ -17,12 +17,15 @@ class CheckBoxContactsUsersItem extends StatefulWidget {
 
 class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem>
     with SingleTickerProviderStateMixin {
-  late List<bool> _isChecked;
+  Map<String, bool> _isChecked = Map();
 
   @override
   void initState() {
+    widget.friendsLists.forEach((element) {
+      print("DEBUG=> ${element.friendId}");
+      _isChecked[element.friendId] = false;
+    });
     super.initState();
-    _isChecked = List<bool>.filled(widget.friendsLists.length, false);
   }
 
   @override
@@ -80,12 +83,12 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem>
                     )
                   : null,
               activeColor: Flavors.colorInfo.mainColor,
-              value: _isChecked[index],
+              value: _isChecked[widget.friendsLists[index].friendId],
               onChanged: (value) {
+                _isChecked[widget.friendsLists[index].friendId] = value!;
                 if (widget.friendsLists.isNotEmpty) {
                   setState(() {
-                    _isChecked[index] = value!;
-                    if (_isChecked[index]) {
+                    if (_isChecked[widget.friendsLists[index].friendId]!) {
                       widget.manager.addSelectedFriendsIntoList(
                           widget.friendsLists[index]);
                     } else {

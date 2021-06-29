@@ -70,11 +70,11 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       shrinkWrap: true,
                       children: <Widget>[
-                        // SearchBarView(
-                        //     searchHintText: "搜索好友",
-                        //     textEditingController:
-                        //         selectContactsModelManager.searchController,
-                        //     isEnabled: true),
+                        SearchBarView(
+                            searchHintText: "搜索好友",
+                            textEditingController:
+                                selectContactsModelManager.searchController,
+                            isEnabled: true),
                         selectContactsModelManager.selectFriendsList.isNotEmpty
                             ? _tipsView("已选择的好友")
                             : Container(),

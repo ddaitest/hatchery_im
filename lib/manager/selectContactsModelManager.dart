@@ -24,14 +24,33 @@ class SelectContactsModelManager extends ChangeNotifier {
   List<Friends> friendsList = [];
   // checkBox选择的联系人
   List<Friends> selectFriendsList = [];
+  static List<Friends> backFriendsList = const [];
 
   /// 初始化
   init() {
     _queryFriendsRes();
+    _searchInputListener();
   }
 
   SelectContactsModelManager() {
     init();
+  }
+
+  void _searchInputListener() {
+    searchController.addListener(() {
+      print("DEBUG=> backFriendsList$backFriendsList");
+      String _inputText = searchController.text;
+      friendsList = List.from(backFriendsList);
+      if (_inputText.isNotEmpty) {
+        friendsList
+            .removeWhere((element) => !element.nickName.contains(_inputText));
+      } else {
+        friendsList = List.from(backFriendsList);
+        print("DEBUG=> else $backFriendsList");
+      }
+
+      notifyListeners();
+    });
   }
 
   _queryFriendsRes({
@@ -41,6 +60,7 @@ class SelectContactsModelManager extends ChangeNotifier {
     API.getFriendsListData(size, page).then((value) {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
+        backFriendsList = List.from(friendsList);
         // print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
         notifyListeners();
       }
