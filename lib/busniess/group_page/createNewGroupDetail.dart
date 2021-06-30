@@ -14,16 +14,18 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/newGroupsManager.dart';
+import 'package:hatchery_im/manager/selectContactsModelManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:hatchery_im/routers.dart';
 
 class NewGroupDetailPage extends StatelessWidget {
   final manager = App.manager<NewGroupsManager>();
-  final List<Friends> selectedFriends;
-  NewGroupDetailPage(this.selectedFriends);
+  final selectContactsModelManager = App.manager<SelectContactsModelManager>();
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "DEBUG=> NewGroupDetailPage ${selectContactsModelManager.selectFriendsList}");
     return _bodyContainer();
   }
 
@@ -230,15 +232,11 @@ class NewGroupDetailPage extends StatelessWidget {
     String groupNotes = manager.groupNotesController.text;
     String grouopImageUrl = manager.groupAvatarUrl;
     List<String> friendsId = [];
-    print("DEBUG=> manager.selectFriendsList ${selectedFriends}");
-    selectedFriends.forEach((element) {
+    print(
+        "DEBUG=> manager.selectFriendsList ${selectContactsModelManager.selectFriendsList}");
+    selectContactsModelManager.selectFriendsList.forEach((element) {
       friendsId.add(element.friendId);
     });
-    print('${groupName}');
-    print('${groupDescription}');
-    print('${groupNotes}');
-    print('${grouopImageUrl}');
-    print('${selectedFriends}');
     if (groupName != '' || manager.selectFriendsList.length < 2) {
       manager.submit(
           groupName, groupDescription, grouopImageUrl, groupNotes, friendsId);

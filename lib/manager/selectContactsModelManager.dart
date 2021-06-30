@@ -24,7 +24,7 @@ class SelectContactsModelManager extends ChangeNotifier {
   List<Friends> friendsList = [];
   // checkBox选择的联系人
   List<Friends> selectFriendsList = [];
-  static List<Friends> backFriendsList = const [];
+  List<Friends> backFriendsList = [];
 
   /// 初始化
   init() {
@@ -44,6 +44,8 @@ class SelectContactsModelManager extends ChangeNotifier {
       if (_inputText.isNotEmpty) {
         friendsList
             .removeWhere((element) => !element.nickName.contains(_inputText));
+        friendsList.removeWhere((element) =>
+            element.remarks != null && !element.remarks!.contains(_inputText));
       } else {
         friendsList = List.from(backFriendsList);
         print("DEBUG=> else $backFriendsList");
@@ -79,7 +81,6 @@ class SelectContactsModelManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    selectFriendsList.clear();
     searchController.dispose();
     super.dispose();
   }

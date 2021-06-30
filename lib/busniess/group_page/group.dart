@@ -101,8 +101,7 @@ class _GroupPageState extends State<GroupPage>
                             tipsText: '请至少选择两名好友作为群成员',
                             leastSelected: 2,
                             nextPageBtnText: '下一步',
-                            nextPageBtnTapWidget: NewGroupDetailPage(
-                                selectContactsModelManager.selectFriendsList),
+                            nextPageBtnTapWidget: NewGroupDetailPage(),
                           )))
               .then((value) => value ? groupsManager.refreshData() : null),
           leading: CircleAvatar(

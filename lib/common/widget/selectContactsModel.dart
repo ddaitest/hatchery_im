@@ -51,15 +51,20 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                       Container(
                           padding: const EdgeInsets.all(6.0),
                           child: TextButton(
-                            onPressed: () => selectContactsModelManager
-                                        .selectFriendsList.length <
-                                    widget.leastSelected
-                                ? showToast('最少选择${widget.leastSelected}名好友')
-                                : Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            widget.nextPageBtnTapWidget)),
+                            onPressed: () {
+                              selectContactsModelManager
+                                          .selectFriendsList.length <
+                                      widget.leastSelected
+                                  ? showToast('最少选择${widget.leastSelected}名好友')
+                                  : Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  widget.nextPageBtnTapWidget))
+                                      .then((value) => null);
+                              print(
+                                  "DEBUG=> LC ${selectContactsModelManager.selectFriendsList}");
+                            },
                             child: Text(
                               '${widget.nextPageBtnText}',
                               style: Flavors.textStyles.newGroupNextBtnText,
@@ -140,10 +145,8 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   }
 
   Widget _contactsListView(selectContactsModelManager) {
-    return selectContactsModelManager.friendsList.isNotEmpty
-        ? CheckBoxContactsUsersItem(
-            selectContactsModelManager.friendsList, selectContactsModelManager)
-        : Container();
+    return CheckBoxContactsUsersItem(
+        selectContactsModelManager.friendsList, selectContactsModelManager);
   }
 
   Future<bool> _onWillPop() async {

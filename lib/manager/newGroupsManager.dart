@@ -103,6 +103,9 @@ class NewGroupsManager extends ChangeNotifier {
   @override
   void dispose() {
     selectFriendsList.clear();
+    groupNameController.dispose();
+    groupNotesController.dispose();
+    groupDescriptionController.dispose();
     super.dispose();
   }
 }
