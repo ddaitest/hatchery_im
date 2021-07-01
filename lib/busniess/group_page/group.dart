@@ -30,7 +30,6 @@ class _GroupPageState extends State<GroupPage>
   @override
   bool get wantKeepAlive => true;
   final groupsManager = App.manager<GroupsManager>();
-  final selectContactsModelManager = App.manager<SelectContactsModelManager>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -41,6 +40,7 @@ class _GroupPageState extends State<GroupPage>
 
   @override
   void dispose() {
+    groupsManager.searchController.dispose();
     super.dispose();
   }
 
@@ -62,11 +62,14 @@ class _GroupPageState extends State<GroupPage>
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         children: <Widget>[
-          SearchBarView(),
+          SearchBarView(
+              searchHintText: "搜索群组",
+              isAutofocus: false,
+              textEditingController: groupsManager.searchController,
+              isEnabled: true),
           _createGroupsView(),
           // dividerViewCommon(),
           // _newGroupsApply(),
-          SizedBox(height: 10.0.h),
           _groupListView(),
         ],
       ),

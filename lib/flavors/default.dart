@@ -58,7 +58,7 @@ class TextStyles {
       color: ColorInfo().subtitleColor);
 
   final TextStyle groupMainName = TextStyle(
-      fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+      fontSize: 14.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
   final TextStyle groupMembersNumberText =
       TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
@@ -192,7 +192,7 @@ class SizesInfo {
 }
 
 class ColorInfo {
-  final mainColor = const Color(0xFF478DE0);
+  final mainColor = const Color(0xFF73AEF5);
   final mainTextColor = Colors.white;
   final mainBackGroundColor = Colors.white;
   final redColor = Colors.red;

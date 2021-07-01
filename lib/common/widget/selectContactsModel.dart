@@ -172,7 +172,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                   groupName;
         }
       }
-      groupName = myNickName + '、' + groupName + '等人的群组';
+      groupName = myNickName + ' ' + groupName + '的群组';
 
       if (widget.selectContactsType == SelectContactsType.Group) {
         print("DEBUG=> groupName $groupName");

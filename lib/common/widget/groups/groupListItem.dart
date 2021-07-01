@@ -41,7 +41,7 @@ class GroupListItem extends StatelessWidget {
                     title: Container(
                         child: Text(groupsLists[index].group.groupName!,
                             style: Flavors.textStyles.groupMainName,
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis)),
                     subtitle: Container(
                       padding: const EdgeInsets.only(top: 5),
@@ -64,7 +64,7 @@ class GroupListItem extends StatelessWidget {
                     ),
                   ));
             })
-        : IndicatorView();
+        : Container();
   }
 
   _groupMembersAvatar(List<GroupsTop3Members> top3Members, int groupsMembers) {

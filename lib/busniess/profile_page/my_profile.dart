@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/manager/myProfileManager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hatchery_im/common/AppContext.dart';
+import 'body.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
@@ -22,20 +22,28 @@ class MyProfilePage extends StatelessWidget {
     return Consumer(builder: (BuildContext context,
         MyProfileManager myProfileManager, Widget? child) {
       return Scaffold(
-          body: Container(
-        width: Flavors.sizesInfo.screenWidth,
-        child: ListView(
-          children: <Widget>[
-            _topView(myProfileManager),
-            Container(
-              height: 20.0.h,
-            ),
-            _middleView(myProfileManager),
-            _logOutBtn(myProfileManager),
-          ],
-        ),
-      ));
+          appBar: buildAppBar(), body: ProfileBody(myProfileManager));
     });
+  }
+
+  AppBar buildAppBar() {
+    return AppBar(
+      elevation: 0.0,
+      backgroundColor: Flavors.colorInfo.mainColor,
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {},
+          child: Text(
+            "编辑",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16, //16
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _topView(myProfileManager) {
@@ -128,9 +136,9 @@ class MyProfilePage extends StatelessWidget {
       children: <Widget>[
         _settingModelView('images/fav.png', "收藏"),
         _settingModelView('images/notice.png', "消息通知"),
-        _settingModelView('images/language.png', "语言", settingText: '中文'),
+        _settingModelView('images/language.png', "语言", trailingText: '中文'),
         _settingModelView('images/support.png', "清理缓存",
-            settingText: '${myProfileManager.cacheSize}', onTap: () {
+            trailingText: '${myProfileManager.cacheSize}', onTap: () {
           if (myProfileManager.cacheSize != "0.00B" &&
               myProfileManager.cacheSize != "")
             myProfileManager.deleteCacheData();
@@ -141,7 +149,7 @@ class MyProfilePage extends StatelessWidget {
   }
 
   Widget _settingModelView(String leadingImagePath, String text,
-      {String settingText = '', GestureTapCallback? onTap}) {
+      {String trailingText = '', GestureTapCallback? onTap}) {
     return Container(
         color: Colors.white,
         child: Column(
@@ -165,7 +173,7 @@ class MyProfilePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Text(
-                      settingText,
+                      trailingText,
                       style: Flavors.textStyles.loginSubTitleText,
                     ),
                     SizedBox(

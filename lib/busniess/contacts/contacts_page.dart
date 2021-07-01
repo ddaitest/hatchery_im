@@ -61,9 +61,6 @@ class _ContactsState extends State<ContactsPage>
             _addFriendsView(),
             dividerViewCommon(),
             _newFriendsApply(),
-            SizedBox(
-              height: 16.0.w,
-            ),
             _contactsListView(),
           ],
         ),
@@ -151,7 +148,10 @@ class _ContactsState extends State<ContactsPage>
     return Selector<ContactsManager, List<Friends>>(
       builder: (BuildContext context, List<Friends> value, Widget? child) {
         print("DEBUG=> _FriendsView 重绘了。。。。。");
-        return ContactsUsersList(value);
+        return Container(
+          padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+          child: ContactsUsersList(value),
+        );
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
         return contactsManager.friendsList;

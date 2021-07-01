@@ -65,9 +65,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       case 2:
         title = '群组';
         break;
-      case 3:
-        title = '我的';
-        break;
       default:
         title = '消息列表';
         break;
@@ -99,20 +96,22 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        appBar: AppBarFactory.getMain(title, actions: [
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
-            itemBuilder: (BuildContext context) {
-              return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
-        ]),
+        appBar: _tabIndex != 3
+            ? AppBarFactory.getMain(title, actions: [
+                PopupMenuButton<String>(
+                  onSelected: handleClick,
+                  icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
+                  itemBuilder: (BuildContext context) {
+                    return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  },
+                ),
+              ])
+            : null,
         body: SafeArea(
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),

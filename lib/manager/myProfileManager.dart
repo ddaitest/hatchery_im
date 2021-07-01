@@ -39,7 +39,7 @@ class MyProfileManager extends ChangeNotifier {
       try {
         var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
         myProfileData = userInfo;
-        print("_myProfileData ${myProfileData!.icon}");
+        print("_myProfileData ${myProfileData!.nickName}");
         notifyListeners();
       } catch (e) {}
     } else {
@@ -50,7 +50,7 @@ class MyProfileManager extends ChangeNotifier {
     }
   }
 
-  logOut() {
+  logOutMethod() {
     SP.delete(SPKey.userInfo);
     Future.delayed(
         Duration.zero, () => Routers.navigateAndRemoveUntil('/login'));

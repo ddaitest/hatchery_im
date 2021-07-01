@@ -9,14 +9,16 @@ import 'package:hatchery_im/api/entity.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 
 class GroupsManager extends ChangeNotifier {
-  //联系人列表 数据
+  TextEditingController searchController = TextEditingController();
+  //群列表 数据
   List<Groups> groupsList = [];
-
-  List<FriendsApplicationInfo> groupApplicationList = [];
+  //backup群列表数据，用于搜索结果展示
+  List<Groups> backupGroupsList = [];
 
   /// 初始化
   init() {
     _queryGroupsRes();
+    _searchInputListener();
   }
 
   _queryGroupsRes({
@@ -26,7 +28,7 @@ class GroupsManager extends ChangeNotifier {
     API.getGroupListData(size, current).then((value) {
       if (value.isSuccess()) {
         groupsList = value.getDataList((m) => Groups.fromJson(m), type: 1);
-        print('DEBUG=>  _queryGroupsRes ${groupsList.length}');
+        backupGroupsList = List.from(groupsList);
         notifyListeners();
       }
     });
@@ -34,6 +36,23 @@ class GroupsManager extends ChangeNotifier {
 
   void refreshData() {
     _queryGroupsRes();
+  }
+
+  void _searchInputListener() {
+    searchController.addListener(() {
+      String _inputText = searchController.text;
+      print("DEBUG=> _inputText $_inputText");
+      groupsList = List.from(backupGroupsList);
+      if (_inputText.isNotEmpty) {
+        groupsList.removeWhere(
+            (element) => !element.group.groupName!.contains(_inputText));
+      } else {
+        groupsList = List.from(backupGroupsList);
+        print("DEBUG=> else $backupGroupsList");
+      }
+
+      notifyListeners();
+    });
   }
 
   @override
