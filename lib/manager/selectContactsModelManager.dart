@@ -69,6 +69,25 @@ class SelectContactsModelManager extends ChangeNotifier {
     });
   }
 
+  Future<bool> submit(
+    String groupName,
+    String groupDescription,
+    String groupIcon,
+    String notes,
+    List<dynamic> members,
+  ) async {
+    ApiResult result = await API.createNewGroup(
+        groupName, groupDescription, groupIcon, notes, members);
+    if (result.isSuccess()) {
+      print("DEBUG=> result.getData() ${result.getData()}");
+      showToast('创建群组成功');
+      Navigator.of(App.navState.currentContext!).pop(true);
+    } else {
+      showToast('创建群组失败');
+    }
+    return result.isSuccess();
+  }
+
   void addSelectedFriendsIntoList(Friends friends) {
     selectFriendsList.add(friends);
     notifyListeners();

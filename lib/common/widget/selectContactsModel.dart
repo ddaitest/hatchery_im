@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,8 +13,11 @@ import 'package:hatchery_im/manager/selectContactsModelManager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 
@@ -22,19 +26,20 @@ class SelectContactsModelPage extends StatefulWidget {
   final int leastSelected;
   final String nextPageBtnText;
   final String tipsText;
-  final Widget nextPageBtnTapWidget;
+  final SelectContactsType selectContactsType;
   SelectContactsModelPage(
       {required this.titleText,
       required this.leastSelected,
       required this.nextPageBtnText,
       required this.tipsText,
-      required this.nextPageBtnTapWidget});
+      required this.selectContactsType});
 
   @override
   _SelectContactsModelState createState() => _SelectContactsModelState();
 }
 
 class _SelectContactsModelState extends State<SelectContactsModelPage> {
+  final manager = App.manager<SelectContactsModelManager>();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -56,14 +61,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                                           .selectFriendsList.length <
                                       widget.leastSelected
                                   ? showToast('最少选择${widget.leastSelected}名好友')
-                                  : Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  widget.nextPageBtnTapWidget))
-                                      .then((value) => null);
-                              print(
-                                  "DEBUG=> LC ${selectContactsModelManager.selectFriendsList}");
+                                  : _submitBtn(selectContactsModelManager);
                             },
                             child: Text(
                               '${widget.nextPageBtnText}',
@@ -149,8 +147,50 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
         selectContactsModelManager.friendsList, selectContactsModelManager);
   }
 
+  ///提交并返回
+  void _submitBtn(selectContactsModelManager) {
+    String myNickName = '';
+    String? stored = SP.getString(SPKey.userInfo);
+    if (stored != null) {
+      try {
+        var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
+        myNickName = userInfo.nickName;
+        print("_myProfileData ${userInfo.nickName}");
+      } catch (e) {}
+      String groupName = '';
+      String groupDescription = '';
+      String groupNotes = '';
+      String groupImageUrl = '';
+      List<Friends> selectFriends =
+          selectContactsModelManager.selectFriendsList;
+      List<String> friendsId = [];
+      for (var i = 0; i < selectFriends.length; i++) {
+        friendsId.add(selectFriends[i].friendId);
+        if (i < 2) {
+          groupName =
+              '${selectFriends[i].remarks ?? selectFriends[i].nickName}${i != 1 ? '' : '、'}' +
+                  groupName;
+        }
+      }
+      groupName = myNickName + '、' + groupName + '等人的群组';
+
+      if (widget.selectContactsType == SelectContactsType.Group) {
+        print("DEBUG=> groupName $groupName");
+        print("DEBUG=> friendsId $friendsId");
+        selectContactsModelManager.submit(
+            groupName, groupDescription, groupImageUrl, groupNotes, friendsId);
+      } else if (widget.selectContactsType == SelectContactsType.Share) {}
+    }
+  }
+
   Future<bool> _onWillPop() async {
     Navigator.of(App.navState.currentContext!).pop(true);
     return true;
+  }
+
+  @override
+  void dispose() {
+    manager.selectFriendsList.clear();
+    super.dispose();
   }
 }

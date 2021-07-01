@@ -47,7 +47,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SearchNewContactsManager()),
         ChangeNotifierProvider(create: (_) => ContactsApplicationManager()),
         ChangeNotifierProvider(create: (_) => GroupsManager()),
-        ChangeNotifierProvider(create: (_) => NewGroupsManager()),
+        // ChangeNotifierProvider(create: (_) => NewGroupsManager()),
         ChangeNotifierProvider(create: (_) => MyProfileManager()),
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),

@@ -48,3 +48,8 @@ class SlideActionInfo {
 
   const SlideActionInfo(this.label, this.icon, this.iconColor, {this.onTap});
 }
+
+enum SelectContactsType {
+  Group,
+  Share,
+}
