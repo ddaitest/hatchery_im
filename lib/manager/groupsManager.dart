@@ -5,18 +5,20 @@ import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 
 class GroupsManager extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   //群列表 数据
-  List<Groups> groupsList = [];
+  List<Groups>? groupsList;
   //backup群列表数据，用于搜索结果展示
   List<Groups> backupGroupsList = [];
 
   /// 初始化
   init() {
+    print("DEBUG=> groupsList $groupsList");
     _queryGroupsRes();
     _searchInputListener();
   }
@@ -28,13 +30,15 @@ class GroupsManager extends ChangeNotifier {
     API.getGroupListData(size, current).then((value) {
       if (value.isSuccess()) {
         groupsList = value.getDataList((m) => Groups.fromJson(m), type: 1);
-        backupGroupsList = List.from(groupsList);
+        backupGroupsList = List.from(groupsList!);
         notifyListeners();
       }
     });
   }
 
   void refreshData() {
+    searchController.clear();
+    FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
     _queryGroupsRes();
   }
 
@@ -44,7 +48,7 @@ class GroupsManager extends ChangeNotifier {
       print("DEBUG=> _inputText $_inputText");
       groupsList = List.from(backupGroupsList);
       if (_inputText.isNotEmpty) {
-        groupsList.removeWhere(
+        groupsList!.removeWhere(
             (element) => !element.group.groupName!.contains(_inputText));
       } else {
         groupsList = List.from(backupGroupsList);

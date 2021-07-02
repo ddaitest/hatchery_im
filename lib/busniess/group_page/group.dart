@@ -77,18 +77,18 @@ class _GroupPageState extends State<GroupPage>
   }
 
   Widget _groupListView() {
-    return Selector<GroupsManager, List<Groups>>(
-      builder: (BuildContext context, List<Groups> value, Widget? child) {
+    return Selector<GroupsManager, List<Groups>?>(
+      builder: (BuildContext context, List<Groups>? value, Widget? child) {
         print("DEBUG=> _groupListView 重绘了。。。。。");
         return Container(
             padding: const EdgeInsets.only(top: 10.0, bottom: 10),
             child: GroupListItem(value));
       },
       selector: (BuildContext context, GroupsManager groupsManager) {
-        return groupsManager.groupsList;
+        return groupsManager.groupsList ?? null;
       },
       shouldRebuild: (pre, next) =>
-          ((pre != next) || (pre.length != next.length)),
+          ((pre != next) || (pre!.length != next!.length)),
     );
   }
 

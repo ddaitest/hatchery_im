@@ -36,6 +36,7 @@ class _ContactsState extends State<ContactsPage>
 
   @override
   void dispose() {
+    manager.searchController.dispose();
     super.dispose();
   }
 
@@ -57,7 +58,10 @@ class _ContactsState extends State<ContactsPage>
           physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           children: <Widget>[
-            SearchBarView(),
+            SearchBarView(
+                searchHintText: "搜索好友",
+                textEditingController: manager.searchController,
+                isEnabled: true),
             _addFriendsView(),
             dividerViewCommon(),
             _newFriendsApply(),
@@ -145,8 +149,8 @@ class _ContactsState extends State<ContactsPage>
   }
 
   Widget _contactsListView() {
-    return Selector<ContactsManager, List<Friends>>(
-      builder: (BuildContext context, List<Friends> value, Widget? child) {
+    return Selector<ContactsManager, List<Friends>?>(
+      builder: (BuildContext context, List<Friends>? value, Widget? child) {
         print("DEBUG=> _FriendsView 重绘了。。。。。");
         return Container(
           padding: const EdgeInsets.only(top: 10.0, bottom: 10),
@@ -154,7 +158,7 @@ class _ContactsState extends State<ContactsPage>
         );
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
-        return contactsManager.friendsList;
+        return contactsManager.friendsList ?? null;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );

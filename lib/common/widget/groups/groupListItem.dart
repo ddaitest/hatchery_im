@@ -12,16 +12,16 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/aboutAvatar.dart';
 
 class GroupListItem extends StatelessWidget {
-  final List<Groups> groupsLists;
+  final List<Groups>? groupsLists;
   final manager = App.manager<ContactsManager>();
   GroupListItem(this.groupsLists);
 
   @override
   Widget build(BuildContext context) {
-    return groupsLists.isNotEmpty
+    return groupsLists != null
         ? ListView.builder(
             shrinkWrap: true,
-            itemCount: groupsLists.length,
+            itemCount: groupsLists!.length,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
@@ -32,21 +32,21 @@ class GroupListItem extends StatelessWidget {
 
                     /// 群头像，没有头像则返回默认头像
                     leading: Container(
-                      child: groupsLists[index].group.icon != null
-                          ? netWorkAvatar(groupsLists[index].group.icon!, 20.0)
+                      child: groupsLists![index].group.icon != null
+                          ? netWorkAvatar(groupsLists![index].group.icon!, 20.0)
                           : _noGroupAvatar(),
                     ),
 
                     /// 群名称
                     title: Container(
-                        child: Text(groupsLists[index].group.groupName!,
+                        child: Text(groupsLists![index].group.groupName!,
                             style: Flavors.textStyles.groupMainName,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis)),
                     subtitle: Container(
                       padding: const EdgeInsets.only(top: 5),
                       child: Text(
-                          '${groupsLists[index].group.groupDescription ?? '没有群简介'}',
+                          '${groupsLists![index].group.groupDescription ?? '没有群简介'}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Flavors.textStyles.groupMembersNumberText),
@@ -58,13 +58,13 @@ class GroupListItem extends StatelessWidget {
                       child: Stack(
                         alignment: Alignment.center,
                         children: _groupMembersAvatar(
-                            groupsLists[index].top3Members,
-                            groupsLists[index].membersCount),
+                            groupsLists![index].top3Members,
+                            groupsLists![index].membersCount),
                       ),
                     ),
                   ));
             })
-        : Container();
+        : IndicatorView();
   }
 
   _groupMembersAvatar(List<GroupsTop3Members> top3Members, int groupsMembers) {

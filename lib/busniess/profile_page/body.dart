@@ -42,7 +42,7 @@ class ProfileBody extends StatelessWidget {
         width: Flavors.sizesInfo.screenWidth,
         color: Colors.white,
         child: Center(
-            child: Text('退出', style: Flavors.textStyles.meListTitleText)),
+            child: Text('退出登录', style: Flavors.textStyles.meListTitleText)),
       ),
     );
   }

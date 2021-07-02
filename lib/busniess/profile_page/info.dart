@@ -30,16 +30,16 @@ class Info extends StatelessWidget {
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.only(bottom: 10.0), //10
-                  height: 140.0.h,
-                  width: 140.0.w,
+                  height: 120.0.h,
+                  width: 120.0.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Colors.white,
-                      width: 8.0.w, //8
+                      width: 5.0.w, //8
                     ),
                   ),
-                  child: netWorkAvatar(imageUrl, 140),
+                  child: netWorkAvatar(imageUrl, 120),
                 ),
                 Text(
                   name,

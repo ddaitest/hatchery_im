@@ -16,6 +16,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -143,8 +144,10 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   }
 
   Widget _contactsListView(selectContactsModelManager) {
-    return CheckBoxContactsUsersItem(
-        selectContactsModelManager.friendsList, selectContactsModelManager);
+    return selectContactsModelManager.friendsList != null
+        ? CheckBoxContactsUsersItem(
+            selectContactsModelManager.friendsList, selectContactsModelManager)
+        : IndicatorView();
   }
 
   ///提交并返回
@@ -191,6 +194,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   @override
   void dispose() {
     manager.selectFriendsList.clear();
+    manager.searchController.dispose();
     super.dispose();
   }
 }

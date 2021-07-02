@@ -13,7 +13,7 @@ import 'package:hatchery_im/common/AppContext.dart';
 class SelectContactsModelManager extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   //联系人列表 数据
-  List<Friends> friendsList = [];
+  List<Friends>? friendsList;
   // checkBox选择的联系人
   List<Friends> selectFriendsList = [];
   List<Friends> backupFriendsList = [];
@@ -34,9 +34,9 @@ class SelectContactsModelManager extends ChangeNotifier {
       String _inputText = searchController.text;
       friendsList = List.from(backupFriendsList);
       if (_inputText.isNotEmpty) {
-        friendsList
+        friendsList!
             .removeWhere((element) => !element.nickName.contains(_inputText));
-        friendsList.removeWhere((element) =>
+        friendsList!.removeWhere((element) =>
             element.remarks != null && !element.remarks!.contains(_inputText));
       } else {
         friendsList = List.from(backupFriendsList);
@@ -54,7 +54,7 @@ class SelectContactsModelManager extends ChangeNotifier {
     API.getFriendsListData(size, page).then((value) {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
-        backupFriendsList = List.from(friendsList);
+        backupFriendsList = List.from(friendsList!);
         // print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
         notifyListeners();
       }
