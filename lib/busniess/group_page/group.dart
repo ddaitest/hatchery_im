@@ -40,7 +40,6 @@ class _GroupPageState extends State<GroupPage>
 
   @override
   void dispose() {
-    groupsManager.searchController.dispose();
     super.dispose();
   }
 

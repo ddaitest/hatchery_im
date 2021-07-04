@@ -36,7 +36,6 @@ class _ContactsState extends State<ContactsPage>
 
   @override
   void dispose() {
-    manager.searchController.dispose();
     super.dispose();
   }
 
