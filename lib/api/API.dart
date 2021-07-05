@@ -13,6 +13,7 @@ extension ExtendedDio on Dio {
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.data} ');
       print('HTTP.headers: ${options.headers} ');
+      print('HTTP.url: ${options.uri} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
       print(
