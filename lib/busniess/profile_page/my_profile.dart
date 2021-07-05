@@ -8,6 +8,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart';
 
 class MyProfilePage extends StatelessWidget {
   @override
@@ -30,6 +31,7 @@ class MyProfilePage extends StatelessWidget {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Flavors.colorInfo.mainColor,
+      brightness: Brightness.light,
       actions: <Widget>[
         TextButton(
           onPressed: () {},
