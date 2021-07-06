@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
@@ -45,23 +45,7 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
             onTap: () => FocusScope.of(context).unfocus(),
             child: Stack(
               children: <Widget>[
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF73AEF5),
-                        Color(0xFF61A4F1),
-                        Color(0xFF478DE0),
-                        Color(0xFF398AE5),
-                      ],
-                      stops: [0.1, 0.4, 0.7, 0.9],
-                    ),
-                  ),
-                ),
+                mainBackGroundWidget(),
                 Container(
                   height: double.infinity,
                   child: SingleChildScrollView(

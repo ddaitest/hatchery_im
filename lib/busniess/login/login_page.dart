@@ -59,23 +59,7 @@ class LoginPageState extends State<LoginPage> {
             onTap: () => FocusScope.of(context).unfocus(),
             child: Stack(
               children: <Widget>[
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF73AEF5),
-                        Color(0xFF61A4F1),
-                        Color(0xFF478DE0),
-                        Color(0xFF398AE5),
-                      ],
-                      stops: [0.1, 0.4, 0.7, 0.9],
-                    ),
-                  ),
-                ),
+                mainBackGroundWidget(),
                 Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
@@ -187,41 +171,30 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSocialBtn(String imagePath) {
+  Widget _buildSocialBtn() {
     return GestureDetector(
-      onTap: () => print('Login with Phone'),
+      onTap: () => Routers.navigateTo('/phone_login'),
       child: Container(
         height: 55.0.h,
         width: 55.0.w,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 2),
-              blurRadius: 2.0,
-            ),
-          ],
         ),
         child: Center(
-          child: Image.asset(
-            imagePath,
-            height: 30.0.h,
-            width: 30.0.w,
-            fit: BoxFit.fill,
-          ),
-        ),
+            child: Icon(
+          Icons.phone_android,
+          size: 30.0,
+          color: Colors.green,
+        )),
       ),
     );
   }
 
   Widget _buildSocialBtnRow() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: _buildSocialBtn(
-        'images/login_phone.png',
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      child: _buildSocialBtn(),
     );
   }
 

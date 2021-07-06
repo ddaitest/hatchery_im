@@ -185,13 +185,33 @@ Future<DialogDemoAction?>? showLoadingDialog(
       });
 }
 
-dividerViewCommon() {
+Widget dividerViewCommon() {
   return Divider(
     height: 0.5,
     thickness: 0.5,
     indent: 10,
     endIndent: 10,
     color: Flavors.colorInfo.dividerColor,
+  );
+}
+
+Widget mainBackGroundWidget() {
+  return Container(
+    height: double.infinity,
+    width: double.infinity,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF73AEF5),
+          Color(0xFF61A4F1),
+          Color(0xFF478DE0),
+          Color(0xFF398AE5),
+        ],
+        stops: [0.1, 0.4, 0.7, 0.9],
+      ),
+    ),
   );
 }
 

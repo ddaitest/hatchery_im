@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 
@@ -52,7 +53,7 @@ class AppBarFactory {
       leading: Container(
         padding: const EdgeInsets.all(6.0),
         child: IconButton(
-          icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+          icon: Icon(Icons.arrow_back, size: 30.0, color: backBtnColor),
           onPressed: () => Navigator.of(App.navState.currentContext!).pop(true),
         ),
       ),

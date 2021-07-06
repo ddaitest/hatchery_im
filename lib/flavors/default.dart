@@ -184,9 +184,6 @@ class TextStyles {
 }
 
 class SizesInfo {
-  final articleItemHeight = 120.0;
-  final articleThumbnail = 100.0;
-  final postItemHeight = 60.0;
   final screenWidth = 1.sw; // 屏幕宽度
   final screenHeight = 1.sh; // 屏幕高度
 }

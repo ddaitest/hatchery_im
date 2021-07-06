@@ -10,6 +10,7 @@ import 'package:hatchery_im/busniess/test/TestPage.dart';
 import 'package:hatchery_im/busniess/group_page/group.dart';
 import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
+import 'package:hatchery_im/busniess/login/otp_page.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -25,6 +26,8 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
+      case '/phone_login':
+        return MaterialPageRoute(builder: (_) => OTPPage());
       case '/group':
         return MaterialPageRoute(builder: (_) => GroupPage());
       case '/profile_edit':
