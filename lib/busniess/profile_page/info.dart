@@ -14,13 +14,13 @@ class Info extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 240.0.h,
+      height: 200.0.h,
       child: Stack(
         children: <Widget>[
           ClipPath(
             clipper: CustomShape(),
             child: Container(
-              height: 150.0.h,
+              height: 110.0.h,
               color: Flavors.colorInfo.mainColor,
             ),
           ),

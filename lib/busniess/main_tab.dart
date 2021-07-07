@@ -80,11 +80,13 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   _setStatusBarColor(int index) {
     if (Platform.isAndroid) {
       if (index == 3) {
-        systemUiOverlayStyle =
-            SystemUiOverlayStyle(statusBarColor: Flavors.colorInfo.mainColor);
+        systemUiOverlayStyle = SystemUiOverlayStyle(
+            statusBarColor: Flavors.colorInfo.mainColor,
+            statusBarIconBrightness: Brightness.light);
       } else {
-        systemUiOverlayStyle =
-            SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+        systemUiOverlayStyle = SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark);
       }
       SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
     }

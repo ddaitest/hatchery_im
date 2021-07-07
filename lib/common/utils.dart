@@ -195,6 +195,7 @@ Widget dividerViewCommon() {
   );
 }
 
+/// 登录注册的渐变背景色
 Widget mainBackGroundWidget() {
   return Container(
     height: double.infinity,

@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/loginManager.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -49,7 +50,7 @@ class LoginPageState extends State<LoginPage> {
     }
   }
 
-  _bodyContainer() {
+  Widget _bodyContainer() {
     return Consumer(builder:
         (BuildContext context, LoginManager loginManager, Widget? child) {
       return Scaffold(
@@ -76,15 +77,16 @@ class LoginPageState extends State<LoginPage> {
                           style: Flavors.textStyles.loginMainTitleText,
                         ),
                         SizedBox(height: 30.0.h),
-                        _buildAccountTF(loginManager),
-                        SizedBox(
-                          height: 30.0.h,
-                        ),
-                        _buildPasswordTF(loginManager),
-                        _buildForgotPasswordBtn(),
+                        loginManager.isOTPLogin
+                            ? _phoneNumInput(loginManager)
+                            : _buildAccountTF(loginManager),
+                        SizedBox(height: 30.0.h),
+                        loginManager.isOTPLogin
+                            ? _buildPhoneCodeTF(loginManager)
+                            : _buildPasswordTF(loginManager),
+                        _buildForgotPasswordBtn(loginManager),
                         _buildLoginBtn(loginManager),
-                        _buildSignInWithText(),
-                        _buildSocialBtnRow(),
+                        SizedBox(height: 50.0.h),
                         _buildSignupBtn(),
                       ],
                     ),
@@ -96,6 +98,79 @@ class LoginPageState extends State<LoginPage> {
         ),
       );
     });
+  }
+
+  Widget _phoneNumInput(loginManager) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '手机号',
+          style: Flavors.textStyles.loginNormalText,
+        ),
+        SizedBox(height: 10.0.h),
+        Container(
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              color: Color(0xFF6CA8F1),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6.0,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            height: 50.0.h,
+            child: IntlPhoneField(
+              searchText: '搜索国家',
+              obscureText: false,
+              controller: loginManager.phoneNumController,
+              countryCodeTextColor: Flavors.colorInfo.mainTextColor,
+              dropDownArrowColor: Flavors.colorInfo.mainTextColor,
+              style: Flavors.textStyles.loginNormalText,
+              decoration: InputDecoration(
+                hintText: '输入手机号码',
+                helperText: '',
+                suffixText: '',
+                counterText: '',
+                // cursorColor: Flavors.colorInfo.subtitleColor,
+                border: InputBorder.none,
+                contentPadding: const EdgeInsets.only(top: 4.0),
+                hintMaxLines: 1,
+                errorMaxLines: 1,
+                hintStyle: Flavors.textStyles.hintTextText,
+              ),
+              initialCountryCode: 'CN',
+            )),
+      ],
+    );
+  }
+
+  Widget _buildPhoneCodeTF(loginManager) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+            padding: const EdgeInsets.only(right: 40.0),
+            width: Flavors.sizesInfo.screenWidth - 150.0.w,
+            child: TextFormModel(
+              '验证码',
+              loginManager.phoneCodeController,
+              TextInputType.number,
+              Icons.mail,
+              '请输入验证码',
+            )),
+        TextButton(
+          onPressed: () => print('Forgot Password Button Pressed'),
+          child: Text(
+            '忘记密码?',
+            style: Flavors.textStyles.hintTextText,
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildAccountTF(loginManager) {
@@ -119,17 +194,28 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildForgotPasswordBtn() {
+  Widget _buildForgotPasswordBtn(loginManager) {
     return Container(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () => print('Forgot Password Button Pressed'),
-        child: Text(
-          '忘记密码?',
-          style: Flavors.textStyles.loginLinkText,
-        ),
-      ),
-    );
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              onPressed: () => loginManager.setOTPLogin(),
+              child: Text(
+                loginManager.isOTPLogin ? '账号登录' : '手机验证码登录',
+                style: Flavors.textStyles.hintTextText,
+              ),
+            ),
+            TextButton(
+              onPressed: () => print('Forgot Password Button Pressed'),
+              child: Text(
+                '忘记密码?',
+                style: Flavors.textStyles.hintTextText,
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget _buildLoginBtn(loginManager) {
@@ -171,9 +257,9 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildSocialBtn() {
+  Widget _buildSocialBtn(loginManager) {
     return GestureDetector(
-      onTap: () => Routers.navigateTo('/phone_login'),
+      onTap: () => loginManager.setOTPLogin(),
       child: Container(
         height: 55.0.h,
         width: 55.0.w,
@@ -188,13 +274,6 @@ class LoginPageState extends State<LoginPage> {
           color: Colors.green,
         )),
       ),
-    );
-  }
-
-  Widget _buildSocialBtnRow() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
-      child: _buildSocialBtn(),
     );
   }
 

@@ -24,12 +24,10 @@ class RegisterPageDetail extends StatefulWidget {
 }
 
 class RegisterPageDetailState extends State<RegisterPageDetail> {
-  RegisterManager _registerManager = RegisterManager();
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => _registerManager,
+      create: (context) => RegisterManager(),
       child: _bodyContainer(),
     );
   }

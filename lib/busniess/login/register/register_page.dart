@@ -14,7 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/busniess/login/register_page_detail.dart';
+import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
 import 'package:image_crop/image_crop.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -31,7 +31,7 @@ class RegisterPageState extends State<RegisterPage> {
     return _bodyContainer();
   }
 
-  _bodyContainer() {
+  Widget _bodyContainer() {
     return Scaffold(
       appBar: AppBarFactory.backButton('',
           backGroundColor: Flavors.colorInfo.mainColor,

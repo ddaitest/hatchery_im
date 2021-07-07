@@ -19,9 +19,17 @@ import '../config.dart';
 class LoginManager extends ChangeNotifier {
   TextEditingController accountController = TextEditingController();
   TextEditingController codeController = TextEditingController();
+  TextEditingController phoneNumController = TextEditingController();
+  TextEditingController phoneCodeController = TextEditingController();
+  bool isOTPLogin = false;
 
   /// 初始化
   init() {}
+
+  void setOTPLogin() {
+    isOTPLogin = !isOTPLogin;
+    notifyListeners();
+  }
 
   Future<bool> submit(String account, String password) async {
     ApiResult result = await API.usersLogin(account, password);
