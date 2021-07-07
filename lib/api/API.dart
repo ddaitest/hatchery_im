@@ -99,6 +99,49 @@ class API {
     }
   }
 
+  ///发送手机验证码
+  static Future<ApiResult> sendSMS(
+    String userPhone,
+    String areaCode,
+    int sendType,
+  ) async {
+    Map<String, dynamic> body = {
+      "userPhone": userPhone,
+      "areaCode": areaCode,
+      "sendType": sendType
+    };
+    init();
+    try {
+      Response response = await _dio.post("/sms/send", data: json.encode(body));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///手机号登录
+  static Future<ApiResult> phoneLogin(
+    String userPhone,
+    String areaCode,
+    String code,
+  ) async {
+    Map<String, String> body = {
+      "userPhone": userPhone,
+      "areaCode": areaCode,
+      "code": code,
+    };
+    init();
+    try {
+      Response response =
+          await _dio.post("/users/phone/login", data: json.encode(body));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取好友列表
   static Future<ApiResult> getConfig() async {
     init();

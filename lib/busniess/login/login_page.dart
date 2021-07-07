@@ -11,6 +11,7 @@ import 'package:hatchery_im/manager/loginManager.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:hatchery_im/config.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -126,10 +127,12 @@ class LoginPageState extends State<LoginPage> {
             child: IntlPhoneField(
               searchText: '搜索国家',
               obscureText: false,
-              controller: loginManager.phoneNumController,
               countryCodeTextColor: Flavors.colorInfo.mainTextColor,
               dropDownArrowColor: Flavors.colorInfo.mainTextColor,
               style: Flavors.textStyles.loginNormalText,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly, //只输入数字
+              ],
               decoration: InputDecoration(
                 hintText: '输入手机号码',
                 helperText: '',
@@ -137,36 +140,65 @@ class LoginPageState extends State<LoginPage> {
                 counterText: '',
                 // cursorColor: Flavors.colorInfo.subtitleColor,
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.only(top: 4.0),
+                contentPadding: const EdgeInsets.only(top: 6.0),
                 hintMaxLines: 1,
                 errorMaxLines: 1,
                 hintStyle: Flavors.textStyles.hintTextText,
               ),
               initialCountryCode: 'CN',
+              onChanged: (phone) {
+                loginManager.phoneNumber = phone.number;
+                loginManager.phoneNumberAreaCode = phone.countryCode;
+              },
             )),
       ],
     );
   }
 
   Widget _buildPhoneCodeTF(loginManager) {
+    print('countDown ${loginManager.countDown}');
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Container(
-            padding: const EdgeInsets.only(right: 40.0),
-            width: Flavors.sizesInfo.screenWidth - 150.0.w,
+            // padding: const EdgeInsets.only(right: 40.0),
+            width: Flavors.sizesInfo.screenWidth - 140.0.w,
             child: TextFormModel(
               '验证码',
               loginManager.phoneCodeController,
               TextInputType.number,
               Icons.mail,
               '请输入验证码',
+              maxLength: 6,
+              onlyNumber: true,
             )),
-        TextButton(
-          onPressed: () => print('Forgot Password Button Pressed'),
-          child: Text(
-            '忘记密码?',
-            style: Flavors.textStyles.hintTextText,
+        Container(
+          padding: const EdgeInsets.only(bottom: 5.0),
+          child: TextButton(
+            child: loginManager.countDown == TimeConfig.OTP_CODE_RESEND
+                ? Text(
+                    "发送",
+                    style: Flavors.textStyles.hintTextText,
+                  )
+                : Text(
+                    "${loginManager.countDown.toString()}s",
+                    style: Flavors.textStyles.hintTextText,
+                  ),
+            onPressed: loginManager.countDown == TimeConfig.OTP_CODE_RESEND
+                ? () {
+                    print(
+                        "DEBUG=>sendPhoneNumText ${loginManager.phoneNumber}");
+                    if (loginManager.phoneNumber != '') {
+                      loginManager.sendOTP(loginManager.phoneNumber,
+                          loginManager.phoneNumberAreaCode, 1);
+                    } else {
+                      print(
+                          "DEBUG=>！！！！！sendPhoneNumText ${loginManager.phoneNumber}");
+                      showToast('请输入手机号');
+                    }
+                  }
+                : null,
           ),
         ),
       ],
@@ -237,42 +269,6 @@ class LoginPageState extends State<LoginPage> {
           '登 录',
           style: Flavors.textStyles.loginInButtonText,
         ),
-      ),
-    );
-  }
-
-  Widget _buildSignInWithText() {
-    return Column(
-      children: <Widget>[
-        Text(
-          '- 或 -',
-          style: Flavors.textStyles.loginNormalText,
-        ),
-        SizedBox(height: 20.0.h),
-        Text(
-          '用以下方式登录',
-          style: Flavors.textStyles.loginNormalText,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSocialBtn(loginManager) {
-    return GestureDetector(
-      onTap: () => loginManager.setOTPLogin(),
-      child: Container(
-        height: 55.0.h,
-        width: 55.0.w,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.white,
-        ),
-        child: Center(
-            child: Icon(
-          Icons.phone_android,
-          size: 30.0,
-          color: Colors.green,
-        )),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,9 +11,11 @@ class TextFormModel extends StatelessWidget {
   final IconData leadingIcon;
   final bool hideText;
   final String hintText;
+  final int? maxLength;
+  final bool onlyNumber;
   TextFormModel(this.title, this.textEditingController, this.keyboardType,
       this.leadingIcon, this.hintText,
-      {this.hideText = false});
+      {this.hideText = false, this.maxLength, this.onlyNumber = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,21 +45,26 @@ class TextFormModel extends StatelessWidget {
             controller: textEditingController,
             keyboardType: keyboardType,
             cursorColor: Flavors.colorInfo.subtitleColor,
+            maxLength: maxLength,
             obscureText: hideText,
             style: TextStyle(
               color: Colors.white,
             ),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: const EdgeInsets.only(top: 14.0),
+              contentPadding: const EdgeInsets.only(top: 12.0),
               prefixIcon: Icon(
                 leadingIcon,
                 color: Colors.white,
               ),
               hintText: hintText,
               errorMaxLines: 1,
+              counterText: '',
               hintStyle: Flavors.textStyles.hintTextText,
             ),
+            inputFormatters: <TextInputFormatter>[
+              if (onlyNumber) FilteringTextInputFormatter.digitsOnly, //只输入数字
+            ],
           ),
         ),
       ],
