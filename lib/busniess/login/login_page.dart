@@ -29,6 +29,17 @@ class LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void dispose() {
+    manager.accountController.dispose();
+    manager.codeController.dispose();
+    manager.phoneCodeController.dispose();
+    manager.phoneNumController.dispose();
+    manager.countDown = TimeConfig.OTP_CODE_RESEND;
+    manager.countDownTimer?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(onWillPop: _onWillPop, child: _bodyContainer());
   }

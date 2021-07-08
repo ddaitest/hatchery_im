@@ -315,12 +315,18 @@ class CacheInfo {
   Future<String> loadCache() async {
     Directory tempDir = await getTemporaryDirectory();
     print("DEBUG=> tempDir ${tempDir.path}");
-    double value = await _getTotalSizeOfFilesInDir(tempDir);
+    try {
+      double value = await _getTotalSizeOfFilesInDir(tempDir);
+      return _renderSize(value);
+    } catch (e) {
+      double value = 0.0;
+      return _renderSize(value);
+    }
+
     /*tempDir.list(followLinks: false,recursive: true).listen((file){
           //打印每个缓存文件的路径
         print(file.path);
       });*/
-    return _renderSize(value);
   }
 
   Future<double> _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {

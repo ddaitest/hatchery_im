@@ -88,15 +88,4 @@ class LoginManager extends ChangeNotifier {
       notifyListeners();
     });
   }
-
-  @override
-  void dispose() {
-    accountController.dispose();
-    codeController.dispose();
-    phoneCodeController.dispose();
-    phoneNumController.dispose();
-    countDown = TimeConfig.OTP_CODE_RESEND;
-    countDownTimer?.cancel();
-    super.dispose();
-  }
 }

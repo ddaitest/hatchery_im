@@ -38,7 +38,7 @@ class AppBarFactory {
 
   static AppBar backButton(String title,
       {Color backGroundColor = Colors.transparent,
-      Color backBtnColor = Colors.white,
+      Color backBtnColor = Colors.black,
       List<Widget>? actions}) {
     return AppBar(
       title: Text(
