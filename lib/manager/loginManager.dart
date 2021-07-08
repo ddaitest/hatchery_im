@@ -19,15 +19,19 @@ import '../config.dart';
 class LoginManager extends ChangeNotifier {
   TextEditingController accountController = TextEditingController();
   TextEditingController codeController = TextEditingController();
+  TextEditingController phoneNumController = TextEditingController();
   TextEditingController phoneCodeController = TextEditingController();
   String phoneNumber = '';
   String phoneNumberAreaCode = '';
   bool isOTPLogin = false;
-  int? countDown;
+  bool finishCountDown = true;
+  int countDown = 10;
   Timer? countDownTimer;
 
   /// 初始化
-  init() {}
+  init() {
+    countDown = TimeConfig.OTP_CODE_RESEND;
+  }
 
   void setOTPLogin() {
     isOTPLogin = !isOTPLogin;
@@ -49,10 +53,11 @@ class LoginManager extends ChangeNotifier {
   Future<bool> sendOTP(String userPhone, String areaCode, int sendType) async {
     ApiResult result = await API.sendSMS(userPhone, areaCode, sendType);
     if (result.isSuccess()) {
-      print("DEBUG=> result.getData() ${result.getData()}");
-      _otpCountDownTime();
+      print("DEBUG=> result.getData() ${result.getInfo()}");
+      otpCountDownTime();
+      showToast('发送成功');
     } else {
-      showToast('手机验证码发送失败');
+      showToast('${result.getInfo()}');
     }
     return result.isSuccess();
   }
@@ -65,18 +70,18 @@ class LoginManager extends ChangeNotifier {
       SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       Routers.navigateAndRemoveUntil('/');
     } else {
-      showToast('手机号未注册');
+      showToast('${result.info}');
     }
     return result.isSuccess();
   }
 
-  void _otpCountDownTime() {
+  void otpCountDownTime() {
     // 开始倒计时
-    countDown = TimeConfig.OTP_CODE_RESEND;
+    // countDown = TimeConfig.OTP_CODE_RESEND;
     countDownTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      countDown = countDown! - 1;
+      countDown = countDown - 1;
       print("countDownTimer_timer $countDown");
-      if (countDown! < 1) {
+      if (countDown < 1) {
         countDown = TimeConfig.OTP_CODE_RESEND;
         timer.cancel();
       }
@@ -89,7 +94,8 @@ class LoginManager extends ChangeNotifier {
     accountController.dispose();
     codeController.dispose();
     phoneCodeController.dispose();
-    countDown = countDown = TimeConfig.OTP_CODE_RESEND;
+    phoneNumController.dispose();
+    countDown = TimeConfig.OTP_CODE_RESEND;
     countDownTimer?.cancel();
     super.dispose();
   }

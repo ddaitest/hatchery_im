@@ -122,12 +122,12 @@ class API {
 
   ///手机号登录
   static Future<ApiResult> phoneLogin(
-    String userPhone,
+    String phone,
     String areaCode,
     String code,
   ) async {
     Map<String, String> body = {
-      "userPhone": userPhone,
+      "phone": phone,
       "areaCode": areaCode,
       "code": code,
     };

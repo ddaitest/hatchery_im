@@ -20,20 +20,17 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   bool nextKickBackExitApp = false;
+  final manager = App.manager<LoginManager>();
 
   @override
   void initState() {
+    manager.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-        onWillPop: _onWillPop,
-        child: ChangeNotifierProvider(
-          create: (context) => LoginManager(),
-          child: _bodyContainer(),
-        ));
+    return WillPopScope(onWillPop: _onWillPop, child: _bodyContainer());
   }
 
   Future<bool> _onWillPop() async {
@@ -52,53 +49,70 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Widget _bodyContainer() {
-    return Consumer(builder:
-        (BuildContext context, LoginManager loginManager, Widget? child) {
-      return Scaffold(
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: GestureDetector(
-            onTap: () => FocusScope.of(context).unfocus(),
-            child: Stack(
+    return Scaffold(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: <Widget>[
+              mainBackGroundWidget(),
+              _mainContainerView(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _mainContainerView() {
+    return Selector<LoginManager, bool>(
+      builder: (BuildContext context, bool value, Widget? child) {
+        return Container(
+          height: double.infinity,
+          child: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 40.0,
+              vertical: 120.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                mainBackGroundWidget(),
-                Container(
-                  height: double.infinity,
-                  child: SingleChildScrollView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                      vertical: 120.0,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '登录',
-                          style: Flavors.textStyles.loginMainTitleText,
-                        ),
-                        SizedBox(height: 30.0.h),
-                        loginManager.isOTPLogin
-                            ? _phoneNumInput(loginManager)
-                            : _buildAccountTF(loginManager),
-                        SizedBox(height: 30.0.h),
-                        loginManager.isOTPLogin
-                            ? _buildPhoneCodeTF(loginManager)
-                            : _buildPasswordTF(loginManager),
-                        _buildForgotPasswordBtn(loginManager),
-                        _buildLoginBtn(loginManager),
-                        SizedBox(height: 50.0.h),
-                        _buildSignupBtn(),
-                      ],
-                    ),
-                  ),
+                Text(
+                  '登录',
+                  style: Flavors.textStyles.loginMainTitleText,
                 ),
+                SizedBox(height: 30.0.h),
+                _accountCell(value, manager),
+                SizedBox(height: 30.0.h),
+                _codeCell(value, manager),
+                _buildForgotPasswordBtn(manager),
+                _buildLoginBtn(value, manager),
+                SizedBox(height: 50.0.h),
+                _buildSignupBtn(),
               ],
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+      selector: (BuildContext context, LoginManager loginManager) {
+        return loginManager.isOTPLogin;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
+  }
+
+  Widget _accountCell(bool isOTPLogin, loginManager) {
+    return isOTPLogin
+        ? _phoneNumInput(loginManager)
+        : _buildAccountTF(loginManager);
+  }
+
+  Widget _codeCell(bool isOTPLogin, loginManager) {
+    return isOTPLogin
+        ? _buildPhoneCodeTF(loginManager)
+        : _buildPasswordTF(loginManager);
   }
 
   Widget _phoneNumInput(loginManager) {
@@ -127,6 +141,7 @@ class LoginPageState extends State<LoginPage> {
             child: IntlPhoneField(
               searchText: '搜索国家',
               obscureText: false,
+              controller: loginManager.phoneNumController,
               countryCodeTextColor: Flavors.colorInfo.mainTextColor,
               dropDownArrowColor: Flavors.colorInfo.mainTextColor,
               style: Flavors.textStyles.loginNormalText,
@@ -147,8 +162,8 @@ class LoginPageState extends State<LoginPage> {
               ),
               initialCountryCode: 'CN',
               onChanged: (phone) {
-                loginManager.phoneNumber = phone.number;
-                loginManager.phoneNumberAreaCode = phone.countryCode;
+                loginManager.phoneNumberAreaCode =
+                    phone.countryCode!.substring(1);
               },
             )),
       ],
@@ -156,53 +171,63 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildPhoneCodeTF(loginManager) {
-    print('countDown ${loginManager.countDown}');
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Container(
-            // padding: const EdgeInsets.only(right: 40.0),
-            width: Flavors.sizesInfo.screenWidth - 140.0.w,
-            child: TextFormModel(
-              '验证码',
-              loginManager.phoneCodeController,
-              TextInputType.number,
-              Icons.mail,
-              '请输入验证码',
-              maxLength: 6,
-              onlyNumber: true,
-            )),
-        Container(
-          padding: const EdgeInsets.only(bottom: 5.0),
-          child: TextButton(
-            child: loginManager.countDown == TimeConfig.OTP_CODE_RESEND
-                ? Text(
-                    "发送",
-                    style: Flavors.textStyles.hintTextText,
-                  )
-                : Text(
-                    "${loginManager.countDown.toString()}s",
-                    style: Flavors.textStyles.hintTextText,
-                  ),
-            onPressed: loginManager.countDown == TimeConfig.OTP_CODE_RESEND
-                ? () {
-                    print(
-                        "DEBUG=>sendPhoneNumText ${loginManager.phoneNumber}");
-                    if (loginManager.phoneNumber != '') {
-                      loginManager.sendOTP(loginManager.phoneNumber,
-                          loginManager.phoneNumberAreaCode, 1);
-                    } else {
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Container(
+              // padding: const EdgeInsets.only(right: 40.0),
+              width: Flavors.sizesInfo.screenWidth - 140.0.w,
+              child: TextFormModel(
+                '验证码',
+                loginManager.phoneCodeController,
+                TextInputType.number,
+                Icons.mail,
+                '请输入验证码',
+                maxLength: 6,
+                onlyNumber: true,
+              )),
+          _countDownTimeView(loginManager)
+        ]);
+  }
+
+  Widget _countDownTimeView(loginManager) {
+    return Expanded(
+        child: Selector<LoginManager, int>(
+      builder: (BuildContext context, int value, Widget? child) {
+        return Container(
+            padding: const EdgeInsets.only(bottom: 5.0),
+            child: value == 10
+                ? TextButton(
+                    child: Text(
+                      "发送",
+                      style: Flavors.textStyles.hintTextText,
+                    ),
+                    onPressed: () {
                       print(
-                          "DEBUG=>！！！！！sendPhoneNumText ${loginManager.phoneNumber}");
-                      showToast('请输入手机号');
-                    }
-                  }
-                : null,
-          ),
-        ),
-      ],
-    );
+                          "DEBUG=>sendPhoneNumText ${loginManager.phoneNumController.text}");
+                      if (loginManager.phoneNumController.text != '') {
+                        loginManager.sendOTP(
+                            loginManager.phoneNumController.text,
+                            loginManager.phoneNumberAreaCode,
+                            1);
+                      } else {
+                        showToast('请输入手机号');
+                      }
+                    })
+                : TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      "${value} s",
+                      style: Flavors.textStyles.hintTextText,
+                    ),
+                  ));
+      },
+      selector: (BuildContext context, LoginManager loginManager) {
+        return loginManager.countDown;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    ));
   }
 
   Widget _buildAccountTF(loginManager) {
@@ -250,7 +275,7 @@ class LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _buildLoginBtn(loginManager) {
+  Widget _buildLoginBtn(bool isOTPLogin, loginManager) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15.0),
       width: double.infinity,
@@ -264,7 +289,8 @@ class LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(30.0),
           ),
         ),
-        onPressed: () => _submit(loginManager),
+        onPressed: () =>
+            isOTPLogin ? _phoneCodeSubmit(loginManager) : _submit(loginManager),
         child: Text(
           '登 录',
           style: Flavors.textStyles.loginInButtonText,
@@ -291,14 +317,29 @@ class LoginPageState extends State<LoginPage> {
   }
 
   ///提交
-  _submit(loginManager) {
+  void _submit(loginManager) {
     String account = loginManager.accountController.text;
     String password = loginManager.codeController.text;
     if (account != '' && password != '') {
       print("$account $password");
-      App.manager<LoginManager>().submit(account, password);
+      loginManager.submit(account, password);
     } else {
       showToast('账号或密码不能为空');
+    }
+  }
+
+  ///提交
+  void _phoneCodeSubmit(loginManager) {
+    String phoneNum = loginManager.phoneNumController.text;
+    String phoneNumberAreaCode = loginManager.phoneNumberAreaCode;
+    String phoneCode = loginManager.phoneCodeController.text;
+    print("DEBUG=> $phoneNum");
+    if (phoneNum == '') {
+      showToast('手机号不能为空');
+    } else if (phoneCode == '') {
+      showToast('验证码不能为空');
+    } else {
+      loginManager.phoneSubmit(phoneNum, phoneNumberAreaCode, phoneCode);
     }
   }
 }
