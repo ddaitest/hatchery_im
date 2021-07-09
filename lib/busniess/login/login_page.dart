@@ -30,10 +30,10 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    manager.accountController.dispose();
-    manager.codeController.dispose();
-    manager.phoneCodeController.dispose();
-    manager.phoneNumController.dispose();
+    manager.accountController.clear();
+    manager.codeController.clear();
+    manager.phoneCodeController.clear();
+    manager.phoneNumController.clear();
     manager.countDown = TimeConfig.OTP_CODE_RESEND;
     manager.countDownTimer?.cancel();
     super.dispose();

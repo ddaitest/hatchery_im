@@ -12,10 +12,14 @@ class TextFormModel extends StatelessWidget {
   final bool hideText;
   final String hintText;
   final int? maxLength;
+  final int? maxLine;
   final bool onlyNumber;
   TextFormModel(this.title, this.textEditingController, this.keyboardType,
       this.leadingIcon, this.hintText,
-      {this.hideText = false, this.maxLength, this.onlyNumber = false});
+      {this.hideText = false,
+      this.maxLength,
+      this.maxLine = 1,
+      this.onlyNumber = false});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +50,7 @@ class TextFormModel extends StatelessWidget {
             keyboardType: keyboardType,
             cursorColor: Flavors.colorInfo.subtitleColor,
             maxLength: maxLength,
+            maxLines: maxLine,
             obscureText: hideText,
             style: TextStyle(
               color: Colors.white,
