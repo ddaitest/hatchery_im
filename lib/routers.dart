@@ -1,16 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/login/login_page.dart';
-import 'package:hatchery_im/busniess/login/register_page.dart';
-import 'package:hatchery_im/busniess/login/register_page_detail.dart';
+import 'package:hatchery_im/busniess/login/register/register_page.dart';
+import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
 import 'package:hatchery_im/busniess/profile_page/profile_edit_page.dart';
-import 'package:hatchery_im/busniess/group_page/createNewGroup.dart';
 import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'package:hatchery_im/busniess/test/TestPage.dart';
 import 'package:hatchery_im/busniess/group_page/group.dart';
 import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
+import 'package:hatchery_im/busniess/login/phone/otp_page.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -26,14 +26,14 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
+      case '/phone_login':
+        return MaterialPageRoute(builder: (_) => OTPPage());
       case '/group':
         return MaterialPageRoute(builder: (_) => GroupPage());
       case '/profile_edit':
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
-      case '/create_group':
-        return MaterialPageRoute(builder: (_) => NewGroupPage());
-      case '/create_group_detail':
-        return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
+      // case '/create_group_detail':
+      //   return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       // case '/contacts_application':

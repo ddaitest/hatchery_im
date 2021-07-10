@@ -13,6 +13,7 @@ extension ExtendedDio on Dio {
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.data} ');
       print('HTTP.headers: ${options.headers} ');
+      print('HTTP.url: ${options.uri} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
       print(
@@ -98,6 +99,49 @@ class API {
     }
   }
 
+  ///发送手机验证码
+  static Future<ApiResult> sendSMS(
+    String userPhone,
+    String areaCode,
+    int sendType,
+  ) async {
+    Map<String, dynamic> body = {
+      "userPhone": userPhone,
+      "areaCode": areaCode,
+      "sendType": sendType
+    };
+    init();
+    try {
+      Response response = await _dio.post("/sms/send", data: json.encode(body));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///手机号登录
+  static Future<ApiResult> phoneLogin(
+    String phone,
+    String areaCode,
+    String code,
+  ) async {
+    Map<String, String> body = {
+      "phone": phone,
+      "areaCode": areaCode,
+      "code": code,
+    };
+    init();
+    try {
+      Response response =
+          await _dio.post("/users/phone/login", data: json.encode(body));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取好友列表
   static Future<ApiResult> getConfig() async {
     init();
@@ -157,11 +201,11 @@ class API {
   ///获取好友列表
   static Future<ApiResult> getFriendsListData(
     int size,
-    int current,
+    int page,
   ) async {
     Map<String, int> queryParam = {
       "size": size,
-      "current": current,
+      "page": page,
     };
     init();
     try {
@@ -180,11 +224,11 @@ class API {
   ///好友申请数据
   static Future<ApiResult> getNewFriendsApplicationListData(
     int size,
-    int current,
+    int page,
   ) async {
     Map<String, int> queryParam = {
       "size": size,
-      "current": current,
+      "page": page,
     };
     init();
     try {
@@ -223,14 +267,33 @@ class API {
     }
   }
 
+  ///入群申请
+  static Future<ApiResult> replyNewGroupRes(String merberlogID) async {
+    Map<String, dynamic> body = {
+      "merberlogID": merberlogID,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/groups/approve",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取群列表
   static Future<ApiResult> getGroupListData(
     int size,
-    int current,
+    int page,
   ) async {
     Map<String, int> queryParam = {
       "size": size,
-      "current": current,
+      "page": page,
     };
     init();
     try {
@@ -277,11 +340,11 @@ class API {
 
   ///获取单聊离线消息
   static Future<ApiResult> messageHistoryWithFriend(
-      {String? friendID, int? current, int? size, int? currentMsgID}) async {
+      {String? friendID, int? page, int? size, int? currentMsgID}) async {
     init();
     Map<String, dynamic> queryParam = {
       "friendID": friendID,
-      "current": current,
+      "page": page,
       "size": size,
       "currentMsgID": currentMsgID
     };

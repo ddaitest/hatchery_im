@@ -38,7 +38,7 @@ class SearchBarView extends StatelessWidget {
             suffixIcon: showPrefixIcon
                 ? IconButton(
                     onPressed: () => textEditingController!.clear(),
-                    icon: Icon(Icons.cancel, color: Colors.grey),
+                    icon: Icon(Icons.cancel_outlined, color: Colors.grey),
                   )
                 : null,
             filled: true,

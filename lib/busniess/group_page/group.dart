@@ -10,8 +10,14 @@ import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
+import 'package:hatchery_im/manager/selectContactsModelManager.dart';
+import 'package:hatchery_im/common/widget/selectContactsModel.dart';
+import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 class GroupPage extends StatefulWidget {
@@ -23,10 +29,12 @@ class _GroupPageState extends State<GroupPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final manager = App.manager<GroupsManager>();
+  final groupsManager = App.manager<GroupsManager>();
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
   void initState() {
-    manager.init();
+    groupsManager.init();
     super.initState();
   }
 
@@ -35,66 +43,52 @@ class _GroupPageState extends State<GroupPage>
     super.dispose();
   }
 
+  void _onRefresh() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    groupsManager.refreshData();
+    _refreshController.refreshCompleted();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: ListView(
+        body: SmartRefresher(
+      enablePullDown: true,
+      controller: _refreshController,
+      onRefresh: _onRefresh,
+      child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         shrinkWrap: true,
         children: <Widget>[
-          SearchBarView(),
+          SearchBarView(
+              searchHintText: "搜索群组",
+              isAutofocus: false,
+              textEditingController: groupsManager.searchController,
+              isEnabled: true),
           _createGroupsView(),
-          dividerViewCommon(),
-          _addGroupsView(),
-          dividerViewCommon(),
-          _newGroupsApply(),
-          SizedBox(height: 10.0.h),
+          // dividerViewCommon(),
+          // _newGroupsApply(),
           _groupListView(),
         ],
       ),
-    );
+    ));
   }
 
   Widget _groupListView() {
-    return Selector<GroupsManager, List<Groups>>(
-      builder: (BuildContext context, List<Groups> value, Widget? child) {
+    return Selector<GroupsManager, List<Groups>?>(
+      builder: (BuildContext context, List<Groups>? value, Widget? child) {
         print("DEBUG=> _groupListView 重绘了。。。。。");
         return Container(
-            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 10),
+            padding: const EdgeInsets.only(top: 10.0, bottom: 10),
             child: GroupListItem(value));
       },
       selector: (BuildContext context, GroupsManager groupsManager) {
-        return groupsManager.groupsList;
+        return groupsManager.groupsList ?? null;
       },
       shouldRebuild: (pre, next) =>
-          ((pre != next) || (pre.length != next.length)),
+          ((pre != next) || (pre!.length != next!.length)),
     );
-  }
-
-  Widget _addGroupsView() {
-    return Container(
-        color: Colors.white,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
-        child: ListTile(
-          // onTap: () => Routers.navigateTo('/search_new_contacts')
-          //     .then((value) => value ? manager.refreshData() : null),
-          leading: CircleAvatar(
-            backgroundColor: Colors.pink,
-            maxRadius: 20,
-            child: Center(
-              child: Icon(
-                Icons.group_add,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          title: Text(
-            '查找群组',
-            style: Flavors.textStyles.friendsText,
-          ),
-          trailing: Container(width: 30.0.w),
-        ));
   }
 
   Widget _createGroupsView() {
@@ -102,10 +96,19 @@ class _GroupPageState extends State<GroupPage>
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          // onTap: () => Routers.navigateTo('/search_new_contacts')
-          //     .then((value) => value ? manager.refreshData() : null),
+          onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => SelectContactsModelPage(
+                            titleText: '创建群组',
+                            tipsText: '请至少选择两名好友作为群成员',
+                            leastSelected: 2,
+                            nextPageBtnText: '完成',
+                            selectContactsType: SelectContactsType.Group,
+                          )))
+              .then((value) => value ? groupsManager.refreshData() : null),
           leading: CircleAvatar(
-            backgroundColor: Colors.blueGrey,
+            backgroundColor: Colors.pink,
             maxRadius: 20,
             child: Center(
               child: Icon(
@@ -118,59 +121,65 @@ class _GroupPageState extends State<GroupPage>
             '创建群组',
             style: Flavors.textStyles.friendsText,
           ),
-          trailing: Container(width: 30.0.w),
+          trailing: Container(
+            width: 20.0.w,
+            child: Icon(
+              Icons.arrow_forward_ios,
+              size: 15,
+              color: Flavors.colorInfo.lightGrep,
+            ),
+          ),
         ));
   }
 
-  Widget _newGroupsApply() {
-    return Selector<GroupsManager, List<FriendsApplicationInfo>>(
-      builder: (BuildContext context, List<FriendsApplicationInfo> value,
-          Widget? child) {
-        print("DEBUG=> _FriendsView 重绘了。。。。。");
-        return Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-            child: ListTile(
-              // onTap: () =>
-              //     Routers.navigateTo("/contacts_application", arg: value),
-              // onTap: () => Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (_) => ContactsApplicationPage(value)))
-              //     .then((value) => value ? manager.refreshData() : null),
-              leading: CircleAvatar(
-                backgroundColor: Colors.blue,
-                maxRadius: 20,
-                child: Center(
-                  child: Icon(
-                    Icons.notifications_active,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              title: Text(
-                '入群申请',
-                style: Flavors.textStyles.friendsText,
-              ),
-              trailing: value.isNotEmpty
-                  ? Container(
-                      width: 30.0.w,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.red,
-                        maxRadius: 10,
-                        child: Center(
-                          child: Text('${value.length}',
-                              style: Flavors.textStyles.homeTabBubbleText),
-                        ),
-                      ),
-                    )
-                  : Container(width: 30.0.w),
-            ));
-      },
-      selector: (BuildContext context, GroupsManager groupsManager) {
-        return groupsManager.groupApplicationList;
-      },
-      shouldRebuild: (pre, next) => (pre != next),
-    );
-  }
+  // Widget _newGroupsApply() {
+  //   return Selector<GroupsManager, List<FriendsApplicationInfo>>(
+  //     builder: (BuildContext context, List<FriendsApplicationInfo> value,
+  //         Widget? child) {
+  //       return Container(
+  //           color: Colors.white,
+  //           padding: EdgeInsets.only(top: 10, bottom: 10),
+  //           child: ListTile(
+  //             // onTap: () =>
+  //             //     Routers.navigateTo("/contacts_application", arg: value),
+  //             // onTap: () => Navigator.push(
+  //             //     context,
+  //             //     MaterialPageRoute(
+  //             //         builder: (_) => ContactsApplicationPage(value)))
+  //             //     .then((value) => value ? manager.refreshData() : null),
+  //             leading: CircleAvatar(
+  //               backgroundColor: Colors.blue,
+  //               maxRadius: 20,
+  //               child: Center(
+  //                 child: Icon(
+  //                   Icons.notifications_active,
+  //                   color: Colors.white,
+  //                 ),
+  //               ),
+  //             ),
+  //             title: Text(
+  //               '入群申请',
+  //               style: Flavors.textStyles.friendsText,
+  //             ),
+  //             trailing: value.isNotEmpty
+  //                 ? Container(
+  //                     width: 30.0.w,
+  //                     child: CircleAvatar(
+  //                       backgroundColor: Colors.red,
+  //                       maxRadius: 10,
+  //                       child: Center(
+  //                         child: Text('${value.length}',
+  //                             style: Flavors.textStyles.homeTabBubbleText),
+  //                       ),
+  //                     ),
+  //                   )
+  //                 : Container(width: 30.0.w),
+  //           ));
+  //     },
+  //     selector: (BuildContext context, GroupsManager groupsManager) {
+  //       return groupsManager.groupApplicationList;
+  //     },
+  //     shouldRebuild: (pre, next) => (pre != next),
+  //   );
+  // }
 }

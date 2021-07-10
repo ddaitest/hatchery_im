@@ -58,7 +58,7 @@ class TextStyles {
       color: ColorInfo().subtitleColor);
 
   final TextStyle groupMainName = TextStyle(
-      fontSize: 16.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+      fontSize: 14.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
 
   final TextStyle groupMembersNumberText =
       TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
@@ -101,6 +101,11 @@ class TextStyles {
 
   final TextStyle friendsText = TextStyle(
       fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
+
+  final TextStyle friendsSubtitleText = TextStyle(
+      fontSize: 13.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().subtitleColor);
 
   final TextStyle meNickNameText = TextStyle(
       fontSize: 19.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
@@ -179,15 +184,12 @@ class TextStyles {
 }
 
 class SizesInfo {
-  final articleItemHeight = 120.0;
-  final articleThumbnail = 100.0;
-  final postItemHeight = 60.0;
   final screenWidth = 1.sw; // 屏幕宽度
   final screenHeight = 1.sh; // 屏幕高度
 }
 
 class ColorInfo {
-  final mainColor = const Color(0xFF478DE0);
+  final mainColor = const Color(0xFF73AEF5);
   final mainTextColor = Colors.white;
   final mainBackGroundColor = Colors.white;
   final redColor = Colors.red;

@@ -26,6 +26,10 @@ class ApiResult {
     return parsed['result'];
   }
 
+  dynamic getInfo() {
+    return parsed['info'];
+  }
+
   List<O> getDataList<O, I>(O function(Map<String, dynamic> value),
       {int type = 0}) {
     var data;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:hatchery_im/busniess/chat_home/chat_page.dart';
 import 'package:hatchery_im/busniess/contacts/contacts_page.dart';
 import 'package:hatchery_im/busniess/group_page/group.dart';
@@ -11,6 +12,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:badges/badges.dart';
 import '../config.dart';
 import '../routers.dart';
+import 'package:flutter/services.dart';
 
 class MainTab extends StatelessWidget {
   @override
@@ -40,11 +42,15 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   var _pageController = PageController();
   int _tabIndex = 0;
   String title = '消息列表';
+  late SystemUiOverlayStyle systemUiOverlayStyle;
 
   @override
   void initState() {
     // _tabController = TabController(vsync: this, length: _tabBodies.length);
-    Future.delayed(Duration(milliseconds: 10), () {
+    systemUiOverlayStyle =
+        SystemUiOverlayStyle(statusBarColor: Colors.transparent);
+
+    Future.delayed(Duration.zero, () {
       MainTabHandler.setGotoFun((page) {
         if (_tabIndex != page) {
           _switchTab(page);
@@ -65,13 +71,23 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       case 2:
         title = '群组';
         break;
-      case 3:
-        title = '我的';
-        break;
       default:
         title = '消息列表';
         break;
     }
+  }
+
+  _setStatusBarColor(int index) {
+    if (index == 3) {
+      systemUiOverlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Flavors.colorInfo.mainColor,
+          statusBarIconBrightness: Brightness.light);
+    } else {
+      systemUiOverlayStyle = SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark);
+    }
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
   @override
@@ -99,20 +115,22 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        appBar: AppBarFactory.getMain(title, actions: [
-          PopupMenuButton<String>(
-            onSelected: handleClick,
-            icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
-            itemBuilder: (BuildContext context) {
-              return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
-                return PopupMenuItem<String>(
-                  value: choice,
-                  child: Text(choice),
-                );
-              }).toList();
-            },
-          ),
-        ]),
+        appBar: _tabIndex != 3
+            ? AppBarFactory.getMain(title, actions: [
+                PopupMenuButton<String>(
+                  onSelected: handleClick,
+                  icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
+                  itemBuilder: (BuildContext context) {
+                    return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
+                      );
+                    }).toList();
+                  },
+                ),
+              ])
+            : null,
         body: SafeArea(
           child: PageView(
             physics: const NeverScrollableScrollPhysics(),
@@ -135,9 +153,11 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   _switchTab(int index) {
     setState(() {
-      Log.log("DEBUG=>$index", color: LColor.RED);
+      Log.log("$index", color: LColor.RED);
       _tabIndex = index;
+      _setStatusBarColor(_tabIndex);
       _setAppBarInfo();
+
       _pageController.jumpToPage(index);
     });
   }

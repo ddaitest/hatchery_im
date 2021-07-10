@@ -57,13 +57,13 @@ class _ContactsState extends State<ContactsPage>
           physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           children: <Widget>[
-            SearchBarView(),
+            SearchBarView(
+                searchHintText: "搜索好友",
+                textEditingController: manager.searchController,
+                isEnabled: true),
             _addFriendsView(),
             dividerViewCommon(),
             _newFriendsApply(),
-            SizedBox(
-              height: 16.0.w,
-            ),
             _contactsListView(),
           ],
         ),
@@ -100,7 +100,6 @@ class _ContactsState extends State<ContactsPage>
     return Selector<ContactsManager, List<FriendsApplicationInfo>>(
       builder: (BuildContext context, List<FriendsApplicationInfo> value,
           Widget? child) {
-        print("DEBUG=> _FriendsView 重绘了。。。。。");
         return Container(
             color: Colors.white,
             padding: EdgeInsets.only(top: 10, bottom: 10),
@@ -149,13 +148,16 @@ class _ContactsState extends State<ContactsPage>
   }
 
   Widget _contactsListView() {
-    return Selector<ContactsManager, List<Friends>>(
-      builder: (BuildContext context, List<Friends> value, Widget? child) {
+    return Selector<ContactsManager, List<Friends>?>(
+      builder: (BuildContext context, List<Friends>? value, Widget? child) {
         print("DEBUG=> _FriendsView 重绘了。。。。。");
-        return ContactsUsersList(value);
+        return Container(
+          padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+          child: ContactsUsersList(value),
+        );
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
-        return contactsManager.friendsList;
+        return contactsManager.friendsList ?? null;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );

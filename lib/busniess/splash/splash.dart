@@ -6,6 +6,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/splashManager.dart';
 import 'package:hatchery_im/manager/appManager.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:animated_text_kit/animated_text_kit.dart';

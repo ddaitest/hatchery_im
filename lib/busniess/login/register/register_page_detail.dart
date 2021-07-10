@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
@@ -24,12 +24,10 @@ class RegisterPageDetail extends StatefulWidget {
 }
 
 class RegisterPageDetailState extends State<RegisterPageDetail> {
-  RegisterManager _registerManager = RegisterManager();
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => _registerManager,
+      create: (context) => RegisterManager(),
       child: _bodyContainer(),
     );
   }
@@ -38,30 +36,16 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
     return Consumer(builder:
         (BuildContext context, RegisterManager registerManager, Widget? child) {
       return Scaffold(
-        appBar: AppBarFactory.backButton(''),
+        appBar: AppBarFactory.backButton('',
+            backGroundColor: Flavors.colorInfo.mainColor,
+            backBtnColor: Flavors.colorInfo.mainBackGroundColor),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: GestureDetector(
             onTap: () => FocusScope.of(context).unfocus(),
             child: Stack(
               children: <Widget>[
-                Container(
-                  height: double.infinity,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Color(0xFF73AEF5),
-                        Color(0xFF61A4F1),
-                        Color(0xFF478DE0),
-                        Color(0xFF398AE5),
-                      ],
-                      stops: [0.1, 0.4, 0.7, 0.9],
-                    ),
-                  ),
-                ),
+                mainBackGroundWidget(),
                 Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
@@ -102,7 +86,7 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
   Widget _buildPhoneTF(registerManager) {
     return TextFormModel(
       '手机号（用于短信验证码登录）',
-      registerManager.accountController,
+      registerManager.phoneController,
       TextInputType.number,
       Icons.phone_android,
       '请输入手机号',
@@ -112,7 +96,7 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
   Widget _buildEmailTF(registerManager) {
     return TextFormModel(
       '电子邮箱',
-      registerManager.nickNameController,
+      registerManager.emailController,
       TextInputType.emailAddress,
       Icons.mail,
       '请输入电子邮箱地址',
@@ -122,20 +106,24 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
   Widget _buildNotesTF(registerManager) {
     return TextFormModel(
       '个性签名',
-      registerManager.codeController,
+      registerManager.notesController,
       TextInputType.text,
       Icons.article,
       '请输入个性签名',
+      maxLine: 2,
+      maxLength: 20,
     );
   }
 
   Widget _buildAddressTF(registerManager) {
     return TextFormModel(
       '地址',
-      registerManager.codeController,
+      registerManager.addressController,
       TextInputType.text,
       Icons.location_on,
       '请输入地址',
+      maxLine: 2,
+      maxLength: 30,
     );
   }
 

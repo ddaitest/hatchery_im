@@ -185,13 +185,34 @@ Future<DialogDemoAction?>? showLoadingDialog(
       });
 }
 
-dividerViewCommon() {
+Widget dividerViewCommon() {
   return Divider(
     height: 0.5,
     thickness: 0.5,
     indent: 10,
     endIndent: 10,
     color: Flavors.colorInfo.dividerColor,
+  );
+}
+
+/// 登录注册的渐变背景色
+Widget mainBackGroundWidget() {
+  return Container(
+    height: double.infinity,
+    width: double.infinity,
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFF73AEF5),
+          Color(0xFF61A4F1),
+          Color(0xFF478DE0),
+          Color(0xFF398AE5),
+        ],
+        stops: [0.1, 0.4, 0.7, 0.9],
+      ),
+    ),
   );
 }
 
@@ -294,12 +315,18 @@ class CacheInfo {
   Future<String> loadCache() async {
     Directory tempDir = await getTemporaryDirectory();
     print("DEBUG=> tempDir ${tempDir.path}");
-    double value = await _getTotalSizeOfFilesInDir(tempDir);
+    try {
+      double value = await _getTotalSizeOfFilesInDir(tempDir);
+      return _renderSize(value);
+    } catch (e) {
+      double value = 0.0;
+      return _renderSize(value);
+    }
+
     /*tempDir.list(followLinks: false,recursive: true).listen((file){
           //打印每个缓存文件的路径
         print(file.path);
       });*/
-    return _renderSize(value);
   }
 
   Future<double> _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {

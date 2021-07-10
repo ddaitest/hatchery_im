@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class IndicatorView extends StatelessWidget {
   final String tipsText;
@@ -16,6 +17,9 @@ class IndicatorView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CupertinoActivityIndicator(),
+            SizedBox(
+              height: 10.0.h,
+            ),
             Container(
               child:
                   Text(tipsText, style: Flavors.textStyles.loginSubTitleText),

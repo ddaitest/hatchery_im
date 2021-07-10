@@ -7,75 +7,80 @@ import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 class ContactsUsersList extends StatelessWidget {
-  final List<Friends> friendsLists;
+  final List<Friends>? friendsLists;
   ContactsUsersList(this.friendsLists);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: friendsLists.isNotEmpty ? friendsLists.length : 10,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return ChatDetailPage(friendsLists[index]);
-            }));
-          },
-          child: Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-            child: Row(
-              children: <Widget>[
-                friendsLists.isNotEmpty
-                    ? CachedNetworkImage(
-                        imageUrl: friendsLists[index].icon,
-                        placeholder: (context, url) => CircleAvatar(
+    return friendsLists != null
+        ? ListView.builder(
+            itemCount: friendsLists!.length,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ChatDetailPage(friendsLists![index]);
+                  }));
+                },
+                child: Container(
+                  color: Colors.white,
+                  padding:
+                      EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+                  child: Row(
+                    children: <Widget>[
+                      friendsLists!.isNotEmpty
+                          ? CachedNetworkImage(
+                              imageUrl: friendsLists![index].icon,
+                              placeholder: (context, url) => CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('images/default_avatar.png'),
+                                    maxRadius: 20,
+                                  ),
+                              errorWidget: (context, url, error) =>
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        AssetImage('images/default_avatar.png'),
+                                    maxRadius: 20,
+                                  ),
+                              imageBuilder: (context, imageProvider) {
+                                return CircleAvatar(
+                                  backgroundImage: imageProvider,
+                                  maxRadius: 20,
+                                );
+                              })
+                          : CircleAvatar(
                               backgroundImage:
                                   AssetImage('images/default_avatar.png'),
                               maxRadius: 20,
                             ),
-                        errorWidget: (context, url, error) => CircleAvatar(
-                              backgroundImage:
-                                  AssetImage('images/default_avatar.png'),
-                              maxRadius: 20,
-                            ),
-                        imageBuilder: (context, imageProvider) {
-                          return CircleAvatar(
-                            backgroundImage: imageProvider,
-                            maxRadius: 20,
-                          );
-                        })
-                    : CircleAvatar(
-                        backgroundImage:
-                            AssetImage('images/default_avatar.png'),
-                        maxRadius: 20,
+                      SizedBox(
+                        width: 16.0.w,
                       ),
-                SizedBox(
-                  width: 16.0.w,
+                      Container(
+                        color: Colors.transparent,
+                        width: Flavors.sizesInfo.screenWidth - 100.0.w,
+                        child: friendsLists!.isNotEmpty
+                            ? Text(
+                                friendsLists![index].remarks != null
+                                    ? friendsLists![index].remarks!
+                                    : friendsLists![index].nickName,
+                                style: Flavors.textStyles.friendsText,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis)
+                            : LoadingView(),
+                      ),
+                    ],
+                  ),
                 ),
-                Container(
-                  color: Colors.transparent,
-                  width: Flavors.sizesInfo.screenWidth - 100.0.w,
-                  child: friendsLists.isNotEmpty
-                      ? Text(
-                          friendsLists[index].remarks != null
-                              ? friendsLists[index].remarks!
-                              : friendsLists[index].nickName,
-                          style: Flavors.textStyles.friendsText,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis)
-                      : LoadingView(),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              );
+            },
+          )
+        : IndicatorView();
   }
 }
 

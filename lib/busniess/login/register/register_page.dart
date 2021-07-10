@@ -14,7 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/busniess/login/register_page_detail.dart';
+import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
 import 'package:image_crop/image_crop.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -31,33 +31,18 @@ class RegisterPageState extends State<RegisterPage> {
     return _bodyContainer();
   }
 
-  _bodyContainer() {
+  Widget _bodyContainer() {
     return Scaffold(
       appBar: AppBarFactory.backButton('',
-          backGroundColor: const Color(0xFF73AEF5)),
+          backGroundColor: Flavors.colorInfo.mainColor,
+          backBtnColor: Flavors.colorInfo.mainBackGroundColor),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
           onTap: () => FocusScope.of(context).unfocus(),
           child: Stack(
             children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color(0xFF73AEF5),
-                      Color(0xFF61A4F1),
-                      Color(0xFF478DE0),
-                      Color(0xFF398AE5),
-                    ],
-                    stops: [0.1, 0.4, 0.7, 0.9],
-                  ),
-                ),
-              ),
+              mainBackGroundWidget(),
               Container(
                   height: double.infinity,
                   child: SingleChildScrollView(
