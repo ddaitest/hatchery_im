@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
+import 'messageManager.dart';
 
 class AppManager extends ChangeNotifier {
   // UnmodifiableListView<Contact> get phoneNumbersList =>
@@ -27,6 +28,7 @@ class AppManager extends ChangeNotifier {
     SP.init().then((sp) {
       DeviceInfo.init();
       UserId.init();
+      MessageManager.init();
     });
   }
 

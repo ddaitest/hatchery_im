@@ -12,14 +12,20 @@ import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
+
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import 'app_handler.dart';
 
 class ContactsManager extends ChangeNotifier {
   //联系人列表 数据
   List<Friends> friendsList = [];
+
   //好友申请 数据
   List<FriendsApplicationInfo> contactsApplicationList = [];
+
+  final size = 999; //暂时一次取完。
 
   /// 初始化
   init() {
@@ -27,13 +33,27 @@ class ContactsManager extends ChangeNotifier {
     _queryNewFriendsApplicationRes();
   }
 
+  ///刷新好友列表.
+  /// Step1. 返回本地存储的数据。
+  /// Step2. 从Server获取最新数据。
+  /// Step3. 刷新本地数据。
   _queryFriendsRes({
     int size = 999,
     int current = 0,
   }) async {
+    // Step1. 返回本地存储的数据。
+    AppHandler.getFriends().then((value) {
+      if (value.length > 0) {
+        friendsList = value;
+        notifyListeners();
+      }
+    });
+    // Step2. 从Server获取最新数据。
     API.getFriendsListData(size, current).then((value) {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
+        // Step3. 刷新本地数据。
+        AppHandler.saveFriends(friendsList);
         print('DEBUG=>  _queryFriendsRes ${friendsList}');
         notifyListeners();
       }
