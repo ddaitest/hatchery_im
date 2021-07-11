@@ -77,18 +77,18 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     }
   }
 
-  _setStatusBarColor(int index) {
-    if (index == 3) {
-      systemUiOverlayStyle = SystemUiOverlayStyle(
-          statusBarColor: Flavors.colorInfo.mainColor,
-          statusBarIconBrightness: Brightness.light);
-    } else {
-      systemUiOverlayStyle = SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark);
-    }
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-  }
+  // _setStatusBarColor(int index) {
+  //   if (index == 3) {
+  //     systemUiOverlayStyle = SystemUiOverlayStyle(
+  //         statusBarColor: Flavors.colorInfo.mainColor,
+  //         statusBarIconBrightness: Brightness.light);
+  //   } else {
+  //     systemUiOverlayStyle = SystemUiOverlayStyle(
+  //         statusBarColor: Colors.transparent,
+  //         statusBarIconBrightness: Brightness.dark);
+  //   }
+  //   SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  // }
 
   @override
   void dispose() {
@@ -155,7 +155,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     setState(() {
       Log.log("$index", color: LColor.RED);
       _tabIndex = index;
-      _setStatusBarColor(_tabIndex);
+      // _setStatusBarColor(_tabIndex);
       _setAppBarInfo();
 
       _pageController.jumpToPage(index);
