@@ -33,7 +33,7 @@ class MyProfilePage extends StatelessWidget {
       brightness: Brightness.light,
       actions: <Widget>[
         TextButton(
-          onPressed: () {},
+          onPressed: () => Routers.navigateTo("/profile_edit"),
           child: Text(
             "编辑",
             style: TextStyle(
