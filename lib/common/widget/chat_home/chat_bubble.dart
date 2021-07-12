@@ -14,7 +14,7 @@ import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
   final MessageBelongType messageBelongType;
-  final FriendsHistoryMessages friendsHistoryMessages;
+  final Message friendsHistoryMessages;
   ChatBubble(
       {required this.avatarPicUrl,
       required this.messageBelongType,

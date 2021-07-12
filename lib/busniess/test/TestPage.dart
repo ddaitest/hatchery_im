@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'package:hatchery_im/busniess/test/Model.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/common/Engine.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class TestPage extends StatefulWidget {
@@ -24,6 +27,7 @@ class TestState extends State<TestPage> {
   static String? _userInfoData;
   static String _token = '';
   var data = Map<String, dynamic>();
+
   // String to = "U202115215031100001";
   // String from = "U202114522384900001";
   String to = "U202114522384900001";
@@ -45,6 +49,9 @@ class TestState extends State<TestPage> {
         padding: EdgeInsets.all(10),
         children: [
           Text(_message),
+          ElevatedButton(onPressed: hive1, child: Text("HIVE 1")),
+          ElevatedButton(onPressed: hive2, child: Text("HIVE 2")),
+          ElevatedButton(onPressed: hive3, child: Text("HIVE 3")),
           ElevatedButton(onPressed: test0, child: Text("INIT")),
           ElevatedButton(onPressed: test1, child: Text("CONNECT")),
           ElevatedButton(onPressed: test2, child: Text("SEND")),
@@ -68,6 +75,57 @@ class TestState extends State<TestPage> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    hive0();
+  }
+
+  Box? box;
+  Box<TestMessage>? msgBox;
+
+  hive0() async {
+    await Hive.initFlutter();
+    Hive.registerAdapter(TestMsgAdapter());
+    box = await Hive.openBox('testBox');
+    msgBox = await Hive.openBox<TestMessage>('msgBox');
+    print("box is ready!");
+  }
+
+  hive1() {
+    DateTime nowTime = DateTime.now();
+    var t = TestMessage("AAA $nowTime", nowTime.millisecond);
+    msgBox?.add(t);
+  }
+
+  hive2() {
+    DateTime nowTime = DateTime.now();
+    print("before msgBox.length = ${msgBox?.length}");
+    var t = TestMessage("BBB $nowTime", nowTime.millisecond);
+    print("TestMessage = ${t.toString()};${t.key}");
+    msgBox?.add(t);
+    print("msgBox?.add(t)");
+    print("after msgBox.length = ${msgBox?.length}");
+    print("after TestMessage.key = ${t.key}");
+    t.title = "XXX";
+    t.save();
+    print("t.save()");
+    print("TestMessage = ${t.toString()};${t.key}");
+    print("after msgBox.length = ${t.key}");
+  }
+
+  hive3() {
+    print("${msgBox?.getAt(0)?.title}");
+    print("${msgBox?.getAt(1)?.title}");
+    print("${msgBox?.getAt(2)?.title}");
+    print("${msgBox?.getAt(3)?.title}");
+  }
+
+  // save message
+  // update message.
+  // get message for one friend
+  // get session.
 
   Engine engine = Engine.getInstance();
 

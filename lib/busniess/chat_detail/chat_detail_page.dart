@@ -40,8 +40,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    manager.init();
-    manager.queryFriendsHistoryMessages(widget.friendInfo.friendId, 0);
+    manager.init(widget.friendInfo.friendId);
+    // manager.queryFriendsHistoryMessages(widget.friendInfo.friendId, 0);
     super.initState();
   }
 
@@ -68,8 +68,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return Selector<ChatDetailManager, List<FriendsHistoryMessages>>(
-      builder: (BuildContext context, List<FriendsHistoryMessages> value,
+    return Selector<ChatDetailManager, List<Message>>(
+      builder: (BuildContext context, List<Message> value,
           Widget? child) {
         print("DEBUG=> _messageInfoView _messageInfoView");
         return Flexible(

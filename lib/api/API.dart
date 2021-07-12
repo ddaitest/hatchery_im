@@ -361,6 +361,48 @@ class API {
       return ApiResult.error(e);
     }
   }
+
+  ///获取单聊离线消息
+  static Future<ApiResult> getGroupHistory(
+      {String? groupID, int? page, int? size, int? currentMsgID}) async {
+    init();
+    Map<String, dynamic> queryParam = {
+      "groupID": groupID,
+      "page": page,
+      "size": size,
+      "currentMsgID": currentMsgID
+    };
+    try {
+      if (currentMsgID == 0) queryParam.remove("currentMsgID");
+      Response response = await _dio.get("/messages/groupchat/history",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取SESSION
+  static Future<ApiResult> querySession() async {
+    init();
+    try {
+      Response response = await _dio.get("/sessions/list",
+          queryParameters: {
+            "page": 0,
+          },
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
 }
 
 class ApiForFileService {

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
+import 'package:hatchery_im/manager/app_handler.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -16,6 +18,7 @@ import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
+
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
@@ -24,50 +27,76 @@ class ChatDetailManager extends ChangeNotifier {
   MyProfile? myProfileData;
   bool isVoiceModel = false;
   bool isRecording = false;
-  List<FriendsHistoryMessages> messagesList = [];
+  List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
   Timer? timer;
   int recordTiming = 0;
 
+  String currentFriendId = "";
+  int currentMessageID = 0;
+
   /// 初始化
-  init() {
-    _getStoredForMyProfileData();
+  init(String friendId) {
+    currentFriendId = friendId;
+    _loadLatest();
+    //添加监听
+    MessageCentre().listenMessage((news) {}, friendId);
   }
 
-  queryFriendsHistoryMessages(String friendId, int? currentMsgID,
-      {int page = 0, int size = 100}) async {
-    API
-        .messageHistoryWithFriend(
-            friendID: friendId,
-            size: size,
-            page: page,
-            currentMsgID: currentMsgID!)
-        .then((value) {
-      if (value.isSuccess()) {
-        messagesList = value
-            .getDataList((m) => FriendsHistoryMessages.fromJson(m), type: 0);
+  /// 加载最新的消息，数据来源 本地。
+  _loadLatest() {
+    // 读本地
+    MessageCentre.getMessages(currentFriendId).then((value) {
+      if (value.length > 0) {
+        messagesList = value;
         notifyListeners();
+      }
+      if (value.length < 10) {
+        //TODO 本地数据少 读一次历史
+        loadMore();
       }
     });
   }
 
-  _getStoredForMyProfileData() async {
-    String? stored = SP.getString(SPKey.userInfo);
-    if (stored != null) {
-      print("_myProfileData ${stored}");
-      try {
-        var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        myProfileData = userInfo;
-        print("_myProfileData ${myProfileData!.userID}");
-      } catch (e) {}
-    } else {
-      showToast('请重新登录');
-      SP.delete(SPKey.userInfo);
-      Future.delayed(
-          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
-    }
+  /// 加载更多历史消息
+  loadMore() {
+    //TODO 本地数据少 读一次历史
+    // MessageCentre().loadMore(currentFriendId)
   }
+
+  // queryFriendsHistoryMessages(String friendId, int? currentMsgID,
+  //     {int page = 0, int size = 100}) async {
+  //   API
+  //       .messageHistoryWithFriend(
+  //           friendID: friendId,
+  //           size: size,
+  //           page: page,
+  //           currentMsgID: currentMsgID!)
+  //       .then((value) {
+  //     if (value.isSuccess()) {
+  //       messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
+  //       notifyListeners();
+  //     }
+  //   });
+  // }
+
+  // _getStoredForMyProfileData() async {
+  //   String? stored = SP.getString(SPKey.userInfo);
+  //   if (stored != null) {
+  //     print("_myProfileData ${stored}");
+  //     try {
+  //       var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
+  //       myProfileData = userInfo;
+  //       print("_myProfileData ${myProfileData!.userID}");
+  //     } catch (e) {}
+  //   } else {
+  //     showToast('请重新登录');
+  //     SP.delete(SPKey.userInfo);
+  //     Future.delayed(
+  //         Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
+  //   }
+  // }
 
   changeInputView() {
     isVoiceModel = !isVoiceModel;

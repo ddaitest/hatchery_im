@@ -56,9 +56,9 @@ Groups _$GroupsFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$GroupsToJson(Groups instance) => <String, dynamic>{
-      'group': instance.group,
+      'group': instance.group.toJson(),
       'membersCount': instance.membersCount,
-      'top3Members': instance.top3Members,
+      'top3Members': instance.top3Members.map((e) => e.toJson()).toList(),
     };
 
 GroupsInfo _$GroupsInfoFromJson(Map<String, dynamic> json) {
@@ -161,9 +161,9 @@ Map<String, dynamic> _$MyProfileToJson(MyProfile instance) => <String, dynamic>{
       'createTime': instance.createTime,
     };
 
-FriendsHistoryMessages _$FriendsHistoryMessagesFromJson(
+Message _$MessageFromJson(
     Map<String, dynamic> json) {
-  return FriendsHistoryMessages(
+  return Message(
     json['id'] as int,
     json['type'] as String,
     json['userMsgID'] as String,
@@ -178,8 +178,8 @@ FriendsHistoryMessages _$FriendsHistoryMessagesFromJson(
   );
 }
 
-Map<String, dynamic> _$FriendsHistoryMessagesToJson(
-        FriendsHistoryMessages instance) =>
+Map<String, dynamic> _$MessageToJson(
+        Message instance) =>
     <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
@@ -213,4 +213,34 @@ Map<String, dynamic> _$SearchNewContactsInfoToJson(
       'nickName': instance.nickName,
       'icon': instance.icon,
       'notes': instance.notes,
+    };
+
+Session _$SessionFromJson(Map<String, dynamic> json) {
+  return Session(
+    json['id'] as int,
+    json['title'] as String,
+    json['type'] as int,
+    json['icon'] as String,
+    json['ownerID'] as String,
+    json['otherID'] as String,
+    Message.fromJson(
+        json['lastChatMessage'] as Map<String, dynamic>),
+    Message.fromJson(
+        json['lastGroupChatMessage'] as Map<String, dynamic>),
+    json['updateTime'] as String,
+    json['createTime'] as String,
+  );
+}
+
+Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'icon': instance.icon,
+      'ownerID': instance.ownerID,
+      'otherID': instance.otherID,
+      'type': instance.type,
+      'lastChatMessage': instance.lastChatMessage.toJson(),
+      'lastGroupChatMessage': instance.lastGroupChatMessage.toJson(),
+      'updateTime': instance.updateTime,
+      'createTime': instance.createTime,
     };
