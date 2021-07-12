@@ -20,7 +20,7 @@ class Info extends StatelessWidget {
           ClipPath(
             clipper: CustomShape(),
             child: Container(
-              height: 110.0.h,
+              height: 120.0.h,
               color: Flavors.colorInfo.mainColor,
             ),
           ),
@@ -36,7 +36,7 @@ class Info extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: Colors.white,
-                      width: 5.0.w, //8
+                      width: 4.0, //8
                     ),
                   ),
                   child: netWorkAvatar(imageUrl, 120),

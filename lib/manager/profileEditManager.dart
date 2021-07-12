@@ -11,25 +11,29 @@ import 'package:hatchery_im/common/utils.dart';
 
 class ProfileEditManager extends ChangeNotifier {
   MyProfile? myProfileData;
-  final GlobalKey<FormState> profileEditInputKey = GlobalKey<FormState>();
   TextEditingController nickNameController = TextEditingController();
   TextEditingController notesController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController addressController = TextEditingController();
+  String? imageUrl;
 
   /// 初始化
-  ProfileEditManager() {
+  init() {
     _getStoredForMyProfileData();
   }
 
   _getStoredForMyProfileData() async {
     String? stored = SP.getString(SPKey.userInfo);
     if (stored != null) {
-      print("_myProfileData ${stored}");
       try {
         var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
         myProfileData = userInfo;
         print("_myProfileData ${myProfileData!.icon}");
+        imageUrl = myProfileData!.icon;
+        nickNameController.text = myProfileData!.nickName;
+        notesController.text = myProfileData!.notes!;
+        emailController.text = myProfileData!.email!;
+        addressController.text = myProfileData!.address!;
         notifyListeners();
       } catch (e) {}
     } else {
