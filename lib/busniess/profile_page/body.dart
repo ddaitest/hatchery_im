@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'info.dart';
-import 'profile_menu_item.dart';
+import '../../common/widget/profile/profile_menu_item.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileBody extends StatelessWidget {

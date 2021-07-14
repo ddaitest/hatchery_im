@@ -28,8 +28,8 @@ class AppManager extends ChangeNotifier {
     SP.init().then((sp) {
       DeviceInfo.init();
       UserId.init();
+      MessageCentre.init();
     });
-    MessageCentre.init();
   }
 
   @override

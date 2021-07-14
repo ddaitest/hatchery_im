@@ -57,3 +57,54 @@ class ProfileMenuItem extends StatelessWidget {
         ));
   }
 }
+
+class ProfileEditMenuItem extends StatelessWidget {
+  final String menuText;
+  final String trailingText;
+  final GestureTapCallback? onTap;
+  ProfileEditMenuItem(this.menuText, {this.trailingText = '', this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Colors.white,
+        child: Column(
+          children: <Widget>[
+            ListTile(
+              dense: false,
+              title: Text(
+                menuText,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                style: Flavors.textStyles.meListTitleText,
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.only(top: 4.0),
+                width: 200.0.w,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text(
+                      trailingText,
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                      style: Flavors.textStyles.loginSubTitleText,
+                    ),
+                    SizedBox(
+                      width: 10.0.w,
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey[400],
+                      size: 15.0,
+                    ),
+                  ],
+                ),
+              ),
+              onTap: onTap,
+            ),
+            dividerViewCommon(),
+          ],
+        ));
+  }
+}

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'package:hatchery_im/busniess/login/register/register_page.dart';
 import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
-import 'package:hatchery_im/busniess/profile_page/profile_edit_page.dart';
+import 'package:hatchery_im/busniess/profile_page/edit_profile/profile_edit_page.dart';
 import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'package:hatchery_im/busniess/test/TestPage.dart';
