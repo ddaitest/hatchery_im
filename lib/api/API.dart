@@ -362,7 +362,23 @@ class API {
     }
   }
 
-  ///获取单聊离线消息
+  ///更新个人资料
+  static Future<ApiResult> updateProfileData(
+    String keyName,
+    String value,
+  ) async {
+    Map<String, String> body = {keyName: value};
+    init();
+    try {
+      Response response = await _dio.post("/users/update", data: body);
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取群聊离线消息
   static Future<ApiResult> getGroupHistory(
       {String? groupID, int? page, int? size, int? currentMsgID}) async {
     init();
