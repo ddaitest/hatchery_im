@@ -91,7 +91,8 @@ class API {
     };
     init();
     try {
-      Response response = await _dio.post("/users/create", data: body);
+      Response response =
+          await _dio.post("/users/create", data: json.encode(body));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");
@@ -370,7 +371,11 @@ class API {
     Map<String, String> body = {keyName: value};
     init();
     try {
-      Response response = await _dio.post("/users/update", data: body);
+      Response response = await _dio.post("/users/update",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");

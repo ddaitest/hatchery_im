@@ -9,6 +9,7 @@ import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 class ProfileEditDetailManager extends ChangeNotifier {
@@ -41,9 +42,15 @@ class ProfileEditDetailManager extends ChangeNotifier {
     if (keyName != null && value != null) {
       ApiResult result = await API.updateProfileData(keyName!, value);
       if (result.isSuccess()) {
-        print("DEBUG=> result.getData() ${result.getData()}");
-        // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
-        // Routers.navigateAndRemoveUntil('/');
+        _getStoredForMyProfileData().then((value) {
+          value['info'].addAll(result.getData());
+          print("DEBUG=> value result.getData() ${value['info']}");
+          SP.set(SPKey.userInfo, jsonEncode(value));
+        });
+
+        Future.delayed(Duration(milliseconds: 500), () {
+          Navigator.of(App.navState.currentContext!).pop(true);
+        });
       } else {
         showToast('${result.info}');
       }
@@ -51,6 +58,21 @@ class ProfileEditDetailManager extends ChangeNotifier {
       print("DEBUG=> keyName $keyName");
       print("DEBUG=> value $value");
       showToast('输入的内容不能为空');
+    }
+  }
+
+  Future _getStoredForMyProfileData() async {
+    String? stored = SP.getString(SPKey.userInfo);
+    if (stored != null) {
+      print("_myProfileData ${stored}");
+      try {
+        return jsonDecode(stored);
+      } catch (e) {}
+    } else {
+      showToast('请重新登录');
+      SP.delete(SPKey.userInfo);
+      Future.delayed(
+          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }
   }
 

@@ -139,8 +139,8 @@ class MyProfile {
   int id;
   String? userID = '';
   String loginName = '';
-  String nickName = '';
-  String icon = '';
+  String? nickName = '';
+  String? icon = '';
   String? phone = '';
   String? notes = '';
   String? email = '';
@@ -222,7 +222,7 @@ class SearchNewContactsInfo {
 }
 
 @JsonSerializable(explicitToJson: true)
-class Session extends HiveObject{
+class Session extends HiveObject {
   int id; //会话ID
   String title; //会话标题
   String icon; //会话图标

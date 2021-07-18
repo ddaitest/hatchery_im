@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/busniess/profile_page/edit_profile/edit_detail.dart';
+import 'package:hatchery_im/manager/myProfileManager.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final String leadingImagePath;
@@ -62,7 +63,9 @@ class ProfileMenuItem extends StatelessWidget {
 class ProfileEditMenuItem extends StatelessWidget {
   final String menuText;
   final String trailingText;
-  ProfileEditMenuItem(this.menuText, {this.trailingText = ''});
+  final bool showForwardIcon;
+  ProfileEditMenuItem(this.menuText,
+      {this.trailingText = '', this.showForwardIcon = true});
 
   @override
   Widget build(BuildContext context) {
@@ -71,51 +74,46 @@ class ProfileEditMenuItem extends StatelessWidget {
         child: Column(
           children: <Widget>[
             ListTile(
-                dense: false,
-                title: Text(
-                  menuText,
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                  style: Flavors.textStyles.meListTitleText,
-                ),
-                trailing: Container(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  width: 200.0.w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
+              dense: false,
+              title: Text(
+                menuText,
+                maxLines: 1,
+                softWrap: true,
+                overflow: TextOverflow.clip,
+                style: Flavors.textStyles.meListTitleText,
+              ),
+              trailing: Container(
+                padding: const EdgeInsets.only(top: 4.0),
+                width: 200.0.w,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Container(
+                      constraints: BoxConstraints(
+                        maxWidth: 170.0.w,
+                      ),
+                      child: Text(
                         trailingText,
+                        softWrap: true,
                         maxLines: 1,
-                        overflow: TextOverflow.clip,
+                        overflow: TextOverflow.ellipsis,
                         style: Flavors.textStyles.loginSubTitleText,
                       ),
-                      SizedBox(
-                        width: 10.0.w,
-                      ),
-                      Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.grey[400],
-                        size: 15.0,
-                      ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      width: 10.0.w,
+                    ),
+                    showForwardIcon
+                        ? Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.grey[400],
+                            size: 15.0,
+                          )
+                        : Container(),
+                  ],
                 ),
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => ProfileEditDetailPage(
-                              '$menuText',
-                              trailingText,
-                              '$menuText',
-                              maxLength: menuText == '个人简介' || menuText == '地址'
-                                  ? 60
-                                  : 20,
-                              maxLine: menuText == '个人简介' || menuText == '地址'
-                                  ? 4
-                                  : 2,
-                              onlyNumber: menuText == '手机号' ? true : false,
-                            )))),
+              ),
+            ),
             dividerViewCommon(),
           ],
         ));

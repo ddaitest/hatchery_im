@@ -26,7 +26,7 @@ class ProfileEditDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    textEditingController.text = inputText;
+    textEditingController.text = inputText != '无' ? inputText : '';
     manager.setKeyName(appBarText);
     return Scaffold(
         appBar: AppBarFactory.backButton('编辑$appBarText', actions: [

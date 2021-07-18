@@ -157,7 +157,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
     if (stored != null) {
       try {
         var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        myNickName = userInfo.nickName;
+        myNickName = userInfo.nickName ?? '';
         print("_myProfileData ${userInfo.nickName}");
       } catch (e) {}
       String groupName = '';

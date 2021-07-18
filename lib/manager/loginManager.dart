@@ -41,7 +41,7 @@ class LoginManager extends ChangeNotifier {
   Future<bool> submit(String account, String password) async {
     ApiResult result = await API.usersLogin(account, password);
     if (result.isSuccess()) {
-      print("DEBUG=> result.getData() ${result.getData()}");
+      print("DEBUG=> result.getData() ${result.getData()['info']}");
       SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       Routers.navigateAndRemoveUntil('/');
     } else {

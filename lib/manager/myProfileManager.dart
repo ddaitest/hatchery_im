@@ -19,6 +19,10 @@ class MyProfileManager extends ChangeNotifier {
     checkCacheSize();
   }
 
+  void refreshData() {
+    _getStoredForMyProfileData();
+  }
+
   checkCacheSize() {
     CacheInfo().loadCache().then((value) {
       cacheSize = value;

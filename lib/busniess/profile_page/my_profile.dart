@@ -22,18 +22,20 @@ class MyProfilePage extends StatelessWidget {
     return Consumer(builder: (BuildContext context,
         MyProfileManager myProfileManager, Widget? child) {
       return Scaffold(
-          appBar: buildAppBar(), body: ProfileBody(myProfileManager));
+          appBar: buildAppBar(myProfileManager),
+          body: ProfileBody(myProfileManager));
     });
   }
 
-  AppBar buildAppBar() {
+  AppBar buildAppBar(myProfileManager) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Flavors.colorInfo.mainColor,
       brightness: Brightness.light,
       actions: <Widget>[
         TextButton(
-          onPressed: () => Routers.navigateTo("/profile_edit"),
+          onPressed: () => Routers.navigateTo("/profile_edit")
+              .then((value) => value ? myProfileManager.refreshData() : null),
           child: Text(
             "编辑",
             style: TextStyle(
