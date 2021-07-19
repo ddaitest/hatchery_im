@@ -132,8 +132,8 @@ MyProfile _$MyProfileFromJson(Map<String, dynamic> json) {
     json['id'] as int,
     json['userID'] as String?,
     json['loginName'] as String,
-    json['nickName'] as String,
-    json['icon'] as String,
+    json['nickName'] as String?,
+    json['icon'] as String?,
     json['phone'] as String?,
     json['notes'] as String?,
     json['email'] as String?,
@@ -161,8 +161,32 @@ Map<String, dynamic> _$MyProfileToJson(MyProfile instance) => <String, dynamic>{
       'createTime': instance.createTime,
     };
 
-Message _$MessageFromJson(
-    Map<String, dynamic> json) {
+FriendProfile _$FriendProfileFromJson(Map<String, dynamic> json) {
+  return FriendProfile(
+    json['friendId'] as String,
+    json['remarks'] as String?,
+    json['icon'] as String?,
+    json['nickName'] as String?,
+    json['notes'] as String?,
+    json['phone'] as String?,
+    json['email'] as String?,
+    json['address'] as String?,
+  );
+}
+
+Map<String, dynamic> _$FriendProfileToJson(FriendProfile instance) =>
+    <String, dynamic>{
+      'friendId': instance.friendId,
+      'remarks': instance.remarks,
+      'icon': instance.icon,
+      'nickName': instance.nickName,
+      'notes': instance.notes,
+      'phone': instance.phone,
+      'email': instance.email,
+      'address': instance.address,
+    };
+
+Message _$MessageFromJson(Map<String, dynamic> json) {
   return Message(
     json['id'] as int,
     json['type'] as String,
@@ -178,9 +202,7 @@ Message _$MessageFromJson(
   );
 }
 
-Map<String, dynamic> _$MessageToJson(
-        Message instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'id': instance.id,
       'type': instance.type,
       'userMsgID': instance.userMsgID,
@@ -223,10 +245,8 @@ Session _$SessionFromJson(Map<String, dynamic> json) {
     json['icon'] as String,
     json['ownerID'] as String,
     json['otherID'] as String,
-    Message.fromJson(
-        json['lastChatMessage'] as Map<String, dynamic>),
-    Message.fromJson(
-        json['lastGroupChatMessage'] as Map<String, dynamic>),
+    Message.fromJson(json['lastChatMessage'] as Map<String, dynamic>),
+    Message.fromJson(json['lastGroupChatMessage'] as Map<String, dynamic>),
     json['updateTime'] as String,
     json['createTime'] as String,
   );

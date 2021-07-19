@@ -172,6 +172,34 @@ class MyProfile {
 }
 
 @JsonSerializable()
+class FriendProfile {
+  String friendId = '';
+  String? remarks = '';
+  String? icon = '';
+  String? nickName = '';
+  String? notes = '';
+  String? phone = '';
+  String? email = '';
+  String? address = '';
+
+  FriendProfile(
+    this.friendId,
+    this.remarks,
+    this.icon,
+    this.nickName,
+    this.notes,
+    this.phone,
+    this.email,
+    this.address,
+  );
+
+  factory FriendProfile.fromJson(Map<String, dynamic> json) =>
+      _$FriendProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FriendProfileToJson(this);
+}
+
+@JsonSerializable()
 class Message {
   int id;
   String type;

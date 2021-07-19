@@ -143,7 +143,7 @@ class API {
     }
   }
 
-  ///获取好友列表
+  ///获取配置列表
   static Future<ApiResult> getConfig() async {
     init();
     try {
@@ -329,6 +329,27 @@ class API {
     try {
       Response response = await _dio.post("/groups/create",
           data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取好友信息
+  static Future<ApiResult> getFriendInfo(
+    String friendId,
+  ) async {
+    Map<String, String> queryParam = {
+      "friendId": friendId,
+    };
+    init();
+    try {
+      Response response = await _dio.get("/roster/friend/info",
+          queryParameters: queryParam,
           options: Options(
             headers: {"BEE_TOKEN": _token},
           ));
