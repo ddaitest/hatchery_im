@@ -89,6 +89,11 @@ class TextStyles {
       fontWeight: FontWeight.w400,
       color: ColorInfo().mainTextColor);
 
+  final TextStyle otpText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().darkGreyColor);
+
   final TextStyle loginLinkText = TextStyle(
       fontSize: 14.0.sp,
       fontWeight: FontWeight.bold,
@@ -194,6 +199,7 @@ class ColorInfo {
   final mainBackGroundColor = Colors.white;
   final redColor = Colors.red;
   final dividerColor = Colors.black12;
+  final darkGreyColor = Colors.grey[800];
   final blueGrey = Colors.blueGrey;
   final lightGrep = Colors.grey[400];
   get btnTextColor => mainColor;

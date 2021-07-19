@@ -182,63 +182,51 @@ class LoginPageState extends State<LoginPage> {
   }
 
   Widget _buildPhoneCodeTF(loginManager) {
-    return Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
-              // padding: const EdgeInsets.only(right: 40.0),
-              width: Flavors.sizesInfo.screenWidth - 140.0.w,
-              child: TextFormModel(
-                '验证码',
-                loginManager.phoneCodeController,
-                TextInputType.number,
-                Icons.mail,
-                '请输入验证码',
-                maxLength: 6,
-                onlyNumber: true,
-              )),
-          _countDownTimeView(loginManager)
-        ]);
+    return Container(
+        // padding: const EdgeInsets.only(right: 40.0),
+        width: Flavors.sizesInfo.screenWidth,
+        child: TextFormModel(
+          '验证码',
+          loginManager.phoneCodeController,
+          TextInputType.number,
+          Icons.mail,
+          '请输入验证码',
+          suffixWidget: _countDownTimeView(loginManager),
+          maxLength: 6,
+          onlyNumber: true,
+        ));
   }
 
   Widget _countDownTimeView(loginManager) {
-    return Expanded(
-        child: Selector<LoginManager, int>(
+    return Selector<LoginManager, int>(
       builder: (BuildContext context, int value, Widget? child) {
         return Container(
-            padding: const EdgeInsets.only(bottom: 5.0),
-            child: value == 10
-                ? TextButton(
-                    child: Text(
-                      "发送",
-                      style: Flavors.textStyles.hintTextText,
-                    ),
-                    onPressed: () {
-                      print(
-                          "DEBUG=>sendPhoneNumText ${loginManager.phoneNumController.text}");
-                      if (loginManager.phoneNumController.text != '') {
-                        loginManager.sendOTP(
-                            loginManager.phoneNumController.text,
-                            loginManager.phoneNumberAreaCode,
-                            1);
-                      } else {
-                        showToast('请输入手机号');
+            padding: const EdgeInsets.only(right: 5.0, bottom: 5.0),
+            child: TextButton(
+                child: Text(
+                  value == TimeConfig.OTP_CODE_RESEND ? "获取验证码" : "$value s",
+                  style: Flavors.textStyles.otpText,
+                ),
+                onPressed: value == TimeConfig.OTP_CODE_RESEND
+                    ? () {
+                        print(
+                            "DEBUG=>sendPhoneNumText ${loginManager.phoneNumController.text}");
+                        if (loginManager.phoneNumController.text != '') {
+                          loginManager.sendOTP(
+                              loginManager.phoneNumController.text,
+                              loginManager.phoneNumberAreaCode,
+                              1);
+                        } else {
+                          showToast('请输入手机号');
+                        }
                       }
-                    })
-                : TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "${value} s",
-                      style: Flavors.textStyles.hintTextText,
-                    ),
-                  ));
+                    : () {}));
       },
       selector: (BuildContext context, LoginManager loginManager) {
         return loginManager.countDown;
       },
       shouldRebuild: (pre, next) => (pre != next),
-    ));
+    );
   }
 
   Widget _buildAccountTF(loginManager) {

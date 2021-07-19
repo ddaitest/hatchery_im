@@ -87,6 +87,7 @@ class ProfileEditManager extends ChangeNotifier {
 
   void refreshData() {
     _getStoredForMyProfileData();
+    notifyListeners();
   }
 
   @override
