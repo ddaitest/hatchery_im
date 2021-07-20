@@ -64,8 +64,11 @@ class ProfileEditMenuItem extends StatelessWidget {
   final String menuText;
   final String trailingText;
   final bool showForwardIcon;
+  final bool showDivider;
   ProfileEditMenuItem(this.menuText,
-      {this.trailingText = '', this.showForwardIcon = true});
+      {this.trailingText = '',
+      this.showForwardIcon = true,
+      this.showDivider = true});
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +117,7 @@ class ProfileEditMenuItem extends StatelessWidget {
                 ),
               ),
             ),
-            dividerViewCommon(),
+            showDivider ? dividerViewCommon() : Container(),
           ],
         ));
   }

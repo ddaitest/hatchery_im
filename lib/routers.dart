@@ -12,9 +12,12 @@ import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
 import 'package:hatchery_im/busniess/profile_page/friendProfile_page.dart';
 import 'package:hatchery_im/busniess/login/phone/otp_page.dart';
+import 'package:hatchery_im/common/widget/imageDetail.dart';
+import 'busniess/chat_detail/chat_detail_page.dart';
 import 'busniess/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
+import 'package:hatchery_im/api/entity.dart';
 
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -38,8 +41,10 @@ class Routers {
                 ));
       case '/profile_edit':
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
-      // case '/create_group_detail':
-      //   return MaterialPageRoute(builder: (_) => NewGroupDetailPage());
+      case '/chat_detail':
+        return MaterialPageRoute(
+            builder: (_) =>
+                ChatDetailPage(friendInfo: settings.arguments as Friends));
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       // case '/contacts_application':

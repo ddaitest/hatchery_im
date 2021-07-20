@@ -186,6 +186,19 @@ class TextStyles {
 
   final TextStyle contactsApplicationDenyText =
       TextStyle(color: ColorInfo().redColor);
+
+  final TextStyle friendProfileMainText = TextStyle(
+      fontSize: 18.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
+
+  final TextStyle friendProfileSubtitleText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().subtitleColor);
+
+  final TextStyle friendProfileBtnText = TextStyle(
+      fontSize: 15.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().mainColor);
 }
 
 class SizesInfo {

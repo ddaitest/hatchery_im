@@ -20,8 +20,8 @@ enum MessageBelongType {
 }
 
 class ChatDetailPage extends StatefulWidget {
-  final Friends friendInfo;
-  ChatDetailPage(this.friendInfo);
+  final Friends? friendInfo;
+  ChatDetailPage({this.friendInfo});
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -40,7 +40,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    manager.init(widget.friendInfo.friendId);
+    manager.init(widget.friendInfo!.friendId);
     // manager.queryFriendsHistoryMessages(widget.friendInfo.friendId, 0);
     super.initState();
   }
@@ -56,7 +56,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.friendInfo.nickName),
+      appBar:
+          ChatDetailPageAppBar.chatDetailAppBar(widget.friendInfo!.nickName),
       backgroundColor: Colors.grey[100],
       body: Column(
         children: <Widget>[
@@ -69,8 +70,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _messageInfoView() {
     return Selector<ChatDetailManager, List<Message>>(
-      builder: (BuildContext context, List<Message> value,
-          Widget? child) {
+      builder: (BuildContext context, List<Message> value, Widget? child) {
         print("DEBUG=> _messageInfoView _messageInfoView");
         return Flexible(
           child: ListView.builder(
@@ -84,7 +84,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             .compareTo(value[index].sender) ==
                         0
                     ? '${manager.myProfileData!.icon}'
-                    : '${widget.friendInfo.icon}',
+                    : '${widget.friendInfo!.icon}',
                 messageBelongType: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
@@ -225,7 +225,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
         manager.timingStartMethod();
-        manager.startVoiceRecord(widget.friendInfo.friendId);
+        manager.startVoiceRecord(widget.friendInfo!.friendId);
       },
       onLongPressEnd: (LongPressEndDetails details) {
         Vibration.vibrate(duration: 100);
