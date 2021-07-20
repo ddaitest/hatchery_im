@@ -12,7 +12,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 class FriendProfileManager extends ChangeNotifier {
-  FriendProfile? friendProfile;
+  FriendProfile? friendProfileData;
 
   /// 初始化
   init(String friendId) {
@@ -24,9 +24,9 @@ class FriendProfileManager extends ChangeNotifier {
   Future<dynamic> getFriendProfileData(String friendId) async {
     ApiResult result = await API.getFriendInfo(friendId);
     if (result.isSuccess()) {
+      friendProfileData = FriendProfile.fromJson(result.getData());
       print(
-          "DEBUG=> getFriendProfileData result.getData() ${result.getData()}");
-      friendProfile = result.getData();
+          "DEBUG=> getFriendProfileData result.getData() ${friendProfileData!.nickName}");
       notifyListeners();
     } else {
       showToast('${result.info}');

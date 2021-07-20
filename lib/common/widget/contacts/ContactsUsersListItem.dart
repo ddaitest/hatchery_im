@@ -7,6 +7,7 @@ import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 class ContactsUsersList extends StatelessWidget {
@@ -23,9 +24,11 @@ class ContactsUsersList extends StatelessWidget {
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ChatDetailPage(friendsLists![index]);
-                  }));
+                  Routers.navigateTo('/friend_profile',
+                      arg: friendsLists![index].friendId);
+                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  //   return ChatDetailPage(friendsLists![index]);
+                  // }));
                 },
                 child: Container(
                   color: Colors.white,
