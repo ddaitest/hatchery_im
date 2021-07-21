@@ -14,6 +14,7 @@ import 'package:hatchery_im/common/widget/imageDetail.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import '../edit_profile/edit_detail.dart';
 
 class FriendProfilePage extends StatefulWidget {
   final String? friendId;
@@ -39,12 +40,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarFactory.backButton('', actions: <Widget>[
-          Container(
-            padding: const EdgeInsets.only(right: 9.0),
-            child: Icon(Icons.more_vert, size: 30, color: Colors.black),
-          )
-        ]),
+        appBar: AppBarFactory.backButton(''),
         body: Container(
             padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
             child: Column(
@@ -100,34 +96,34 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return ListView(
       shrinkWrap: true,
       children: [
-        _dataCellView("设置备注", ''),
-        _dataCellView("更多信息", '', showDivider: false),
+        GestureDetector(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => FriendsProfileEditDetailPage(
+                        widget.friendId!,
+                        '设置备注',
+                        manager.friendInfo!.remarks ?? '',
+                      ))).then((value) =>
+              value ?? false ? manager.refreshData(widget.friendId!) : null),
+          child: _dataCellView("设置备注", ''),
+        ),
+        _dataCellView(
+          "更多信息",
+          '',
+        ),
+        _dataCellView("其他设置", '', showDivider: false),
       ],
     );
   }
 
   Widget _dataCellView(String title, String trailingText,
-      {bool isTap = true, bool showDivider = true}) {
-    return GestureDetector(
-      // onTap: () => isTap
-      //     ? Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (_) => ProfileEditDetailPage(
-      //           '$title',
-      //           trailingText,
-      //           '$title',
-      //           maxLength: title == '个人简介' || title == '地址' ? 60 : 20,
-      //           maxLine: title == '个人简介' || title == '地址' ? 4 : 2,
-      //           onlyNumber: title == '手机号' ? true : false,
-      //         ))).then((value) => value ? manager.refreshData() : null)
-      //     : null,
-      child: ProfileEditMenuItem(
-        title,
-        trailingText: trailingText,
-        showForwardIcon: isTap ? true : false,
-        showDivider: showDivider,
-      ),
+      {bool showDivider = true}) {
+    return ProfileEditMenuItem(
+      title,
+      trailingText: trailingText,
+      showForwardIcon: true,
+      showDivider: showDivider,
     );
   }
 

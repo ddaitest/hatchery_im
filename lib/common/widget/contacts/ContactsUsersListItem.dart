@@ -30,7 +30,8 @@ class ContactsUsersList extends StatelessWidget {
                 onTap: () {
                   Routers.navigateTo('/friend_profile',
                           arg: friendsLists![index].friendId)
-                      .then((value) => value ? manager.refreshData() : null);
+                      .then((value) =>
+                          value ?? false ? manager.refreshData() : null);
                 },
                 child: Container(
                   color: Colors.white,

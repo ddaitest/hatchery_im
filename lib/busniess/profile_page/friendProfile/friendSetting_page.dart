@@ -1,0 +1,154 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:hatchery_im/api/entity.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:hatchery_im/common/widget/app_bar.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/manager/friendProfileManager.dart';
+import 'package:hatchery_im/common/widget/aboutAvatar.dart';
+import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/widget/imageDetail.dart';
+import 'package:hatchery_im/common/widget/loading_view.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import '../edit_profile/edit_detail.dart';
+
+class FriendProfilePage extends StatefulWidget {
+  final String? friendId;
+  FriendProfilePage({this.friendId});
+  @override
+  _FriendProfilePageState createState() => _FriendProfilePageState();
+}
+
+class _FriendProfilePageState extends State<FriendProfilePage> {
+  final manager = App.manager<FriendProfileManager>();
+  @override
+  void initState() {
+    manager.init(widget.friendId!);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    manager.friendInfo = null;
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBarFactory.backButton(''),
+        body: Container(
+            padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
+            child: Column(
+              children: [
+                _topView(),
+                _listInfo(),
+                Container(height: 40.0),
+                _btnView(),
+              ],
+            )));
+  }
+
+  Widget _topView() {
+    return Selector<FriendProfileManager, Friends?>(
+      builder: (BuildContext context, Friends? value, Widget? child) {
+        print("DEBUG=> _FriendsProfileTopView 重绘了。。。。。");
+        return Container(
+          padding: const EdgeInsets.only(left: 20, bottom: 40),
+          child: Row(
+            children: [
+              netWorkAvatar(value?.icon, 40.0),
+              Container(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    value != null
+                        ? Text('昵称：${value.nickName}',
+                            style: Flavors.textStyles.friendProfileMainText)
+                        : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
+                    SizedBox(height: 10.0.h),
+                    value != null
+                        ? Text('备注：${value.remarks ?? '无'}',
+                            style: Flavors.textStyles.friendProfileSubtitleText)
+                        : LoadingView(viewWidth: 70.0.w),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      selector:
+          (BuildContext context, FriendProfileManager friendProfileManager) {
+        return friendProfileManager.friendInfo ?? null;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
+  }
+
+  Widget _listInfo() {
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        GestureDetector(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => FriendsProfileEditDetailPage(
+                        widget.friendId!,
+                        '设置备注',
+                        manager.friendInfo!.remarks ?? '',
+                      ))).then((value) =>
+              value ?? false ? manager.refreshData(widget.friendId!) : null),
+          child: _dataCellView("设置备注", ''),
+        ),
+        _dataCellView(
+          "更多信息",
+          '',
+        ),
+        _dataCellView("其他设置", '', showDivider: false),
+      ],
+    );
+  }
+
+  Widget _dataCellView(String title, String trailingText,
+      {bool showDivider = true}) {
+    return ProfileEditMenuItem(
+      title,
+      trailingText: trailingText,
+      showForwardIcon: true,
+      showDivider: showDivider,
+    );
+  }
+
+  Widget _btnView() {
+    return Container(
+      height: 70.0,
+      color: Colors.white,
+      child: TextButton(
+        onPressed: () =>
+            Routers.navigateReplace('/chat_detail', arg: manager.friendInfo),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.messenger_outline,
+                size: 23.0, color: Flavors.colorInfo.mainColor),
+            SizedBox(width: 8.0.w),
+            Text(
+              '发消息',
+              textAlign: TextAlign.center,
+              style: Flavors.textStyles.friendProfileBtnText,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -360,6 +360,26 @@ class API {
     }
   }
 
+  ///更新个人资料
+  static Future<ApiResult> setFriendRemarkData(
+    String friendId,
+    String remarks,
+  ) async {
+    Map<String, String> body = {'friendId': friendId, 'remarks': remarks};
+    init();
+    try {
+      Response response = await _dio.post("/roster/update/friend",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取单聊离线消息
   static Future<ApiResult> messageHistoryWithFriend(
       {String? friendID, int? page, int? size, int? currentMsgID}) async {

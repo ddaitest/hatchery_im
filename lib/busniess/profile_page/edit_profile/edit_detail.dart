@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/profileEditDetailManager.dart';
+import 'package:hatchery_im/manager/friendProfileManager.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 
 class ProfileEditDetailPage extends StatelessWidget {
@@ -57,6 +58,51 @@ class ProfileEditDetailPage extends StatelessWidget {
             inputFormatters: <TextInputFormatter>[
               if (onlyNumber) FilteringTextInputFormatter.digitsOnly, //只输入数字
             ],
+          ),
+        ));
+  }
+}
+
+class FriendsProfileEditDetailPage extends StatelessWidget {
+  final String friendId;
+  final String appBarText;
+  final String inputText;
+  final bool hideText;
+  final TextEditingController textEditingController = TextEditingController();
+  FriendsProfileEditDetailPage(this.friendId, this.appBarText, this.inputText,
+      {this.hideText = false});
+
+  final manager = App.manager<FriendProfileManager>();
+
+  @override
+  Widget build(BuildContext context) {
+    textEditingController.text = inputText;
+    return Scaffold(
+        appBar: AppBarFactory.backButton('$appBarText', actions: [
+          Container(
+              padding: const EdgeInsets.all(6.0),
+              child: TextButton(
+                onPressed: () => manager.setFriendRemark(
+                    friendId, textEditingController.text),
+                child: Text(
+                  '提交',
+                  style: Flavors.textStyles.newGroupNextBtnText,
+                ),
+              )),
+        ]),
+        body: Container(
+          padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+          child: TextFormField(
+            controller: textEditingController,
+            cursorColor: Flavors.colorInfo.subtitleColor,
+            maxLength: 10,
+            minLines: 1,
+            maxLines: 1,
+            obscureText: false,
+            autofocus: true,
+            style: TextStyle(
+              color: Colors.black,
+            ),
           ),
         ));
   }
