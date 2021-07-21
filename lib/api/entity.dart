@@ -10,12 +10,20 @@ class Friends {
   final String friendId;
   final String? remarks;
   final String icon;
+  final String? notes;
+  final String? phone;
+  final String? email;
+  final String? address;
   final String nickName;
   final int status;
 
   Friends(
       {required this.friendId,
       this.remarks,
+      this.notes,
+      this.phone,
+      this.email,
+      this.address,
       required this.icon,
       required this.nickName,
       required this.status});

@@ -54,7 +54,7 @@ class _ContactsState extends State<ContactsPage>
         controller: _refreshController,
         onRefresh: _onRefresh,
         child: ListView(
-          physics: const AlwaysScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           shrinkWrap: true,
           children: <Widget>[
             SearchBarView(
@@ -153,7 +153,9 @@ class _ContactsState extends State<ContactsPage>
         print("DEBUG=> _FriendsView 重绘了。。。。。");
         return Container(
           padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-          child: ContactsUsersList(value),
+          child: GestureDetector(
+            child: ContactsUsersList(value),
+          ),
         );
       },
       selector: (BuildContext context, ContactsManager contactsManager) {

@@ -11,20 +11,22 @@ class IndicatorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.only(top: 200.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CupertinoActivityIndicator(),
-            SizedBox(
-              height: 10.0.h,
-            ),
-            Container(
-              child:
-                  Text(tipsText, style: Flavors.textStyles.loginSubTitleText),
-            ),
-          ],
+        height: MediaQuery.of(context).size.height / 2,
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CupertinoActivityIndicator(),
+              SizedBox(
+                height: 10.0.h,
+              ),
+              Container(
+                child:
+                    Text(tipsText, style: Flavors.textStyles.loginSubTitleText),
+              ),
+            ],
+          ),
         ),
       ),
     );

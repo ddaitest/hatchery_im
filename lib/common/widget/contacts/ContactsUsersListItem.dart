@@ -8,27 +8,29 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsUsersList extends StatelessWidget {
   final List<Friends>? friendsLists;
   ContactsUsersList(this.friendsLists);
+  final manager = App.manager<ContactsManager>();
 
   @override
   Widget build(BuildContext context) {
     return friendsLists != null
         ? ListView.builder(
-            itemCount: friendsLists!.length,
+            itemCount: friendsLists != null ? friendsLists!.length : 8,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
                   Routers.navigateTo('/friend_profile',
-                      arg: friendsLists![index].friendId);
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  //   return ChatDetailPage(friendsLists![index]);
-                  // }));
+                          arg: friendsLists![index].friendId)
+                      .then((value) => value ? manager.refreshData() : null);
                 },
                 child: Container(
                   color: Colors.white,
@@ -67,7 +69,7 @@ class ContactsUsersList extends StatelessWidget {
                       Container(
                         color: Colors.transparent,
                         width: Flavors.sizesInfo.screenWidth - 100.0.w,
-                        child: friendsLists!.isNotEmpty
+                        child: friendsLists != null
                             ? Text(
                                 friendsLists![index].remarks != null
                                     ? friendsLists![index].remarks!

@@ -10,6 +10,10 @@ Friends _$FriendsFromJson(Map<String, dynamic> json) {
   return Friends(
     friendId: json['friendId'] as String,
     remarks: json['remarks'] as String?,
+    notes: json['notes'] as String?,
+    phone: json['phone'] as String?,
+    email: json['email'] as String?,
+    address: json['address'] as String?,
     icon: json['icon'] as String,
     nickName: json['nickName'] as String,
     status: json['status'] as int,
@@ -20,6 +24,10 @@ Map<String, dynamic> _$FriendsToJson(Friends instance) => <String, dynamic>{
       'friendId': instance.friendId,
       'remarks': instance.remarks,
       'icon': instance.icon,
+      'notes': instance.notes,
+      'phone': instance.phone,
+      'email': instance.email,
+      'address': instance.address,
       'nickName': instance.nickName,
       'status': instance.status,
     };

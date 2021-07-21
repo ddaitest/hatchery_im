@@ -31,6 +31,12 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   }
 
   @override
+  void dispose() {
+    manager.friendInfo = null;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBarFactory.backButton('', actions: <Widget>[
@@ -40,7 +46,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
           )
         ]),
         body: Container(
-            padding: const EdgeInsets.only(left: 12, top: 20, right: 12),
+            padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
             child: Column(
               children: [
                 _topView(),
@@ -52,8 +58,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   }
 
   Widget _topView() {
-    return Selector<FriendProfileManager, FriendProfile?>(
-      builder: (BuildContext context, FriendProfile? value, Widget? child) {
+    return Selector<FriendProfileManager, Friends?>(
+      builder: (BuildContext context, Friends? value, Widget? child) {
         print("DEBUG=> _FriendsProfileTopView 重绘了。。。。。");
         return Container(
           padding: const EdgeInsets.only(left: 20, bottom: 40),
@@ -67,7 +73,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     value != null
-                        ? Text('昵称：${value.nickName ?? ''}',
+                        ? Text('昵称：${value.nickName}',
                             style: Flavors.textStyles.friendProfileMainText)
                         : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
                     SizedBox(height: 10.0.h),
@@ -81,24 +87,10 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
             ],
           ),
         );
-        // return ListTile(
-        //   onTap: () => Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //           builder: (_) => ImageDetailViewPage(
-        //               image: CachedNetworkImageProvider(value!.icon!)))),
-        //   leading: netWorkAvatar(value?.icon, 60.0),
-        //   title: value != null
-        //       ? Text('昵称：${value.nickName ?? ''}')
-        //       : LoadingView(viewWidth: 100.0.w),
-        //   subtitle: value != null
-        //       ? Text('备注：${value.remarks ?? '无'}')
-        //       : LoadingView(viewWidth: 50.0.w),
-        // );
       },
       selector:
           (BuildContext context, FriendProfileManager friendProfileManager) {
-        return friendProfileManager.friendProfileData ?? null;
+        return friendProfileManager.friendInfo ?? null;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );
@@ -144,9 +136,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       height: 70.0,
       color: Colors.white,
       child: TextButton(
-        onPressed: () => Routers.navigateReplace(
-          '/chat_detail',
-        ),
+        onPressed: () =>
+            Routers.navigateReplace('/chat_detail', arg: manager.friendInfo),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
