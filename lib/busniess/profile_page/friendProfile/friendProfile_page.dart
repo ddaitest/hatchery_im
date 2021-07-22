@@ -45,15 +45,15 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
             padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
             child: Column(
               children: [
-                _topView(),
-                _listInfo(),
+                _topViewForFriend(),
+                _listInfoForFriend(),
                 Container(height: 40.0),
-                _btnView(),
+                _sendBtnView(),
               ],
             )));
   }
 
-  Widget _topView() {
+  Widget _topViewForFriend() {
     return Selector<FriendProfileManager, Friends?>(
       builder: (BuildContext context, Friends? value, Widget? child) {
         print("DEBUG=> _FriendsProfileTopView 重绘了。。。。。");
@@ -92,7 +92,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _listInfo() {
+  Widget _listInfoForFriend() {
     return ListView(
       shrinkWrap: true,
       children: [
@@ -108,11 +108,18 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               value ?? false ? manager.refreshData(widget.friendId!) : null),
           child: _dataCellView("设置备注", ''),
         ),
-        _dataCellView(
-          "更多信息",
-          '',
+        GestureDetector(
+          onTap: () =>
+              Routers.navigateTo('/friend_info_more', arg: manager.friendInfo),
+          child: _dataCellView(
+            "更多信息",
+            '',
+          ),
         ),
-        _dataCellView("其他设置", '', showDivider: false),
+        GestureDetector(
+            onTap: () => Routers.navigateTo('/friend_setting',
+                arg: manager.friendInfo!.friendId),
+            child: _dataCellView("其他设置", '', showDivider: false)),
       ],
     );
   }
@@ -127,13 +134,19 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _btnView() {
+  Widget _sendBtnView() {
     return Container(
-      height: 70.0,
-      color: Colors.white,
       child: TextButton(
         onPressed: () =>
             Routers.navigateReplace('/chat_detail', arg: manager.friendInfo),
+        style: ElevatedButton.styleFrom(
+          elevation: 0.0,
+          primary: Flavors.colorInfo.mainBackGroundColor,
+          padding: EdgeInsets.only(top: 18.0, bottom: 18.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,6 +156,36 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
             SizedBox(width: 8.0.w),
             Text(
               '发消息',
+              textAlign: TextAlign.center,
+              style: Flavors.textStyles.friendProfileBtnText,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _addFriendBtnView() {
+    return Container(
+      child: TextButton(
+        onPressed: () => null,
+        style: ElevatedButton.styleFrom(
+          elevation: 0.0,
+          primary: Flavors.colorInfo.mainBackGroundColor,
+          padding: EdgeInsets.only(top: 18.0, bottom: 18.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(Icons.messenger_outline,
+                size: 23.0, color: Flavors.colorInfo.mainColor),
+            SizedBox(width: 8.0.w),
+            Text(
+              '添加好友',
               textAlign: TextAlign.center,
               style: Flavors.textStyles.friendProfileBtnText,
             )

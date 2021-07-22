@@ -16,24 +16,22 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../edit_profile/edit_detail.dart';
 
-class FriendProfilePage extends StatefulWidget {
+class FriendSettingPage extends StatefulWidget {
   final String? friendId;
-  FriendProfilePage({this.friendId});
+  FriendSettingPage({this.friendId});
   @override
-  _FriendProfilePageState createState() => _FriendProfilePageState();
+  _FriendSettingPageState createState() => _FriendSettingPageState();
 }
 
-class _FriendProfilePageState extends State<FriendProfilePage> {
+class _FriendSettingPageState extends State<FriendSettingPage> {
   final manager = App.manager<FriendProfileManager>();
   @override
   void initState() {
-    manager.init(widget.friendId!);
     super.initState();
   }
 
   @override
   void dispose() {
-    manager.friendInfo = null;
     super.dispose();
   }
 
@@ -42,112 +40,66 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return Scaffold(
         appBar: AppBarFactory.backButton(''),
         body: Container(
-            padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
-            child: Column(
-              children: [
-                _topView(),
-                _listInfo(),
-                Container(height: 40.0),
-                _btnView(),
-              ],
-            )));
-  }
-
-  Widget _topView() {
-    return Selector<FriendProfileManager, Friends?>(
-      builder: (BuildContext context, Friends? value, Widget? child) {
-        print("DEBUG=> _FriendsProfileTopView 重绘了。。。。。");
-        return Container(
-          padding: const EdgeInsets.only(left: 20, bottom: 40),
-          child: Row(
-            children: [
-              netWorkAvatar(value?.icon, 40.0),
-              Container(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    value != null
-                        ? Text('昵称：${value.nickName}',
-                            style: Flavors.textStyles.friendProfileMainText)
-                        : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
-                    SizedBox(height: 10.0.h),
-                    value != null
-                        ? Text('备注：${value.remarks ?? '无'}',
-                            style: Flavors.textStyles.friendProfileSubtitleText)
-                        : LoadingView(viewWidth: 70.0.w),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-      selector:
-          (BuildContext context, FriendProfileManager friendProfileManager) {
-        return friendProfileManager.friendInfo ?? null;
-      },
-      shouldRebuild: (pre, next) => (pre != next),
-    );
+          padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
+          child: _listInfo(),
+        ));
   }
 
   Widget _listInfo() {
     return ListView(
       shrinkWrap: true,
       children: [
-        GestureDetector(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => FriendsProfileEditDetailPage(
-                        widget.friendId!,
-                        '设置备注',
-                        manager.friendInfo!.remarks ?? '',
-                      ))).then((value) =>
-              value ?? false ? manager.refreshData(widget.friendId!) : null),
-          child: _dataCellView("设置备注", ''),
-        ),
-        _dataCellView(
-          "更多信息",
-          '',
-        ),
-        _dataCellView("其他设置", '', showDivider: false),
+        _blockView(),
+        SizedBox(height: 40.0.h),
+        _deleteBtnView(),
       ],
     );
   }
 
-  Widget _dataCellView(String title, String trailingText,
-      {bool showDivider = true}) {
-    return ProfileEditMenuItem(
-      title,
-      trailingText: trailingText,
-      showForwardIcon: true,
-      showDivider: showDivider,
+  Widget _blockView() {
+    return Container(
+      padding: const EdgeInsets.all(12.0),
+      color: Flavors.colorInfo.mainBackGroundColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [Text('加入黑名单'), _switchView()],
+      ),
     );
   }
 
-  Widget _btnView() {
-    return Container(
-      height: 70.0,
-      color: Colors.white,
-      child: TextButton(
-        onPressed: () =>
-            Routers.navigateReplace('/chat_detail', arg: manager.friendInfo),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.messenger_outline,
-                size: 23.0, color: Flavors.colorInfo.mainColor),
-            SizedBox(width: 8.0.w),
-            Text(
-              '发消息',
-              textAlign: TextAlign.center,
-              style: Flavors.textStyles.friendProfileBtnText,
-            )
-          ],
+  Widget _switchView() {
+    return Selector<FriendProfileManager, bool>(
+        builder: (BuildContext context, bool isBlock, Widget? child) {
+          return CupertinoSwitch(
+              activeColor: Flavors.colorInfo.mainColor,
+              value: isBlock,
+              onChanged: (bool value) {
+                print("DEBUG=> CupertinoSwitch $value");
+                manager.setBlock(value);
+              });
+        },
+        selector:
+            (BuildContext context, FriendProfileManager friendProfileManager) {
+          return friendProfileManager.isBlock;
+        },
+        shouldRebuild: (pre, next) => (pre != next));
+  }
+
+  Widget _deleteBtnView() {
+    return TextButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        elevation: 0.0,
+        primary: Flavors.colorInfo.redColor,
+        padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4.0),
         ),
+      ),
+      child: Text(
+        '删除好友',
+        textAlign: TextAlign.center,
+        style: Flavors.textStyles.deleteFriendBtnText,
       ),
     );
   }

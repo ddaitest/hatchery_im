@@ -14,6 +14,7 @@ import 'package:hatchery_im/common/utils.dart';
 
 class FriendProfileManager extends ChangeNotifier {
   Friends? friendInfo;
+  bool isBlock = false;
 
   /// 初始化
   init(String friendId) {
@@ -22,6 +23,11 @@ class FriendProfileManager extends ChangeNotifier {
 
   void refreshData(String friendId) {
     getFriendProfileData(friendId);
+  }
+
+  void setBlock(bool value) {
+    isBlock = value;
+    notifyListeners();
   }
 
   Future<dynamic> getFriendProfileData(String friendId) async {

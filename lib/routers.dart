@@ -4,6 +4,7 @@ import 'package:hatchery_im/busniess/login/login_page.dart';
 import 'package:hatchery_im/busniess/login/register/register_page.dart';
 import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
 import 'package:hatchery_im/busniess/profile_page/edit_profile/profile_edit_page.dart';
+import 'package:hatchery_im/busniess/profile_page/friendProfile/friendInfoMore_page.dart';
 import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
 import 'package:hatchery_im/busniess/splash/splash.dart';
 import 'package:hatchery_im/busniess/test/TestPage.dart';
@@ -11,6 +12,7 @@ import 'package:hatchery_im/busniess/group_page/group.dart';
 import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
 import 'package:hatchery_im/busniess/profile_page/friendProfile/friendProfile_page.dart';
+import 'package:hatchery_im/busniess/profile_page/friendProfile/friendSetting_page.dart';
 import 'package:hatchery_im/busniess/login/phone/otp_page.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
 import 'busniess/chat_detail/chat_detail_page.dart';
@@ -37,10 +39,20 @@ class Routers {
       case '/friend_profile':
         return MaterialPageRoute(
             builder: (_) => FriendProfilePage(
-                  friendId: settings.arguments.toString(),
+                  friendId: settings.arguments as String,
                 ));
       case '/profile_edit':
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
+      case '/friend_info_more':
+        return MaterialPageRoute(
+            builder: (_) => FriendInfoMorePage(
+                  settings.arguments as Friends,
+                ));
+      case '/friend_setting':
+        return MaterialPageRoute(
+            builder: (_) => FriendSettingPage(
+                  friendId: settings.arguments as String,
+                ));
       case '/chat_detail':
         return MaterialPageRoute(
             builder: (_) =>

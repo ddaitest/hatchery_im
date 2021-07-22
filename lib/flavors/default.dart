@@ -199,6 +199,11 @@ class TextStyles {
       fontSize: 15.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().mainColor);
+
+  final TextStyle deleteFriendBtnText = TextStyle(
+      fontSize: 14.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {
