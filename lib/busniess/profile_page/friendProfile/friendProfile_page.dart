@@ -12,6 +12,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../edit_profile/edit_detail.dart';
@@ -40,59 +41,65 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarFactory.backButton(''),
-        body: Container(
-            padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
-            child: Column(
-              children: [
-                _topViewForFriend(),
-                _listInfoForFriend(),
-                Container(height: 40.0),
-                _sendBtnView(),
-              ],
-            )));
+        appBar: AppBarFactory.backButton(''), body: _mainContainer());
   }
 
-  Widget _topViewForFriend() {
+  Widget _mainContainer() {
     return Selector<FriendProfileManager, Friends?>(
-      builder: (BuildContext context, Friends? value, Widget? child) {
-        print("DEBUG=> _FriendsProfileTopView 重绘了。。。。。");
-        return Container(
-          padding: const EdgeInsets.only(left: 20, bottom: 40),
-          child: Row(
-            children: [
-              netWorkAvatar(value?.icon, 40.0),
-              Container(
-                padding: const EdgeInsets.only(left: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    value != null
-                        ? Text('昵称：${value.nickName}',
-                            style: Flavors.textStyles.friendProfileMainText)
-                        : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
-                    SizedBox(height: 10.0.h),
-                    value != null
-                        ? Text('备注：${value.remarks ?? '无'}',
-                            style: Flavors.textStyles.friendProfileSubtitleText)
-                        : LoadingView(viewWidth: 70.0.w),
-                  ],
+        builder: (BuildContext context, Friends? value, Widget? child) {
+          return Container(
+              padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
+              child: Column(
+                children: [
+                  _topViewForFriend(value),
+                  _listInfoForFriend(value),
+                  Container(height: 40.0),
+                  _btnContainer(value),
+                ],
+              ));
+        },
+        selector:
+            (BuildContext context, FriendProfileManager friendProfileManager) {
+          return friendProfileManager.friendInfo ?? null;
+        },
+        shouldRebuild: (pre, next) => (pre != next));
+  }
+
+  Widget _topViewForFriend(friends) {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, bottom: 40),
+      child: Row(
+        children: [
+          friends != null
+              ? netWorkAvatar(friends.icon, 40.0)
+              : CircleAvatar(
+                  backgroundImage: AssetImage('images/default_avatar.png'),
+                  maxRadius: 40.0,
                 ),
-              ),
-            ],
+          Container(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                friends != null
+                    ? Text('昵称：${friends.nickName}',
+                        style: Flavors.textStyles.friendProfileMainText)
+                    : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
+                SizedBox(height: 10.0.h),
+                friends != null
+                    ? Text('备注：${friends.remarks ?? '无'}',
+                        style: Flavors.textStyles.friendProfileSubtitleText)
+                    : LoadingView(viewWidth: 70.0.w),
+              ],
+            ),
           ),
-        );
-      },
-      selector:
-          (BuildContext context, FriendProfileManager friendProfileManager) {
-        return friendProfileManager.friendInfo ?? null;
-      },
-      shouldRebuild: (pre, next) => (pre != next),
+        ],
+      ),
     );
   }
 
-  Widget _listInfoForFriend() {
+  Widget _listInfoForFriend(friends) {
     return ListView(
       shrinkWrap: true,
       children: [
@@ -103,22 +110,21 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   builder: (_) => FriendsProfileEditDetailPage(
                         widget.friendId!,
                         '设置备注',
-                        manager.friendInfo!.remarks ?? '',
+                        friends!.remarks ?? '',
                       ))).then((value) =>
               value ?? false ? manager.refreshData(widget.friendId!) : null),
           child: _dataCellView("设置备注", ''),
         ),
         GestureDetector(
-          onTap: () =>
-              Routers.navigateTo('/friend_info_more', arg: manager.friendInfo),
+          onTap: () => Routers.navigateTo('/friend_info_more', arg: friends),
           child: _dataCellView(
             "更多信息",
             '',
           ),
         ),
         GestureDetector(
-            onTap: () => Routers.navigateTo('/friend_setting',
-                arg: manager.friendInfo!.friendId),
+            onTap: () =>
+                Routers.navigateTo('/friend_setting', arg: friends!.friendId),
             child: _dataCellView("其他设置", '', showDivider: false)),
       ],
     );
@@ -134,11 +140,23 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _sendBtnView() {
+  Widget _btnContainer(friends) {
+    if (friends != null) {
+      if (friends.status == 1) {
+        return _sendBtnView(friends);
+      } else {
+        return _addFriendBtnView();
+      }
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _sendBtnView(friends) {
     return Container(
+      width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () =>
-            Routers.navigateReplace('/chat_detail', arg: manager.friendInfo),
+        onPressed: () => Routers.navigateReplace('/chat_detail', arg: friends),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,
@@ -147,19 +165,10 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
             borderRadius: BorderRadius.circular(4.0),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.messenger_outline,
-                size: 23.0, color: Flavors.colorInfo.mainColor),
-            SizedBox(width: 8.0.w),
-            Text(
-              '发消息',
-              textAlign: TextAlign.center,
-              style: Flavors.textStyles.friendProfileBtnText,
-            )
-          ],
+        child: Text(
+          '发消息',
+          textAlign: TextAlign.center,
+          style: Flavors.textStyles.friendProfileBtnText,
         ),
       ),
     );
@@ -167,6 +176,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
 
   Widget _addFriendBtnView() {
     return Container(
+      width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
         onPressed: () => null,
         style: ElevatedButton.styleFrom(
@@ -177,19 +187,10 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
             borderRadius: BorderRadius.circular(4.0),
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.messenger_outline,
-                size: 23.0, color: Flavors.colorInfo.mainColor),
-            SizedBox(width: 8.0.w),
-            Text(
-              '添加好友',
-              textAlign: TextAlign.center,
-              style: Flavors.textStyles.friendProfileBtnText,
-            )
-          ],
+        child: Text(
+          '添加好友',
+          textAlign: TextAlign.center,
+          style: Flavors.textStyles.friendProfileBtnText,
         ),
       ),
     );
