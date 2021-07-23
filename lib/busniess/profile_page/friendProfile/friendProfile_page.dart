@@ -99,6 +99,11 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
+  // todo
+  // Widget _listContainer(friends) {
+  //   if (friends != null) {}
+  // }
+
   Widget _listInfoForFriend(friends) {
     return ListView(
       shrinkWrap: true,
