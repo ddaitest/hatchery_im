@@ -52,8 +52,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               child: Column(
                 children: [
                   _topViewForFriend(value),
-                  _listInfoForFriend(value),
-                  Container(height: 40.0),
+                  _listContainer(value),
+                  Container(height: 40.0.h),
                   _btnContainer(value),
                 ],
               ));
@@ -88,8 +88,10 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                     : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
                 SizedBox(height: 10.0.h),
                 friends != null
-                    ? Text('备注：${friends.remarks ?? '无'}',
-                        style: Flavors.textStyles.friendProfileSubtitleText)
+                    ? friends.status == 1
+                        ? Text('备注：${friends.remarks ?? '无'}',
+                            style: Flavors.textStyles.friendProfileSubtitleText)
+                        : Container()
                     : LoadingView(viewWidth: 70.0.w),
               ],
             ),
@@ -99,10 +101,17 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  // todo
-  // Widget _listContainer(friends) {
-  //   if (friends != null) {}
-  // }
+  Widget _listContainer(friends) {
+    if (friends != null) {
+      if (friends.status == 1) {
+        return _listInfoForFriend(friends);
+      } else {
+        return _listInfoForStranger(friends);
+      }
+    } else {
+      return Container();
+    }
+  }
 
   Widget _listInfoForFriend(friends) {
     return ListView(
@@ -135,12 +144,24 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
+  Widget _listInfoForStranger(friends) {
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        _dataCellView("个性签名", friends.notes ?? '无', showForwardIcon: false),
+        _dataCellView("手机号", friends.phone ?? '无', showForwardIcon: false),
+        _dataCellView("电子邮箱", friends.email ?? '无', showForwardIcon: false),
+        _dataCellView("地址", friends.address ?? '无', showForwardIcon: false),
+      ],
+    );
+  }
+
   Widget _dataCellView(String title, String trailingText,
-      {bool showDivider = true}) {
+      {bool showForwardIcon = true, bool showDivider = true}) {
     return ProfileEditMenuItem(
       title,
       trailingText: trailingText,
-      showForwardIcon: true,
+      showForwardIcon: showForwardIcon,
       showDivider: showDivider,
     );
   }
