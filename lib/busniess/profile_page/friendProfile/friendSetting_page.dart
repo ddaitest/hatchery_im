@@ -32,6 +32,7 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
 
   @override
   void dispose() {
+    manager.isBlock = false;
     super.dispose();
   }
 
@@ -75,7 +76,7 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
               value: isBlock,
               onChanged: (bool value) {
                 print("DEBUG=> CupertinoSwitch $value");
-                manager.setBlock(value);
+                manager.setBlock(value, widget.friendId!);
               });
         },
         selector:
@@ -87,7 +88,7 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
 
   Widget _deleteBtnView() {
     return TextButton(
-      onPressed: () {},
+      onPressed: () => manager.deleteFriend(widget.friendId!),
       style: ElevatedButton.styleFrom(
         elevation: 0.0,
         primary: Flavors.colorInfo.redColor,

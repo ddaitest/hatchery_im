@@ -25,9 +25,13 @@ class FriendProfileManager extends ChangeNotifier {
     getFriendProfileData(friendId);
   }
 
-  void setBlock(bool value) {
+  void setBlock(bool value, String friendId) {
+    if (value) {
+      blockFriend(friendId);
+    } else {
+      delBlockFriend(friendId);
+    }
     isBlock = value;
-    notifyListeners();
   }
 
   Future<dynamic> getFriendProfileData(String friendId) async {
@@ -49,6 +53,44 @@ class FriendProfileManager extends ChangeNotifier {
       Future.delayed(Duration(milliseconds: 200), () {
         Navigator.of(App.navState.currentContext!).pop(true);
       });
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
+  Future<dynamic> deleteFriend(String friendId) async {
+    List<String> friendList = [];
+    friendList.add(friendId);
+    ApiResult result = await API.deleteFriend(friendList);
+    if (result.isSuccess()) {
+      showToast('好友已删除');
+      Future.delayed(Duration(milliseconds: 200), () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+      });
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
+  Future<dynamic> blockFriend(String friendId) async {
+    List<String> friendList = [];
+    friendList.add(friendId);
+    ApiResult result = await API.blockFriend(friendList);
+    if (result.isSuccess()) {
+      showToast('好友已拉黑');
+      notifyListeners();
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
+  Future<dynamic> delBlockFriend(String friendId) async {
+    List<String> friendList = [];
+    friendList.add(friendId);
+    ApiResult result = await API.delBlockFriend(friendList);
+    if (result.isSuccess()) {
+      showToast('好友已拉黑');
+      notifyListeners();
     } else {
       showToast('${result.info}');
     }

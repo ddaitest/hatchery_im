@@ -429,7 +429,41 @@ class API {
     Map<String, List> body = {"userIdList": friendList};
     init();
     try {
-      Response response = await _dio.post("/users/update",
+      Response response = await _dio.post("/roster/delete/friend",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///拉黑好友
+  static Future<ApiResult> blockFriend(List<String> friendList) async {
+    Map<String, List> body = {"blackUserIds": friendList};
+    init();
+    try {
+      Response response = await _dio.post("/roster/black_list/add",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///解除拉黑好友
+  static Future<ApiResult> delBlockFriend(List<String> friendList) async {
+    Map<String, List> body = {"blackUserIds": friendList};
+    init();
+    try {
+      Response response = await _dio.post("/roster/black_list/del",
           data: json.encode(body),
           options: Options(
             headers: {"BEE_TOKEN": _token},
