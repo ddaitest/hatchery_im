@@ -10,8 +10,9 @@ class ProfileMenuItem extends StatelessWidget {
   final String menuText;
   final String trailingText;
   final GestureTapCallback? onTap;
+  final bool showDivider;
   ProfileMenuItem(this.leadingImagePath, this.menuText,
-      {this.trailingText = '', this.onTap});
+      {this.trailingText = '', this.onTap, this.showDivider = true});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class ProfileMenuItem extends StatelessWidget {
               ),
               onTap: onTap,
             ),
-            dividerViewCommon(),
+            showDivider ? dividerViewCommon() : Container(),
           ],
         ));
   }

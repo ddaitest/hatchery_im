@@ -32,6 +32,24 @@ Map<String, dynamic> _$FriendsToJson(Friends instance) => <String, dynamic>{
       'status': instance.status,
     };
 
+BlockList _$BlockListFromJson(Map<String, dynamic> json) {
+  return BlockList(
+    userID: json['userID'] as String,
+    loginName: json['loginName'] as String?,
+    nickName: json['nickName'] as String?,
+    icon: json['icon'] as String?,
+    notes: json['notes'] as String?,
+  );
+}
+
+Map<String, dynamic> _$BlockListToJson(BlockList instance) => <String, dynamic>{
+      'userID': instance.userID,
+      'loginName': instance.loginName,
+      'nickName': instance.nickName,
+      'icon': instance.icon,
+      'notes': instance.notes,
+    };
+
 FriendsApplicationInfo _$FriendsApplicationInfoFromJson(
     Map<String, dynamic> json) {
   return FriendsApplicationInfo(

@@ -204,6 +204,8 @@ class TextStyles {
       fontSize: 14.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().mainTextColor);
+
+  final TextStyle blockListDelBtnText = TextStyle(color: ColorInfo().redColor);
 }
 
 class SizesInfo {

@@ -475,6 +475,26 @@ class API {
     }
   }
 
+  ///来黑列表
+  static Future<ApiResult> getBlockList(int size, int page) async {
+    Map<String, int> queryParam = {
+      "size": size,
+      "page": page,
+    };
+    init();
+    try {
+      Response response = await _dio.get("/roster/black_list/list",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取群聊离线消息
   static Future<ApiResult> getGroupHistory(
       {String? groupID, int? page, int? size, int? currentMsgID}) async {

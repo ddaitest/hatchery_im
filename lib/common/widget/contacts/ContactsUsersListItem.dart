@@ -10,7 +10,11 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
+import 'package:cool_alert/cool_alert.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsUsersList extends StatelessWidget {
@@ -243,5 +247,75 @@ class NewContactsUsersList extends StatelessWidget {
     //   SlideActionInfo('忽略', Icons.alarm_off, Flavors.colorInfo.mainColor,
     //       onTap: ignoreBtnTap),
     // );
+  }
+}
+
+class BlockListItem extends StatelessWidget {
+  final List<BlockList>? blockContactsList;
+  BlockListItem(this.blockContactsList);
+  final manager = App.manager<BlockListManager>();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: blockContactsList != null ? blockContactsList!.length : 8,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          color: Flavors.colorInfo.mainBackGroundColor,
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: ListTile(
+            dense: true,
+            leading: CachedNetworkImage(
+                imageUrl: blockContactsList![index].icon!,
+                placeholder: (context, url) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 20,
+                  );
+                }),
+            title: blockContactsList != null
+                ? Container(
+                    child: Text(blockContactsList![index].nickName!,
+                        style: Flavors.textStyles.searchContactsNameText,
+                        softWrap: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  )
+                : LoadingView(),
+            trailing: blockContactsList != null
+                ? TextButton(
+                    onPressed: () => _blockConfirm(index),
+                    child: Text('解除拉黑',
+                        style: Flavors.textStyles.blockListDelBtnText),
+                  )
+                : Container(),
+          ),
+        );
+      },
+    );
+  }
+
+  _blockConfirm(int index) {
+    return CoolAlert.show(
+      context: App.navState.currentContext!,
+      type: CoolAlertType.confirm,
+      cancelBtnText: '取消',
+      confirmBtnText: '确认',
+      confirmBtnColor: Flavors.colorInfo.mainColor,
+      onConfirmBtnTap: () =>
+          manager.delBlockFriend(blockContactsList![index].userID),
+      title: '确认解除拉黑?',
+      text: "解除拉黑后可以收到对方的消息",
+    );
   }
 }

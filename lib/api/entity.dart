@@ -35,6 +35,27 @@ class Friends {
 }
 
 @JsonSerializable()
+class BlockList {
+  final String userID;
+  final String? loginName;
+  final String? nickName;
+  final String? icon;
+  final String? notes;
+
+  BlockList(
+      {required this.userID,
+      this.loginName,
+      this.nickName,
+      this.icon,
+      this.notes});
+
+  factory BlockList.fromJson(Map<String, dynamic> json) =>
+      _$BlockListFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BlockListToJson(this);
+}
+
+@JsonSerializable()
 class FriendsApplicationInfo {
   final String friendId;
   final String? remarks;

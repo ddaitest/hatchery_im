@@ -57,6 +57,7 @@ dependencies:
   intl_phone_field: ^2.0.1
   hive: ^2.0.4
   hive_flutter: ^1.1.0
+  cool_alert: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.

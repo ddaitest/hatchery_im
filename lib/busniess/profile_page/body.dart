@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'info.dart';
+import 'package:hatchery_im/routers.dart';
 import '../../common/widget/profile/profile_menu_item.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -26,7 +27,12 @@ class ProfileBody extends StatelessWidget {
                 myProfileManager.cacheSize != "")
               myProfileManager.deleteCacheData();
           }),
-          ProfileMenuItem('images/setting.png', "关于"),
+          ProfileMenuItem(
+            'images/block.png',
+            "黑名单列表",
+            onTap: () => Routers.navigateTo('/block_list'),
+          ),
+          ProfileMenuItem('images/setting.png', "关于", showDivider: false),
           SizedBox(height: 20.0.h),
           _logOutBtnView(),
         ],

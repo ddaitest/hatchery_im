@@ -13,6 +13,7 @@ import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
 import 'package:hatchery_im/busniess/profile_page/friendProfile/friendProfile_page.dart';
 import 'package:hatchery_im/busniess/profile_page/friendProfile/friendSetting_page.dart';
+import 'package:hatchery_im/busniess/block/blockList.dart';
 import 'package:hatchery_im/busniess/login/phone/otp_page.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
 import 'busniess/chat_detail/chat_detail_page.dart';
@@ -53,6 +54,8 @@ class Routers {
             builder: (_) => FriendSettingPage(
                   friendId: settings.arguments as String,
                 ));
+      case '/block_list':
+        return MaterialPageRoute(builder: (_) => BlockListPage());
       case '/chat_detail':
         return MaterialPageRoute(
             builder: (_) =>
