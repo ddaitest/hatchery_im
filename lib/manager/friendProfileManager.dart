@@ -14,6 +14,8 @@ import 'package:hatchery_im/common/utils.dart';
 
 class FriendProfileManager extends ChangeNotifier {
   Friends? friendInfo;
+  //拉黑列表
+  List<BlockList>? blockContactsList;
   bool isBlock = false;
 
   /// 初始化
@@ -82,6 +84,19 @@ class FriendProfileManager extends ChangeNotifier {
     } else {
       showToast('${result.info}');
     }
+  }
+
+  _queryBlockListRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getBlockList(size, current).then((value) {
+      if (value.isSuccess()) {
+        blockContactsList =
+            value.getDataList((m) => BlockList.fromJson(m), type: 1);
+        notifyListeners();
+      }
+    });
   }
 
   @override

@@ -15,7 +15,7 @@ import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
 
 class BlockListManager extends ChangeNotifier {
-  //联系人列表 数据
+  //拉黑列表
   List<BlockList>? blockContactsList;
 
   BlockListManager() {
@@ -32,9 +32,11 @@ class BlockListManager extends ChangeNotifier {
     int current = 0,
   }) async {
     API.getBlockList(size, current).then((value) {
+      print("DEBUG=> $value");
       if (value.isSuccess()) {
         blockContactsList =
             value.getDataList((m) => BlockList.fromJson(m), type: 1);
+
         notifyListeners();
       }
     });

@@ -308,7 +308,8 @@ class BlockListItem extends StatelessWidget {
   _blockConfirm(int index) {
     return CoolAlert.show(
       context: App.navState.currentContext!,
-      type: CoolAlertType.confirm,
+      type: CoolAlertType.info,
+      showCancelBtn: true,
       cancelBtnText: '取消',
       confirmBtnText: '确认',
       confirmBtnColor: Flavors.colorInfo.mainColor,
