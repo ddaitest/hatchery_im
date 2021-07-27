@@ -121,7 +121,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       children: [
         GestureDetector(
           onTap: () => Navigator.push(
-              context,
+              App.navState.currentContext!,
               MaterialPageRoute(
                   builder: (_) => FriendsProfileEditDetailPage(
                         widget.friendId!,

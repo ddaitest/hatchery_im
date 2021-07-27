@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/busniess/login/login_page.dart';
@@ -52,7 +53,7 @@ class Routers {
       case '/friend_setting':
         return MaterialPageRoute(
             builder: (_) => FriendSettingPage(
-                  friendId: settings.arguments as String,
+                  friendId: settings.arguments.toString(),
                 ));
       case '/block_list':
         return MaterialPageRoute(builder: (_) => BlockListPage());

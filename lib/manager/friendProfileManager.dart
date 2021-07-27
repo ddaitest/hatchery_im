@@ -51,8 +51,7 @@ class FriendProfileManager extends ChangeNotifier {
     if (value) {
       blockFriend(friendId);
     } else {
-      // todo
-      // delBlockFriend(friendId);
+      delBlockFriend(friendId);
     }
     isBlock = value;
   }
@@ -101,6 +100,18 @@ class FriendProfileManager extends ChangeNotifier {
     ApiResult result = await API.blockFriend(friendList);
     if (result.isSuccess()) {
       showToast('好友已拉黑');
+      notifyListeners();
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
+  Future<dynamic> delBlockFriend(String userID) async {
+    List<String> blackUserIds = [];
+    blackUserIds.add(userID);
+    ApiResult result = await API.delBlockFriend(blackUserIds);
+    if (result.isSuccess()) {
+      showToast('已移除拉黑');
       notifyListeners();
     } else {
       showToast('${result.info}');
