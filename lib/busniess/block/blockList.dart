@@ -7,8 +7,24 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
-class BlockListPage extends StatelessWidget {
+class BlockListPage extends StatefulWidget {
+  @override
+  _BlockListPageState createState() => _BlockListPageState();
+}
+
+class _BlockListPageState extends State<BlockListPage> {
   final manager = App.manager<BlockListManager>();
+  @override
+  void initState() {
+    manager.init();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    manager.blockContactsList = null;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

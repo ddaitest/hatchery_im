@@ -205,6 +205,9 @@ class TextStyles {
       fontWeight: FontWeight.bold,
       color: ColorInfo().mainTextColor);
 
+  final TextStyle friendProfileBlockWarnText =
+      TextStyle(color: ColorInfo().redColor);
+
   final TextStyle blockListDelBtnText = TextStyle(color: ColorInfo().redColor);
 }
 

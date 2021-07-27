@@ -20,17 +20,38 @@ class FriendProfileManager extends ChangeNotifier {
 
   /// 初始化
   init(String friendId) {
-    getFriendProfileData(friendId);
+    _initMethod(friendId);
+  }
+
+  void _initMethod(String friendId) {
+    queryBlockListRes().then((value) {
+      if (value != null) {
+        print("111111111111111111111");
+        value ??
+            [].forEach((element) {
+              print("2222222222222222222");
+              if (friendId == element.userID) {
+                print("3333333333333333333");
+                isBlock = true;
+              }
+            });
+        print("##################");
+        getFriendProfileData(friendId);
+      } else {
+        getFriendProfileData(friendId);
+      }
+    });
   }
 
   void refreshData(String friendId) {
-    getFriendProfileData(friendId);
+    _initMethod(friendId);
   }
 
   void setBlock(bool value, String friendId) {
     if (value) {
       blockFriend(friendId);
     } else {
+      // todo
       // delBlockFriend(friendId);
     }
     isBlock = value;
@@ -86,7 +107,7 @@ class FriendProfileManager extends ChangeNotifier {
     }
   }
 
-  _queryBlockListRes({
+  Future<dynamic> queryBlockListRes({
     int size = 999,
     int current = 0,
   }) async {
@@ -94,7 +115,9 @@ class FriendProfileManager extends ChangeNotifier {
       if (value.isSuccess()) {
         blockContactsList =
             value.getDataList((m) => BlockList.fromJson(m), type: 1);
-        notifyListeners();
+        return blockContactsList;
+      } else {
+        return false;
       }
     });
   }

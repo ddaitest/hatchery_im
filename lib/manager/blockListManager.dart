@@ -18,10 +18,6 @@ class BlockListManager extends ChangeNotifier {
   //拉黑列表
   List<BlockList>? blockContactsList;
 
-  BlockListManager() {
-    init();
-  }
-
   /// 初始化
   init() {
     _queryBlockListRes();

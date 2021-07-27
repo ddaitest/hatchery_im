@@ -32,7 +32,6 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
 
   @override
   void dispose() {
-    manager.isBlock = false;
     super.dispose();
   }
 

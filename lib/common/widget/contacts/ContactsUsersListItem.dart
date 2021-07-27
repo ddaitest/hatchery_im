@@ -313,8 +313,11 @@ class BlockListItem extends StatelessWidget {
       cancelBtnText: '取消',
       confirmBtnText: '确认',
       confirmBtnColor: Flavors.colorInfo.mainColor,
-      onConfirmBtnTap: () =>
-          manager.delBlockFriend(blockContactsList![index].userID),
+      onConfirmBtnTap: () {
+        manager.delBlockFriend(blockContactsList![index].userID);
+        Navigator.of(App.navState.currentContext!).pop(true);
+        manager.refreshData();
+      },
       title: '确认解除拉黑?',
       text: "解除拉黑后可以收到对方的消息",
     );

@@ -35,6 +35,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   @override
   void dispose() {
     manager.friendInfo = null;
+    manager.isBlock = false;
     super.dispose();
   }
 
@@ -55,6 +56,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   _listContainer(value),
                   Container(height: 40.0.h),
                   _btnContainer(value),
+                  manager.isBlock ? _blockWarnTextContainer() : Container()
                 ],
               ));
         },
@@ -138,7 +140,10 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         ),
         GestureDetector(
             onTap: () =>
-                Routers.navigateTo('/friend_setting', arg: friends!.friendId),
+                Routers.navigateTo('/friend_setting', arg: friends!.friendId)
+                    .then((value) => value ?? false
+                        ? manager.refreshData(widget.friendId!)
+                        : null),
             child: _dataCellView("其他设置", '', showDivider: false)),
       ],
     );
@@ -176,6 +181,16 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     } else {
       return Container();
     }
+  }
+
+  Widget _blockWarnTextContainer() {
+    return Center(
+      child: Container(
+        padding: const EdgeInsets.only(top: 30.0),
+        child: Text('已添加到黑名单，你将不再收到对方的消息',
+            style: Flavors.textStyles.friendProfileBlockWarnText),
+      ),
+    );
   }
 
   Widget _sendBtnView(friends) {
