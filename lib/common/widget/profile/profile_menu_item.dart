@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/manager/myProfileManager.dart';
-import 'package:hatchery_im/common/AppContext.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final String leadingImagePath;

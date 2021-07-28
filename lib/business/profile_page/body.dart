@@ -32,7 +32,12 @@ class ProfileBody extends StatelessWidget {
             "黑名单列表",
             onTap: () => Routers.navigateTo('/block_list'),
           ),
-          ProfileMenuItem('images/setting.png', "关于", showDivider: false),
+          ProfileMenuItem(
+            'images/setting.png',
+            "关于",
+            showDivider: false,
+            onTap: () => Routers.navigateTo('/about'),
+          ),
           SizedBox(height: 20.0.h),
           _logOutBtnView(),
         ],

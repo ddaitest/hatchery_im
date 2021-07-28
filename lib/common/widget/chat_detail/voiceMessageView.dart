@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
+import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/material.dart';

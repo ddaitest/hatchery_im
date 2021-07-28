@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:hatchery_im/busniess/test/Model.dart';
+import 'package:hatchery_im/business/test/Model.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter/material.dart';

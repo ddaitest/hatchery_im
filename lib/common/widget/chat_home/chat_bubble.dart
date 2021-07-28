@@ -1,5 +1,4 @@
-import 'dart:async';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
+import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';

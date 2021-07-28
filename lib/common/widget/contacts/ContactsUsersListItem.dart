@@ -1,5 +1,5 @@
 import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
+import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,9 +13,6 @@ import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:cool_alert/cool_alert.dart';
-import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/common/widget/loading_view.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsUsersList extends StatelessWidget {
   final List<Friends>? friendsLists;

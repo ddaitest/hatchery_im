@@ -1,22 +1,11 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hatchery_im/common/AppContext.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/manager/registerManager.dart';
-import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
-import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
-import 'package:image_crop/image_crop.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class OTPPage extends StatelessWidget {

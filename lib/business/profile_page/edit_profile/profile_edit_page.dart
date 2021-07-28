@@ -13,7 +13,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
-import 'package:hatchery_im/busniess/profile_page/edit_profile/edit_detail.dart';
+import 'package:hatchery_im/business/profile_page/edit_profile/edit_detail.dart';
 
 class ProfileEditPage extends StatefulWidget {
   @override
