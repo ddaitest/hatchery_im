@@ -15,7 +15,7 @@ class AboutPage extends StatelessWidget {
     String wechatNumber = "86161190";
     String homePageUrl = "http://chenings.com";
     return Scaffold(
-      appBar: AppBarFactory.getCommon("关于与帮助"),
+      appBar: AppBarFactory.backButton("关于与帮助"),
       body: Stack(
         children: [
           Container(
