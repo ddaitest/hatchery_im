@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/busniess/models/chat_users.dart';
+import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
-import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 
 class ChatPage extends StatefulWidget {

@@ -13,9 +13,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
-import 'package:image_crop/image_crop.dart';
+import 'package:hatchery_im/business/login/register/register_page_detail.dart';
 
 class RegisterPage extends StatefulWidget {
   @override

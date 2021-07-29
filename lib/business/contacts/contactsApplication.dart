@@ -2,7 +2,7 @@ import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/busniess/models/chat_users.dart';
+import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
 import 'package:hatchery_im/common/widget/groups/groupListItem.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';

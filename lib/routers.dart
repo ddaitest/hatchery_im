@@ -1,24 +1,20 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/busniess/login/login_page.dart';
-import 'package:hatchery_im/busniess/login/register/register_page.dart';
-import 'package:hatchery_im/busniess/login/register/register_page_detail.dart';
-import 'package:hatchery_im/busniess/profile_page/edit_profile/profile_edit_page.dart';
-import 'package:hatchery_im/busniess/profile_page/friendProfile/friendInfoMore_page.dart';
-import 'package:hatchery_im/busniess/group_page/createNewGroupDetail.dart';
-import 'package:hatchery_im/busniess/splash/splash.dart';
-import 'package:hatchery_im/busniess/test/TestPage.dart';
-import 'package:hatchery_im/busniess/group_page/group.dart';
-import 'package:hatchery_im/busniess/contacts/searchNewContacts.dart';
-import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
-import 'package:hatchery_im/busniess/profile_page/friendProfile/friendProfile_page.dart';
-import 'package:hatchery_im/busniess/profile_page/friendProfile/friendSetting_page.dart';
-import 'package:hatchery_im/busniess/block/blockList.dart';
-import 'package:hatchery_im/busniess/login/phone/otp_page.dart';
-import 'package:hatchery_im/common/widget/imageDetail.dart';
-import 'busniess/chat_detail/chat_detail_page.dart';
-import 'busniess/main_tab.dart';
+import 'package:hatchery_im/business/login/login_page.dart';
+import 'package:hatchery_im/business/login/register/register_page.dart';
+import 'package:hatchery_im/business/profile_page/edit_profile/profile_edit_page.dart';
+import 'package:hatchery_im/business/profile_page/friendProfile/friendInfoMore_page.dart';
+import 'package:hatchery_im/business/splash/splash.dart';
+import 'package:hatchery_im/business/test/TestPage.dart';
+import 'package:hatchery_im/business/group_page/group.dart';
+import 'package:hatchery_im/business/contacts/searchNewContacts.dart';
+import 'package:hatchery_im/business/profile_page/friendProfile/friendProfile_page.dart';
+import 'package:hatchery_im/business/profile_page/friendProfile/friendSetting_page.dart';
+import 'package:hatchery_im/business/block/blockList.dart';
+import 'package:hatchery_im/business/login/phone/otp_page.dart';
+import 'package:hatchery_im/business/about/about.dart';
+import 'business/chat_detail/chat_detail_page.dart';
+import 'business/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -63,6 +59,8 @@ class Routers {
                 ChatDetailPage(friendInfo: settings.arguments as Friends));
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
+      case '/about':
+        return MaterialPageRoute(builder: (_) => AboutPage());
       // case '/contacts_application':
       //   return MaterialPageRoute(builder: (_) => ContactsApplicationPage());
       case '/test':

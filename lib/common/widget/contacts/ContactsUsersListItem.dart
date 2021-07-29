@@ -1,5 +1,5 @@
 import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
+import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

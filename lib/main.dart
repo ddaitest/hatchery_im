@@ -15,7 +15,6 @@ import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/contactsApplicationManager.dart';
 import 'package:hatchery_im/manager/searchNewContactsManager.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
-import 'package:hatchery_im/manager/newGroupsManager.dart';
 import 'package:hatchery_im/manager/myProfileManager.dart';
 import 'package:hatchery_im/manager/friendProfileManager.dart';
 import 'package:hatchery_im/manager/profileEditManager.dart';

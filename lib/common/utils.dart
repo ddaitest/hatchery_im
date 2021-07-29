@@ -6,9 +6,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:hatchery_im/common/widget/upgrade_view.dart';
 import 'package:hatchery_im/config.dart';
+
+showUpgrade({int delayedSecond = 0}) {
+  Future.delayed(Duration(seconds: delayedSecond), () {
+    showDialogFunction();
+  });
+}
 
 void showToast(String title,
     {Toast toastTime = Toast.LENGTH_SHORT,
@@ -21,6 +29,14 @@ void showToast(String title,
       backgroundColor: Colors.grey[200],
       textColor: Flavors.colorInfo.diver,
       fontSize: 15.0);
+}
+
+launchUrl(String url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
 
 Future<void> exitApp() async {

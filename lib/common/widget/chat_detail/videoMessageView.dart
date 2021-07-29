@@ -1,11 +1,7 @@
-import 'dart:async';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/common/utils.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:video_player/video_player.dart';
 
