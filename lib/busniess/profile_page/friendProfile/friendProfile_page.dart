@@ -41,8 +41,15 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarFactory.backButton(''), body: _mainContainer());
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+            appBar: AppBarFactory.backButton(''), body: _mainContainer()));
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.of(App.navState.currentContext!).pop(true);
+    return true;
   }
 
   Widget _mainContainer() {

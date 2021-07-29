@@ -15,6 +15,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/busniess/contacts/contactsApplication.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -153,9 +154,14 @@ class _ContactsState extends State<ContactsPage>
         print("DEBUG=> _FriendsView 重绘了。。。。。");
         return Container(
           padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-          child: GestureDetector(
-            child: ContactsUsersList(value),
-          ),
+          child: value != null
+              ? value.length != 0
+                  ? ContactsUsersList(value)
+                  : IndicatorView(
+                      tipsText: '没有联系人',
+                      showLoadingIcon: false,
+                    )
+              : IndicatorView(),
         );
       },
       selector: (BuildContext context, ContactsManager contactsManager) {

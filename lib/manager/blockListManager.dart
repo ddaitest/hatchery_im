@@ -44,7 +44,6 @@ class BlockListManager extends ChangeNotifier {
     ApiResult result = await API.delBlockFriend(blackUserIds);
     if (result.isSuccess()) {
       showToast('好友已拉黑');
-      notifyListeners();
     } else {
       showToast('${result.info}');
     }

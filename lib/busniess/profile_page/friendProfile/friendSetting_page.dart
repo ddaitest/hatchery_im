@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/friendProfileManager.dart';
-import 'package:hatchery_im/common/widget/aboutAvatar.dart';
-import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/common/widget/imageDetail.dart';
-import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import '../edit_profile/edit_detail.dart';
 
 class FriendSettingPage extends StatefulWidget {
   final String? friendId;
@@ -37,12 +29,19 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBarFactory.backButton(''),
-        body: Container(
-          padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
-          child: _listInfo(),
-        ));
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+            appBar: AppBarFactory.backButton(''),
+            body: Container(
+              padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
+              child: _listInfo(),
+            )));
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.of(App.navState.currentContext!).pop(true);
+    return true;
   }
 
   Widget _listInfo() {
@@ -87,7 +86,7 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
 
   Widget _deleteBtnView() {
     return TextButton(
-      onPressed: () => manager.deleteFriend(widget.friendId!),
+      onPressed: () => _deleteConfirmDialog(widget.friendId!),
       style: ElevatedButton.styleFrom(
         elevation: 0.0,
         primary: Flavors.colorInfo.redColor,
@@ -101,6 +100,23 @@ class _FriendSettingPageState extends State<FriendSettingPage> {
         textAlign: TextAlign.center,
         style: Flavors.textStyles.deleteFriendBtnText,
       ),
+    );
+  }
+
+  _deleteConfirmDialog(String friendId) {
+    return CoolAlert.show(
+      context: App.navState.currentContext!,
+      type: CoolAlertType.info,
+      showCancelBtn: true,
+      cancelBtnText: '取消',
+      confirmBtnText: '确认',
+      confirmBtnColor: Flavors.colorInfo.mainColor,
+      onConfirmBtnTap: () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+        manager.deleteFriend(friendId);
+      },
+      title: '确认删除好友?',
+      text: "删除好友后将从联系人中移除",
     );
   }
 }

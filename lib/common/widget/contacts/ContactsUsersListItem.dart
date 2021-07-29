@@ -13,9 +13,6 @@ import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:cool_alert/cool_alert.dart';
-import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/common/widget/loading_view.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ContactsUsersList extends StatelessWidget {
   final List<Friends>? friendsLists;
@@ -294,8 +291,8 @@ class BlockListItem extends StatelessWidget {
                 : LoadingView(),
             trailing: blockContactsList != null
                 ? TextButton(
-                    onPressed: () => _blockConfirm(index),
-                    child: Text('解除拉黑',
+                    onPressed: () => _blockConfirmDialog(index),
+                    child: Text('移出黑名单',
                         style: Flavors.textStyles.blockListDelBtnText),
                   )
                 : Container(),
@@ -305,7 +302,7 @@ class BlockListItem extends StatelessWidget {
     );
   }
 
-  _blockConfirm(int index) {
+  _blockConfirmDialog(int index) {
     return CoolAlert.show(
       context: App.navState.currentContext!,
       type: CoolAlertType.info,
@@ -314,12 +311,13 @@ class BlockListItem extends StatelessWidget {
       confirmBtnText: '确认',
       confirmBtnColor: Flavors.colorInfo.mainColor,
       onConfirmBtnTap: () {
-        manager.delBlockFriend(blockContactsList![index].userID);
         Navigator.of(App.navState.currentContext!).pop(true);
-        manager.refreshData();
+        manager.delBlockFriend(blockContactsList![index].userID).then((value) {
+          manager.refreshData();
+        });
       },
-      title: '确认解除拉黑?',
-      text: "解除拉黑后可以收到对方的消息",
+      title: '确认移出黑名单?',
+      text: "移出黑名单后可以收到对方的消息",
     );
   }
 }

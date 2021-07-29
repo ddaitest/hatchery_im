@@ -111,7 +111,7 @@ class FriendProfileManager extends ChangeNotifier {
     blackUserIds.add(userID);
     ApiResult result = await API.delBlockFriend(blackUserIds);
     if (result.isSuccess()) {
-      showToast('已移除拉黑');
+      showToast('已移除黑名单');
       notifyListeners();
     } else {
       showToast('${result.info}');
