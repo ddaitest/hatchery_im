@@ -112,7 +112,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
               _dataCellView("昵称", value.nickName ?? ''),
               _dataCellView("个人简介", value.notes ?? '无'),
               _dataCellView("手机号", value.phone ?? '无',
-                  isTap: value.phone != '' ? false : true),
+                  isTap: value.phone != null ? false : true),
               _dataCellView("电子邮箱", value.email ?? '无'),
               _dataCellView("地址", value.address ?? '无'),
             ],

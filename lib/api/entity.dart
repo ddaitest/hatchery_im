@@ -267,10 +267,11 @@ class SearchNewContactsInfo {
   String loginName = '';
   String nickName = '';
   String icon = '';
-  var notes;
+  bool isfriend;
+  String? notes;
 
-  SearchNewContactsInfo(
-      this.userID, this.loginName, this.nickName, this.icon, this.notes);
+  SearchNewContactsInfo(this.userID, this.loginName, this.nickName, this.icon,
+      this.isfriend, this.notes);
 
   factory SearchNewContactsInfo.fromJson(Map<String, dynamic> json) =>
       _$SearchNewContactsInfoFromJson(json);

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 
 class SearchBarView extends StatelessWidget {
   final String searchHintText;
@@ -29,16 +30,18 @@ class SearchBarView extends StatelessWidget {
           autofocus: isAutofocus,
           decoration: InputDecoration(
             hintText: searchHintText,
-            hintStyle: TextStyle(color: Colors.grey.shade400),
+            hintStyle:
+                TextStyle(color: Flavors.colorInfo.lightGrep, fontSize: 14.0),
             prefixIcon: Icon(
               Icons.search,
-              color: Colors.grey.shade400,
+              color: Flavors.colorInfo.lightGrep,
               size: 20,
             ),
             suffixIcon: showPrefixIcon
                 ? IconButton(
                     onPressed: () => textEditingController!.clear(),
-                    icon: Icon(Icons.cancel_outlined, color: Colors.grey),
+                    icon: Icon(Icons.cancel_outlined,
+                        size: 20.0, color: Flavors.colorInfo.lightGrep),
                   )
                 : null,
             filled: true,

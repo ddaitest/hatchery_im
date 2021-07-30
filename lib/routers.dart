@@ -7,7 +7,7 @@ import 'package:hatchery_im/business/profile_page/friendProfile/friendInfoMore_p
 import 'package:hatchery_im/business/splash/splash.dart';
 import 'package:hatchery_im/business/test/TestPage.dart';
 import 'package:hatchery_im/business/group_page/group.dart';
-import 'package:hatchery_im/business/contacts/searchNewContacts.dart';
+import 'package:hatchery_im/business/search/searchNewContacts.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendProfile_page.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendSetting_page.dart';
 import 'package:hatchery_im/business/block/blockList.dart';

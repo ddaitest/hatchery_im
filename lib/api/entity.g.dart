@@ -249,7 +249,8 @@ SearchNewContactsInfo _$SearchNewContactsInfoFromJson(
     json['loginName'] as String,
     json['nickName'] as String,
     json['icon'] as String,
-    json['notes'],
+    json['isfriend'] as bool,
+    json['notes'] as String?,
   );
 }
 
@@ -260,6 +261,7 @@ Map<String, dynamic> _$SearchNewContactsInfoToJson(
       'loginName': instance.loginName,
       'nickName': instance.nickName,
       'icon': instance.icon,
+      'isfriend': instance.isfriend,
       'notes': instance.notes,
     };
 

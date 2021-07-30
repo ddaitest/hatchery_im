@@ -87,6 +87,7 @@ class FriendProfileManager extends ChangeNotifier {
     if (result.isSuccess()) {
       showToast('好友已删除');
       Future.delayed(Duration(milliseconds: 200), () {
+        Navigator.of(App.navState.currentContext!).pop(false);
         Navigator.of(App.navState.currentContext!).pop(true);
       });
     } else {
