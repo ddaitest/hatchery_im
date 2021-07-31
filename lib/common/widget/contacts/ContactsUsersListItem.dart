@@ -106,6 +106,8 @@ class SearchContactsUsersList extends StatelessWidget {
           color: Colors.white,
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ListTile(
+            onTap: () => Routers.navigateTo('/friend_profile',
+                arg: newContactsList[index].userID),
             dense: true,
             leading: CachedNetworkImage(
                 imageUrl: newContactsList[index].icon,
@@ -141,9 +143,11 @@ class SearchContactsUsersList extends StatelessWidget {
                   overflow: TextOverflow.ellipsis),
             ),
             trailing: Container(
-              color: Colors.transparent,
               width: 40.0.w,
-              child: Text('好友'),
+              child: newContactsList[index].isFriends
+                  ? Icon(Icons.change_circle_outlined,
+                      color: Flavors.colorInfo.lightGrep)
+                  : Container(),
             ),
           ),
         );

@@ -395,3 +395,34 @@ class CacheInfo {
     await file.delete();
   }
 }
+
+profileTitle(String keyName) {
+  String keyCHN = '';
+  switch (keyName) {
+    case 'loginName':
+      keyCHN = '用户名';
+      break;
+    case 'nickName':
+      keyCHN = '昵称';
+      break;
+    case 'notes':
+      keyCHN = '个人签名';
+      break;
+    case 'phone':
+      keyCHN = '手机号';
+      break;
+    case 'email':
+      keyCHN = '电子邮箱';
+      break;
+    case 'address':
+      keyCHN = '地址';
+      break;
+    case 'createTime':
+      keyCHN = '账号创建时间';
+      break;
+    default:
+      keyCHN = keyName;
+      break;
+  }
+  return keyCHN;
+}

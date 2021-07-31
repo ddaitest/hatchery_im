@@ -13,7 +13,7 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 class FriendProfileManager extends ChangeNotifier {
-  Friends? friendInfo;
+  UsersInfo? usersInfo;
   //拉黑列表
   List<BlockList>? blockContactsList;
   bool isBlock = false;
@@ -57,11 +57,11 @@ class FriendProfileManager extends ChangeNotifier {
   }
 
   Future<dynamic> getFriendProfileData(String friendId) async {
-    ApiResult result = await API.getFriendInfo(friendId);
+    ApiResult result = await API.getUsersInfo(friendId);
     if (result.isSuccess()) {
-      friendInfo = Friends.fromJson(result.getData());
+      usersInfo = UsersInfo.fromJson(result.getData());
       print(
-          "DEBUG=> getFriendProfileData result.getData() ${friendInfo!.nickName}");
+          "DEBUG=> getFriendProfileData result.getData() ${usersInfo!.nickName}");
       notifyListeners();
     } else {
       showToast('${result.info}');

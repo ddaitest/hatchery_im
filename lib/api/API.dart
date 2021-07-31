@@ -519,6 +519,25 @@ class API {
     }
   }
 
+  ///获取用户信息
+  static Future<ApiResult> getUsersInfo(String userID) async {
+    init();
+    // Map<String, dynamic> queryParam = {
+    //   "userID": userID,
+    // };
+    try {
+      Response response = await _dio.get("/users/info/$userID",
+          // queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取SESSION
   static Future<ApiResult> querySession() async {
     init();

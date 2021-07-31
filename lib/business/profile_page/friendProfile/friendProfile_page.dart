@@ -34,7 +34,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
 
   @override
   void dispose() {
-    manager.friendInfo = null;
+    manager.usersInfo = null;
     manager.isBlock = false;
     super.dispose();
   }
@@ -53,8 +53,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   }
 
   Widget _mainContainer() {
-    return Selector<FriendProfileManager, Friends?>(
-        builder: (BuildContext context, Friends? value, Widget? child) {
+    return Selector<FriendProfileManager, UsersInfo?>(
+        builder: (BuildContext context, UsersInfo? value, Widget? child) {
           return Container(
               padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
               child: Column(
@@ -69,7 +69,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         },
         selector:
             (BuildContext context, FriendProfileManager friendProfileManager) {
-          return friendProfileManager.friendInfo ?? null;
+          return friendProfileManager.usersInfo ?? null;
         },
         shouldRebuild: (pre, next) => (pre != next));
   }
@@ -110,12 +110,12 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _listContainer(friends) {
-    if (friends != null) {
-      if (friends.status == 1) {
-        return _listInfoForFriend(friends);
+  Widget _listContainer(UsersInfo? usersInfo) {
+    if (usersInfo != null) {
+      if (usersInfo.isFriends) {
+        return _listInfoForFriend(usersInfo);
       } else {
-        return _listInfoForStranger(friends);
+        return _listInfoForStranger(usersInfo);
       }
     } else {
       return Container();
@@ -156,16 +156,26 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _listInfoForStranger(friends) {
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        _dataCellView("个性签名", friends.notes ?? '无', showForwardIcon: false),
-        _dataCellView("手机号", friends.phone ?? '无', showForwardIcon: false),
-        _dataCellView("电子邮箱", friends.email ?? '无', showForwardIcon: false),
-        _dataCellView("地址", friends.address ?? '无', showForwardIcon: false),
-      ],
-    );
+  Widget _listInfoForStranger(usersInfo) {
+    Map<String, dynamic> usersInfoMap = {
+      "loginName": usersInfo.loginName,
+      "notes": usersInfo.notes,
+      "phone": usersInfo.phone,
+      "email": usersInfo.email,
+      "address": usersInfo.address,
+    };
+    usersInfoMap.removeWhere((key, value) => (value == null));
+    print("DEBUG=> usersInfoMap2 $usersInfoMap");
+    return ListView.builder(
+        itemCount: usersInfoMap.length,
+        shrinkWrap: true,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (context, index) {
+          return _dataCellView(
+              "${profileTitle(usersInfoMap.keys.toList()[index])}",
+              "${usersInfoMap.values.toList()[index]}",
+              showForwardIcon: false);
+        });
   }
 
   Widget _dataCellView(String title, String trailingText,
