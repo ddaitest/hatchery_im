@@ -14,6 +14,7 @@ import 'package:hatchery_im/common/utils.dart';
 
 class FriendProfileManager extends ChangeNotifier {
   UsersInfo? usersInfo;
+  Map<String, dynamic>? usersInfoMap;
   //拉黑列表
   List<BlockList>? blockContactsList;
   bool isBlock = false;
@@ -60,6 +61,7 @@ class FriendProfileManager extends ChangeNotifier {
     ApiResult result = await API.getUsersInfo(friendId);
     if (result.isSuccess()) {
       usersInfo = UsersInfo.fromJson(result.getData());
+      usersInfoMap = result.getData();
       print(
           "DEBUG=> getFriendProfileData result.getData() ${usersInfo!.nickName}");
       notifyListeners();

@@ -209,6 +209,17 @@ class TextStyles {
       TextStyle(color: ColorInfo().redColor);
 
   final TextStyle blockListDelBtnText = TextStyle(color: ColorInfo().redColor);
+
+  final TextStyle friendApplyTitleText = TextStyle(
+    fontSize: 14.0.sp,
+    color: ColorInfo().diver,
+    fontWeight: FontWeight.normal,
+  );
+
+  final TextStyle friendApplyBtnText = TextStyle(
+      fontSize: 15.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {

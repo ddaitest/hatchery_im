@@ -99,7 +99,10 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
       );
     } else {
       return NewContactsUsersList(
-          widget.newContactsApplicationList, null, manager.slideAction, null);
+          contactsApplicationList: widget.newContactsApplicationList,
+          agreeBtnTap: null,
+          slideAction: manager.slideAction,
+          denyResTap: null);
     }
   }
 

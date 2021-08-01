@@ -15,10 +15,7 @@ class SearchNewContactsPage extends StatefulWidget {
   _SearchNewContactsPageState createState() => _SearchNewContactsPageState();
 }
 
-class _SearchNewContactsPageState extends State<SearchNewContactsPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _SearchNewContactsPageState extends State<SearchNewContactsPage> {
   final manager = App.manager<SearchNewContactsManager>();
   void initState() {
     manager.init();
@@ -34,7 +31,6 @@ class _SearchNewContactsPageState extends State<SearchNewContactsPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
@@ -63,14 +59,17 @@ class _SearchNewContactsPageState extends State<SearchNewContactsPage>
                   isEnabled: true,
                   padding: const EdgeInsets.only(
                       left: 16.0, right: 0.0, top: 16.0, bottom: 16.0),
-                  isAutofocus: true,
+                  isAutofocus: false,
                   textEditingController: manager.searchController,
                   showPrefixIcon: value ? true : false),
             ),
             TextButton(
-                onPressed: () => !value
-                    ? Navigator.of(context).pop(true)
-                    : manager.querySearchNewContactsData(),
+                onPressed: () {
+                  !value
+                      ? Navigator.of(context).pop(true)
+                      : manager.querySearchNewContactsData();
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
                 child: Text(!value ? '取消' : '搜索',
                     style: Flavors.textStyles.searchBtnText)),
           ],

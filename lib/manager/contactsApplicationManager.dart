@@ -5,12 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hatchery_im/api/entity.dart';
-import 'dart:collection';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:flutter/services.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
@@ -33,13 +28,15 @@ class ContactsApplicationManager extends ChangeNotifier {
   //   });
   // }
 
-  Future<Function?> replyNewContactsResTap(String friendId, int status,
+  Future<Function?> replyNewContactsResTap(String usersID, int status,
       {String notes = ''}) async {
-    API.replyNewContactsRes(friendId, status, notes: notes).then((value) {
+    API.replyNewContactsRes(usersID, status, notes: notes).then((value) {
       if (value.isSuccess()) {
         // friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         // print('DEBUG=>  _queryFriendsRes ${friendsList}');
         notifyListeners();
+      } else {
+        showToast('${value.info}');
       }
     });
   }

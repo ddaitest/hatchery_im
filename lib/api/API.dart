@@ -247,10 +247,10 @@ class API {
 
   ///好友申请回复
   ///status： -1 拒绝；0：同意
-  static Future<ApiResult> replyNewContactsRes(String friendId, int status,
+  static Future<ApiResult> replyNewContactsRes(String usersID, int status,
       {String notes = ''}) async {
     Map<String, dynamic> body = {
-      "friendId": friendId,
+      "friendId": usersID,
       "notes": notes,
       "status": status,
     };
@@ -475,7 +475,7 @@ class API {
     }
   }
 
-  ///来黑列表
+  ///拉黑列表
   static Future<ApiResult> getBlockList(int size, int page) async {
     Map<String, int> queryParam = {
       "size": size,
@@ -528,6 +528,28 @@ class API {
     try {
       Response response = await _dio.get("/users/info/$userID",
           // queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///发起好友申请
+  static Future<ApiResult> friendApplyRes(
+      String userID, String? desc, String? remarks) async {
+    Map<String, String> body = {
+      "friendId": userID,
+      "desc": desc!,
+      "remarks": remarks!
+    };
+    init();
+    try {
+      Response response = await _dio.post("/roster/create",
+          data: json.encode(body),
           options: Options(
             headers: {"BEE_TOKEN": _token},
           ));

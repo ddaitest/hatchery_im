@@ -74,13 +74,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         shouldRebuild: (pre, next) => (pre != next));
   }
 
-  Widget _topViewForFriend(friends) {
+  Widget _topViewForFriend(usersInfo) {
     return Container(
       padding: const EdgeInsets.only(left: 20, bottom: 40),
       child: Row(
         children: [
-          friends != null
-              ? netWorkAvatar(friends.icon, 40.0)
+          usersInfo != null
+              ? netWorkAvatar(usersInfo.icon, 40.0)
               : CircleAvatar(
                   backgroundImage: AssetImage('images/default_avatar.png'),
                   maxRadius: 40.0,
@@ -91,14 +91,14 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                friends != null
-                    ? Text('昵称：${friends.nickName}',
+                usersInfo != null
+                    ? Text('昵称：${usersInfo.nickName}',
                         style: Flavors.textStyles.friendProfileMainText)
                     : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
                 SizedBox(height: 10.0.h),
-                friends != null
-                    ? friends.status == 1
-                        ? Text('备注：${friends.remarks ?? '无'}',
+                usersInfo != null
+                    ? usersInfo.status == 1
+                        ? Text('备注：${usersInfo.remarks ?? '无'}',
                             style: Flavors.textStyles.friendProfileSubtitleText)
                         : Container()
                     : LoadingView(viewWidth: 70.0.w),
@@ -115,14 +115,14 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       if (usersInfo.isFriends) {
         return _listInfoForFriend(usersInfo);
       } else {
-        return _listInfoForStranger(usersInfo);
+        return _listInfoForStranger();
       }
     } else {
       return Container();
     }
   }
 
-  Widget _listInfoForFriend(friends) {
+  Widget _listInfoForFriend(usersInfo) {
     return ListView(
       shrinkWrap: true,
       children: [
@@ -133,13 +133,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
                   builder: (_) => FriendsProfileEditDetailPage(
                         widget.friendId!,
                         '设置备注',
-                        friends!.remarks ?? '',
+                        usersInfo!.remarks ?? '',
                       ))).then((value) =>
               value ?? false ? manager.refreshData(widget.friendId!) : null),
           child: _dataCellView("设置备注", ''),
         ),
         GestureDetector(
-          onTap: () => Routers.navigateTo('/friend_info_more', arg: friends),
+          onTap: () => Routers.navigateTo('/friend_info_more', arg: usersInfo),
           child: _dataCellView(
             "更多信息",
             '',
@@ -147,7 +147,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         ),
         GestureDetector(
             onTap: () =>
-                Routers.navigateTo('/friend_setting', arg: friends!.friendId)
+                Routers.navigateTo('/friend_setting', arg: usersInfo!.friendId)
                     .then((value) => value ?? false
                         ? manager.refreshData(widget.friendId!)
                         : null),
@@ -156,24 +156,24 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _listInfoForStranger(usersInfo) {
-    Map<String, dynamic> usersInfoMap = {
-      "loginName": usersInfo.loginName,
-      "notes": usersInfo.notes,
-      "phone": usersInfo.phone,
-      "email": usersInfo.email,
-      "address": usersInfo.address,
-    };
-    usersInfoMap.removeWhere((key, value) => (value == null));
-    print("DEBUG=> usersInfoMap2 $usersInfoMap");
+  Widget _listInfoForStranger() {
+    Map<String, dynamic> userMap = manager.usersInfoMap!;
+    userMap.removeWhere((key, value) => (value == null ||
+        key == 'userID' ||
+        key == 'icon' ||
+        key == 'status' ||
+        key == 'updateTime' ||
+        key == 'createTime' ||
+        key == 'isFriends' ||
+        key == 'nickName'));
+    print("DEBUG=> usersInfoMap2 $userMap");
     return ListView.builder(
-        itemCount: usersInfoMap.length,
+        itemCount: userMap.length,
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         itemBuilder: (context, index) {
-          return _dataCellView(
-              "${profileTitle(usersInfoMap.keys.toList()[index])}",
-              "${usersInfoMap.values.toList()[index]}",
+          return _dataCellView("${profileTitle(userMap.keys.toList()[index])}",
+              "${userMap.values.toList()[index]}",
               showForwardIcon: false);
         });
   }
@@ -188,10 +188,10 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _btnContainer(friends) {
-    if (friends != null) {
-      if (friends.status == 1) {
-        return _sendBtnView(friends);
+  Widget _btnContainer(usersInfo) {
+    if (usersInfo != null) {
+      if (usersInfo.status == 1) {
+        return _sendBtnView(usersInfo);
       } else {
         return _addFriendBtnView();
       }
@@ -210,11 +210,12 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _sendBtnView(friends) {
+  Widget _sendBtnView(usersInfo) {
     return Container(
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () => Routers.navigateReplace('/chat_detail', arg: friends),
+        onPressed: () =>
+            Routers.navigateReplace('/chat_detail', arg: usersInfo),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,
@@ -236,7 +237,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return Container(
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () => null,
+        onPressed: () =>
+            Routers.navigateTo('/friend_apply', arg: widget.friendId!),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,

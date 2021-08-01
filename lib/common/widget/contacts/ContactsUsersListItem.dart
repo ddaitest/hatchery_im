@@ -1,5 +1,4 @@
 import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -157,18 +156,21 @@ class SearchContactsUsersList extends StatelessWidget {
 }
 
 class NewContactsUsersList extends StatelessWidget {
-  final List<FriendsApplicationInfo> contactsApplicationList;
+  final List<FriendsApplicationInfo>? contactsApplicationList;
   final Function? agreeBtnTap;
-  final List<SlideActionInfo> slideAction;
-  final Function? replyNewContactsResTap;
-  NewContactsUsersList(this.contactsApplicationList, this.agreeBtnTap,
-      this.slideAction, this.replyNewContactsResTap);
+  final List<SlideActionInfo>? slideAction;
+  final Function? denyResTap;
+  NewContactsUsersList(
+      {this.contactsApplicationList,
+      this.agreeBtnTap,
+      this.slideAction,
+      this.denyResTap});
 
   @override
   Widget build(BuildContext context) {
     _addSlideAction();
     return ListView.builder(
-      itemCount: contactsApplicationList.length,
+      itemCount: contactsApplicationList!.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
@@ -176,14 +178,14 @@ class NewContactsUsersList extends StatelessWidget {
             actionPane: SlidableScrollActionPane(),
             actionExtentRatio: 0.25,
             secondaryActions:
-                slideAction.map((e) => slideActionModel(e)).toList(),
+                slideAction!.map((e) => slideActionModel(e)).toList(),
             child: Container(
               color: Colors.white,
               padding: EdgeInsets.only(top: 10, bottom: 10),
               child: ListTile(
                 dense: true,
                 leading: CachedNetworkImage(
-                    imageUrl: contactsApplicationList[index].icon,
+                    imageUrl: contactsApplicationList![index].icon,
                     placeholder: (context, url) => CircleAvatar(
                           backgroundImage:
                               AssetImage('images/default_avatar.png'),
@@ -201,7 +203,7 @@ class NewContactsUsersList extends StatelessWidget {
                       );
                     }),
                 title: Container(
-                  child: Text(contactsApplicationList[index].nickName,
+                  child: Text(contactsApplicationList![index].nickName,
                       style: Flavors.textStyles.searchContactsNameText,
                       softWrap: true,
                       maxLines: 1,
@@ -210,7 +212,7 @@ class NewContactsUsersList extends StatelessWidget {
                 subtitle: Container(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Text(
-                      contactsApplicationList[index].remarks ?? '对方什么都没有说',
+                      contactsApplicationList![index].remarks ?? '对方什么都没有说',
                       style: Flavors.textStyles.searchContactsNotesText,
                       softWrap: true,
                       maxLines: 2,
@@ -240,9 +242,8 @@ class NewContactsUsersList extends StatelessWidget {
   }
 
   void _addSlideAction() {
-    slideAction.add(
-      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red,
-          onTap: replyNewContactsResTap),
+    slideAction!.add(
+      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red, onTap: denyResTap),
     );
     // slideAction.add(
     //   SlideActionInfo('忽略', Icons.alarm_off, Flavors.colorInfo.mainColor,

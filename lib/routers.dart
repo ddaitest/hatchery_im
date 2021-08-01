@@ -13,6 +13,7 @@ import 'package:hatchery_im/business/profile_page/friendProfile/friendSetting_pa
 import 'package:hatchery_im/business/block/blockList.dart';
 import 'package:hatchery_im/business/login/phone/otp_page.dart';
 import 'package:hatchery_im/business/about/about.dart';
+import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page.dart';
 import 'business/chat_detail/chat_detail_page.dart';
 import 'business/main_tab.dart';
 import 'common/AppContext.dart';
@@ -50,6 +51,11 @@ class Routers {
         return MaterialPageRoute(
             builder: (_) => FriendSettingPage(
                   friendId: settings.arguments.toString(),
+                ));
+      case '/friend_apply':
+        return MaterialPageRoute(
+            builder: (_) => FriendApplyPage(
+                  usersID: settings.arguments.toString(),
                 ));
       case '/block_list':
         return MaterialPageRoute(builder: (_) => BlockListPage());

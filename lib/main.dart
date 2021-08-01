@@ -19,6 +19,7 @@ import 'package:hatchery_im/manager/myProfileManager.dart';
 import 'package:hatchery_im/manager/friendProfileManager.dart';
 import 'package:hatchery_im/manager/profileEditManager.dart';
 import 'package:hatchery_im/manager/profileEditDetailManager.dart';
+import 'package:hatchery_im/manager/friendApplyManager.dart';
 import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/selectContactsModelManager.dart';
@@ -55,6 +56,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => FriendProfileManager()),
         ChangeNotifierProvider(create: (_) => ProfileEditManager()),
         ChangeNotifierProvider(create: (_) => ProfileEditDetailManager()),
+        ChangeNotifierProvider(create: (_) => FriendApplyManager()),
         ChangeNotifierProvider(create: (_) => BlockListManager()),
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),
