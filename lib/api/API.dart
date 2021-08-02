@@ -256,7 +256,9 @@ class API {
       "size": size,
       "page": page,
       "orderBy": orderBy,
+      "cursorID": cursorID
     };
+    queryParam.removeWhere((key, value) => cursorID == null);
     init();
     try {
       Response response =
