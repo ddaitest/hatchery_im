@@ -9,6 +9,7 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/manager/contactsApplicationManager.dart';
 import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:cool_alert/cool_alert.dart';
@@ -155,16 +156,18 @@ class SearchContactsUsersList extends StatelessWidget {
   }
 }
 
-class NewContactsUsersList extends StatelessWidget {
+class ReceiveContactsUsersList extends StatelessWidget {
   final List<FriendsApplicationInfo>? contactsApplicationList;
   final Function? agreeBtnTap;
   final List<SlideActionInfo>? slideAction;
   final Function? denyResTap;
-  NewContactsUsersList(
+  ReceiveContactsUsersList(
       {this.contactsApplicationList,
       this.agreeBtnTap,
       this.slideAction,
       this.denyResTap});
+
+  final manager = App.manager<ContactsApplyManager>();
 
   @override
   Widget build(BuildContext context) {
@@ -172,17 +175,19 @@ class NewContactsUsersList extends StatelessWidget {
     return ListView.builder(
       itemCount: contactsApplicationList!.length,
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) {
         return Slidable(
             actionPane: SlidableScrollActionPane(),
             actionExtentRatio: 0.25,
             secondaryActions:
-                slideAction!.map((e) => slideActionModel(e)).toList(),
+                slideAction!.map((e) => slideActionModel(e, index)).toList(),
             child: Container(
               color: Colors.white,
               padding: EdgeInsets.only(top: 10, bottom: 10),
               child: ListTile(
+                onTap: () => Routers.navigateTo('/friend_profile',
+                    arg: contactsApplicationList![index].friendId),
                 dense: true,
                 leading: CachedNetworkImage(
                     imageUrl: contactsApplicationList![index].icon,
@@ -219,7 +224,8 @@ class NewContactsUsersList extends StatelessWidget {
                       overflow: TextOverflow.ellipsis),
                 ),
                 trailing: TextButton(
-                  onPressed: () => agreeBtnTap,
+                  onPressed: () => manager.replyNewContactsResTap(
+                      contactsApplicationList![index].friendId, 1),
                   child: Text('同意',
                       style: Flavors.textStyles.contactsApplicationAgreeText),
                 ),
@@ -229,7 +235,7 @@ class NewContactsUsersList extends StatelessWidget {
     );
   }
 
-  Widget slideActionModel(SlideActionInfo slideActionInfo) {
+  Widget slideActionModel(SlideActionInfo slideActionInfo, int index) {
     return IconSlideAction(
       iconWidget: Container(
           padding: const EdgeInsets.only(top: 5.0),
@@ -237,18 +243,71 @@ class NewContactsUsersList extends StatelessWidget {
               style: Flavors.textStyles.chatHomeSlideText)),
       color: slideActionInfo.iconColor,
       icon: slideActionInfo.icon,
-      onTap: () => slideActionInfo.onTap,
+      onTap: () => manager.replyNewContactsResTap(
+          contactsApplicationList![index].friendId, -1),
     );
   }
 
   void _addSlideAction() {
     slideAction!.add(
-      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red, onTap: denyResTap),
+      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red),
     );
-    // slideAction.add(
-    //   SlideActionInfo('忽略', Icons.alarm_off, Flavors.colorInfo.mainColor,
-    //       onTap: ignoreBtnTap),
-    // );
+  }
+}
+
+class SendContactsUsersList extends StatelessWidget {
+  final List<FriendsApplicationInfo>? contactsApplicationList;
+  SendContactsUsersList({this.contactsApplicationList});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: contactsApplicationList!.length,
+      shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: ListTile(
+            dense: true,
+            onTap: () => Routers.navigateTo('/friend_profile',
+                arg: contactsApplicationList![index].friendId),
+            leading: CachedNetworkImage(
+                imageUrl: contactsApplicationList![index].icon,
+                placeholder: (context, url) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 20,
+                  );
+                }),
+            title: Container(
+              child: Text(contactsApplicationList![index].nickName,
+                  style: Flavors.textStyles.searchContactsNameText,
+                  softWrap: true,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            subtitle: Container(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(contactsApplicationList![index].remarks ?? '',
+                  style: Flavors.textStyles.searchContactsNotesText,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

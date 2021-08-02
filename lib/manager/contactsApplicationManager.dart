@@ -18,8 +18,7 @@ class ContactsApplyManager extends ChangeNotifier {
   List<FriendsApplicationInfo> sendContactsApplyList = [];
 
   /// 初始化
-  ContactsApplyManager() {
-    print("DEBUG=> ContactsApplyManager ContactsApplyManager");
+  init() {
     _sendNewFriendsApplicationRes();
   }
 

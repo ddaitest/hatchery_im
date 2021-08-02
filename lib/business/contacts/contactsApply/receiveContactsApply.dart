@@ -22,12 +22,10 @@ class ReceiveContactsApplyPage extends StatefulWidget {
       _ReceiveContactsApplyPageState();
 }
 
-class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage> {
   final manager = App.manager<ContactsApplyManager>();
   void initState() {
+    manager.init();
     super.initState();
   }
 
@@ -39,7 +37,6 @@ class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
@@ -98,7 +95,7 @@ class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage>
         ),
       );
     } else {
-      return NewContactsUsersList(
+      return ReceiveContactsUsersList(
           contactsApplicationList: widget.receiveContactsApplyList,
           agreeBtnTap: null,
           slideAction: manager.slideAction,
