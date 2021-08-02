@@ -14,19 +14,19 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ContactsApplicationPage extends StatefulWidget {
-  final List<FriendsApplicationInfo> newContactsApplicationList;
-  ContactsApplicationPage(this.newContactsApplicationList);
+class ReceiveContactsApplyPage extends StatefulWidget {
+  final List<FriendsApplicationInfo>? receiveContactsApplyList;
+  ReceiveContactsApplyPage({this.receiveContactsApplyList});
   @override
-  _ContactsApplicationPageState createState() =>
-      _ContactsApplicationPageState();
+  _ReceiveContactsApplyPageState createState() =>
+      _ReceiveContactsApplyPageState();
 }
 
-class _ContactsApplicationPageState extends State<ContactsApplicationPage>
+class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final manager = App.manager<ContactsApplicationManager>();
+  final manager = App.manager<ContactsApplyManager>();
   void initState() {
     super.initState();
   }
@@ -43,7 +43,7 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-          appBar: AppBarFactory.backButton('好友申请'),
+          appBar: AppBarFactory.backButton('收到的好友申请'),
           body: ListView(
             physics: const BouncingScrollPhysics(),
             // shrinkWrap: true,
@@ -51,7 +51,7 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
               SizedBox(
                 height: 16.0.w,
               ),
-              _addFriendsView(),
+              _sendContactsApplyBtnView(),
               SizedBox(
                 height: 16.0.w,
               ),
@@ -61,24 +61,24 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
         ));
   }
 
-  Widget _addFriendsView() {
+  Widget _sendContactsApplyBtnView() {
     return Container(
         color: Colors.white,
         padding: EdgeInsets.only(top: 10, bottom: 10),
         child: ListTile(
-          onTap: () => Routers.navigateTo('/search_new_contacts'),
+          onTap: () => Routers.navigateTo('/send_contacts_apply'),
           leading: CircleAvatar(
             backgroundColor: Colors.pink,
             maxRadius: 20,
             child: Center(
               child: Icon(
-                Icons.person_add,
+                Icons.person_add_alt_1,
                 color: Colors.white,
               ),
             ),
           ),
           title: Text(
-            '添加朋友',
+            '发出的好友邀请',
             style: Flavors.textStyles.friendsText,
           ),
           trailing: Container(width: 30.0.w),
@@ -86,7 +86,7 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
   }
 
   Widget _contactsListView() {
-    if (widget.newContactsApplicationList.isEmpty) {
+    if (widget.receiveContactsApplyList!.isEmpty) {
       return Container(
         width: Flavors.sizesInfo.screenWidth,
         height: Flavors.sizesInfo.screenHeight / 2,
@@ -99,7 +99,7 @@ class _ContactsApplicationPageState extends State<ContactsApplicationPage>
       );
     } else {
       return NewContactsUsersList(
-          contactsApplicationList: widget.newContactsApplicationList,
+          contactsApplicationList: widget.receiveContactsApplyList,
           agreeBtnTap: null,
           slideAction: manager.slideAction,
           denyResTap: null);

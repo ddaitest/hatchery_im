@@ -9,7 +9,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/business/contacts/contactsApplication.dart';
+import 'package:hatchery_im/business/contacts/contactsApply/receiveContactsApply.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
@@ -102,12 +102,8 @@ class _ContactsState extends State<ContactsPage>
             color: Colors.white,
             padding: EdgeInsets.only(top: 10, bottom: 10),
             child: ListTile(
-              // onTap: () =>
-              //     Routers.navigateTo("/contacts_application", arg: value),
-              onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ContactsApplicationPage(value)))
+              onTap: () => Routers.navigateTo('/receive_contacts_apply',
+                      arg: manager.receiveContactsApplicationList)
                   .then((value) => value ? manager.refreshData() : null),
               leading: CircleAvatar(
                 backgroundColor: Colors.blue,
@@ -120,7 +116,7 @@ class _ContactsState extends State<ContactsPage>
                 ),
               ),
               title: Text(
-                '好友申请',
+                '收到的好友申请',
                 style: Flavors.textStyles.friendsText,
               ),
               trailing: value.isNotEmpty
@@ -139,7 +135,7 @@ class _ContactsState extends State<ContactsPage>
             ));
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
-        return contactsManager.contactsApplicationList;
+        return contactsManager.receiveContactsApplicationList;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );

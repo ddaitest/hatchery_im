@@ -15,6 +15,8 @@ import 'package:hatchery_im/business/login/phone/otp_page.dart';
 import 'package:hatchery_im/business/about/about.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page.dart';
 import 'business/chat_detail/chat_detail_page.dart';
+import 'business/contacts/contactsApply/receiveContactsApply.dart';
+import 'business/contacts/contactsApply/sendContactsApply.dart';
 import 'business/main_tab.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
@@ -67,8 +69,13 @@ class Routers {
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       case '/about':
         return MaterialPageRoute(builder: (_) => AboutPage());
-      // case '/contacts_application':
-      //   return MaterialPageRoute(builder: (_) => ContactsApplicationPage());
+      case '/receive_contacts_apply':
+        return MaterialPageRoute(
+            builder: (_) => ReceiveContactsApplyPage(
+                receiveContactsApplyList:
+                    settings.arguments as List<FriendsApplicationInfo>));
+      case '/send_contacts_apply':
+        return MaterialPageRoute(builder: (_) => SendContactsApplyPage());
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:

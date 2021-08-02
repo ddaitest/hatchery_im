@@ -222,22 +222,49 @@ class API {
     }
   }
 
-  ///好友申请数据
-  static Future<ApiResult> getNewFriendsApplicationListData(
-    int size,
-    int page,
-  ) async {
-    Map<String, int> queryParam = {
+  ///接收的好友申请数据
+  static Future<ApiResult> getReceiveNewFriendsApplicationListData(
+      int size, int page,
+      {int? cursorID, String orderBy = 'lt'}) async {
+    Map<String, dynamic> queryParam = {
       "size": size,
       "page": page,
+      "orderBy": orderBy,
+      "cursorID": cursorID
     };
     init();
     try {
-      Response response = await _dio.get("/roster/friends/applications",
-          queryParameters: queryParam,
-          options: Options(
-            headers: {"BEE_TOKEN": _token},
-          ));
+      Response response =
+          await _dio.get("/roster/friends/applications/receive/history",
+              queryParameters: queryParam,
+              options: Options(
+                headers: {"BEE_TOKEN": _token},
+              ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///发送的好友申请数据
+  static Future<ApiResult> getSendNewFriendsApplicationListData(
+      int size, int page,
+      {int? cursorID, String orderBy = 'lt'}) async {
+    Map<String, dynamic> queryParam = {
+      "size": size,
+      "page": page,
+      "orderBy": orderBy,
+      "cursorID": cursorID
+    };
+    init();
+    try {
+      Response response =
+          await _dio.get("/roster/friends/applications/send/history",
+              queryParameters: queryParam,
+              options: Options(
+                headers: {"BEE_TOKEN": _token},
+              ));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");

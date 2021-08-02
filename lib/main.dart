@@ -49,7 +49,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => RegisterManager()),
         ChangeNotifierProvider(create: (_) => ContactsManager()),
         ChangeNotifierProvider(create: (_) => SearchNewContactsManager()),
-        ChangeNotifierProvider(create: (_) => ContactsApplicationManager()),
+        ChangeNotifierProvider(create: (_) => ContactsApplyManager()),
         ChangeNotifierProvider(create: (_) => GroupsManager()),
         // ChangeNotifierProvider(create: (_) => NewGroupsManager()),
         ChangeNotifierProvider(create: (_) => MyProfileManager()),
