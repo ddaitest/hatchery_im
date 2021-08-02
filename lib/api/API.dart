@@ -251,11 +251,11 @@ class API {
   static Future<ApiResult> getSendNewFriendsApplicationListData(
       int size, int page,
       {int? cursorID, String orderBy = 'lt'}) async {
+    // todo
     Map<String, dynamic> queryParam = {
       "size": size,
       "page": page,
       "orderBy": orderBy,
-      "cursorID": cursorID
     };
     init();
     try {
