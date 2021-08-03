@@ -183,7 +183,7 @@ class ReceiveContactsUsersList extends StatelessWidget {
                           contactsApplicationList![index].friendId, -1),
                     ),
                   ]
-                : <Widget>[],
+                : null,
             child: Container(
               color: Colors.white,
               padding: EdgeInsets.all(5.0),
