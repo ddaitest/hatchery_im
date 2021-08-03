@@ -12,8 +12,8 @@ extension ExtendedDio on Dio {
     InterceptorsWrapper wrapper =
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.data} ');
-      print('HTTP.headers: ${options.headers} ');
       print('HTTP.url: ${options.uri} ');
+      print('HTTP.queryParameters: ${options.queryParameters} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
       print(
@@ -276,11 +276,10 @@ class API {
 
   ///好友申请回复
   ///status： -1 拒绝；0：同意
-  static Future<ApiResult> replyNewContactsRes(String usersID, int status,
-      {String notes = ''}) async {
+  static Future<ApiResult> replyNewContactsRes(
+      String usersID, int status) async {
     Map<String, dynamic> body = {
       "friendId": usersID,
-      "notes": notes,
       "status": status,
     };
     init();

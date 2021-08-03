@@ -13,7 +13,6 @@ import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
 class ContactsApplyManager extends ChangeNotifier {
-  List<SlideActionInfo> slideAction = [];
   //发送的好友申请数据
   List<FriendsApplicationInfo> sendContactsApplyList = [];
 
@@ -37,13 +36,15 @@ class ContactsApplyManager extends ChangeNotifier {
     });
   }
 
-  Future<Function?> replyNewContactsResTap(String usersID, int status,
-      {String notes = ''}) async {
-    API.replyNewContactsRes(usersID, status, notes: notes).then((value) {
+  Future<Function?> replyNewContactsResTap(String usersID, int status) async {
+    API.replyNewContactsRes(usersID, status).then((value) {
       if (value.isSuccess()) {
         // friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         // print('DEBUG=>  _queryFriendsRes ${friendsList}');
-        notifyListeners();
+        showToast(status == 1 ? '已同意' : '已拒绝');
+        Future.delayed(Duration(milliseconds: 400), () {
+          _sendNewFriendsApplicationRes();
+        });
       } else {
         showToast('${value.info}');
       }

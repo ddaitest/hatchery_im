@@ -182,10 +182,13 @@ class TextStyles {
       color: ColorInfo().subtitleColor);
 
   final TextStyle contactsApplicationAgreeText =
-      TextStyle(color: ColorInfo().mainColor);
+      TextStyle(fontSize: 14.0.sp, color: ColorInfo().mainColor);
 
   final TextStyle contactsApplicationDenyText =
-      TextStyle(color: ColorInfo().redColor);
+      TextStyle(fontSize: 14.0.sp, color: ColorInfo().redColor);
+
+  final TextStyle contactsApplyStatusText =
+      TextStyle(fontSize: 14.0.sp, color: ColorInfo().subtitleColor);
 
   final TextStyle friendProfileMainText = TextStyle(
       fontSize: 18.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);

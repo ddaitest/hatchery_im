@@ -396,7 +396,8 @@ class CacheInfo {
   }
 }
 
-profileTitle(String keyName) {
+/// 资料页根据key返回title
+String profileTitle(String keyName) {
   String keyCHN = '';
   switch (keyName) {
     case 'loginName':
@@ -425,4 +426,44 @@ profileTitle(String keyName) {
       break;
   }
   return keyCHN;
+}
+
+/// 接收好友邀请状态文案展示
+String receiveContactsApplyStatusText(int status) {
+  String statusText = '';
+  switch (status) {
+    case 1:
+      statusText = '已同意';
+      break;
+    case 0:
+      statusText = '同意';
+      break;
+    case -1:
+      statusText = '已拒绝';
+      break;
+    default:
+      statusText = '';
+      break;
+  }
+  return statusText;
+}
+
+/// 发送好友邀请状态文案展示
+String sendContactsApplyStatusText(int status) {
+  String statusText = '';
+  switch (status) {
+    case 1:
+      statusText = '已同意';
+      break;
+    case 0:
+      statusText = '申请中';
+      break;
+    case -1:
+      statusText = '已拒绝';
+      break;
+    default:
+      statusText = '';
+      break;
+  }
+  return statusText;
 }

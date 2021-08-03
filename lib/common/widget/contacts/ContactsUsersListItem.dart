@@ -7,6 +7,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/contactsApplicationManager.dart';
@@ -158,20 +159,12 @@ class SearchContactsUsersList extends StatelessWidget {
 
 class ReceiveContactsUsersList extends StatelessWidget {
   final List<FriendsApplicationInfo>? contactsApplicationList;
-  final Function? agreeBtnTap;
-  final List<SlideActionInfo>? slideAction;
-  final Function? denyResTap;
-  ReceiveContactsUsersList(
-      {this.contactsApplicationList,
-      this.agreeBtnTap,
-      this.slideAction,
-      this.denyResTap});
+  ReceiveContactsUsersList({this.contactsApplicationList});
 
   final manager = App.manager<ContactsApplyManager>();
 
   @override
   Widget build(BuildContext context) {
-    _addSlideAction();
     return ListView.builder(
       itemCount: contactsApplicationList!.length,
       shrinkWrap: true,
@@ -180,11 +173,20 @@ class ReceiveContactsUsersList extends StatelessWidget {
         return Slidable(
             actionPane: SlidableScrollActionPane(),
             actionExtentRatio: 0.25,
-            secondaryActions:
-                slideAction!.map((e) => slideActionModel(e, index)).toList(),
+            secondaryActions: contactsApplicationList![index].status == 0
+                ? <Widget>[
+                    IconSlideAction(
+                      caption: '拒绝',
+                      color: Colors.redAccent,
+                      icon: Icons.no_accounts,
+                      onTap: () => manager.replyNewContactsResTap(
+                          contactsApplicationList![index].friendId, -1),
+                    ),
+                  ]
+                : <Widget>[],
             child: Container(
               color: Colors.white,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
+              padding: EdgeInsets.all(5.0),
               child: ListTile(
                 onTap: () => Routers.navigateTo('/friend_profile',
                     arg: contactsApplicationList![index].friendId),
@@ -223,34 +225,26 @@ class ReceiveContactsUsersList extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis),
                 ),
-                trailing: TextButton(
-                  onPressed: () => manager.replyNewContactsResTap(
-                      contactsApplicationList![index].friendId, 1),
-                  child: Text('同意',
-                      style: Flavors.textStyles.contactsApplicationAgreeText),
-                ),
+                trailing: contactsApplicationList![index].status == 0
+                    ? TextButton(
+                        onPressed: () => manager.replyNewContactsResTap(
+                            contactsApplicationList![index].friendId, 1),
+                        child: Container(
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: Text(
+                              receiveContactsApplyStatusText(
+                                  contactsApplicationList![index].status),
+                              style: Flavors
+                                  .textStyles.contactsApplicationAgreeText),
+                        ),
+                      )
+                    : Text(
+                        receiveContactsApplyStatusText(
+                            contactsApplicationList![index].status),
+                        style: Flavors.textStyles.contactsApplyStatusText),
               ),
             ));
       },
-    );
-  }
-
-  Widget slideActionModel(SlideActionInfo slideActionInfo, int index) {
-    return IconSlideAction(
-      iconWidget: Container(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Text('${slideActionInfo.label}',
-              style: Flavors.textStyles.chatHomeSlideText)),
-      color: slideActionInfo.iconColor,
-      icon: slideActionInfo.icon,
-      onTap: () => manager.replyNewContactsResTap(
-          contactsApplicationList![index].friendId, -1),
-    );
-  }
-
-  void _addSlideAction() {
-    slideAction!.add(
-      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red),
     );
   }
 }
@@ -268,7 +262,7 @@ class SendContactsUsersList extends StatelessWidget {
       itemBuilder: (context, index) {
         return Container(
           color: Colors.white,
-          padding: EdgeInsets.only(top: 10, bottom: 10),
+          padding: EdgeInsets.all(5.0),
           child: ListTile(
             dense: true,
             onTap: () => Routers.navigateTo('/friend_profile',
@@ -298,12 +292,16 @@ class SendContactsUsersList extends StatelessWidget {
             ),
             subtitle: Container(
               padding: const EdgeInsets.only(top: 10.0),
-              child: Text(contactsApplicationList![index].remarks ?? '',
+              child: Text(contactsApplicationList![index].remarks ?? '没有发送申请理由',
                   style: Flavors.textStyles.searchContactsNotesText,
                   softWrap: true,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis),
             ),
+            trailing: Text(
+                sendContactsApplyStatusText(
+                    contactsApplicationList![index].status),
+                style: Flavors.textStyles.contactsApplyStatusText),
           ),
         );
       },

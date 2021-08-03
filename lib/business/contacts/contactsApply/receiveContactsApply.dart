@@ -31,7 +31,6 @@ class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage> {
 
   @override
   void dispose() {
-    manager.slideAction.clear();
     super.dispose();
   }
 
@@ -96,10 +95,8 @@ class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage> {
       );
     } else {
       return ReceiveContactsUsersList(
-          contactsApplicationList: widget.receiveContactsApplyList,
-          agreeBtnTap: null,
-          slideAction: manager.slideAction,
-          denyResTap: null);
+        contactsApplicationList: widget.receiveContactsApplyList,
+      );
     }
   }
 
