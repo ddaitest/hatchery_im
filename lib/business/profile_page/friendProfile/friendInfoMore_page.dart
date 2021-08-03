@@ -3,18 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
-import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/friendProfileManager.dart';
-import 'package:hatchery_im/common/widget/aboutAvatar.dart';
 import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/common/widget/imageDetail.dart';
-import 'package:hatchery_im/common/widget/loading_view.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import '../edit_profile/edit_detail.dart';
 
 class FriendInfoMorePage extends StatelessWidget {
   final Friends friendInfo;

@@ -70,10 +70,7 @@ class Routers {
       case '/about':
         return MaterialPageRoute(builder: (_) => AboutPage());
       case '/receive_contacts_apply':
-        return MaterialPageRoute(
-            builder: (_) => ReceiveContactsApplyPage(
-                receiveContactsApplyList:
-                    settings.arguments as List<FriendsApplicationInfo>));
+        return MaterialPageRoute(builder: (_) => ReceiveContactsApplyPage());
       case '/send_contacts_apply':
         return MaterialPageRoute(builder: (_) => SendContactsApplyPage());
       case '/test':

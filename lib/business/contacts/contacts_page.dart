@@ -19,10 +19,7 @@ class ContactsPage extends StatefulWidget {
   _ContactsState createState() => _ContactsState();
 }
 
-class _ContactsState extends State<ContactsPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _ContactsState extends State<ContactsPage> {
   final manager = App.manager<ContactsManager>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -34,6 +31,7 @@ class _ContactsState extends State<ContactsPage>
 
   @override
   void dispose() {
+    manager.untreatedReceiveContactsApplyLength = 0;
     super.dispose();
   }
 
@@ -45,7 +43,6 @@ class _ContactsState extends State<ContactsPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       body: SmartRefresher(
         enablePullDown: true,
@@ -95,15 +92,13 @@ class _ContactsState extends State<ContactsPage>
   }
 
   Widget _newFriendsApply() {
-    return Selector<ContactsManager, List<FriendsApplicationInfo>>(
-      builder: (BuildContext context, List<FriendsApplicationInfo> value,
-          Widget? child) {
+    return Selector<ContactsManager, int>(
+      builder: (BuildContext context, int value, Widget? child) {
         return Container(
             color: Colors.white,
             padding: EdgeInsets.only(top: 10, bottom: 10),
             child: ListTile(
-              onTap: () => Routers.navigateTo('/receive_contacts_apply',
-                      arg: manager.receiveContactsApplicationList)
+              onTap: () => Routers.navigateTo('/receive_contacts_apply')
                   .then((value) => value ? manager.refreshData() : null),
               leading: CircleAvatar(
                 backgroundColor: Colors.blue,
@@ -119,14 +114,14 @@ class _ContactsState extends State<ContactsPage>
                 '收到的好友申请',
                 style: Flavors.textStyles.friendsText,
               ),
-              trailing: value.isNotEmpty
+              trailing: value != 0
                   ? Container(
                       width: 30.0.w,
                       child: CircleAvatar(
                         backgroundColor: Colors.red,
                         maxRadius: 10,
                         child: Center(
-                          child: Text('${value.length}',
+                          child: Text('${value}',
                               style: Flavors.textStyles.homeTabBubbleText),
                         ),
                       ),
@@ -135,7 +130,7 @@ class _ContactsState extends State<ContactsPage>
             ));
       },
       selector: (BuildContext context, ContactsManager contactsManager) {
-        return contactsManager.receiveContactsApplicationList;
+        return contactsManager.untreatedReceiveContactsApplyLength;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );

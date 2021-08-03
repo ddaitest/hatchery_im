@@ -3,6 +3,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
 import 'package:hatchery_im/manager/contactsApplicationManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -20,16 +21,7 @@ class SendContactsApplyPage extends StatelessWidget {
 
   Widget _contactsListView() {
     if (manager.sendContactsApplyList.isEmpty) {
-      return Container(
-        width: Flavors.sizesInfo.screenWidth,
-        height: Flavors.sizesInfo.screenHeight / 2,
-        child: Center(
-          child: Text(
-            "没有发送的申请",
-            style: Flavors.textStyles.noDataText,
-          ),
-        ),
-      );
+      return IndicatorView(tipsText: '没有发送的申请', showLoadingIcon: false);
     } else {
       return SendContactsUsersList(
           contactsApplicationList: manager.sendContactsApplyList);

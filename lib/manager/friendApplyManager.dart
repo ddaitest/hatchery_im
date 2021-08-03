@@ -54,6 +54,8 @@ class FriendApplyManager extends ChangeNotifier {
 
   @override
   void dispose() {
+    applyTextEditingController.dispose();
+    remarkEditingController.dispose();
     super.dispose();
   }
 }

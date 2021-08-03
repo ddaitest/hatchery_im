@@ -15,8 +15,6 @@ import 'package:hatchery_im/routers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ReceiveContactsApplyPage extends StatefulWidget {
-  final List<FriendsApplicationInfo>? receiveContactsApplyList;
-  ReceiveContactsApplyPage({this.receiveContactsApplyList});
   @override
   _ReceiveContactsApplyPageState createState() =>
       _ReceiveContactsApplyPageState();
@@ -82,22 +80,18 @@ class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage> {
   }
 
   Widget _contactsListView() {
-    if (widget.receiveContactsApplyList!.isEmpty) {
-      return Container(
-        width: Flavors.sizesInfo.screenWidth,
-        height: Flavors.sizesInfo.screenHeight / 2,
-        child: Center(
-          child: Text(
-            "没有新的好友申请",
-            style: Flavors.textStyles.noDataText,
-          ),
-        ),
-      );
-    } else {
-      return ReceiveContactsUsersList(
-        contactsApplicationList: widget.receiveContactsApplyList,
-      );
-    }
+    return Selector<ContactsApplyManager, List<FriendsApplicationInfo>?>(
+        builder: (BuildContext context, List<FriendsApplicationInfo>? value,
+            Widget? child) {
+          return ReceiveContactsUsersList(
+            contactsApplicationList: value,
+          );
+        },
+        selector:
+            (BuildContext context, ContactsApplyManager contactsApplyManager) {
+          return contactsApplyManager.receiveContactsApplyList ?? null;
+        },
+        shouldRebuild: (pre, next) => (pre != next));
   }
 
   Future<bool> _onWillPop() async {

@@ -15,10 +15,13 @@ import '../config.dart';
 class ContactsApplyManager extends ChangeNotifier {
   //发送的好友申请数据
   List<FriendsApplicationInfo> sendContactsApplyList = [];
+  //接收的好友申请数据
+  List<FriendsApplicationInfo>? receiveContactsApplyList;
 
   /// 初始化
   init() {
     _sendNewFriendsApplicationRes();
+    _receiveNewFriendsApplicationRes();
   }
 
   _sendNewFriendsApplicationRes({
@@ -36,14 +39,27 @@ class ContactsApplyManager extends ChangeNotifier {
     });
   }
 
+  _receiveNewFriendsApplicationRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getReceiveNewFriendsApplicationListData(size, current).then((value) {
+      if (value.isSuccess()) {
+        receiveContactsApplyList = value
+            .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
+        notifyListeners();
+      }
+    });
+  }
+
   Future<Function?> replyNewContactsResTap(String usersID, int status) async {
     API.replyNewContactsRes(usersID, status).then((value) {
       if (value.isSuccess()) {
         // friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         // print('DEBUG=>  _queryFriendsRes ${friendsList}');
-        showToast(status == 1 ? '已同意' : '已拒绝');
-        Future.delayed(Duration(milliseconds: 400), () {
-          _sendNewFriendsApplicationRes();
+        showToast(status == 0 ? '已同意' : '已拒绝');
+        Future.delayed(Duration(milliseconds: 300), () {
+          _receiveNewFriendsApplicationRes();
         });
       } else {
         showToast('${value.info}');

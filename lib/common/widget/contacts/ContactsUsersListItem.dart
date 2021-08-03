@@ -6,6 +6,7 @@ import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/config.dart';
+import 'package:provider/provider.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -165,87 +166,118 @@ class ReceiveContactsUsersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: contactsApplicationList!.length,
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemBuilder: (context, index) {
-        return Slidable(
-            actionPane: SlidableScrollActionPane(),
-            actionExtentRatio: 0.25,
-            secondaryActions: contactsApplicationList![index].status == 0
-                ? <Widget>[
-                    IconSlideAction(
-                      caption: '拒绝',
-                      color: Colors.redAccent,
-                      icon: Icons.no_accounts,
-                      onTap: () => manager.replyNewContactsResTap(
-                          contactsApplicationList![index].friendId, -1),
-                    ),
-                  ]
-                : null,
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.all(5.0),
-              child: ListTile(
-                onTap: () => Routers.navigateTo('/friend_profile',
-                    arg: contactsApplicationList![index].friendId),
-                dense: true,
-                leading: CachedNetworkImage(
-                    imageUrl: contactsApplicationList![index].icon,
-                    placeholder: (context, url) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 20,
-                        ),
-                    errorWidget: (context, url, error) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 20,
-                        ),
-                    imageBuilder: (context, imageProvider) {
-                      return CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 20,
-                      );
-                    }),
-                title: Container(
-                  child: Text(contactsApplicationList![index].nickName,
-                      style: Flavors.textStyles.searchContactsNameText,
-                      softWrap: true,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                ),
-                subtitle: Container(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                      contactsApplicationList![index].remarks ?? '对方什么都没有说',
-                      style: Flavors.textStyles.searchContactsNotesText,
-                      softWrap: true,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                ),
-                trailing: contactsApplicationList![index].status == 0
-                    ? TextButton(
-                        onPressed: () => manager.replyNewContactsResTap(
-                            contactsApplicationList![index].friendId, 1),
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 15.0),
-                          child: Text(
-                              receiveContactsApplyStatusText(
-                                  contactsApplicationList![index].status),
-                              style: Flavors
-                                  .textStyles.contactsApplicationAgreeText),
-                        ),
-                      )
-                    : Text(
-                        receiveContactsApplyStatusText(
-                            contactsApplicationList![index].status),
-                        style: Flavors.textStyles.contactsApplyStatusText),
-              ),
-            ));
-      },
-    );
+    return contactsApplicationList != null
+        ? contactsApplicationList!.isNotEmpty
+            ? ListView.builder(
+                itemCount: contactsApplicationList == null
+                    ? 2
+                    : contactsApplicationList!.length,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Selector<ContactsApplyManager, int?>(
+                      builder:
+                          (BuildContext context, int? value, Widget? child) {
+                        return Slidable(
+                            actionPane: SlidableScrollActionPane(),
+                            actionExtentRatio: 0.25,
+                            secondaryActions: value == 0
+                                ? <Widget>[
+                                    IconSlideAction(
+                                      caption: '拒绝',
+                                      color: Colors.redAccent,
+                                      icon: Icons.no_accounts,
+                                      onTap: () =>
+                                          manager.replyNewContactsResTap(
+                                              contactsApplicationList![index]
+                                                  .friendId,
+                                              -1),
+                                    ),
+                                  ]
+                                : null,
+                            child: Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.all(5.0),
+                              child: ListTile(
+                                onTap: () => Routers.navigateTo(
+                                    '/friend_profile',
+                                    arg: contactsApplicationList![index]
+                                        .friendId),
+                                dense: true,
+                                leading: CachedNetworkImage(
+                                    imageUrl:
+                                        contactsApplicationList![index].icon,
+                                    placeholder: (context, url) => CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'images/default_avatar.png'),
+                                          maxRadius: 20,
+                                        ),
+                                    errorWidget: (context, url, error) =>
+                                        CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'images/default_avatar.png'),
+                                          maxRadius: 20,
+                                        ),
+                                    imageBuilder: (context, imageProvider) {
+                                      return CircleAvatar(
+                                        backgroundImage: imageProvider,
+                                        maxRadius: 20,
+                                      );
+                                    }),
+                                title: Container(
+                                  child: Text(
+                                      contactsApplicationList![index].nickName,
+                                      style: Flavors
+                                          .textStyles.searchContactsNameText,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                subtitle: Container(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                      contactsApplicationList![index].remarks ??
+                                          '对方什么都没有说',
+                                      style: Flavors
+                                          .textStyles.searchContactsNotesText,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                trailing: value == 0
+                                    ? TextButton(
+                                        onPressed: () =>
+                                            manager.replyNewContactsResTap(
+                                                contactsApplicationList![index]
+                                                    .friendId,
+                                                0),
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 15.0),
+                                          child: Text(
+                                              receiveContactsApplyStatusText(
+                                                  value!),
+                                              style: Flavors.textStyles
+                                                  .contactsApplicationAgreeText),
+                                        ),
+                                      )
+                                    : Text(
+                                        receiveContactsApplyStatusText(value!),
+                                        style: Flavors.textStyles
+                                            .contactsApplyStatusText),
+                              ),
+                            ));
+                      },
+                      selector: (BuildContext context,
+                          ContactsApplyManager contactsApplyManager) {
+                        return contactsApplyManager
+                            .receiveContactsApplyList![index].status;
+                      },
+                      shouldRebuild: (pre, next) => (pre != next));
+                },
+              )
+            : IndicatorView(tipsText: '没有收到新的申请', showLoadingIcon: false)
+        : IndicatorView();
   }
 }
 

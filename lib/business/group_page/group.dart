@@ -17,10 +17,7 @@ class GroupPage extends StatefulWidget {
   _GroupPageState createState() => _GroupPageState();
 }
 
-class _GroupPageState extends State<GroupPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _GroupPageState extends State<GroupPage> {
   final groupsManager = App.manager<GroupsManager>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -43,7 +40,6 @@ class _GroupPageState extends State<GroupPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
         body: SmartRefresher(
       enablePullDown: true,
