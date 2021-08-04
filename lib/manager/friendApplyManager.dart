@@ -28,7 +28,7 @@ class FriendApplyManager extends ChangeNotifier {
       print("_myProfileData ${stored}");
       try {
         MyProfile userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        applyTextEditingController.text = '我是${userInfo.nickName}';
+        applyTextEditingController.text = '我是';
       } catch (e) {}
     } else {
       showToast('请重新登录');
