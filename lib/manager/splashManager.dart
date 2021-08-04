@@ -21,11 +21,11 @@ class SplashManager extends ChangeNotifier {
   String _token = '';
 
   /// 初始化
-  init() {}
+  init() {
+    Future.delayed(Duration(seconds: 1), () => _checkToken());
+  }
 
   goto() {
-    _checkToken();
-
     Future.delayed(Duration.zero,
         () => Routers.navigateAndRemoveUntil(_token == '' ? '/login' : '/'));
   }
@@ -42,8 +42,10 @@ class SplashManager extends ChangeNotifier {
     ApiResult result = await API.getConfig();
     if (result.isSuccess()) {
       SP.set(SPKey.config, jsonEncode(result.getData()));
+      return result.isSuccess();
+    } else {
+      return false;
     }
-    return result.isSuccess();
   }
 
   @override

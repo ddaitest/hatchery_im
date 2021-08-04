@@ -146,6 +146,14 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           type: BottomNavigationBarType.fixed,
           onTap: _switchTab, //点击事件
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }

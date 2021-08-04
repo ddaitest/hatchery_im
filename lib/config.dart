@@ -28,6 +28,16 @@ class TimeConfig {
 const mainTabs = [
   TabInfo(Icons.messenger_outline, Icons.messenger, 0),
   TabInfo(Icons.account_circle_outlined, Icons.account_circle, 1),
+  // Column(
+  //   mainAxisSize: MainAxisSize.min,
+  //   children: <Widget>[
+  //     Icon(
+  //       Icons.home,
+  //       color: Colors.transparent,
+  //     ),
+  //     Text("发布", style: TextStyle(color: Color(0xFFEEEEEE)))
+  //   ],
+  // ),
   TabInfo(Icons.group_outlined, Icons.group, 2),
   TabInfo(Icons.perm_identity, Icons.person, 3),
 ];

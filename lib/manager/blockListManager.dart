@@ -43,7 +43,7 @@ class BlockListManager extends ChangeNotifier {
     blackUserIds.add(userID);
     ApiResult result = await API.delBlockFriend(blackUserIds);
     if (result.isSuccess()) {
-      showToast('好友已拉黑');
+      showToast('已解除拉黑');
     } else {
       showToast('${result.info}');
     }

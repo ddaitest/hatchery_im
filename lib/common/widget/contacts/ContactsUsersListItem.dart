@@ -357,9 +357,6 @@ class BlockListItem extends StatelessWidget {
           color: Flavors.colorInfo.mainBackGroundColor,
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ListTile(
-            onTap: () => Routers.navigateTo('/friend_profile',
-                    arg: blockContactsList![index].userID)
-                .then((value) => value ?? false ? manager.refreshData() : null),
             dense: true,
             leading: CachedNetworkImage(
                 imageUrl: blockContactsList![index].icon!,
@@ -386,6 +383,14 @@ class BlockListItem extends StatelessWidget {
                         overflow: TextOverflow.ellipsis),
                   )
                 : LoadingView(),
+            subtitle: Container(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(blockContactsList![index].notes ?? '',
+                  style: Flavors.textStyles.searchContactsNotesText,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
+            ),
             trailing: blockContactsList != null
                 ? TextButton(
                     onPressed: () => _blockConfirmDialog(index),
