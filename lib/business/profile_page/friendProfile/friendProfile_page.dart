@@ -18,8 +18,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../edit_profile/edit_detail.dart';
 
 class FriendProfilePage extends StatefulWidget {
-  final String? friendId;
-  FriendProfilePage({this.friendId});
+  final String? userID;
+  FriendProfilePage({this.userID});
   @override
   _FriendProfilePageState createState() => _FriendProfilePageState();
 }
@@ -28,7 +28,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   final manager = App.manager<FriendProfileManager>();
   @override
   void initState() {
-    manager.init(widget.friendId!);
+    manager.init(widget.userID!);
     super.initState();
   }
 
@@ -131,11 +131,11 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               App.navState.currentContext!,
               MaterialPageRoute(
                   builder: (_) => FriendsProfileEditDetailPage(
-                        widget.friendId!,
+                        widget.userID!,
                         '设置备注',
                         usersInfo!.remarks ?? '',
                       ))).then((value) =>
-              value ?? false ? manager.refreshData(widget.friendId!) : null),
+              value ?? false ? manager.refreshData(widget.userID!) : null),
           child: _dataCellView("设置备注", ''),
         ),
         GestureDetector(
@@ -147,9 +147,9 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         ),
         GestureDetector(
             onTap: () =>
-                Routers.navigateTo('/friend_setting', arg: usersInfo!.friendId)
+                Routers.navigateTo('/friend_setting', arg: usersInfo!.userID)
                     .then((value) => value ?? false
-                        ? manager.refreshData(widget.friendId!)
+                        ? manager.refreshData(widget.userID!)
                         : null),
             child: _dataCellView("其他设置", '', showDivider: false)),
       ],
@@ -238,7 +238,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
         onPressed: () =>
-            Routers.navigateTo('/friend_apply', arg: widget.friendId!),
+            Routers.navigateTo('/friend_apply', arg: widget.userID!),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,

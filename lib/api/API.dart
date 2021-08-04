@@ -13,6 +13,7 @@ extension ExtendedDio on Dio {
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.data} ');
       print('HTTP.url: ${options.uri} ');
+      print('HTTP.headers: ${options.headers} ');
       print('HTTP.queryParameters: ${options.queryParameters} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
@@ -275,7 +276,7 @@ class API {
   }
 
   ///好友申请回复
-  ///status： -1 拒绝；0：同意
+  ///status： -1 拒绝；1：同意
   static Future<ApiResult> replyNewContactsRes(
       String usersID, int status) async {
     Map<String, dynamic> body = {
@@ -550,9 +551,6 @@ class API {
   ///获取用户信息
   static Future<ApiResult> getUsersInfo(String userID) async {
     init();
-    // Map<String, dynamic> queryParam = {
-    //   "userID": userID,
-    // };
     try {
       Response response = await _dio.get("/users/info/$userID",
           // queryParameters: queryParam,

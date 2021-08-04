@@ -250,7 +250,7 @@ class ReceiveContactsUsersList extends StatelessWidget {
                                             manager.replyNewContactsResTap(
                                                 contactsApplicationList![index]
                                                     .friendId,
-                                                0),
+                                                1),
                                         child: Container(
                                           padding:
                                               const EdgeInsets.only(left: 15.0),
@@ -357,6 +357,9 @@ class BlockListItem extends StatelessWidget {
           color: Flavors.colorInfo.mainBackGroundColor,
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ListTile(
+            onTap: () => Routers.navigateTo('/friend_profile',
+                    arg: blockContactsList![index].userID)
+                .then((value) => value ?? false ? manager.refreshData() : null),
             dense: true,
             leading: CachedNetworkImage(
                 imageUrl: blockContactsList![index].icon!,

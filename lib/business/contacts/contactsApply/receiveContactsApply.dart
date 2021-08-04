@@ -66,7 +66,7 @@ class _ReceiveContactsApplyPageState extends State<ReceiveContactsApplyPage> {
             maxRadius: 20,
             child: Center(
               child: Icon(
-                Icons.person_add_alt_1,
+                Icons.send_to_mobile,
                 color: Colors.white,
               ),
             ),

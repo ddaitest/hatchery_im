@@ -11,6 +11,7 @@ class UsersInfo {
   final String loginName;
   final String nickName;
   final String? icon;
+  final String? remarks;
   final String? notes;
   final String? phone;
   final String? email;
@@ -25,6 +26,7 @@ class UsersInfo {
       required this.loginName,
       required this.nickName,
       this.icon,
+      this.remarks,
       this.notes,
       this.phone,
       this.email,

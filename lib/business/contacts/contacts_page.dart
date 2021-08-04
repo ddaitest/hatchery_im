@@ -105,7 +105,7 @@ class _ContactsState extends State<ContactsPage> {
                 maxRadius: 20,
                 child: Center(
                   child: Icon(
-                    Icons.contact_phone,
+                    Icons.add_to_home_screen,
                     color: Colors.white,
                   ),
                 ),

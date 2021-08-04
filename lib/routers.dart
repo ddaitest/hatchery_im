@@ -40,14 +40,14 @@ class Routers {
       case '/friend_profile':
         return MaterialPageRoute(
             builder: (_) => FriendProfilePage(
-                  friendId: settings.arguments as String,
+                  userID: settings.arguments as String,
                 ));
       case '/profile_edit':
         return MaterialPageRoute(builder: (_) => ProfileEditPage());
       case '/friend_info_more':
         return MaterialPageRoute(
             builder: (_) => FriendInfoMorePage(
-                  settings.arguments as Friends,
+                  settings.arguments as UsersInfo,
                 ));
       case '/friend_setting':
         return MaterialPageRoute(
@@ -64,7 +64,7 @@ class Routers {
       case '/chat_detail':
         return MaterialPageRoute(
             builder: (_) =>
-                ChatDetailPage(friendInfo: settings.arguments as Friends));
+                ChatDetailPage(usersInfo: settings.arguments as UsersInfo));
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       case '/about':

@@ -73,7 +73,7 @@ class FriendProfileManager extends ChangeNotifier {
   Future<dynamic> setFriendRemark(String friendId, String remarkText) async {
     ApiResult result = await API.setFriendRemarkData(friendId, remarkText);
     if (result.isSuccess()) {
-      showToast('修改成功');
+      showToast('备注修改成功');
       Future.delayed(Duration(milliseconds: 200), () {
         Navigator.of(App.navState.currentContext!).pop(true);
       });

@@ -19,8 +19,8 @@ enum MessageBelongType {
 }
 
 class ChatDetailPage extends StatefulWidget {
-  final Friends? friendInfo;
-  ChatDetailPage({this.friendInfo});
+  final UsersInfo? usersInfo;
+  ChatDetailPage({this.usersInfo});
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -39,8 +39,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    manager.init(widget.friendInfo!.friendId);
-    // manager.queryFriendsHistoryMessages(widget.friendInfo.friendId, 0);
+    manager.init(widget.usersInfo!.userID);
+    // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
   }
 
@@ -55,8 +55,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          ChatDetailPageAppBar.chatDetailAppBar(widget.friendInfo!.nickName),
+      appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.usersInfo!.nickName),
       backgroundColor: Colors.grey[100],
       body: Column(
         children: <Widget>[
@@ -83,7 +82,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             .compareTo(value[index].sender) ==
                         0
                     ? '${manager.myProfileData!.icon}'
-                    : '${widget.friendInfo!.icon}',
+                    : '${widget.usersInfo!.icon}',
                 messageBelongType: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
@@ -224,7 +223,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
         manager.timingStartMethod();
-        manager.startVoiceRecord(widget.friendInfo!.friendId);
+        manager.startVoiceRecord(widget.usersInfo!.userID);
       },
       onLongPressEnd: (LongPressEndDetails details) {
         Vibration.vibrate(duration: 100);

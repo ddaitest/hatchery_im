@@ -90,7 +90,7 @@ class ContactsManager extends ChangeNotifier {
         value.getDataList(
             (m) => m.forEach((key, value) {
                   if (key == 'status') {
-                    if (value == 1) {
+                    if (value == 0) {
                       untreatedReceiveContactsApplyLength =
                           untreatedReceiveContactsApplyLength + 1;
                     }

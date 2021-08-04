@@ -57,7 +57,7 @@ class ContactsApplyManager extends ChangeNotifier {
       if (value.isSuccess()) {
         // friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         // print('DEBUG=>  _queryFriendsRes ${friendsList}');
-        showToast(status == 0 ? '已同意' : '已拒绝');
+        showToast(status == 1 ? '已同意' : '已拒绝');
         Future.delayed(Duration(milliseconds: 300), () {
           _receiveNewFriendsApplicationRes();
         });
