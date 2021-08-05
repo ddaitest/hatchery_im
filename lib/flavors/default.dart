@@ -237,6 +237,7 @@ class ColorInfo {
   final redColor = Colors.red;
   final dividerColor = Colors.black12;
   final darkGreyColor = Colors.grey[800];
+  final normalGreyColor = Colors.grey[600];
   final blueGrey = Colors.blueGrey;
   final lightGrep = Colors.grey[400];
   get btnTextColor => mainColor;

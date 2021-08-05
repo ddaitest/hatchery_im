@@ -62,19 +62,22 @@ class _ChatPageState extends State<ChatPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SearchBarView(),
-            ListView.builder(
-              itemCount: chatUsers.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ChatUsersListItem(
-                  text: chatUsers[index].text,
-                  secondaryText: chatUsers[index].secondaryText,
-                  image: chatUsers[index].image,
-                  time: chatUsers[index].time,
-                  isMessageRead: (index == 0 || index == 3) ? true : false,
-                );
-              },
+            Container(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: ListView.builder(
+                itemCount: chatUsers.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return ChatUsersListItem(
+                    text: chatUsers[index].text,
+                    secondaryText: chatUsers[index].secondaryText,
+                    image: chatUsers[index].image,
+                    time: chatUsers[index].time,
+                    isMessageRead: (index == 0 || index == 3) ? true : false,
+                  );
+                },
+              ),
             ),
           ],
         ),

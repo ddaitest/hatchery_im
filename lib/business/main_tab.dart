@@ -46,8 +46,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     // _tabController = TabController(vsync: this, length: _tabBodies.length);
-    systemUiOverlayStyle =
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent);
 
     Future.delayed(Duration.zero, () {
       MainTabHandler.setGotoFun((page) {
@@ -112,48 +110,83 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: _onWillPop,
-      child: Scaffold(
-        appBar: _tabIndex != 3
-            ? AppBarFactory.getMain(title, actions: [
-                PopupMenuButton<String>(
-                  onSelected: handleClick,
-                  icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
-                  itemBuilder: (BuildContext context) {
-                    return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice),
-                      );
-                    }).toList();
-                  },
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          appBar: _tabIndex != 3
+              ? AppBarFactory.getMain(title, actions: [
+                  PopupMenuButton<String>(
+                    onSelected: handleClick,
+                    icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
+                    itemBuilder: (BuildContext context) {
+                      return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(choice),
+                        );
+                      }).toList();
+                    },
+                  ),
+                ])
+              : null,
+          body: SafeArea(
+            child: PageView(
+              physics: const NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              children: _tabBodies,
+              // onPageChanged: (page) {
+              //   setState(() => _tabIndex = page);
+              // },
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            color: Flavors.colorInfo.mainBackGroundColor, //底部工具栏的颜色。
+            // shape: CircularNotchedRectangle(),
+            //设置底栏的形状，一般使用这个都是为了和floatingActionButton融合，
+            // 所以使用的值都是CircularNotchedRectangle(),有缺口的圆形矩形。
+            elevation: 0.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                _navBarItem(
+                  TabInfo(Icons.messenger_outline, Icons.messenger, 0),
                 ),
-              ])
-            : null,
-        body: SafeArea(
-          child: PageView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            children: _tabBodies,
-            // onPageChanged: (page) {
-            //   setState(() => _tabIndex = page);
-            // },
+                _navBarItem(
+                  TabInfo(
+                      Icons.account_circle_outlined, Icons.account_circle, 1),
+                ),
+                SizedBox(width: 5.0),
+                _navBarItem(
+                  TabInfo(Icons.group_outlined, Icons.group, 2),
+                ),
+                _navBarItem(
+                  TabInfo(Icons.perm_identity, Icons.person, 3),
+                ),
+              ],
+            ),
           ),
+          floatingActionButton: _floatingButtonView(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+        ));
+  }
+
+  Widget _floatingButtonView() {
+    return Container(
+      padding: EdgeInsets.all(4),
+      height: 50,
+      width: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(60),
+        color: Colors.red,
+      ),
+      child: FloatingActionButton(
+        elevation: 0.0,
+        onPressed: () {},
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _tabIndex,
-          items: bottomTabs.map((e) => _navBarItem(e)).toList(),
-          type: BottomNavigationBarType.fixed,
-          onTap: _switchTab, //点击事件
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
@@ -162,27 +195,28 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     setState(() {
       Log.log("$index", color: LColor.RED);
       _tabIndex = index;
-      // _setStatusBarColor(_tabIndex);
       _setAppBarInfo();
 
       _pageController.jumpToPage(index);
     });
   }
 
-  BottomNavigationBarItem _navBarItem(TabInfo info) {
-    return BottomNavigationBarItem(
-      icon: Badge(
-        position: BadgePosition.topEnd(top: -12, end: -12),
-        showBadge: info.index == 0 ? true : false,
-        elevation: 0.5,
-        badgeContent: Text('99', style: Flavors.textStyles.homeTabBubbleText),
-        animationType: BadgeAnimationType.scale,
-        child: Icon(
-          _tabIndex != info.index ? info.icon : info.activeIcon,
-          size: 35,
-        ),
-      ),
-      title: Container(),
+  Widget _navBarItem(TabInfo info) {
+    return Badge(
+      position: BadgePosition.topEnd(top: -12, end: -12),
+      showBadge: info.index == 0 ? true : false,
+      elevation: 0.5,
+      badgeContent: Text('99', style: Flavors.textStyles.homeTabBubbleText),
+      animationType: BadgeAnimationType.scale,
+      child: IconButton(
+          onPressed: () => _switchTab(info.index),
+          icon: Icon(
+            _tabIndex != info.index ? info.icon : info.activeIcon,
+            size: 35,
+            color: _tabIndex == info.index
+                ? Flavors.colorInfo.mainColor
+                : Flavors.colorInfo.normalGreyColor,
+          )),
     );
   }
 
