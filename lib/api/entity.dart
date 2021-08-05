@@ -6,6 +6,24 @@ part 'entity.g.dart';
 ///flutter pub run build_runner build
 
 @JsonSerializable()
+class CustomMenuInfo {
+  final String? title;
+  final String? url;
+  final String? icon;
+
+  CustomMenuInfo({
+    this.title,
+    this.url,
+    this.icon,
+  });
+
+  factory CustomMenuInfo.fromJson(Map<String, dynamic> json) =>
+      _$CustomMenuInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CustomMenuInfoToJson(this);
+}
+
+@JsonSerializable()
 class UsersInfo {
   final String userID;
   final String loginName;

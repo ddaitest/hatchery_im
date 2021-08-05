@@ -6,6 +6,21 @@ part of 'entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+CustomMenuInfo _$CustomMenuInfoFromJson(Map<String, dynamic> json) {
+  return CustomMenuInfo(
+    title: json['title'] as String?,
+    url: json['url'] as String?,
+    icon: json['icon'] as String?,
+  );
+}
+
+Map<String, dynamic> _$CustomMenuInfoToJson(CustomMenuInfo instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'url': instance.url,
+      'icon': instance.icon,
+    };
+
 UsersInfo _$UsersInfoFromJson(Map<String, dynamic> json) {
   return UsersInfo(
     userID: json['userID'] as String,

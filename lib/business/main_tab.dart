@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/business/chat_home/chat_page.dart';
 import 'package:hatchery_im/business/contacts/contacts_page.dart';
@@ -9,6 +10,9 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:badges/badges.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/manager/splashManager.dart';
 import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +33,7 @@ class MainTab2 extends StatefulWidget {
 }
 
 class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
+  final manager = App.manager<SplashManager>();
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
   List<Widget> _tabBodies = [
@@ -41,7 +46,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   var _pageController = PageController();
   int _tabIndex = 0;
   String title = '消息列表';
-  late SystemUiOverlayStyle systemUiOverlayStyle;
 
   @override
   void initState() {
@@ -139,33 +143,41 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             ),
           ),
           bottomNavigationBar: BottomAppBar(
-            color: Flavors.colorInfo.mainBackGroundColor, //底部工具栏的颜色。
-            // shape: CircularNotchedRectangle(),
-            //设置底栏的形状，一般使用这个都是为了和floatingActionButton融合，
-            // 所以使用的值都是CircularNotchedRectangle(),有缺口的圆形矩形。
-            elevation: 0.5,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                _navBarItem(
-                  TabInfo(Icons.messenger_outline, Icons.messenger, 0),
+              color: Flavors.colorInfo.mainBackGroundColor, //底部工具栏的颜色。
+              // shape: CircularNotchedRectangle(),
+              //设置底栏的形状，一般使用这个都是为了和floatingActionButton融合，
+              // 所以使用的值都是CircularNotchedRectangle(),有缺口的圆形矩形。
+              elevation: 1.0,
+              child: Container(
+                height: 50.0.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    _navBarItem(
+                      TabInfo(Icons.messenger_outline, Icons.messenger, 0),
+                    ),
+                    _navBarItem(
+                      TabInfo(Icons.account_circle_outlined,
+                          Icons.account_circle, 1),
+                    ),
+                    manager.customMenuInfo != null
+                        ? SizedBox(
+                            width: 30.0.w,
+                          )
+                        : Container(),
+                    _navBarItem(
+                      TabInfo(Icons.group_outlined, Icons.group, 2),
+                    ),
+                    _navBarItem(
+                      TabInfo(Icons.perm_identity, Icons.person, 3),
+                    ),
+                  ],
                 ),
-                _navBarItem(
-                  TabInfo(
-                      Icons.account_circle_outlined, Icons.account_circle, 1),
-                ),
-                SizedBox(width: 5.0),
-                _navBarItem(
-                  TabInfo(Icons.group_outlined, Icons.group, 2),
-                ),
-                _navBarItem(
-                  TabInfo(Icons.perm_identity, Icons.person, 3),
-                ),
-              ],
-            ),
-          ),
-          floatingActionButton: _floatingButtonView(),
+              )),
+          floatingActionButton: manager.customMenuInfo != null
+              ? _floatingButtonView()
+              : Container(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
         ));
@@ -173,22 +185,51 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   Widget _floatingButtonView() {
     return Container(
-      padding: EdgeInsets.all(4),
-      height: 50,
-      width: 50,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(60),
-        color: Colors.red,
-      ),
-      child: FloatingActionButton(
-        elevation: 0.0,
-        onPressed: () {},
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+      height: 80.0.h,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Container(
+            child: FloatingActionButton(
+              backgroundColor: Flavors.colorInfo.mainBackGroundColor,
+              elevation: 1.0,
+              onPressed: () {},
+              child: _floatingPicView(),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 6.0),
+            child: Text(
+              '${manager.customMenuInfo?.title ?? ''}',
+              style: Flavors.textStyles.homeTabFloatingText,
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Widget _floatingPicView() {
+    return Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Flavors.colorInfo.mainBackGroundColor,
+        ),
+        child: manager.customMenuInfo?.icon != null
+            ? CachedNetworkImage(
+                imageUrl: manager.customMenuInfo!.icon!,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Icon(
+                  Icons.cloud_download_rounded,
+                  color: Colors.grey,
+                ),
+                errorWidget: (context, url, error) => Icon(
+                  Icons.cloud_download_rounded,
+                  color: Colors.grey,
+                ),
+              )
+            : Container());
   }
 
   _switchTab(int index) {
@@ -214,7 +255,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             _tabIndex != info.index ? info.icon : info.activeIcon,
             size: 35,
             color: _tabIndex == info.index
-                ? Flavors.colorInfo.mainColor
+                ? Colors.blue
                 : Flavors.colorInfo.normalGreyColor,
           )),
     );

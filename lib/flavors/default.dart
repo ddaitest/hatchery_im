@@ -163,6 +163,9 @@ class TextStyles {
       color: ColorInfo().mainTextColor,
       fontWeight: FontWeight.w400);
 
+  final TextStyle homeTabFloatingText = TextStyle(
+      fontSize: 12.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);
+
   final TextStyle chatHomeSlideText = TextStyle(
       fontSize: 13.0.sp,
       color: ColorInfo().mainTextColor,
