@@ -13,6 +13,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/splashManager.dart';
+import 'package:hatchery_im/api/entity.dart';
 import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';
@@ -36,6 +37,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   final manager = App.manager<SplashManager>();
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
+  CustomMenuInfo? _customMenuInfo;
+  List<Widget> _bottomBarIcon = [];
   List<Widget> _tabBodies = [
     ChatPage(),
     ContactsPage(),
@@ -49,6 +52,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    /// 判断config返回的数据是否为null，为null则底部展示原有的4个icon，如果不为null则展示中间区域
+    _customMenuInfo = manager.customMenuInfo;
+    _setBottomBar();
     // _tabController = TabController(vsync: this, length: _tabBodies.length);
 
     Future.delayed(Duration.zero, () {
@@ -59,6 +65,13 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       });
     });
     super.initState();
+  }
+
+  void _setBottomBar() {
+    _bottomBarIcon = bottomTabs.map((e) => _navBarItem(e)).toList();
+    if (_customMenuInfo != null) {
+      _bottomBarIcon.insert(2, SizedBox(width: 30.0.w));
+    }
   }
 
   _setAppBarInfo() {
@@ -77,19 +90,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
         break;
     }
   }
-
-  // _setStatusBarColor(int index) {
-  //   if (index == 3) {
-  //     systemUiOverlayStyle = SystemUiOverlayStyle(
-  //         statusBarColor: Flavors.colorInfo.mainColor,
-  //         statusBarIconBrightness: Brightness.light);
-  //   } else {
-  //     systemUiOverlayStyle = SystemUiOverlayStyle(
-  //         statusBarColor: Colors.transparent,
-  //         statusBarIconBrightness: Brightness.dark);
-  //   }
-  //   SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-  // }
 
   @override
   void dispose() {
@@ -153,31 +153,11 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   mainAxisSize: MainAxisSize.max,
-                  children: [
-                    _navBarItem(
-                      TabInfo(Icons.messenger_outline, Icons.messenger, 0),
-                    ),
-                    _navBarItem(
-                      TabInfo(Icons.account_circle_outlined,
-                          Icons.account_circle, 1),
-                    ),
-                    manager.customMenuInfo != null
-                        ? SizedBox(
-                            width: 30.0.w,
-                          )
-                        : Container(),
-                    _navBarItem(
-                      TabInfo(Icons.group_outlined, Icons.group, 2),
-                    ),
-                    _navBarItem(
-                      TabInfo(Icons.perm_identity, Icons.person, 3),
-                    ),
-                  ],
+                  children: _bottomBarIcon,
                 ),
               )),
-          floatingActionButton: manager.customMenuInfo != null
-              ? _floatingButtonView()
-              : Container(),
+          floatingActionButton:
+              _customMenuInfo != null ? _floatingButtonView() : null,
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
         ));
@@ -193,14 +173,15 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             child: FloatingActionButton(
               backgroundColor: Flavors.colorInfo.mainBackGroundColor,
               elevation: 1.0,
-              onPressed: () {},
+              onPressed: () => Routers.navigateTo('/web_view',
+                  arg: {"url": _customMenuInfo!.url!}),
               child: _floatingPicView(),
             ),
           ),
           Container(
             padding: const EdgeInsets.only(top: 6.0),
             child: Text(
-              '${manager.customMenuInfo?.title ?? ''}',
+              '${_customMenuInfo!.title ?? ''}',
               style: Flavors.textStyles.homeTabFloatingText,
             ),
           ),
@@ -216,9 +197,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           shape: BoxShape.circle,
           color: Flavors.colorInfo.mainBackGroundColor,
         ),
-        child: manager.customMenuInfo?.icon != null
+        child: _customMenuInfo!.icon != null
             ? CachedNetworkImage(
-                imageUrl: manager.customMenuInfo!.icon!,
+                imageUrl: _customMenuInfo!.icon!,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Icon(
                   Icons.cloud_download_rounded,
@@ -234,8 +215,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   _switchTab(int index) {
     setState(() {
-      Log.log("$index", color: LColor.RED);
       _tabIndex = index;
+      _setBottomBar();
+      Log.log("$_tabIndex", color: LColor.RED);
       _setAppBarInfo();
 
       _pageController.jumpToPage(index);

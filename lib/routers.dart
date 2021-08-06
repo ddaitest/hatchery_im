@@ -14,6 +14,7 @@ import 'package:hatchery_im/business/block/blockList.dart';
 import 'package:hatchery_im/business/login/phone/otp_page.dart';
 import 'package:hatchery_im/business/about/about.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page.dart';
+import 'package:hatchery_im/common/widget/webview_common.dart';
 import 'business/chat_detail/chat_detail_page.dart';
 import 'business/contacts/contactsApply/receiveContactsApply.dart';
 import 'business/contacts/contactsApply/sendContactsApply.dart';
@@ -73,6 +74,12 @@ class Routers {
         return MaterialPageRoute(builder: (_) => ReceiveContactsApplyPage());
       case '/send_contacts_apply':
         return MaterialPageRoute(builder: (_) => SendContactsApplyPage());
+      case '/web_view':
+        //跳转 web view, 解析对应参数。
+        Map map = settings.arguments as Map<String, String>;
+        return CupertinoPageRoute(
+            builder: (_) =>
+                WebViewPage(map["url"], map["path"], map["title"] ?? ""));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:
