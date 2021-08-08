@@ -74,7 +74,7 @@ class MessageCentre {
     engine?.init('ws://149.129.176.107:5889/ws', _userInfo?.userID ?? "",
         source: TARGET_PLATFORM);
     engine?.connect();
-    engine?.setListeners((t) => _singleton._newMsg(t));
+    // engine?.setListeners((t) => _singleton._newMsg(t));
     Log.yellow("MessageCentre.init() - finish");
     sendAuth();
   }

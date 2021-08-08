@@ -36,14 +36,9 @@ class SplashManager extends ChangeNotifier {
   }
 
   void _checkToken() {
-    String? _userInfoData = SP.getString(SPKey.userInfo);
-    if (_userInfoData != null) {
-      _token = jsonDecode(_userInfoData)['token'];
+    _token = UserCentre.getToken();
+    if (_token != "") {
       _configToSP();
-      _token = UserCentre.getToken();
-      if (_token != "") {
-        _configToSP();
-      }
     }
   }
 
