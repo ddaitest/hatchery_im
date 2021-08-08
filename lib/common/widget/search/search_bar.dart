@@ -13,7 +13,7 @@ class SearchBarView extends StatelessWidget {
   SearchBarView(
       {this.searchHintText = "搜索",
       this.isEnabled = false,
-      this.padding = const EdgeInsets.all(16.0),
+      this.padding = const EdgeInsets.all(10.0),
       this.textEditingController,
       this.onTap,
       this.isAutofocus = false,
@@ -46,7 +46,7 @@ class SearchBarView extends StatelessWidget {
                 : null,
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.all(11),
+            contentPadding: const EdgeInsets.all(8.0),
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30),
                 borderSide: BorderSide.none),

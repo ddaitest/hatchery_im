@@ -34,10 +34,9 @@ class _WebViewPageState extends State<WebViewPage> {
 
   // String url = "";
   double progress = 0;
-  PullToRefreshController pullToRefreshController = PullToRefreshController();
 
   // final urlController = TextEditingController();
-  String _title = Flavors.stringsInfo.community_name;
+  String _title = Flavors.stringsInfo.loading;
 
   @override
   void initState() {
@@ -59,7 +58,7 @@ class _WebViewPageState extends State<WebViewPage> {
         ],
         options: ContextMenuOptions(hideDefaultSystemContextMenuItems: false),
         onCreateContextMenu: (hitTestResult) async {
-          print("onCreateContextMenu");
+          print("DEBUG=> ${hitTestResult.toJson()}");
           print(hitTestResult.extra);
           print(await webViewController.getSelectedText());
         },
@@ -75,26 +74,12 @@ class _WebViewPageState extends State<WebViewPage> {
               " " +
               contextMenuItemClicked.title);
         });
-
-    pullToRefreshController = PullToRefreshController(
-      options: PullToRefreshOptions(
-        color: Colors.blue,
-      ),
-      onRefresh: () async {
-        if (Platform.isAndroid) {
-          webViewController.reload();
-        } else if (Platform.isIOS) {
-          webViewController.loadUrl(
-              urlRequest: URLRequest(url: await webViewController.getUrl()));
-        }
-      },
-    );
   }
 
   gotoHomePage() async {
     String? pn = widget.pathName;
     if (pn == null || pn.isEmpty) {
-      Navigator.pop(context);
+      Navigator.of(context).pop(true);
     } else {
       Navigator.of(context).pushReplacementNamed(pn);
     }
@@ -118,7 +103,7 @@ class _WebViewPageState extends State<WebViewPage> {
           },
         ),
         centerTitle: true,
-        elevation: 0,
+        elevation: 0.0,
         backgroundColor: Colors.transparent,
       ),
       body: WillPopScope(
@@ -132,12 +117,16 @@ class _WebViewPageState extends State<WebViewPage> {
           onWebViewCreated: (controller) {
             webViewController = controller;
           },
-          // onLoadStart: (controller, url) {
-          // setState(() {
-          //   this.url = url.toString();
-          // urlController.text = this.url;
-          // });
-          // },
+          onLoadStart: (controller, url) {
+            controller.getTitle().then((value) {
+              Log.log("WEBVIEW=$url title=$_title", color: LColor.RED);
+              if (value != null && value != url.toString()) {
+                setState(() {
+                  this._title = value;
+                });
+              }
+            });
+          },
           androidOnPermissionRequest: (controller, origin, resources) async {
             return PermissionRequestResponse(
                 resources: resources,
@@ -175,19 +164,14 @@ class _WebViewPageState extends State<WebViewPage> {
                 });
               }
             });
-          },
-          onLoadError: (controller, url, code, message) {
-            pullToRefreshController.endRefreshing();
-          },
-          onProgressChanged: (controller, progress) {
-            if (progress == 100) {
-              pullToRefreshController.endRefreshing();
+            if (this._title == Flavors.stringsInfo.loading) {
+              setState(() {
+                this._title = 'BEE IM';
+              });
             }
-            setState(() {
-              this.progress = progress / 100;
-              // urlController.text = this.url;
-            });
           },
+          onLoadError: (controller, url, code, message) {},
+          onProgressChanged: (controller, progress) {},
           // onUpdateVisitedHistory: (controller, url, androidIsReload) {
           //   setState(() {
           //     // this.url = url.toString();

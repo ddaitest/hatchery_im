@@ -12,8 +12,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/splashManager.dart';
-import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/manager/appManager.dart';
 import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';
@@ -34,10 +33,9 @@ class MainTab2 extends StatefulWidget {
 }
 
 class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
-  final manager = App.manager<SplashManager>();
+  final manager = App.manager<AppManager>();
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
-  CustomMenuInfo? _customMenuInfo;
   List<Widget> _bottomBarIcon = [];
   List<Widget> _tabBodies = [
     ChatPage(),
@@ -46,15 +44,12 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     MyProfilePage()
   ];
 
-  var _pageController = PageController();
+  PageController _pageController = PageController();
   int _tabIndex = 0;
   String title = '消息列表';
 
   @override
   void initState() {
-    /// 判断config返回的数据是否为null，为null则底部展示原有的4个icon，如果不为null则展示中间区域
-    _customMenuInfo = manager.customMenuInfo;
-    _setBottomBar();
     // _tabController = TabController(vsync: this, length: _tabBodies.length);
 
     Future.delayed(Duration.zero, () {
@@ -69,7 +64,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   void _setBottomBar() {
     _bottomBarIcon = bottomTabs.map((e) => _navBarItem(e)).toList();
-    if (_customMenuInfo != null) {
+    if (manager.customMenuInfo != null) {
       _bottomBarIcon.insert(2, SizedBox(width: 30.0.w));
     }
   }
@@ -113,6 +108,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    _setBottomBar();
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
@@ -156,8 +152,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
                   children: _bottomBarIcon,
                 ),
               )),
-          floatingActionButton:
-              _customMenuInfo != null ? _floatingButtonView() : null,
+          floatingActionButton: manager.customMenuInfo != null
+              ? _floatingButtonView()
+              : Container(),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
         ));
@@ -173,15 +170,14 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             child: FloatingActionButton(
               backgroundColor: Flavors.colorInfo.mainBackGroundColor,
               elevation: 1.0,
-              onPressed: () => Routers.navigateTo('/web_view',
-                  arg: {"url": _customMenuInfo!.url!}),
+              onPressed: () {},
               child: _floatingPicView(),
             ),
           ),
           Container(
             padding: const EdgeInsets.only(top: 6.0),
             child: Text(
-              '${_customMenuInfo!.title ?? ''}',
+              '${manager.customMenuInfo?.title ?? ''}',
               style: Flavors.textStyles.homeTabFloatingText,
             ),
           ),
@@ -197,9 +193,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           shape: BoxShape.circle,
           color: Flavors.colorInfo.mainBackGroundColor,
         ),
-        child: _customMenuInfo!.icon != null
+        child: manager.customMenuInfo?.icon != null
             ? CachedNetworkImage(
-                imageUrl: _customMenuInfo!.icon!,
+                imageUrl: manager.customMenuInfo!.icon!,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Icon(
                   Icons.cloud_download_rounded,
@@ -215,9 +211,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   _switchTab(int index) {
     setState(() {
+      Log.log("$index", color: LColor.RED);
       _tabIndex = index;
-      _setBottomBar();
-      Log.log("$_tabIndex", color: LColor.RED);
       _setAppBarInfo();
 
       _pageController.jumpToPage(index);
