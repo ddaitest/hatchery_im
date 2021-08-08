@@ -1,10 +1,6 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
-import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/chatHomeManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';

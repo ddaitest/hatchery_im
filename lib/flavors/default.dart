@@ -163,6 +163,9 @@ class TextStyles {
       color: ColorInfo().mainTextColor,
       fontWeight: FontWeight.w400);
 
+  final TextStyle homeTabFloatingText = TextStyle(
+      fontSize: 12.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);
+
   final TextStyle chatHomeSlideText = TextStyle(
       fontSize: 13.0.sp,
       color: ColorInfo().mainTextColor,
@@ -182,10 +185,13 @@ class TextStyles {
       color: ColorInfo().subtitleColor);
 
   final TextStyle contactsApplicationAgreeText =
-      TextStyle(color: ColorInfo().mainColor);
+      TextStyle(fontSize: 14.0.sp, color: ColorInfo().mainColor);
 
   final TextStyle contactsApplicationDenyText =
-      TextStyle(color: ColorInfo().redColor);
+      TextStyle(fontSize: 14.0.sp, color: ColorInfo().redColor);
+
+  final TextStyle contactsApplyStatusText =
+      TextStyle(fontSize: 14.0.sp, color: ColorInfo().subtitleColor);
 
   final TextStyle friendProfileMainText = TextStyle(
       fontSize: 18.0.sp, fontWeight: FontWeight.w500, color: ColorInfo().diver);
@@ -204,6 +210,22 @@ class TextStyles {
       fontSize: 14.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().mainTextColor);
+
+  final TextStyle friendProfileBlockWarnText =
+      TextStyle(color: ColorInfo().redColor);
+
+  final TextStyle blockListDelBtnText = TextStyle(color: ColorInfo().redColor);
+
+  final TextStyle friendApplyTitleText = TextStyle(
+    fontSize: 14.0.sp,
+    color: ColorInfo().diver,
+    fontWeight: FontWeight.normal,
+  );
+
+  final TextStyle friendApplyBtnText = TextStyle(
+      fontSize: 15.0.sp,
+      fontWeight: FontWeight.bold,
+      color: ColorInfo().mainTextColor);
 }
 
 class SizesInfo {
@@ -218,6 +240,7 @@ class ColorInfo {
   final redColor = Colors.red;
   final dividerColor = Colors.black12;
   final darkGreyColor = Colors.grey[800];
+  final normalGreyColor = Colors.grey[600];
   final blueGrey = Colors.blueGrey;
   final lightGrep = Colors.grey[400];
   get btnTextColor => mainColor;

@@ -13,8 +13,9 @@ extension ExtendedDio on Dio {
     InterceptorsWrapper wrapper =
         InterceptorsWrapper(onRequest: (options, handler) {
       print('HTTP.onRequest: ${options.data} ');
-      print('HTTP.headers: ${options.headers} ');
       print('HTTP.url: ${options.uri} ');
+      print('HTTP.headers: ${options.headers} ');
+      print('HTTP.queryParameters: ${options.queryParameters} ');
       return handler.next(options); //continue
     }, onResponse: (response, handler) {
       print(
@@ -224,22 +225,51 @@ class API {
     }
   }
 
-  ///好友申请数据
-  static Future<ApiResult> getNewFriendsApplicationListData(
-    int size,
-    int page,
-  ) async {
-    Map<String, int> queryParam = {
+  ///接收的好友申请数据
+  static Future<ApiResult> getReceiveNewFriendsApplicationListData(
+      int size, int page,
+      {int? cursorID, String orderBy = 'lt'}) async {
+    Map<String, dynamic> queryParam = {
       "size": size,
       "page": page,
+      "orderBy": orderBy,
+      "cursorID": cursorID
     };
     init();
     try {
-      Response response = await _dio.get("/roster/friends/applications",
-          queryParameters: queryParam,
-          options: Options(
-            headers: {"BEE_TOKEN": _token},
-          ));
+      Response response =
+          await _dio.get("/roster/friends/applications/receive/history",
+              queryParameters: queryParam,
+              options: Options(
+                headers: {"BEE_TOKEN": _token},
+              ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///发送的好友申请数据
+  static Future<ApiResult> getSendNewFriendsApplicationListData(
+      int size, int page,
+      {int? cursorID, String orderBy = 'lt'}) async {
+    // todo
+    Map<String, dynamic> queryParam = {
+      "size": size,
+      "page": page,
+      "orderBy": orderBy,
+      "cursorID": cursorID
+    };
+    queryParam.removeWhere((key, value) => cursorID == null);
+    init();
+    try {
+      Response response =
+          await _dio.get("/roster/friends/applications/send/history",
+              queryParameters: queryParam,
+              options: Options(
+                headers: {"BEE_TOKEN": _token},
+              ));
       return ApiResult.of(response.data);
     } catch (e) {
       print("e = $e");
@@ -248,12 +278,11 @@ class API {
   }
 
   ///好友申请回复
-  ///status： -1 拒绝；0：同意
-  static Future<ApiResult> replyNewContactsRes(String friendId, int status,
-      {String notes = ''}) async {
+  ///status： -1 拒绝；1：同意
+  static Future<ApiResult> replyNewContactsRes(
+      String usersID, int status) async {
     Map<String, dynamic> body = {
-      "friendId": friendId,
-      "notes": notes,
+      "friendId": usersID,
       "status": status,
     };
     init();
@@ -426,6 +455,77 @@ class API {
     }
   }
 
+  ///删除好友
+  static Future<ApiResult> deleteFriend(List<String> friendList) async {
+    Map<String, List> body = {"userIdList": friendList};
+    init();
+    try {
+      Response response = await _dio.post("/roster/delete/friend",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///拉黑好友
+  static Future<ApiResult> blockFriend(List<String> friendList) async {
+    Map<String, List> body = {"blackUserIds": friendList};
+    init();
+    try {
+      Response response = await _dio.post("/roster/black_list/add",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///解除拉黑好友
+  static Future<ApiResult> delBlockFriend(List<String> friendList) async {
+    Map<String, List> body = {"blackUserIds": friendList};
+    init();
+    try {
+      Response response = await _dio.post("/roster/black_list/del",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///拉黑列表
+  static Future<ApiResult> getBlockList(int size, int page) async {
+    Map<String, int> queryParam = {
+      "size": size,
+      "page": page,
+    };
+    init();
+    try {
+      Response response = await _dio.get("/roster/black_list/list",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取群聊离线消息
   static Future<ApiResult> getGroupHistory(
       {String? groupID, int? page, int? size, int? currentMsgID}) async {
@@ -440,6 +540,44 @@ class API {
       if (currentMsgID == 0) queryParam.remove("currentMsgID");
       Response response = await _dio.get("/messages/groupchat/history",
           queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取用户信息
+  static Future<ApiResult> getUsersInfo(String userID) async {
+    init();
+    try {
+      Response response = await _dio.get("/users/info/$userID",
+          // queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///发起好友申请
+  static Future<ApiResult> friendApplyRes(
+      String userID, String? desc, String? remarks) async {
+    Map<String, String> body = {
+      "friendId": userID,
+      "desc": desc!,
+      "remarks": remarks!
+    };
+    init();
+    try {
+      Response response = await _dio.post("/roster/create",
+          data: json.encode(body),
           options: Options(
             headers: {"BEE_TOKEN": _token},
           ));

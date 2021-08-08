@@ -15,11 +15,12 @@ import 'package:hatchery_im/manager/contactsManager.dart';
 import 'package:hatchery_im/manager/contactsApplicationManager.dart';
 import 'package:hatchery_im/manager/searchNewContactsManager.dart';
 import 'package:hatchery_im/manager/groupsManager.dart';
-import 'package:hatchery_im/manager/newGroupsManager.dart';
 import 'package:hatchery_im/manager/myProfileManager.dart';
 import 'package:hatchery_im/manager/friendProfileManager.dart';
 import 'package:hatchery_im/manager/profileEditManager.dart';
 import 'package:hatchery_im/manager/profileEditDetailManager.dart';
+import 'package:hatchery_im/manager/friendApplyManager.dart';
+import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/selectContactsModelManager.dart';
 
@@ -48,13 +49,15 @@ void main() {
         ChangeNotifierProvider(create: (_) => RegisterManager()),
         ChangeNotifierProvider(create: (_) => ContactsManager()),
         ChangeNotifierProvider(create: (_) => SearchNewContactsManager()),
-        ChangeNotifierProvider(create: (_) => ContactsApplicationManager()),
+        ChangeNotifierProvider(create: (_) => ContactsApplyManager()),
         ChangeNotifierProvider(create: (_) => GroupsManager()),
         // ChangeNotifierProvider(create: (_) => NewGroupsManager()),
         ChangeNotifierProvider(create: (_) => MyProfileManager()),
         ChangeNotifierProvider(create: (_) => FriendProfileManager()),
         ChangeNotifierProvider(create: (_) => ProfileEditManager()),
         ChangeNotifierProvider(create: (_) => ProfileEditDetailManager()),
+        ChangeNotifierProvider(create: (_) => FriendApplyManager()),
+        ChangeNotifierProvider(create: (_) => BlockListManager()),
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),
         ChangeNotifierProvider(create: (_) => SelectContactsModelManager()),

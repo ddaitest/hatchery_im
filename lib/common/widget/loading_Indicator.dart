@@ -5,7 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class IndicatorView extends StatelessWidget {
   final String tipsText;
-  IndicatorView({this.tipsText = '数据加载中...'});
+  final bool showLoadingIcon;
+  IndicatorView({this.tipsText = '数据加载中...', this.showLoadingIcon = true});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class IndicatorView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CupertinoActivityIndicator(),
+              showLoadingIcon ? CupertinoActivityIndicator() : Container(),
               SizedBox(
                 height: 10.0.h,
               ),

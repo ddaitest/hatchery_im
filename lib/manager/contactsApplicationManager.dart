@@ -4,42 +4,65 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
-import 'package:flutter/material.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/api/entity.dart';
-import 'dart:collection';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import '../config.dart';
 
-class ContactsApplicationManager extends ChangeNotifier {
-  List<SlideActionInfo> slideAction = [];
+class ContactsApplyManager extends ChangeNotifier {
+  //发送的好友申请数据
+  List<FriendsApplicationInfo> sendContactsApplyList = [];
+  //接收的好友申请数据
+  List<FriendsApplicationInfo>? receiveContactsApplyList;
 
   /// 初始化
-  init() {}
+  init() {
+    _sendNewFriendsApplicationRes();
+    _receiveNewFriendsApplicationRes();
+  }
 
-  // querySearchNewContactsData() async {
-  //   API.searchNewContacts(searchController!.text).then((value) {
-  //     if (value.isSuccess()) {
-  //       searchNewContactsList =
-  //           value.getDataList((m) => SearchNewContactsInfo.fromJson(m));
-  //       print('DEBUG=>  querySearchNewContactsData ${searchNewContactsList}');
-  //       notifyListeners();
-  //     }
-  //   });
-  // }
+  _sendNewFriendsApplicationRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getSendNewFriendsApplicationListData(size, current).then((value) {
+      if (value.isSuccess()) {
+        print(
+            "DEBUG=> _sendNewFriendsApplicationRes _sendNewFriendsApplicationRes");
+        sendContactsApplyList = value
+            .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
+        notifyListeners();
+      }
+    });
+  }
 
-  Future<Function?> replyNewContactsResTap(String friendId, int status,
-      {String notes = ''}) async {
-    API.replyNewContactsRes(friendId, status, notes: notes).then((value) {
+  _receiveNewFriendsApplicationRes({
+    int size = 999,
+    int current = 0,
+  }) async {
+    API.getReceiveNewFriendsApplicationListData(size, current).then((value) {
+      if (value.isSuccess()) {
+        receiveContactsApplyList = value
+            .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
+        notifyListeners();
+      }
+    });
+  }
+
+  Future<Function?> replyNewContactsResTap(String usersID, int status) async {
+    API.replyNewContactsRes(usersID, status).then((value) {
       if (value.isSuccess()) {
         // friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         // print('DEBUG=>  _queryFriendsRes ${friendsList}');
-        notifyListeners();
+        showToast(status == 1 ? '已同意' : '已拒绝');
+        Future.delayed(Duration(milliseconds: 300), () {
+          _receiveNewFriendsApplicationRes();
+        });
+      } else {
+        showToast('${value.info}');
       }
     });
   }

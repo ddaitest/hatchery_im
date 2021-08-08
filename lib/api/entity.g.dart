@@ -6,6 +6,55 @@ part of 'entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+CustomMenuInfo _$CustomMenuInfoFromJson(Map<String, dynamic> json) {
+  return CustomMenuInfo(
+    title: json['title'] as String?,
+    url: json['url'] as String?,
+    icon: json['icon'] as String?,
+  );
+}
+
+Map<String, dynamic> _$CustomMenuInfoToJson(CustomMenuInfo instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'url': instance.url,
+      'icon': instance.icon,
+    };
+
+UsersInfo _$UsersInfoFromJson(Map<String, dynamic> json) {
+  return UsersInfo(
+    userID: json['userID'] as String,
+    loginName: json['loginName'] as String,
+    nickName: json['nickName'] as String,
+    icon: json['icon'] as String?,
+    remarks: json['remarks'] as String?,
+    notes: json['notes'] as String?,
+    phone: json['phone'] as String?,
+    email: json['email'] as String?,
+    address: json['address'] as String?,
+    status: json['status'] as int?,
+    updateTime: json['updateTime'] as String?,
+    createTime: json['createTime'] as String?,
+    isFriends: json['isFriends'] as bool,
+  );
+}
+
+Map<String, dynamic> _$UsersInfoToJson(UsersInfo instance) => <String, dynamic>{
+      'userID': instance.userID,
+      'loginName': instance.loginName,
+      'nickName': instance.nickName,
+      'icon': instance.icon,
+      'remarks': instance.remarks,
+      'notes': instance.notes,
+      'phone': instance.phone,
+      'email': instance.email,
+      'address': instance.address,
+      'status': instance.status,
+      'updateTime': instance.updateTime,
+      'createTime': instance.createTime,
+      'isFriends': instance.isFriends,
+    };
+
 Friends _$FriendsFromJson(Map<String, dynamic> json) {
   return Friends(
     friendId: json['friendId'] as String,
@@ -30,6 +79,24 @@ Map<String, dynamic> _$FriendsToJson(Friends instance) => <String, dynamic>{
       'address': instance.address,
       'nickName': instance.nickName,
       'status': instance.status,
+    };
+
+BlockList _$BlockListFromJson(Map<String, dynamic> json) {
+  return BlockList(
+    userID: json['userID'] as String,
+    loginName: json['loginName'] as String?,
+    nickName: json['nickName'] as String?,
+    icon: json['icon'] as String?,
+    notes: json['notes'] as String?,
+  );
+}
+
+Map<String, dynamic> _$BlockListToJson(BlockList instance) => <String, dynamic>{
+      'userID': instance.userID,
+      'loginName': instance.loginName,
+      'nickName': instance.nickName,
+      'icon': instance.icon,
+      'notes': instance.notes,
     };
 
 FriendsApplicationInfo _$FriendsApplicationInfoFromJson(
@@ -231,7 +298,8 @@ SearchNewContactsInfo _$SearchNewContactsInfoFromJson(
     json['loginName'] as String,
     json['nickName'] as String,
     json['icon'] as String,
-    json['notes'],
+    json['isFriends'] as bool,
+    json['notes'] as String?,
   );
 }
 
@@ -242,6 +310,7 @@ Map<String, dynamic> _$SearchNewContactsInfoToJson(
       'loginName': instance.loginName,
       'nickName': instance.nickName,
       'icon': instance.icon,
+      'isFriends': instance.isFriends,
       'notes': instance.notes,
     };
 

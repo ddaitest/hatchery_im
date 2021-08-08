@@ -16,5 +16,4 @@ class AppHandler {
   }
 
   static void saveSessions(List<Session>? sessions) {}
-
 }

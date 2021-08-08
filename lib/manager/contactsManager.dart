@@ -23,8 +23,8 @@ class ContactsManager extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   //联系人列表 数据
   List<Friends>? friendsList;
-  //好友申请 数据
-  List<FriendsApplicationInfo> contactsApplicationList = [];
+  //未处理的好友申请
+  int untreatedReceiveContactsApplyLength = 0;
   List<Friends> backupFriendsList = [];
 
   final size = 999; //暂时一次取完。
@@ -32,7 +32,7 @@ class ContactsManager extends ChangeNotifier {
   /// 初始化
   init() {
     _queryFriendsRes();
-    _queryNewFriendsApplicationRes();
+    _receiveNewFriendsApplicationRes();
     _searchInputListener();
   }
 
@@ -81,14 +81,22 @@ class ContactsManager extends ChangeNotifier {
     });
   }
 
-  _queryNewFriendsApplicationRes({
+  _receiveNewFriendsApplicationRes({
     int size = 999,
     int current = 0,
   }) async {
-    API.getNewFriendsApplicationListData(size, current).then((value) {
+    API.getReceiveNewFriendsApplicationListData(size, current).then((value) {
       if (value.isSuccess()) {
-        contactsApplicationList = value
-            .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
+        value.getDataList(
+            (m) => m.forEach((key, value) {
+                  if (key == 'status') {
+                    if (value == 0) {
+                      untreatedReceiveContactsApplyLength =
+                          untreatedReceiveContactsApplyLength + 1;
+                    }
+                  }
+                }),
+            type: 1);
         notifyListeners();
       }
     });
@@ -96,14 +104,16 @@ class ContactsManager extends ChangeNotifier {
 
   void refreshData() {
     searchController.clear();
+    untreatedReceiveContactsApplyLength = 0;
     FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
     _queryFriendsRes();
-    _queryNewFriendsApplicationRes();
+    _receiveNewFriendsApplicationRes();
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    untreatedReceiveContactsApplyLength = 0;
     super.dispose();
   }
 }

@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/manager/myProfileManager.dart';
-import 'package:hatchery_im/common/AppContext.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final String leadingImagePath;
   final String menuText;
   final String trailingText;
   final GestureTapCallback? onTap;
+  final bool showDivider;
   ProfileMenuItem(this.leadingImagePath, this.menuText,
-      {this.trailingText = '', this.onTap});
+      {this.trailingText = '', this.onTap, this.showDivider = true});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,7 @@ class ProfileMenuItem extends StatelessWidget {
               ),
               onTap: onTap,
             ),
-            dividerViewCommon(),
+            showDivider ? dividerViewCommon() : Container(),
           ],
         ));
   }

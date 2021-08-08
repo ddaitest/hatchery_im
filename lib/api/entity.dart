@@ -6,6 +6,61 @@ part 'entity.g.dart';
 ///flutter pub run build_runner build
 
 @JsonSerializable()
+class CustomMenuInfo {
+  final String? title;
+  final String? url;
+  final String? icon;
+
+  CustomMenuInfo({
+    this.title,
+    this.url,
+    this.icon,
+  });
+
+  factory CustomMenuInfo.fromJson(Map<String, dynamic> json) =>
+      _$CustomMenuInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CustomMenuInfoToJson(this);
+}
+
+@JsonSerializable()
+class UsersInfo {
+  final String userID;
+  final String loginName;
+  final String nickName;
+  final String? icon;
+  final String? remarks;
+  final String? notes;
+  final String? phone;
+  final String? email;
+  final String? address;
+  final int? status;
+  final String? updateTime;
+  final String? createTime;
+  final bool isFriends;
+
+  UsersInfo(
+      {required this.userID,
+      required this.loginName,
+      required this.nickName,
+      this.icon,
+      this.remarks,
+      this.notes,
+      this.phone,
+      this.email,
+      this.address,
+      required this.status,
+      this.updateTime,
+      this.createTime,
+      required this.isFriends});
+
+  factory UsersInfo.fromJson(Map<String, dynamic> json) =>
+      _$UsersInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UsersInfoToJson(this);
+}
+
+@JsonSerializable()
 class Friends {
   final String friendId;
   final String? remarks;
@@ -32,6 +87,27 @@ class Friends {
       _$FriendsFromJson(json);
 
   Map<String, dynamic> toJson() => _$FriendsToJson(this);
+}
+
+@JsonSerializable()
+class BlockList {
+  final String userID;
+  final String? loginName;
+  final String? nickName;
+  final String? icon;
+  final String? notes;
+
+  BlockList(
+      {required this.userID,
+      this.loginName,
+      this.nickName,
+      this.icon,
+      this.notes});
+
+  factory BlockList.fromJson(Map<String, dynamic> json) =>
+      _$BlockListFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BlockListToJson(this);
 }
 
 @JsonSerializable()
@@ -246,10 +322,11 @@ class SearchNewContactsInfo {
   String loginName = '';
   String nickName = '';
   String icon = '';
-  var notes;
+  bool isFriends;
+  String? notes;
 
-  SearchNewContactsInfo(
-      this.userID, this.loginName, this.nickName, this.icon, this.notes);
+  SearchNewContactsInfo(this.userID, this.loginName, this.nickName, this.icon,
+      this.isFriends, this.notes);
 
   factory SearchNewContactsInfo.fromJson(Map<String, dynamic> json) =>
       _$SearchNewContactsInfoFromJson(json);

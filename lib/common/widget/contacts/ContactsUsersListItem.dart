@@ -1,5 +1,4 @@
 import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/busniess/chat_detail/chat_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,11 +6,15 @@ import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/config.dart';
+import 'package:provider/provider.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/manager/contactsApplicationManager.dart';
+import 'package:hatchery_im/manager/blockListManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:cool_alert/cool_alert.dart';
 
 class ContactsUsersList extends StatelessWidget {
   final List<Friends>? friendsLists;
@@ -105,6 +108,8 @@ class SearchContactsUsersList extends StatelessWidget {
           color: Colors.white,
           padding: EdgeInsets.only(top: 10, bottom: 10),
           child: ListTile(
+            onTap: () => Routers.navigateTo('/friend_profile',
+                arg: newContactsList[index].userID),
             dense: true,
             leading: CachedNetworkImage(
                 imageUrl: newContactsList[index].icon,
@@ -140,9 +145,11 @@ class SearchContactsUsersList extends StatelessWidget {
                   overflow: TextOverflow.ellipsis),
             ),
             trailing: Container(
-              color: Colors.transparent,
               width: 40.0.w,
-              child: Text('好友'),
+              child: newContactsList[index].isFriends
+                  ? Icon(Icons.change_circle_outlined,
+                      color: Flavors.colorInfo.lightGrep)
+                  : Container(),
             ),
           ),
         );
@@ -151,97 +158,268 @@ class SearchContactsUsersList extends StatelessWidget {
   }
 }
 
-class NewContactsUsersList extends StatelessWidget {
-  final List<FriendsApplicationInfo> contactsApplicationList;
-  final Function? agreeBtnTap;
-  final List<SlideActionInfo> slideAction;
-  final Function? replyNewContactsResTap;
-  NewContactsUsersList(this.contactsApplicationList, this.agreeBtnTap,
-      this.slideAction, this.replyNewContactsResTap);
+class ReceiveContactsUsersList extends StatelessWidget {
+  final List<FriendsApplicationInfo>? contactsApplicationList;
+  ReceiveContactsUsersList({this.contactsApplicationList});
+
+  final manager = App.manager<ContactsApplyManager>();
 
   @override
   Widget build(BuildContext context) {
-    _addSlideAction();
+    return contactsApplicationList != null
+        ? contactsApplicationList!.isNotEmpty
+            ? ListView.builder(
+                itemCount: contactsApplicationList == null
+                    ? 2
+                    : contactsApplicationList!.length,
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Selector<ContactsApplyManager, int?>(
+                      builder:
+                          (BuildContext context, int? value, Widget? child) {
+                        return Slidable(
+                            actionPane: SlidableScrollActionPane(),
+                            actionExtentRatio: 0.25,
+                            secondaryActions: value == 0
+                                ? <Widget>[
+                                    IconSlideAction(
+                                      caption: '拒绝',
+                                      color: Colors.redAccent,
+                                      icon: Icons.no_accounts,
+                                      onTap: () =>
+                                          manager.replyNewContactsResTap(
+                                              contactsApplicationList![index]
+                                                  .friendId,
+                                              -1),
+                                    ),
+                                  ]
+                                : null,
+                            child: Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.all(5.0),
+                              child: ListTile(
+                                onTap: () => Routers.navigateTo(
+                                    '/friend_profile',
+                                    arg: contactsApplicationList![index]
+                                        .friendId),
+                                dense: true,
+                                leading: CachedNetworkImage(
+                                    imageUrl:
+                                        contactsApplicationList![index].icon,
+                                    placeholder: (context, url) => CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'images/default_avatar.png'),
+                                          maxRadius: 20,
+                                        ),
+                                    errorWidget: (context, url, error) =>
+                                        CircleAvatar(
+                                          backgroundImage: AssetImage(
+                                              'images/default_avatar.png'),
+                                          maxRadius: 20,
+                                        ),
+                                    imageBuilder: (context, imageProvider) {
+                                      return CircleAvatar(
+                                        backgroundImage: imageProvider,
+                                        maxRadius: 20,
+                                      );
+                                    }),
+                                title: Container(
+                                  child: Text(
+                                      contactsApplicationList![index].nickName,
+                                      style: Flavors
+                                          .textStyles.searchContactsNameText,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                subtitle: Container(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                      contactsApplicationList![index].remarks ??
+                                          '对方什么都没有说',
+                                      style: Flavors
+                                          .textStyles.searchContactsNotesText,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis),
+                                ),
+                                trailing: value == 0
+                                    ? TextButton(
+                                        onPressed: () =>
+                                            manager.replyNewContactsResTap(
+                                                contactsApplicationList![index]
+                                                    .friendId,
+                                                1),
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 15.0),
+                                          child: Text(
+                                              receiveContactsApplyStatusText(
+                                                  value!),
+                                              style: Flavors.textStyles
+                                                  .contactsApplicationAgreeText),
+                                        ),
+                                      )
+                                    : Text(
+                                        receiveContactsApplyStatusText(value!),
+                                        style: Flavors.textStyles
+                                            .contactsApplyStatusText),
+                              ),
+                            ));
+                      },
+                      selector: (BuildContext context,
+                          ContactsApplyManager contactsApplyManager) {
+                        return contactsApplyManager
+                            .receiveContactsApplyList![index].status;
+                      },
+                      shouldRebuild: (pre, next) => (pre != next));
+                },
+              )
+            : IndicatorView(tipsText: '没有收到新的申请', showLoadingIcon: false)
+        : IndicatorView();
+  }
+}
+
+class SendContactsUsersList extends StatelessWidget {
+  final List<FriendsApplicationInfo>? contactsApplicationList;
+  SendContactsUsersList({this.contactsApplicationList});
+
+  @override
+  Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: contactsApplicationList.length,
+      itemCount: contactsApplicationList!.length,
+      shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.all(5.0),
+          child: ListTile(
+            dense: true,
+            onTap: () => Routers.navigateTo('/friend_profile',
+                arg: contactsApplicationList![index].friendId),
+            leading: CachedNetworkImage(
+                imageUrl: contactsApplicationList![index].icon,
+                placeholder: (context, url) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 20,
+                  );
+                }),
+            title: Container(
+              child: Text(contactsApplicationList![index].nickName,
+                  style: Flavors.textStyles.searchContactsNameText,
+                  softWrap: true,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            subtitle: Container(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(contactsApplicationList![index].remarks ?? '没有发送申请理由',
+                  style: Flavors.textStyles.searchContactsNotesText,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            trailing: Text(
+                sendContactsApplyStatusText(
+                    contactsApplicationList![index].status),
+                style: Flavors.textStyles.contactsApplyStatusText),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class BlockListItem extends StatelessWidget {
+  final List<BlockList>? blockContactsList;
+  BlockListItem(this.blockContactsList);
+  final manager = App.manager<BlockListManager>();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: blockContactsList != null ? blockContactsList!.length : 8,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        return Slidable(
-            actionPane: SlidableScrollActionPane(),
-            actionExtentRatio: 0.25,
-            secondaryActions:
-                slideAction.map((e) => slideActionModel(e)).toList(),
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              child: ListTile(
-                dense: true,
-                leading: CachedNetworkImage(
-                    imageUrl: contactsApplicationList[index].icon,
-                    placeholder: (context, url) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 20,
-                        ),
-                    errorWidget: (context, url, error) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 20,
-                        ),
-                    imageBuilder: (context, imageProvider) {
-                      return CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 20,
-                      );
-                    }),
-                title: Container(
-                  child: Text(contactsApplicationList[index].nickName,
-                      style: Flavors.textStyles.searchContactsNameText,
-                      softWrap: true,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                ),
-                subtitle: Container(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Text(
-                      contactsApplicationList[index].remarks ?? '对方什么都没有说',
-                      style: Flavors.textStyles.searchContactsNotesText,
-                      softWrap: true,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                ),
-                trailing: TextButton(
-                  onPressed: () => agreeBtnTap,
-                  child: Text('同意',
-                      style: Flavors.textStyles.contactsApplicationAgreeText),
-                ),
-              ),
-            ));
+        return Container(
+          color: Flavors.colorInfo.mainBackGroundColor,
+          padding: EdgeInsets.only(top: 10, bottom: 10),
+          child: ListTile(
+            dense: true,
+            leading: CachedNetworkImage(
+                imageUrl: blockContactsList![index].icon!,
+                placeholder: (context, url) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                errorWidget: (context, url, error) => CircleAvatar(
+                      backgroundImage: AssetImage('images/default_avatar.png'),
+                      maxRadius: 20,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 20,
+                  );
+                }),
+            title: blockContactsList != null
+                ? Container(
+                    child: Text(blockContactsList![index].nickName!,
+                        style: Flavors.textStyles.searchContactsNameText,
+                        softWrap: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis),
+                  )
+                : LoadingView(),
+            subtitle: Container(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(blockContactsList![index].notes ?? '',
+                  style: Flavors.textStyles.searchContactsNotesText,
+                  softWrap: true,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            trailing: blockContactsList != null
+                ? TextButton(
+                    onPressed: () => _blockConfirmDialog(index),
+                    child: Text('移出黑名单',
+                        style: Flavors.textStyles.blockListDelBtnText),
+                  )
+                : Container(),
+          ),
+        );
       },
     );
   }
 
-  Widget slideActionModel(SlideActionInfo slideActionInfo) {
-    return IconSlideAction(
-      iconWidget: Container(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Text('${slideActionInfo.label}',
-              style: Flavors.textStyles.chatHomeSlideText)),
-      color: slideActionInfo.iconColor,
-      icon: slideActionInfo.icon,
-      onTap: () => slideActionInfo.onTap,
+  _blockConfirmDialog(int index) {
+    return CoolAlert.show(
+      context: App.navState.currentContext!,
+      type: CoolAlertType.info,
+      showCancelBtn: true,
+      cancelBtnText: '取消',
+      confirmBtnText: '确认',
+      confirmBtnColor: Flavors.colorInfo.mainColor,
+      onConfirmBtnTap: () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+        manager.delBlockFriend(blockContactsList![index].userID).then((value) {
+          manager.refreshData();
+        });
+      },
+      title: '确认移出黑名单?',
+      text: "移出黑名单后可以收到对方的消息",
     );
-  }
-
-  void _addSlideAction() {
-    slideAction.add(
-      SlideActionInfo('拒绝', Icons.no_accounts, Colors.red,
-          onTap: replyNewContactsResTap),
-    );
-    // slideAction.add(
-    //   SlideActionInfo('忽略', Icons.alarm_off, Flavors.colorInfo.mainColor,
-    //       onTap: ignoreBtnTap),
-    // );
   }
 }
