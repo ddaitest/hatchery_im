@@ -17,6 +17,7 @@ import 'app_handler.dart';
 
 typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);
+typedef NewMessageListener = void Function(Message news);
 
 const LOAD_SIZE = 50;
 
@@ -39,6 +40,7 @@ class MessageCentre {
   SessionListener? sessionListener;
 
   MessageListener? messageListener;
+  NewMessageListener? newMessageListener;
 
   String currentListenId = "";
 
@@ -46,10 +48,14 @@ class MessageCentre {
 
   static MyProfile? _userInfo;
   static String _token = "";
+  static String ipV4 = "0.0.0.0";
 
   static init() {
     Log.yellow("MessageCentre.init()");
     //获取 session
+    try {
+      Ipify.ipv4().then((value) => {ipV4 = value});
+    } catch (e) {}
     var centre = MessageCentre();
     centre._initSessions();
     LocalStore.init();
@@ -68,6 +74,7 @@ class MessageCentre {
     engine?.init('ws://149.129.176.107:5889/ws', _userInfo?.userID ?? "",
         source: TARGET_PLATFORM);
     engine?.connect();
+    engine?.setListeners((t) => _singleton._newMsg(t));
     Log.yellow("MessageCentre.init() - finish");
     sendAuth();
   }
@@ -83,9 +90,18 @@ class MessageCentre {
     }
   }
 
+  listenNewMessages(NewMessageListener listener) {
+    newMessageListener = listener;
+  }
+
   listenMessage(MessageListener listener, String friendId) {
     currentListenId = friendId;
     messageListener = listener;
+  }
+
+  _newMsg(Message msg) {
+    newMessageListener?.call(msg);
+    //TODO SAVE MESSAGE
   }
 
   ///获取 session 信息. 然后同步每个session 最新的消息。
@@ -197,11 +213,11 @@ class MessageCentre {
   _notifyMessageChanged(String friendID) {}
 
   static sendAuth() async {
+    Log.yellow("sendAuth");
     var infos = DeviceInfo.info.toString();
     var deviceInfo = md5.convert(utf8.encode(infos)).toString();
-    final ipv4 = await Ipify.ipv4();
     engine?.sendProtocol(Protocols.auth(
-            TARGET_PLATFORM, _userInfo?.userID ?? "", _token, deviceInfo, ipv4)
+            TARGET_PLATFORM, _userInfo?.userID ?? "", _token, deviceInfo, ipV4)
         .toJson());
   }
 
@@ -225,5 +241,4 @@ class MessageCentre {
   }
 
   static void disconnect() => engine?.disconnect();
-
 }

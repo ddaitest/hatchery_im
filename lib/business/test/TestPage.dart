@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/busniess/test/Model.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
@@ -39,21 +38,28 @@ class TestState extends State<TestPage> {
   var ts1 = TextStyle(color: Colors.red);
   var ts2 = TextStyle(color: Colors.white);
 
-  // static _checkToken() {
-  //   _userInfoData = SP.getString(SPKey.userInfo);
-  //   if (_userInfoData != null) {
-  //     _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-  //   }
-  //   return _token;
-  // }
-  TextEditingController _controllerUID =
-      TextEditingController(text: "U202114522384900001");
+  TextEditingController _controllerUID1 =
+      TextEditingController(text: "U202120615013800001");
+  TextEditingController _controllerUID2 =
+      TextEditingController(text: "U202121622163000001");
   TextEditingController _controllerContent =
       TextEditingController(text: "HELLO");
 
   @override
+  void initState() {
+    super.initState();
+    MessageCentre().listenNewMessages((news) {
+      setState(() {
+        _message = "New = ${news.toString()}";
+        Log.red(_message);
+      });
+    });
+  }
+
+  @override
   void dispose() {
-    _controllerUID.dispose();
+    _controllerUID1.dispose();
+    _controllerUID2.dispose();
     _controllerContent.dispose();
     super.dispose();
   }
@@ -66,17 +72,15 @@ class TestState extends State<TestPage> {
         padding: EdgeInsets.all(10),
         children: [
           Text(_message),
-          ElevatedButton(onPressed: c0, child: Text("SHOW INFO")),
-          // ElevatedButton(
-          //     onPressed: s0, child: Text("STEP-INIT-SESSIONS", style: ts1)),
-          // ElevatedButton(onPressed: s1, child: Text("STEP-AUTH", style: ts1)),
-          ElevatedButton(onPressed: test1, child: Text("LISTEN", style: ts1)),
-          TextField(controller: _controllerUID),
+          ElevatedButton(onPressed: c0, child: Text("User Info")),
+          TextField(controller: _controllerUID1),
+          TextField(controller: _controllerUID2),
           TextField(controller: _controllerContent),
-          ElevatedButton(onPressed: test0, child: Text("SEND MSG", style: ts2)),
-          // ElevatedButton(
-          //     onPressed: test1, child: Text("SEND DDAI3", style: ts2)),
-          ElevatedButton(onPressed: test2, child: Text("Sessions", style: ts2)),
+          ElevatedButton(
+              onPressed: test1, child: Text("SEND MSG 1", style: ts2)),
+          ElevatedButton(
+              onPressed: test2, child: Text("SEND MSG 2", style: ts2)),
+          // ElevatedButton(onPressed: test2, child: Text("Sessions", style: ts2)),
           ElevatedButton(onPressed: test3, child: Text("CLOSE")),
           // ElevatedButton(
           //     onPressed: () => sendMessageModel("TEXT"),
@@ -97,14 +101,7 @@ class TestState extends State<TestPage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    // hive0();
-  }
-
   Box? box;
-  Box<TestMessage>? msgBox;
 
   MyProfile? _userInfo;
   String? _token;
@@ -113,44 +110,38 @@ class TestState extends State<TestPage> {
     setState(() {
       _userInfo = UserCentre.getInfo();
       _token = UserCentre.getToken();
-      _message = "id=${_userInfo?.id};token=$_token";
-      Log.red(_message);
+      _message = "userID=${_userInfo?.userID}";
+      Log.red("userID=${_userInfo?.userID};token=$_token");
     });
     // MessageCentre().listenMessage((news) { }, friendId)
   }
 
-  s0() async {
-    MessageCentre.init();
-  }
-
-  s1() async {
-    print("sendAuth");
-    MessageCentre.sendAuth();
-  }
-
-  f1() {}
-
-  f2() {}
-
-  test0() {
-    print("test0");
-    MessageCentre.sendTextMessage(_controllerUID.text, _controllerContent.text);
-  }
+  // s0() async {
+  //   MessageCentre.init();
+  // }
+  //
+  // s1() async {
+  //   print("sendAuth");
+  //   MessageCentre.sendAuth();
+  // }
 
   test1() {
-    print("test1");
-    MessageCentre.engine?.setListeners((t) {
-      print("listen $t");
-    });
+    print("sendTextMessage");
+    MessageCentre.sendTextMessage(_controllerUID1.text, _controllerContent.text);
   }
 
   test2() {
-    var centre = MessageCentre();
-    var s = centre.sessions;
-    print("sessions >> " + s.toString());
+    print("sendTextMessage");
+    MessageCentre.sendTextMessage(_controllerUID2.text, _controllerContent.text);
   }
 
   test3() {
     MessageCentre.disconnect();
+  }
+
+  test4() {
+    var centre = MessageCentre();
+    var s = centre.sessions;
+    print("sessions >> " + s.toString());
   }
 }

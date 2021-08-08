@@ -46,6 +46,7 @@ class LoginManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()['info']}");
       // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       UserCentre.save(jsonEncode(result.getData()));
+      MessageCentre.init();
       Routers.navigateAndRemoveUntil('/');
     } else {
       showToast('账号或密码错误');

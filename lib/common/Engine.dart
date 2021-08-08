@@ -8,6 +8,7 @@ import 'package:hatchery_im/common/log.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 typedef MessageListener = void Function(Message msg);
+typedef SCAckListener = void Function(SCAck msg);
 // typedef GroupMessageListener = void Function(CSSendGroupMessage msg);
 
 class Engine {
@@ -42,9 +43,14 @@ class Engine {
   }
 
   MessageListener? _messageListener;
+  SCAckListener? _scAckListener;
 
-  setListeners(void onMsg(Message t)?) {
+  setListeners(
+    void onMsg(Message t)?,
+    void onAckMsg(SCAck t),
+  ) {
     _messageListener = onMsg;
+    _scAckListener = onAckMsg;
   }
 
   ///连接
@@ -148,7 +154,7 @@ class Engine {
           SCGroupRemove.fromJson(json);
           break;
         case Types.SERVER_ACK:
-          SCAck.fromJson(json);
+          _handleServerAck(SCAck.fromJson(json));
           break;
         case Types.FRIEND_APPL:
           SCFriendApply.fromJson(json);
@@ -174,10 +180,31 @@ class Engine {
     }
   }
 
+  ///收到消息。
   void _handleChat(CSSendMessage msg) {
-    Message message = Message(int.parse(msg.serverMsgId), msg.type, msg.msgId, msg.from, msg.nick, msg.to, msg.icon, msg.source, msg.content, msg.contentType, "100");
+    sendProtocol(Protocols.ackMessage(
+            msg.msgId, msg.from, msg.to, msg.serverMsgId, msg.source)
+        .toJson());
+    Message message = Message(
+        int.parse(msg.serverMsgId),
+        msg.type,
+        msg.msgId,
+        msg.from,
+        msg.nick,
+        msg.to,
+        msg.icon,
+        msg.source,
+        msg.content,
+        msg.contentType,
+        DateTime.now().toString());
     _messageListener?.call(message);
   }
 
+  ///收到 Server ack。 表示发消息成功。
+  _handleServerAck(SCAck scAck) {
+    _scAckListener?.call(scAck);
+  }
+
+  ///收到群聊消息。
   void _handleGroupMessage(CSSendGroupMessage csSendGroupMessage) {}
 }

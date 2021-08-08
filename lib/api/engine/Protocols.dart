@@ -49,7 +49,7 @@ class Protocols {
           groupId, groupName, icon, source, content, contentType);
 
   ///单聊客户端ACK消息（C-->S）
-  static ackMessage(String ackMsgId, String from, String to, String serverMsgId,
+  static CSAckMessage ackMessage(String ackMsgId, String from, String to, String serverMsgId,
           String source) =>
       CSAckMessage(getMsgID(), ackMsgId, Types.CHAT_ACK.stringValue(), from, to,
           serverMsgId, source);
