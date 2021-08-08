@@ -40,9 +40,10 @@ class SplashManager extends ChangeNotifier {
     if (_userInfoData != null) {
       _token = jsonDecode(_userInfoData)['token'];
       _configToSP();
-    _token = UserCentre.getToken();
-    if (_token != "") {
-      configToSP();
+      _token = UserCentre.getToken();
+      if (_token != "") {
+        _configToSP();
+      }
     }
   }
 
@@ -54,10 +55,5 @@ class SplashManager extends ChangeNotifier {
     } else {
       return false;
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
