@@ -1,10 +1,14 @@
 import 'dart:convert';
+import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/busniess/test/Model.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/common/Engine.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -25,7 +29,6 @@ class TestState extends State<TestPage> {
   String videoTestUrl =
       'https://vd4.bdstatic.com/mda-kfeejrf38q7chb72/hd/mda-kfeejrf38q7chb72.mp4';
   static String? _userInfoData;
-  static String _token = '';
   var data = Map<String, dynamic>();
 
   // String to = "U202115215031100001";
@@ -33,12 +36,26 @@ class TestState extends State<TestPage> {
   String to = "U202114522384900001";
   String from = "U202115215031100001";
 
-  static _checkToken() {
-    _userInfoData = SP.getString(SPKey.userInfo);
-    if (_userInfoData != null) {
-      _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    }
-    return _token;
+  var ts1 = TextStyle(color: Colors.red);
+  var ts2 = TextStyle(color: Colors.white);
+
+  // static _checkToken() {
+  //   _userInfoData = SP.getString(SPKey.userInfo);
+  //   if (_userInfoData != null) {
+  //     _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+  //   }
+  //   return _token;
+  // }
+  TextEditingController _controllerUID =
+      TextEditingController(text: "U202114522384900001");
+  TextEditingController _controllerContent =
+      TextEditingController(text: "HELLO");
+
+  @override
+  void dispose() {
+    _controllerUID.dispose();
+    _controllerContent.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,28 +66,32 @@ class TestState extends State<TestPage> {
         padding: EdgeInsets.all(10),
         children: [
           Text(_message),
-          ElevatedButton(onPressed: hive1, child: Text("HIVE 1")),
-          ElevatedButton(onPressed: hive2, child: Text("HIVE 2")),
-          ElevatedButton(onPressed: hive3, child: Text("HIVE 3")),
-          ElevatedButton(onPressed: test0, child: Text("INIT")),
-          ElevatedButton(onPressed: test1, child: Text("CONNECT")),
-          ElevatedButton(onPressed: test2, child: Text("SEND")),
-          ElevatedButton(onPressed: test3, child: Text("SEND_请求认证消息")),
-          ElevatedButton(onPressed: test4, child: Text("CLOSE")),
-          ElevatedButton(
-              onPressed: () => sendMessageModel("TEXT"),
-              child: Text("SEND_TEXT")),
-          ElevatedButton(
-              onPressed: () => sendMessageModel("IMAGE"),
-              child: Text("SEND_IMAGE")),
-          ElevatedButton(
-              onPressed: () => sendMessageModel("VIDEO"),
-              child: Text("SEND_VIDEO")),
-          ElevatedButton(
-              onPressed: () => sendMessageModel("VOICE"),
-              child: Text("SEND_VOICE")),
-          ElevatedButton(
-              onPressed: () => sendMessageModel("TEXT"), child: Text("SEND_5"))
+          ElevatedButton(onPressed: c0, child: Text("SHOW INFO")),
+          // ElevatedButton(
+          //     onPressed: s0, child: Text("STEP-INIT-SESSIONS", style: ts1)),
+          // ElevatedButton(onPressed: s1, child: Text("STEP-AUTH", style: ts1)),
+          ElevatedButton(onPressed: test1, child: Text("LISTEN", style: ts1)),
+          TextField(controller: _controllerUID),
+          TextField(controller: _controllerContent),
+          ElevatedButton(onPressed: test0, child: Text("SEND MSG", style: ts2)),
+          // ElevatedButton(
+          //     onPressed: test1, child: Text("SEND DDAI3", style: ts2)),
+          ElevatedButton(onPressed: test2, child: Text("Sessions", style: ts2)),
+          ElevatedButton(onPressed: test3, child: Text("CLOSE")),
+          // ElevatedButton(
+          //     onPressed: () => sendMessageModel("TEXT"),
+          //     child: Text("SEND_TEXT")),
+          // ElevatedButton(
+          //     onPressed: () => sendMessageModel("IMAGE"),
+          //     child: Text("SEND_IMAGE")),
+          // ElevatedButton(
+          //     onPressed: () => sendMessageModel("VIDEO"),
+          //     child: Text("SEND_VIDEO")),
+          // ElevatedButton(
+          //     onPressed: () => sendMessageModel("VOICE"),
+          //     child: Text("SEND_VOICE")),
+          // ElevatedButton(
+          //     onPressed: () => sendMessageModel("TEXT"), child: Text("SEND_5"))
         ],
       ),
     );
@@ -79,137 +100,57 @@ class TestState extends State<TestPage> {
   @override
   void initState() {
     super.initState();
-    hive0();
+    // hive0();
   }
 
   Box? box;
   Box<TestMessage>? msgBox;
 
-  hive0() async {
-    await Hive.initFlutter();
-    Hive.registerAdapter(TestMsgAdapter());
-    box = await Hive.openBox('testBox');
-    msgBox = await Hive.openBox<TestMessage>('msgBox');
-    print("box is ready!");
+  MyProfile? _userInfo;
+  String? _token;
+
+  c0() async {
+    setState(() {
+      _userInfo = UserCentre.getInfo();
+      _token = UserCentre.getToken();
+      _message = "id=${_userInfo?.id};token=$_token";
+      Log.red(_message);
+    });
+    // MessageCentre().listenMessage((news) { }, friendId)
   }
 
-  hive1() {
-    DateTime nowTime = DateTime.now();
-    var t = TestMessage("AAA $nowTime", nowTime.millisecond);
-    msgBox?.add(t);
+  s0() async {
+    MessageCentre.init();
   }
 
-  hive2() {
-    DateTime nowTime = DateTime.now();
-    print("before msgBox.length = ${msgBox?.length}");
-    var t = TestMessage("BBB $nowTime", nowTime.millisecond);
-    print("TestMessage = ${t.toString()};${t.key}");
-    msgBox?.add(t);
-    print("msgBox?.add(t)");
-    print("after msgBox.length = ${msgBox?.length}");
-    print("after TestMessage.key = ${t.key}");
-    t.title = "XXX";
-    t.save();
-    print("t.save()");
-    print("TestMessage = ${t.toString()};${t.key}");
-    print("after msgBox.length = ${t.key}");
+  s1() async {
+    print("sendAuth");
+    MessageCentre.sendAuth();
   }
 
-  hive3() {
-    print("${msgBox?.getAt(0)?.title}");
-    print("${msgBox?.getAt(1)?.title}");
-    print("${msgBox?.getAt(2)?.title}");
-    print("${msgBox?.getAt(3)?.title}");
-  }
+  f1() {}
 
-  // save message
-  // update message.
-  // get message for one friend
-  // get session.
-
-  Engine engine = Engine.getInstance();
+  f2() {}
 
   test0() {
-    engine.init('ws://149.129.176.107:5889/ws', "U202115215031100001");
+    print("test0");
+    MessageCentre.sendTextMessage(_controllerUID.text, _controllerContent.text);
   }
 
   test1() {
     print("test1");
-    engine.connect();
+    MessageCentre.engine?.setListeners((t) {
+      print("listen $t");
+    });
   }
 
   test2() {
-    var data = Map<String, dynamic>();
-    data["msg_id"] = "10001";
-    data["user_id"] = "U202115215031100001";
-    data["type"] = "AUTH";
-    data["token"] = _checkToken();
-    data["source"] = "ANDROID";
-    data["device_id"] = "device_id_123";
-    data["login_ip"] = "1.2.3.4";
-    engine.sendProtocol(data);
+    var centre = MessageCentre();
+    var s = centre.sessions;
+    print("sessions >> " + s.toString());
   }
 
   test3() {
-    engine.sendProtocol(
-        Protocols.auth("source", "userId", "token", "deviceId", "loginIp")
-            .toJson());
-  }
-
-  test4() {
-    engine.disconnect();
-  }
-
-  sendMessageModel(String messageType) {
-    switch (messageType) {
-      case "TEXT":
-        data["msg_id"] = "10001";
-        data["type"] = "CHAT";
-        data["to"] = to;
-        data["nick"] = "nick";
-        data["from"] = from;
-        data["icon"] = "icon";
-        data["source"] = "ANDROID";
-        data["content"] = textTest;
-        data["content_type"] = messageType;
-        engine.sendProtocol(data);
-        break;
-      case "IMAGE":
-        data["msg_id"] = "10001";
-        data["type"] = "CHAT";
-        data["to"] = to;
-        data["nick"] = "nick";
-        data["from"] = from;
-        data["icon"] = "icon";
-        data["source"] = "ANDROID";
-        data["content"] = imageTestUrl;
-        data["content_type"] = messageType;
-        engine.sendProtocol(data);
-        break;
-      case "VIDEO":
-        data["msg_id"] = "10001";
-        data["type"] = "CHAT";
-        data["to"] = to;
-        data["nick"] = "nick";
-        data["from"] = from;
-        data["icon"] = "icon";
-        data["source"] = "ANDROID";
-        data["content"] = videoTestUrl;
-        data["content_type"] = messageType;
-        engine.sendProtocol(data);
-        break;
-      case "VOICE":
-        data["msg_id"] = "10001";
-        data["type"] = "CHAT";
-        data["to"] = to;
-        data["nick"] = "nick";
-        data["from"] = from;
-        data["icon"] = "icon";
-        data["source"] = "ANDROID";
-        data["content"] = voiceTestUrl;
-        data["content_type"] = messageType;
-        engine.sendProtocol(data);
-        break;
-    }
+    MessageCentre.disconnect();
   }
 }

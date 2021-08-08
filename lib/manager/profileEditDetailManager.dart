@@ -8,6 +8,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/utils.dart';
@@ -45,7 +46,8 @@ class ProfileEditDetailManager extends ChangeNotifier {
         _getStoredForMyProfileData().then((value) {
           value['info'].addAll(result.getData());
           print("DEBUG=> value result.getData() ${value['info']}");
-          SP.set(SPKey.userInfo, jsonEncode(value));
+          // SP.set(SPKey.userInfo, jsonEncode(value));
+          UserCentre.save(jsonEncode(value));
         });
 
         Future.delayed(Duration(milliseconds: 500), () {

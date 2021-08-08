@@ -208,7 +208,7 @@ class FriendProfile {
 }
 
 @JsonSerializable()
-class Message {
+class Message extends HiveObject {
   int id;
   String type;
   String userMsgID;
@@ -217,7 +217,7 @@ class Message {
   String receiver;
   String icon;
   String source;
-  String content;
+  Map<String, dynamic> content;
   String contentType;
   String createTime;
 

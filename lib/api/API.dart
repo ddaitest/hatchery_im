@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'ApiResult.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/config.dart';
@@ -50,10 +51,11 @@ class API {
   static Map<String, dynamic> commonParamMap = DeviceInfo.info;
 
   static _checkToken() {
-    _userInfoData = SP.getString(SPKey.userInfo);
-    if (_userInfoData != null) {
-      _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    }
+    _token = UserCentre.getToken();
+    // _userInfoData = SP.getString(SPKey.userInfo);
+    // if (_userInfoData != null) {
+    //   _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
+    // }
     return _token;
   }
 

@@ -4,12 +4,15 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 // import 'package:hatchery_im/api/entity.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
+
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import '../config.dart';
 import 'messageCentre.dart';
 
@@ -28,7 +31,10 @@ class AppManager extends ChangeNotifier {
     SP.init().then((sp) {
       DeviceInfo.init();
       UserId.init();
-      MessageCentre.init();
+      UserCentre.getInfo();
+      if (UserCentre.isLogin()) {
+        MessageCentre.init();
+      }
     });
   }
 

@@ -1,7 +1,16 @@
-import 'package:hatchery_im/api/API.dart';
-import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/common/log.dart';
+import 'dart:convert';
 
+import 'package:dart_ipify/dart_ipify.dart';
+import 'package:hatchery_im/api/API.dart';
+import 'package:hatchery_im/api/engine/Protocols.dart';
+import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/Engine.dart';
+import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
+import 'package:crypto/crypto.dart';
 import 'Constants.dart';
 import '../store/LocalStore.dart';
 import 'app_handler.dart';
@@ -33,11 +42,34 @@ class MessageCentre {
 
   String currentListenId = "";
 
+  static Engine? engine;
+
+  static MyProfile? _userInfo;
+  static String _token = "";
+
   static init() {
+    Log.yellow("MessageCentre.init()");
     //获取 session
     var centre = MessageCentre();
     centre._initSessions();
     LocalStore.init();
+    //连接 Engine
+    engine = Engine.getInstance();
+    _userInfo = UserCentre.getInfo();
+    _token = UserCentre.getToken();
+    if (_userInfo == null) {
+      Log.red("MessageCentre.init error _userInfo is null");
+      return;
+    }
+    if (_token.isEmpty) {
+      Log.red("MessageCentre.init error _token is $_token");
+      return;
+    }
+    engine?.init('ws://149.129.176.107:5889/ws', _userInfo?.userID ?? "",
+        source: TARGET_PLATFORM);
+    engine?.connect();
+    Log.yellow("MessageCentre.init() - finish");
+    sendAuth();
   }
 
   static Future<List<Message>> getMessages(String friendId) async {
@@ -163,4 +195,35 @@ class MessageCentre {
   }
 
   _notifyMessageChanged(String friendID) {}
+
+  static sendAuth() async {
+    var infos = DeviceInfo.info.toString();
+    var deviceInfo = md5.convert(utf8.encode(infos)).toString();
+    final ipv4 = await Ipify.ipv4();
+    engine?.sendProtocol(Protocols.auth(
+            TARGET_PLATFORM, _userInfo?.userID ?? "", _token, deviceInfo, ipv4)
+        .toJson());
+  }
+
+  /// string type //聊天类型（CHAT表示单聊，GROUP表示群聊）
+  /// string to //接受者(用户ID)
+  /// string content_type
+  sendMessage(String to, Map<String, dynamic> content, String contentType) {
+    engine?.sendProtocol(Protocols.sendMessage(
+            _userInfo?.userID ?? "",
+            _userInfo!.nickName!,
+            to,
+            _userInfo!.icon!,
+            TARGET_PLATFORM,
+            content,
+            contentType)
+        .toJson());
+  }
+
+  static sendTextMessage(String to, String text) {
+    _singleton.sendMessage(to, {"text": text}, "TEXT");
+  }
+
+  static void disconnect() => engine?.disconnect();
+
 }

@@ -6,13 +6,17 @@ import 'Adapters.dart';
 class LocalStore {
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
+  static bool initDone = false;
 
   static init() async {
-    await Hive.initFlutter();
-    Hive.registerAdapter(SessionAdapter());
-    Hive.registerAdapter(MessageAdapter());
-    sessionBox = await Hive.openBox<Session>('sessionBox');
-    messageBox = await Hive.openBox<Message>('messageBox');
+    if (!initDone) {
+      initDone = true;
+      await Hive.initFlutter();
+      Hive.registerAdapter(SessionAdapter());
+      Hive.registerAdapter(MessageAdapter());
+      sessionBox = await Hive.openBox<Session>('sessionBox');
+      messageBox = await Hive.openBox<Message>('messageBox');
+    }
   }
 
   Future<List<Session>> getSessions() async {
