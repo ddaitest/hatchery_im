@@ -55,7 +55,7 @@ class SCAuthMessage {
 class CSSendMessage {
   @JsonKey(name: 'msg_id')
   String msgId;
-  String type = "AUTH"; //聊天类型（CHAT表示单聊，GROUP表示群聊）
+  String type = "CHAT"; //聊天类型（CHAT表示单聊，GROUP表示群聊）
   @JsonKey(name: 's_msg_id')
   String serverMsgId; //服务端消息ID（由服务端生成。客户端不用过问
   String from; //发送者(用户ID)
@@ -63,7 +63,7 @@ class CSSendMessage {
   String to; //接受者(用户ID)
   String icon; //发送者头像
   String source; //来源信息(ANDROID/IOS/WEB/IOT/PC)
-  String content; //发送内容（可根据content_type自定义内容）
+  Map<String, dynamic> content; //发送内容（可根据content_type自定义内容）
   @JsonKey(name: 'content_type')
   String contentType;
 
@@ -117,7 +117,7 @@ class CSAckMessage {
 class CSSendGroupMessage {
   @JsonKey(name: 'msg_id')
   String msgId;
-  String type = "AUTH"; //聊天类型（CHAT表示单聊，GROUP表示群聊）
+  String type = "GROUP"; //聊天类型（CHAT表示单聊，GROUP表示群聊）
   @JsonKey(name: 's_msg_id')
   String serverMsgId; //服务端消息ID（由服务端生成。客户端不用过问
   String from; //发送者(用户ID)
@@ -128,7 +128,7 @@ class CSSendGroupMessage {
   String groupName; //群名
   String icon; //发送者头像
   String source; //来源信息(ANDROID/IOS/WEB/IOT/PC)
-  String content; //发送内容（可根据content_type自定义内容）
+  Map<String, dynamic> content; //发送内容（可根据content_type自定义内容）
   @JsonKey(name: 'content_type')
   String contentType;
 
@@ -453,11 +453,11 @@ class SCPong {
   String source; //邀请人ID
   @JsonKey(name: 'user_id')
   String userId;
-  @JsonKey(name: 'ack_msg_id')
-  String ackMsgId;
+  // @JsonKey(name: 'ack_msg_id')
+  // String ackMsgId;
 
   SCPong(
-      this.msgId, this.type, this.source, this.userId, this.ackMsgId); //邀请人昵称
+      this.msgId, this.type, this.source, this.userId); //邀请人昵称
 
   factory SCPong.fromJson(Map<String, dynamic> json) => _$SCPongFromJson(json);
 

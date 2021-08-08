@@ -60,7 +60,7 @@ CSSendMessage _$CSSendMessageFromJson(Map<String, dynamic> json) {
     json['to'] as String,
     json['icon'] as String,
     json['source'] as String,
-    json['content'] as String,
+    json['content'] as Map<String, dynamic>,
     json['content_type'] as String,
   );
 }
@@ -113,7 +113,7 @@ CSSendGroupMessage _$CSSendGroupMessageFromJson(Map<String, dynamic> json) {
     json['group_name'] as String,
     json['icon'] as String,
     json['source'] as String,
-    json['content'] as String,
+    json['content'] as Map<String, dynamic>,
     json['content_type'] as String,
   );
 }
@@ -364,7 +364,7 @@ SCPong _$SCPongFromJson(Map<String, dynamic> json) {
     json['type'] as String,
     json['source'] as String,
     json['user_id'] as String,
-    json['ack_msg_id'] as String,
+    // json['ack_msg_id'] as String,
   );
 }
 
@@ -373,5 +373,5 @@ Map<String, dynamic> _$SCPongToJson(SCPong instance) => <String, dynamic>{
       'type': instance.type,
       'source': instance.source,
       'user_id': instance.userId,
-      'ack_msg_id': instance.ackMsgId,
+      // 'ack_msg_id': instance.ackMsgId,
     };

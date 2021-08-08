@@ -14,10 +14,12 @@ class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
   final MessageBelongType messageBelongType;
   final Message friendsHistoryMessages;
+
   ChatBubble(
       {required this.avatarPicUrl,
       required this.messageBelongType,
       required this.friendsHistoryMessages});
+
   @override
   _ChatBubbleState createState() => _ChatBubbleState();
 }
@@ -26,6 +28,7 @@ class _ChatBubbleState extends State<ChatBubble>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -90,20 +93,23 @@ class _ChatBubbleState extends State<ChatBubble>
         break;
       case "IMAGE":
         {
-          finalView = ImageMessageWidget(
-              widget.friendsHistoryMessages.content, belongType);
+          var temp = widget.friendsHistoryMessages.content;
+          //TODO
+          finalView = ImageMessageWidget(temp["TODO"], belongType);
         }
         break;
       case "VIDEO":
         {
-          finalView = VideoMessageWidget(
-              widget.friendsHistoryMessages.content, belongType);
+          //TODO
+          var temp = widget.friendsHistoryMessages.content;
+          finalView = ImageMessageWidget(temp["TODO"], belongType);
         }
         break;
       case "VOICE":
         {
-          finalView = VoiceMessageWidget(
-              widget.friendsHistoryMessages.content, belongType);
+          //TODO
+          var temp = widget.friendsHistoryMessages.content;
+          finalView = ImageMessageWidget(temp["TODO"], belongType);
         }
         break;
       case "FILE":

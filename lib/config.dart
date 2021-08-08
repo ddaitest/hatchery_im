@@ -3,6 +3,12 @@ import 'package:flutter/foundation.dart';
 
 bool debugMode = kDebugMode;
 
+const String TARGET_PLATFORM = "ANDROID"; //IOS/WEB/IOT/PC
+// String platform = "IOS";//IOS/WEB/IOT/PC
+// String platform = "WEB";//IOS/WEB/IOT/PC
+// String platform = "IOT";//IOS/WEB/IOT/PC
+// String platform = "PC";//IOS/WEB/IOT/PC
+
 class SPKey {
   static final String showAgreement = 'ShowAgreement';
   static final String splashAD = 'splashAD';

@@ -26,37 +26,38 @@ dependencies:
   dio: ^4.0.0
   provider: ^5.0.0
   flutter_screenutil: ^5.0.0
-  package_info: ^2.0.0
-  flutter_native_image: ^0.0.6
+  package_info: ^2.0.0 #ANDROID IOS MACOS
+  flutter_native_image: ^0.0.6 #ANDROID IOS
   shared_preferences: ^2.0.5
-  fluttertoast: ^8.0.3
-  connectivity: ^3.0.3
+  fluttertoast: ^8.0.3 #ANDROID IOS WEB
+  connectivity: ^3.0.3 #ANDROID IOS MACOS WEB
   equatable: ^2.0.0
-  cached_network_image: ^3.0.0
-  device_info: ^2.0.1
+  cached_network_image: ^3.0.0 #ANDROID IOS MACOS
+  device_info: ^2.0.1 #ANDROID IOS
   image_stack: ^2.0.1
   google_fonts: ^2.0.0
   animated_text_kit: ^4.2.1
-  image_picker: ^0.7.3
-  image_crop: ^0.4.0
+  image_picker: ^0.7.3 #ANDROID IOS WEB
+  image_crop: ^0.4.0 #ANDROID IOS
   web_socket_channel: ^2.1.0
   json_annotation: ^4.0.1
   skeleton_text: ^3.0.0
   flutter_slidable: ^0.6.0
   photo_view: ^0.11.1
-  audioplayers: ^0.19.0
-  flick_video_player: ^0.3.1
-  video_player: ^2.1.6
+  audioplayers: ^0.19.0 #ANDROID IOS MACOS WEB
+  flick_video_player: ^0.3.1 #ANDROID IOS WEB
+  video_player: ^2.1.6 # ANDROID IOS WEB
   badges: ^2.0.1
   loading_indicator: ^2.1.1
-  vibration: ^1.7.4-nullsafety.0
-  record: ^2.1.1
-  permission_handler: ^8.1.1
-  path_provider: ^2.0.2
+  vibration: ^1.7.4-nullsafety.0 #ANDROID IOS WEB
+  record: ^2.1.1 #ANDROID IOS WEB
+  permission_handler: ^8.1.1 #ANDROID IOS
+  path_provider: ^2.0.2 #ANDROID IOS LINUX MACOS WINDOWS
   pull_to_refresh: ^2.0.0
   intl_phone_field: ^2.0.1
   hive: ^2.0.4
   hive_flutter: ^1.1.0
+  dart_ipify: ^1.1.0
   cool_alert: ^1.1.0
   url_launcher: ^6.0.9
   flutter_inappwebview: ^5.3.2

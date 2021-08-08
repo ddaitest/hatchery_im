@@ -1,13 +1,23 @@
-import 'package:hatchery_im/api/API.dart';
-import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/common/log.dart';
+import 'dart:convert';
 
+import 'package:dart_ipify/dart_ipify.dart';
+import 'package:hatchery_im/api/API.dart';
+import 'package:hatchery_im/api/engine/Protocols.dart';
+import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/Engine.dart';
+import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
+import 'package:crypto/crypto.dart';
 import 'Constants.dart';
 import '../store/LocalStore.dart';
 import 'app_handler.dart';
 
 typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);
+typedef NewMessageListener = void Function(Message news);
 
 const LOAD_SIZE = 50;
 
@@ -30,14 +40,43 @@ class MessageCentre {
   SessionListener? sessionListener;
 
   MessageListener? messageListener;
+  NewMessageListener? newMessageListener;
 
   String currentListenId = "";
 
+  static Engine? engine;
+
+  static MyProfile? _userInfo;
+  static String _token = "";
+  static String ipV4 = "0.0.0.0";
+
   static init() {
+    Log.yellow("MessageCentre.init()");
     //获取 session
+    try {
+      Ipify.ipv4().then((value) => {ipV4 = value});
+    } catch (e) {}
     var centre = MessageCentre();
     centre._initSessions();
     LocalStore.init();
+    //连接 Engine
+    engine = Engine.getInstance();
+    _userInfo = UserCentre.getInfo();
+    _token = UserCentre.getToken();
+    if (_userInfo == null) {
+      Log.red("MessageCentre.init error _userInfo is null");
+      return;
+    }
+    if (_token.isEmpty) {
+      Log.red("MessageCentre.init error _token is $_token");
+      return;
+    }
+    engine?.init('ws://149.129.176.107:5889/ws', _userInfo?.userID ?? "",
+        source: TARGET_PLATFORM);
+    engine?.connect();
+    engine?.setListeners((t) => _singleton._newMsg(t));
+    Log.yellow("MessageCentre.init() - finish");
+    sendAuth();
   }
 
   static Future<List<Message>> getMessages(String friendId) async {
@@ -51,9 +90,18 @@ class MessageCentre {
     }
   }
 
+  listenNewMessages(NewMessageListener listener) {
+    newMessageListener = listener;
+  }
+
   listenMessage(MessageListener listener, String friendId) {
     currentListenId = friendId;
     messageListener = listener;
+  }
+
+  _newMsg(Message msg) {
+    newMessageListener?.call(msg);
+    //TODO SAVE MESSAGE
   }
 
   ///获取 session 信息. 然后同步每个session 最新的消息。
@@ -163,4 +211,34 @@ class MessageCentre {
   }
 
   _notifyMessageChanged(String friendID) {}
+
+  static sendAuth() async {
+    Log.yellow("sendAuth");
+    var infos = DeviceInfo.info.toString();
+    var deviceInfo = md5.convert(utf8.encode(infos)).toString();
+    engine?.sendProtocol(Protocols.auth(
+            TARGET_PLATFORM, _userInfo?.userID ?? "", _token, deviceInfo, ipV4)
+        .toJson());
+  }
+
+  /// string type //聊天类型（CHAT表示单聊，GROUP表示群聊）
+  /// string to //接受者(用户ID)
+  /// string content_type
+  sendMessage(String to, Map<String, dynamic> content, String contentType) {
+    engine?.sendProtocol(Protocols.sendMessage(
+            _userInfo?.userID ?? "",
+            _userInfo!.nickName!,
+            to,
+            _userInfo!.icon!,
+            TARGET_PLATFORM,
+            content,
+            contentType)
+        .toJson());
+  }
+
+  static sendTextMessage(String to, String text) {
+    _singleton.sendMessage(to, {"text": text}, "TEXT");
+  }
+
+  static void disconnect() => engine?.disconnect();
 }

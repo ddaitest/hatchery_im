@@ -271,7 +271,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     json['receiver'] as String,
     json['icon'] as String,
     json['source'] as String,
-    json['content'] as String,
+    json['content'] as Map<String, dynamic>,
     json['contentType'] as String,
     json['createTime'] as String,
   );

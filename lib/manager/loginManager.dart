@@ -5,6 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 // import 'package:hatchery_im/api/entity.dart';
@@ -42,7 +44,9 @@ class LoginManager extends ChangeNotifier {
     ApiResult result = await API.usersLogin(account, password);
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()['info']}");
-      SP.set(SPKey.userInfo, jsonEncode(result.getData()));
+      // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
+      UserCentre.save(jsonEncode(result.getData()));
+      MessageCentre.init();
       Routers.navigateAndRemoveUntil('/');
     } else {
       showToast('账号或密码错误');
@@ -67,7 +71,9 @@ class LoginManager extends ChangeNotifier {
     ApiResult result = await API.phoneLogin(userPhone, areaCode, code);
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
-      SP.set(SPKey.userInfo, jsonEncode(result.getData()));
+      // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
+      UserCentre.save(jsonEncode(result.getData()));
+      MessageCentre.init();
       Routers.navigateAndRemoveUntil('/');
     } else {
       showToast('${result.info}');
