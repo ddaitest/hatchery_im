@@ -104,8 +104,8 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   startVoiceRecord(String friendId) async {
-    bool result = await Record.hasPermission();
-    var status = await Permission.storage.status;
+    bool result = await Record().hasPermission();
+    PermissionStatus status = await Permission.storage.status;
     DateTime _timeNow = DateTime.now();
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
@@ -116,7 +116,7 @@ class ChatDetailManager extends ChangeNotifier {
 
     print("DEBUG=> $result / ${status.isDenied}");
     if (result && status.isDenied) {
-      await Record.start(
+      await Record().start(
         path: '$voicePath', // required
       );
       isRecording = true;
@@ -128,7 +128,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   stopVoiceRecord() async {
-    await Record.stop();
+    await Record().stop();
   }
 
   checkTimeLength() {

@@ -170,7 +170,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
             child: FloatingActionButton(
               backgroundColor: Flavors.colorInfo.mainBackGroundColor,
               elevation: 1.0,
-              onPressed: () {},
+              onPressed: () => Routers.navigateTo('/web_view',
+                  arg: {"url": manager.customMenuInfo!.url!}),
               child: _floatingPicView(),
             ),
           ),
