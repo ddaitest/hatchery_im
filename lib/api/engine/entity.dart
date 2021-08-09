@@ -344,14 +344,20 @@ class SCGroupRemove {
 class SCAck {
   @JsonKey(name: 'msg_id')
   String msgId;
-  String type = "GROUP_REMOVE";
+
+  @JsonKey(name: 'ack_msg_id')
+  String ackMsgLocalId;
+
+  @JsonKey(name: 's_msg_id')
+  String ackMsgServerId;
+
+  String type = "SERVER_ACK";
 
   String from;
 
-  @JsonKey(name: 'ack_msg_id')
-  String ackMsgId;
 
-  SCAck(this.msgId, this.type, this.from, this.ackMsgId);
+  SCAck(this.msgId, this.ackMsgLocalId, this.ackMsgServerId, this.type,
+      this.from);
 
   factory SCAck.fromJson(Map<String, dynamic> json) => _$SCAckFromJson(json);
 
@@ -453,11 +459,11 @@ class SCPong {
   String source; //邀请人ID
   @JsonKey(name: 'user_id')
   String userId;
+
   // @JsonKey(name: 'ack_msg_id')
   // String ackMsgId;
 
-  SCPong(
-      this.msgId, this.type, this.source, this.userId); //邀请人昵称
+  SCPong(this.msgId, this.type, this.source, this.userId); //邀请人昵称
 
   factory SCPong.fromJson(Map<String, dynamic> json) => _$SCPongFromJson(json);
 

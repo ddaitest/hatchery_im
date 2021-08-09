@@ -263,17 +263,19 @@ Map<String, dynamic> _$SCGroupRemoveToJson(SCGroupRemove instance) =>
 SCAck _$SCAckFromJson(Map<String, dynamic> json) {
   return SCAck(
     json['msg_id'] as String,
+    json['ack_msg_id'] as String,
+    json['s_msg_id'] as String,
     json['type'] as String,
     json['from'] as String,
-    json['ack_msg_id'] as String,
   );
 }
 
 Map<String, dynamic> _$SCAckToJson(SCAck instance) => <String, dynamic>{
       'msg_id': instance.msgId,
+      'ack_msg_id': instance.ackMsgLocalId,
+      's_msg_id': instance.ackMsgServerId,
       'type': instance.type,
       'from': instance.from,
-      'ack_msg_id': instance.ackMsgId,
     };
 
 SCFriendApply _$SCFriendApplyFromJson(Map<String, dynamic> json) {
@@ -364,7 +366,6 @@ SCPong _$SCPongFromJson(Map<String, dynamic> json) {
     json['type'] as String,
     json['source'] as String,
     json['user_id'] as String,
-    // json['ack_msg_id'] as String,
   );
 }
 
@@ -373,5 +374,4 @@ Map<String, dynamic> _$SCPongToJson(SCPong instance) => <String, dynamic>{
       'type': instance.type,
       'source': instance.source,
       'user_id': instance.userId,
-      // 'ack_msg_id': instance.ackMsgId,
     };

@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:dart_ipify/dart_ipify.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
+import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/common/log.dart';
@@ -13,6 +15,7 @@ import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:crypto/crypto.dart';
 import 'Constants.dart';
 import '../store/LocalStore.dart';
+import 'MsgHelper.dart';
 import 'app_handler.dart';
 
 typedef SessionListener = void Function(List<Session> news);
@@ -74,7 +77,7 @@ class MessageCentre {
     engine?.init('ws://149.129.176.107:5889/ws', _userInfo?.userID ?? "",
         source: TARGET_PLATFORM);
     engine?.connect();
-    engine?.setListeners((t) => _singleton._newMsg(t));
+    engine?.setCallback(MyEngineHandler(centre));
     Log.yellow("MessageCentre.init() - finish");
     sendAuth();
   }
@@ -97,11 +100,6 @@ class MessageCentre {
   listenMessage(MessageListener listener, String friendId) {
     currentListenId = friendId;
     messageListener = listener;
-  }
-
-  _newMsg(Message msg) {
-    newMessageListener?.call(msg);
-    //TODO SAVE MESSAGE
   }
 
   ///获取 session 信息. 然后同步每个session 最新的消息。
@@ -180,7 +178,7 @@ class MessageCentre {
           break;
         } else {
           currentFrom = msg.id;
-          _localStore.saveMessage(msg);
+          LocalStore.addMessage(msg);
           temp.add(msg);
         }
       }
@@ -225,15 +223,35 @@ class MessageCentre {
   /// string to //接受者(用户ID)
   /// string content_type
   sendMessage(String to, Map<String, dynamic> content, String contentType) {
-    engine?.sendProtocol(Protocols.sendMessage(
-            _userInfo?.userID ?? "",
-            _userInfo!.nickName!,
-            to,
-            _userInfo!.icon!,
-            TARGET_PLATFORM,
-            content,
-            contentType)
-        .toJson());
+    CSSendMessage msg = Protocols.sendMessage(
+        _userInfo?.userID ?? "",
+        _userInfo!.nickName!,
+        to,
+        _userInfo!.icon!,
+        TARGET_PLATFORM,
+        content,
+        contentType);
+    engine?.sendProtocol(msg.toJson());
+    Message message = ModelHelper.convertMessage(msg);
+    message.progress = MSG_SENDING;
+    LocalStore.addMessage(message);
+  }
+
+  sendGroupMessage(String groupId, String groupName,
+      Map<String, dynamic> content, String contentType) {
+    CSSendGroupMessage msg = Protocols.sendGroupMessage(
+        _userInfo?.userID ?? "",
+        _userInfo!.nickName!,
+        groupId,
+        groupName,
+        _userInfo!.icon!,
+        TARGET_PLATFORM,
+        content,
+        contentType);
+    engine?.sendProtocol(msg.toJson());
+    Message message = ModelHelper.convertGroupMessage(msg);
+    message.progress = MSG_SENDING;
+    LocalStore.addMessage(message);
   }
 
   static sendTextMessage(String to, String text) {
@@ -241,4 +259,74 @@ class MessageCentre {
   }
 
   static void disconnect() => engine?.disconnect();
+}
+
+class MyEngineHandler implements EngineCallback {
+  MessageCentre _centre;
+
+  MyEngineHandler(this._centre);
+
+  @override
+  void onMessageRead(String localId, String serverId) {
+    Message? msg = LocalStore.findCache(localId);
+    if (msg != null) {
+      msg.progress = MSG_READ;
+      msg.save();
+    }
+  }
+
+  @override
+  void onMessageSent(String localId, String serverId) {
+    Message? msg = LocalStore.findCache(localId);
+    if (msg != null) {
+      msg.progress = MSG_SENT;
+      msg.save();
+    }
+  }
+
+  @override
+  void onFriendApply(SCFriendApply data) {
+    // TODO: implement onFriendApply
+  }
+
+  @override
+  void onFriendResult(SCFriendResult data) {
+    // TODO: implement onFriendResult
+  }
+
+  @override
+  void onGroupCreated(SCGroupCreate data) {
+    // TODO: implement onGroupCreated
+  }
+
+  @override
+  void onGroupJoin(SCGroupJoin data) {
+    // TODO: implement onGroupJoin
+  }
+
+  @override
+  void onGroupKick(SCGroupKick data) {
+    // TODO: implement onGroupKick
+  }
+
+  @override
+  void onGroupRemove(SCGroupRemove data) {
+    // TODO: implement onGroupRemove
+  }
+
+  @override
+  void onGroupUpdate(SCGroupUpdate data) {
+    // TODO: implement onGroupUpdate
+  }
+
+  @override
+  void onKickOut(SCKickOut data) {
+    // TODO: implement onKickOut
+  }
+
+  @override
+  void onNewMessage(Message msg) {
+    _centre.newMessageListener?.call(msg);
+    LocalStore.addMessage(msg);
+  }
 }

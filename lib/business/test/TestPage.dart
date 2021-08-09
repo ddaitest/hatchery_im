@@ -8,6 +8,7 @@ import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -82,6 +83,15 @@ class TestState extends State<TestPage> {
               onPressed: test2, child: Text("SEND MSG 2", style: ts2)),
           // ElevatedButton(onPressed: test2, child: Text("Sessions", style: ts2)),
           ElevatedButton(onPressed: test3, child: Text("CLOSE")),
+          ValueListenableBuilder(
+              valueListenable: LocalStore.listenMessage(),
+              builder: (context, Box<Message> box, _) {
+                String content = "<${box.values.length}>";
+                box.values.forEach((element) {
+                  content += "(${element.content})";
+                });
+                return Text(content);
+              }),
           // ElevatedButton(
           //     onPressed: () => sendMessageModel("TEXT"),
           //     child: Text("SEND_TEXT")),
@@ -127,12 +137,14 @@ class TestState extends State<TestPage> {
 
   test1() {
     print("sendTextMessage");
-    MessageCentre.sendTextMessage(_controllerUID1.text, _controllerContent.text);
+    MessageCentre.sendTextMessage(
+        _controllerUID1.text, _controllerContent.text);
   }
 
   test2() {
     print("sendTextMessage");
-    MessageCentre.sendTextMessage(_controllerUID2.text, _controllerContent.text);
+    MessageCentre.sendTextMessage(
+        _controllerUID2.text, _controllerContent.text);
   }
 
   test3() {

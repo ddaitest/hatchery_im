@@ -268,13 +268,14 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     json['userMsgID'] as String,
     json['sender'] as String,
     json['nick'] as String,
-    json['receiver'] as String,
+    json['receiver'] as String?,
     json['icon'] as String,
     json['source'] as String,
     json['content'] as Map<String, dynamic>,
     json['contentType'] as String,
     json['createTime'] as String,
-  );
+    json['groupID'] as String?,
+  )..progress = (json['progress'] as int?)??0;
 }
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -284,11 +285,13 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'sender': instance.sender,
       'nick': instance.nick,
       'receiver': instance.receiver,
+      'groupID': instance.groupID,
       'icon': instance.icon,
       'source': instance.source,
       'content': instance.content,
       'contentType': instance.contentType,
       'createTime': instance.createTime,
+      'progress': instance.progress,
     };
 
 SearchNewContactsInfo _$SearchNewContactsInfoFromJson(

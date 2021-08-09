@@ -286,29 +286,33 @@ class FriendProfile {
 @JsonSerializable()
 class Message extends HiveObject {
   int id;
-  String type;
+  String type; //"CHAT"; //聊天类型（CHAT 表示单聊，GROUP 表示群聊）
   String userMsgID;
   String sender;
   String nick;
-  String receiver;
+  String? receiver;
   String icon;
   String source;
   Map<String, dynamic> content;
   String contentType;
   String createTime;
+  String? groupID;
+  int progress = 0; // 0默认; 1发送中; 2发送完成; 3已读; 4收到的消息。
 
   Message(
-      this.id,
-      this.type,
-      this.userMsgID,
-      this.sender,
-      this.nick,
-      this.receiver,
-      this.icon,
-      this.source,
-      this.content,
-      this.contentType,
-      this.createTime);
+    this.id,
+    this.type,
+    this.userMsgID,
+    this.sender,
+    this.nick,
+    this.groupID,
+    this.icon,
+    this.source,
+    this.content,
+    this.contentType,
+    this.createTime,
+    this.receiver,
+  );
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);

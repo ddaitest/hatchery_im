@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'Adapters.dart';
+import '../manager/MsgHelper.dart';
 
 class LocalStore {
   static Box<Session>? sessionBox;
@@ -30,7 +32,7 @@ class LocalStore {
     }
   }
 
-  Session? findSession(String friendId) {
+  static Session? findSession(String friendId) {
     Session? result;
     try {
       result = sessionBox?.values
@@ -39,7 +41,28 @@ class LocalStore {
     return result;
   }
 
-  void saveMessage(Message msg) {
-    //TODO save msg
+  static Map<String, Message> cache = Map();
+
+  static void addMessage(Message msg) {
+    cache[msg.userMsgID] = msg;
+    messageBox?.add(msg);
+    //update session
+    if (msg.isGroup()) {
+      findSession(msg.getOtherId() ?? "")
+        ?..lastGroupChatMessage = msg
+        ..save();
+    } else {
+      findSession(msg.getOtherId() ?? "")
+        ?..lastChatMessage = msg
+        ..save();
+    }
+  }
+
+  static Message? findCache(String localId) {
+    return cache[localId];
+  }
+
+  static ValueListenable<Box<Message>> listenMessage() {
+    return Hive.box<Message>('messageBox').listenable();
   }
 }

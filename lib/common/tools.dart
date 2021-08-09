@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/api/engine/entity.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info/device_info.dart';
@@ -204,5 +206,54 @@ class UserId {
     }
     var result = md5.convert(utf8.encode(_info.toString())).toString();
     return result;
+  }
+}
+
+class ModelHelper {
+  static Message convertGroupMessage(CSSendGroupMessage msg) {
+    int serverMsgId = 0;
+    if (msg.serverMsgId != "") {
+      try {
+        serverMsgId = int.parse(msg.serverMsgId);
+      } catch (e) {}
+    }
+    Message message = Message(
+      serverMsgId,
+      "GROUP",
+      msg.msgId,
+      msg.from,
+      msg.nick,
+      "",
+      msg.icon,
+      msg.source,
+      msg.content,
+      msg.contentType,
+      DateTime.now().toString(),
+      msg.groupId,
+    );
+    return message;
+  }
+
+  static Message convertMessage(CSSendMessage msg) {
+    int serverMsgId = 0;
+    if (msg.serverMsgId != "") {
+      try {
+        serverMsgId = int.parse(msg.serverMsgId);
+      } catch (e) {}
+    }
+    Message message = Message(
+        serverMsgId,
+        "CHAT",
+        msg.msgId,
+        msg.from,
+        msg.nick,
+        msg.to,
+        msg.icon,
+        msg.source,
+        msg.content,
+        msg.contentType,
+        DateTime.now().toString(),
+        "");
+    return message;
   }
 }

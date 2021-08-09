@@ -26,13 +26,14 @@ class MessageAdapter extends TypeAdapter<Message> {
       (fields[8] as Map).cast<String, dynamic>(),
       fields[9] as String,
       fields[10] as String,
-    );
+      fields[11] as String,
+    )..progress = fields[12];
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -54,7 +55,11 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..writeByte(9)
       ..write(obj.contentType)
       ..writeByte(10)
-      ..write(obj.createTime);
+      ..write(obj.createTime)
+      ..writeByte(11)
+      ..write(obj.groupID)
+      ..writeByte(12)
+      ..write(obj.progress);
   }
 
   @override
@@ -63,9 +68,9 @@ class MessageAdapter extends TypeAdapter<Message> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MessageAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is MessageAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class SessionAdapter extends TypeAdapter<Session> {
@@ -124,7 +129,7 @@ class SessionAdapter extends TypeAdapter<Session> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is SessionAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is SessionAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

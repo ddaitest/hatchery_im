@@ -5,11 +5,32 @@ import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/common/tools.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-typedef MessageListener = void Function(Message msg);
-typedef SCAckListener = void Function(SCAck msg);
-// typedef GroupMessageListener = void Function(CSSendGroupMessage msg);
+class EngineCallback {
+  void onNewMessage(Message msg) {}
+
+  void onMessageSent(String localId, String serverId) {}
+
+  void onMessageRead(String localId, String serverId) {}
+
+  void onGroupCreated(SCGroupCreate data) {}
+
+  void onGroupKick(SCGroupKick data) {}
+
+  void onGroupJoin(SCGroupJoin data) {}
+
+  void onGroupUpdate(SCGroupUpdate data) {}
+
+  void onGroupRemove(SCGroupRemove data) {}
+
+  void onFriendApply(SCFriendApply data) {}
+
+  void onFriendResult(SCFriendResult data) {}
+
+  void onKickOut(SCKickOut data) {}
+}
 
 class Engine {
   static Engine _instance = Engine._internal();
@@ -42,15 +63,10 @@ class Engine {
     _ipAddress = ipAddress ?? "";
   }
 
-  MessageListener? _messageListener;
-  SCAckListener? _scAckListener;
+  EngineCallback? _callback;
 
-  setListeners(
-    void onMsg(Message t)?,
-    void onAckMsg(SCAck t),
-  ) {
-    _messageListener = onMsg;
-    _scAckListener = onAckMsg;
+  setCallback(EngineCallback callback) {
+    _callback = callback;
   }
 
   ///连接
@@ -129,41 +145,46 @@ class Engine {
       String type = json['type'];
       Types t = Types.values.firstWhere((e) => e.stringValue() == type);
       switch (t) {
-        case Types.CHAT:
+        case Types.CHAT: //收到消息。
           _handleChat(CSSendMessage.fromJson(json));
           break;
-        case Types.GROUP:
+        case Types.GROUP: //收到群聊消息。
           _handleGroupMessage(CSSendGroupMessage.fromJson(json));
           break;
         case Types.AUTH_RESULT:
           _handleAuthResult(SCAuthMessage.fromJson(json));
           break;
+        case Types.SERVER_ACK: //收到 Server ack。 表示发消息成功。
+          var scAck = SCAck.fromJson(json);
+          _callback?.onMessageSent(scAck.ackMsgLocalId, scAck.ackMsgServerId);
+          break;
+        case Types.CHAT_ACK: //收到 Message ack。 表示已读。
+          var ack = CSAckMessage.fromJson(json);
+          _callback?.onMessageRead(ack.ackMsgId, ack.serverMsgId);
+          break;
         case Types.GROUP_INIT:
-          SCGroupCreate.fromJson(json);
+          _callback?.onGroupCreated(SCGroupCreate.fromJson(json));
           break;
         case Types.GROUP_KICK:
-          SCGroupKick.fromJson(json);
+          _callback?.onGroupKick(SCGroupKick.fromJson(json));
           break;
         case Types.GROUP_JOIN:
-          SCGroupJoin.fromJson(json);
+          _callback?.onGroupJoin(SCGroupJoin.fromJson(json));
           break;
         case Types.GROUP_UPDATE:
-          SCGroupUpdate.fromJson(json);
+          _callback?.onGroupUpdate(SCGroupUpdate.fromJson(json));
           break;
         case Types.GROUP_REMOVE:
-          SCGroupRemove.fromJson(json);
-          break;
-        case Types.SERVER_ACK:
-          _handleServerAck(SCAck.fromJson(json));
+          _callback?.onGroupRemove(SCGroupRemove.fromJson(json));
           break;
         case Types.FRIEND_APPL:
-          SCFriendApply.fromJson(json);
+          _callback?.onFriendApply(SCFriendApply.fromJson(json));
           break;
         case Types.FRIEND_RESULT:
-          SCFriendResult.fromJson(json);
+          _callback?.onFriendResult(SCFriendResult.fromJson(json));
           break;
         case Types.OCCUPATION_LINE:
-          SCKickOut.fromJson(json);
+          _callback?.onKickOut(SCKickOut.fromJson(json));
           break;
         case Types.PONG:
           SCPong.fromJson(json);
@@ -183,28 +204,15 @@ class Engine {
   ///收到消息。
   void _handleChat(CSSendMessage msg) {
     sendProtocol(Protocols.ackMessage(
-            msg.msgId, msg.from, msg.to, msg.serverMsgId, msg.source)
+            msg.msgId, msg.to, msg.from, msg.serverMsgId, msg.source)
         .toJson());
-    Message message = Message(
-        int.parse(msg.serverMsgId),
-        msg.type,
-        msg.msgId,
-        msg.from,
-        msg.nick,
-        msg.to,
-        msg.icon,
-        msg.source,
-        msg.content,
-        msg.contentType,
-        DateTime.now().toString());
-    _messageListener?.call(message);
-  }
-
-  ///收到 Server ack。 表示发消息成功。
-  _handleServerAck(SCAck scAck) {
-    _scAckListener?.call(scAck);
+    Message message = ModelHelper.convertMessage(msg);
+    _callback?.onNewMessage(message);
   }
 
   ///收到群聊消息。
-  void _handleGroupMessage(CSSendGroupMessage csSendGroupMessage) {}
+  void _handleGroupMessage(CSSendGroupMessage msg) {
+    Message message = ModelHelper.convertGroupMessage(msg);
+    _callback?.onNewMessage(message);
+  }
 }
