@@ -22,12 +22,10 @@ import '../config.dart';
 
 class SplashManager extends ChangeNotifier {
   String _token = '';
-  CustomMenuInfo? customMenuInfo;
 
   /// 初始化
   init() async {
     await Future.delayed(Duration(seconds: 1), () {
-      getConfigFromSP();
       _checkToken();
     });
   }
@@ -40,16 +38,11 @@ class SplashManager extends ChangeNotifier {
   void _checkToken() {
     _token = UserCentre.getToken();
     if (_token != "") {
-      configToSP();
+      _configToSP();
     }
-    // String? _userInfoData = SP.getString(SPKey.userInfo);
-    // if (_userInfoData != null) {
-    //   _token = jsonDecode(_userInfoData)['token'];
-    //   configToSP();
-    // }
   }
 
-  Future<bool> configToSP() async {
+  Future<bool> _configToSP() async {
     ApiResult result = await API.getConfig();
     if (result.isSuccess()) {
       SP.set(SPKey.config, jsonEncode(result.getData()));
@@ -57,19 +50,5 @@ class SplashManager extends ChangeNotifier {
     } else {
       return false;
     }
-  }
-
-  getConfigFromSP() async {
-    String? _configData = SP.getString(SPKey.config);
-    if (_configData != null) {
-      customMenuInfo =
-          CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);
-      print("DEBUG=> customMenuInfo $customMenuInfo");
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

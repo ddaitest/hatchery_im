@@ -198,7 +198,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   height: 20.0,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballScaleMultiple,
-                    color: Colors.red,
+                    backgroundColor: Colors.red,
                   ),
                 ),
                 SizedBox(
