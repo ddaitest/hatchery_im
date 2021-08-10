@@ -169,7 +169,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           Container(
             child: FloatingActionButton(
               backgroundColor: Flavors.colorInfo.mainBackGroundColor,
-              elevation: 1.0,
+              elevation: 0.5,
               onPressed: () => Routers.navigateTo('/web_view',
                   arg: {"url": manager.customMenuInfo!.url!}),
               child: _floatingPicView(),
@@ -199,14 +199,19 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
                 imageUrl: manager.customMenuInfo!.icon!,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Icon(
-                  Icons.cloud_download_rounded,
-                  color: Colors.grey,
-                ),
+                      Icons.cloud_download_rounded,
+                      color: Colors.grey,
+                    ),
                 errorWidget: (context, url, error) => Icon(
-                  Icons.cloud_download_rounded,
-                  color: Colors.grey,
-                ),
-              )
+                      Icons.cloud_download_rounded,
+                      color: Colors.grey,
+                    ),
+                imageBuilder: (context, imageProvider) {
+                  return CircleAvatar(
+                    backgroundImage: imageProvider,
+                    maxRadius: 30,
+                  );
+                })
             : Container());
   }
 

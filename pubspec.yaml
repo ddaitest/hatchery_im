@@ -29,7 +29,7 @@ dependencies:
   package_info: ^2.0.0 #ANDROID IOS MACOS
   flutter_native_image: ^0.0.6 #ANDROID IOS
   shared_preferences: ^2.0.5
-  fluttertoast: ^8.0.3 #ANDROID IOS WEB
+  fluttertoast: ^8.0.8 #ANDROID IOS WEB
   connectivity: ^3.0.3 #ANDROID IOS MACOS WEB
   equatable: ^2.0.0
   cached_network_image: ^3.0.0 #ANDROID IOS MACOS
