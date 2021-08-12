@@ -12,7 +12,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/appManager.dart';
+import 'package:hatchery_im/manager/app_manager/appManager.dart';
 import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';

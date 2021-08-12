@@ -61,6 +61,45 @@ class UsersInfo {
 }
 
 @JsonSerializable()
+class GroupProfile {
+  final String id;
+  final String userID;
+  final String loginName;
+  final String nickName;
+  final String? icon;
+  final String? notes;
+  final String? phone;
+  final String? email;
+  final String? address;
+  final int? status;
+  final int? groupRole;
+  final String? groupNickName;
+  final String? groupId;
+  final int? groupStatus;
+
+  GroupProfile(
+      this.id,
+      this.userID,
+      this.loginName,
+      this.nickName,
+      this.icon,
+      this.notes,
+      this.phone,
+      this.email,
+      this.address,
+      this.status,
+      this.groupRole,
+      this.groupNickName,
+      this.groupId,
+      this.groupStatus);
+
+  factory GroupProfile.fromJson(Map<String, dynamic> json) =>
+      _$GroupProfileFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GroupProfileToJson(this);
+}
+
+@JsonSerializable()
 class Friends {
   final String friendId;
   final String? remarks;

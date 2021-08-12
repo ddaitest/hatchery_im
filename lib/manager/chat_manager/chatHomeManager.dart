@@ -15,10 +15,10 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import '../../config.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import 'app_handler.dart';
+import '../app_manager/app_handler.dart';
 
 class ChatHomeManager extends ChangeNotifier {
   List<SlideActionInfo> slideAction = [

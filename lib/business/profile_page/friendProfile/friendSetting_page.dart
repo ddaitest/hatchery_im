@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/friendProfileManager.dart';
+import 'package:hatchery_im/manager/profile_manager/friendsProfile_manager/friendProfileManager.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

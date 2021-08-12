@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
-import 'package:hatchery_im/manager/app_handler.dart';
+import 'package:hatchery_im/manager/app_manager/app_handler.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
@@ -21,7 +21,7 @@ import 'package:hatchery_im/config.dart';
 
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import '../../config.dart';
 
 class ChatDetailManager extends ChangeNotifier {
   MyProfile? myProfileData;

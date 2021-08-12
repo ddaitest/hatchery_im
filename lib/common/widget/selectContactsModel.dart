@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/widget/contacts/checkBoxContactsUsersItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
-import 'package:hatchery_im/manager/selectContactsModelManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';

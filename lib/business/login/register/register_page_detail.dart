@@ -10,7 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/manager/registerManager.dart';
+import 'package:hatchery_im/manager/register_manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 
 class RegisterPageDetail extends StatefulWidget {

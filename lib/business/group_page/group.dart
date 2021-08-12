@@ -6,7 +6,7 @@ import 'package:hatchery_im/common/widget/groups/groupListItem.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/groupsManager.dart';
+import 'package:hatchery_im/manager/group_manager/groupsManager.dart';
 import 'package:hatchery_im/common/widget/selectContactsModel.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

@@ -4,8 +4,8 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/profileEditDetailManager.dart';
-import 'package:hatchery_im/manager/friendProfileManager.dart';
+import 'package:hatchery_im/manager/profile_manager/myProfile_manager/profileEditDetailManager.dart';
+import 'package:hatchery_im/manager/profile_manager/friendsProfile_manager/friendProfileManager.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 
 class ProfileEditDetailPage extends StatelessWidget {

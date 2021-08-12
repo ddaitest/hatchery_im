@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
-import 'package:hatchery_im/manager/chatHomeManager.dart';
+import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 

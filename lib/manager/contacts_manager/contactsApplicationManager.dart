@@ -10,7 +10,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import '../../config.dart';
 
 class ContactsApplyManager extends ChangeNotifier {
   //发送的好友申请数据

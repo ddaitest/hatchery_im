@@ -12,7 +12,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import '../../config.dart';
 
 class FriendApplyManager extends ChangeNotifier {
   TextEditingController applyTextEditingController = TextEditingController();

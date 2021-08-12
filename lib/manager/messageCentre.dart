@@ -13,10 +13,10 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:crypto/crypto.dart';
-import 'Constants.dart';
+import 'contacts_manager/Constants.dart';
 import '../store/LocalStore.dart';
 import 'MsgHelper.dart';
-import 'app_handler.dart';
+import 'app_manager/app_handler.dart';
 
 typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);

@@ -566,6 +566,22 @@ class API {
     }
   }
 
+  ///获取用户信息
+  static Future<ApiResult> getGroupInfo(String userID) async {
+    init();
+    try {
+      Response response = await _dio.get("/groups/members",
+          // queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///发起好友申请
   static Future<ApiResult> friendApplyRes(
       String userID, String? desc, String? remarks) async {

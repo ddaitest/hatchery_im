@@ -4,7 +4,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/friendProfileManager.dart';
+import 'package:hatchery_im/manager/profile_manager/friendsProfile_manager/friendProfileManager.dart';
 import 'package:hatchery_im/common/widget/aboutAvatar.dart';
 import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';

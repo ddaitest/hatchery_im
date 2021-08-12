@@ -7,7 +7,7 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/manager/loginManager.dart';
+import 'package:hatchery_im/manager/login_manager/loginManager.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';

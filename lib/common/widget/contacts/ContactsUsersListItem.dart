@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/contactsManager.dart';
-import 'package:hatchery_im/manager/contactsApplicationManager.dart';
-import 'package:hatchery_im/manager/blockListManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/contactsManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/contactsApplicationManager.dart';
+import 'package:hatchery_im/manager/block_manager/blockListManager.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:cool_alert/cool_alert.dart';
 

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
-import 'package:hatchery_im/manager/blockListManager.dart';
+import 'package:hatchery_im/manager/block_manager/blockListManager.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';

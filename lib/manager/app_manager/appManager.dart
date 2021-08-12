@@ -16,8 +16,8 @@ import 'package:hatchery_im/business/profile_page/my_profile.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
-import '../config.dart';
-import 'messageCentre.dart';
+import '../../config.dart';
+import '../messageCentre.dart';
 
 class AppManager extends ChangeNotifier {
   CustomMenuInfo? customMenuInfo;

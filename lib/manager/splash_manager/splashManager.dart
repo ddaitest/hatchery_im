@@ -18,7 +18,7 @@ import 'package:hatchery_im/config.dart';
 
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import '../../config.dart';
 
 class SplashManager extends ChangeNotifier {
   String _token = '';

@@ -5,7 +5,7 @@ import 'package:hatchery_im/business/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
 import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/manager/chatDetailManager.dart';
+import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';

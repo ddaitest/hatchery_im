@@ -55,6 +55,43 @@ Map<String, dynamic> _$UsersInfoToJson(UsersInfo instance) => <String, dynamic>{
       'isFriends': instance.isFriends,
     };
 
+GroupProfile _$GroupProfileFromJson(Map<String, dynamic> json) {
+  return GroupProfile(
+    json['id'] as String,
+    json['userID'] as String,
+    json['loginName'] as String,
+    json['nickName'] as String,
+    json['icon'] as String?,
+    json['notes'] as String?,
+    json['phone'] as String?,
+    json['email'] as String?,
+    json['address'] as String?,
+    json['status'] as int?,
+    json['groupRole'] as int?,
+    json['groupNickName'] as String?,
+    json['groupId'] as String?,
+    json['groupStatus'] as int?,
+  );
+}
+
+Map<String, dynamic> _$GroupProfileToJson(GroupProfile instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'userID': instance.userID,
+      'loginName': instance.loginName,
+      'nickName': instance.nickName,
+      'icon': instance.icon,
+      'notes': instance.notes,
+      'phone': instance.phone,
+      'email': instance.email,
+      'address': instance.address,
+      'status': instance.status,
+      'groupRole': instance.groupRole,
+      'groupNickName': instance.groupNickName,
+      'groupId': instance.groupId,
+      'groupStatus': instance.groupStatus,
+    };
+
 Friends _$FriendsFromJson(Map<String, dynamic> json) {
   return Friends(
     friendId: json['friendId'] as String,
@@ -268,14 +305,14 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     json['userMsgID'] as String,
     json['sender'] as String,
     json['nick'] as String,
-    json['receiver'] as String?,
+    json['groupID'] as String?,
     json['icon'] as String,
     json['source'] as String,
     json['content'] as Map<String, dynamic>,
     json['contentType'] as String,
     json['createTime'] as String,
-    json['groupID'] as String?,
-  )..progress = (json['progress'] as int?)??0;
+    json['receiver'] as String?,
+  )..progress = json['progress'] as int;
 }
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -285,12 +322,12 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'sender': instance.sender,
       'nick': instance.nick,
       'receiver': instance.receiver,
-      'groupID': instance.groupID,
       'icon': instance.icon,
       'source': instance.source,
       'content': instance.content,
       'contentType': instance.contentType,
       'createTime': instance.createTime,
+      'groupID': instance.groupID,
       'progress': instance.progress,
     };
 

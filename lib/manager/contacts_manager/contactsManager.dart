@@ -17,7 +17,7 @@ import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'app_handler.dart';
+import '../app_manager/app_handler.dart';
 
 class ContactsManager extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();

@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
-import 'package:hatchery_im/manager/contactsManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/contactsManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/aboutAvatar.dart';
 

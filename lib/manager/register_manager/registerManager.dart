@@ -13,7 +13,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
-import '../config.dart';
+import '../../config.dart';
 
 class RegisterManager extends ChangeNotifier {
   TextEditingController accountController = TextEditingController();

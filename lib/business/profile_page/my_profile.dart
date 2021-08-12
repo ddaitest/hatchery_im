@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:hatchery_im/manager/myProfileManager.dart';
+import 'package:hatchery_im/manager/profile_manager/myProfile_manager/myProfileManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'body.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';

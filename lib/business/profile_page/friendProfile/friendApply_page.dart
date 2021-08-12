@@ -4,7 +4,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:provider/provider.dart';
-import 'package:hatchery_im/manager/friendApplyManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/friendApplyManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 

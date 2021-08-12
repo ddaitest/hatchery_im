@@ -7,7 +7,7 @@ import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
 import 'package:hatchery_im/common/widget/groups/groupListItem.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
-import 'package:hatchery_im/manager/contactsApplicationManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/contactsApplicationManager.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';

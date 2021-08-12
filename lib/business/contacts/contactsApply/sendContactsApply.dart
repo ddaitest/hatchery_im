@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/contacts/ContactsUsersListItem.dart';
-import 'package:hatchery_im/manager/contactsApplicationManager.dart';
+import 'package:hatchery_im/manager/contacts_manager/contactsApplicationManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 
 class SendContactsApplyPage extends StatelessWidget {
