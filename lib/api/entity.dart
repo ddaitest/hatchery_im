@@ -61,45 +61,6 @@ class UsersInfo {
 }
 
 @JsonSerializable()
-class GroupProfile {
-  final String id;
-  final String userID;
-  final String loginName;
-  final String nickName;
-  final String? icon;
-  final String? notes;
-  final String? phone;
-  final String? email;
-  final String? address;
-  final int? status;
-  final int? groupRole;
-  final String? groupNickName;
-  final String? groupId;
-  final int? groupStatus;
-
-  GroupProfile(
-      this.id,
-      this.userID,
-      this.loginName,
-      this.nickName,
-      this.icon,
-      this.notes,
-      this.phone,
-      this.email,
-      this.address,
-      this.status,
-      this.groupRole,
-      this.groupNickName,
-      this.groupId,
-      this.groupStatus);
-
-  factory GroupProfile.fromJson(Map<String, dynamic> json) =>
-      _$GroupProfileFromJson(json);
-
-  Map<String, dynamic> toJson() => _$GroupProfileToJson(this);
-}
-
-@JsonSerializable()
 class Friends {
   final String friendId;
   final String? remarks;
@@ -172,9 +133,9 @@ class FriendsApplicationInfo {
 
 @JsonSerializable(explicitToJson: true)
 class Groups {
-  GroupsInfo group;
+  GroupInfo group;
   int membersCount = 0;
-  List<GroupsTop3Members> top3Members;
+  List<GroupMembers> top3Members;
 
   Groups(
     this.group,
@@ -188,7 +149,7 @@ class Groups {
 }
 
 @JsonSerializable()
-class GroupsInfo {
+class GroupInfo {
   int id;
   String? groupId = '';
   String? icon = '';
@@ -199,7 +160,7 @@ class GroupsInfo {
   String? updateTime = '';
   String? createTime = '';
 
-  GroupsInfo(
+  GroupInfo(
       this.id,
       this.groupId,
       this.icon,
@@ -210,14 +171,14 @@ class GroupsInfo {
       this.updateTime,
       this.createTime);
 
-  factory GroupsInfo.fromJson(Map<String, dynamic> json) =>
-      _$GroupsInfoFromJson(json);
+  factory GroupInfo.fromJson(Map<String, dynamic> json) =>
+      _$GroupInfoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GroupsInfoToJson(this);
+  Map<String, dynamic> toJson() => _$GroupInfoToJson(this);
 }
 
 @JsonSerializable()
-class GroupsTop3Members {
+class GroupMembers {
   int id = 0;
   String? userID = '';
   String? loginName = '';
@@ -234,7 +195,7 @@ class GroupsTop3Members {
   String? groupId = '';
   int? groupStatus = 0;
 
-  GroupsTop3Members(
+  GroupMembers(
       this.id,
       this.userID,
       this.loginName,
@@ -251,10 +212,10 @@ class GroupsTop3Members {
       this.groupId,
       this.groupStatus);
 
-  factory GroupsTop3Members.fromJson(Map<String, dynamic> json) =>
-      _$GroupsTop3MembersFromJson(json);
+  factory GroupMembers.fromJson(Map<String, dynamic> json) =>
+      _$GroupMembersFromJson(json);
 
-  Map<String, dynamic> toJson() => _$GroupsTop3MembersToJson(this);
+  Map<String, dynamic> toJson() => _$GroupMembersToJson(this);
 }
 
 @JsonSerializable()

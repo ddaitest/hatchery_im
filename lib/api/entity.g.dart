@@ -55,43 +55,6 @@ Map<String, dynamic> _$UsersInfoToJson(UsersInfo instance) => <String, dynamic>{
       'isFriends': instance.isFriends,
     };
 
-GroupProfile _$GroupProfileFromJson(Map<String, dynamic> json) {
-  return GroupProfile(
-    json['id'] as String,
-    json['userID'] as String,
-    json['loginName'] as String,
-    json['nickName'] as String,
-    json['icon'] as String?,
-    json['notes'] as String?,
-    json['phone'] as String?,
-    json['email'] as String?,
-    json['address'] as String?,
-    json['status'] as int?,
-    json['groupRole'] as int?,
-    json['groupNickName'] as String?,
-    json['groupId'] as String?,
-    json['groupStatus'] as int?,
-  );
-}
-
-Map<String, dynamic> _$GroupProfileToJson(GroupProfile instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'userID': instance.userID,
-      'loginName': instance.loginName,
-      'nickName': instance.nickName,
-      'icon': instance.icon,
-      'notes': instance.notes,
-      'phone': instance.phone,
-      'email': instance.email,
-      'address': instance.address,
-      'status': instance.status,
-      'groupRole': instance.groupRole,
-      'groupNickName': instance.groupNickName,
-      'groupId': instance.groupId,
-      'groupStatus': instance.groupStatus,
-    };
-
 Friends _$FriendsFromJson(Map<String, dynamic> json) {
   return Friends(
     friendId: json['friendId'] as String,
@@ -159,10 +122,10 @@ Map<String, dynamic> _$FriendsApplicationInfoToJson(
 
 Groups _$GroupsFromJson(Map<String, dynamic> json) {
   return Groups(
-    GroupsInfo.fromJson(json['group'] as Map<String, dynamic>),
+    GroupInfo.fromJson(json['group'] as Map<String, dynamic>),
     json['membersCount'] as int,
     (json['top3Members'] as List<dynamic>)
-        .map((e) => GroupsTop3Members.fromJson(e as Map<String, dynamic>))
+        .map((e) => GroupMembers.fromJson(e as Map<String, dynamic>))
         .toList(),
   );
 }
@@ -173,8 +136,8 @@ Map<String, dynamic> _$GroupsToJson(Groups instance) => <String, dynamic>{
       'top3Members': instance.top3Members.map((e) => e.toJson()).toList(),
     };
 
-GroupsInfo _$GroupsInfoFromJson(Map<String, dynamic> json) {
-  return GroupsInfo(
+GroupInfo _$GroupInfoFromJson(Map<String, dynamic> json) {
+  return GroupInfo(
     json['id'] as int,
     json['groupId'] as String?,
     json['icon'] as String?,
@@ -187,8 +150,7 @@ GroupsInfo _$GroupsInfoFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$GroupsInfoToJson(GroupsInfo instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$GroupInfoToJson(GroupInfo instance) => <String, dynamic>{
       'id': instance.id,
       'groupId': instance.groupId,
       'icon': instance.icon,
@@ -200,8 +162,8 @@ Map<String, dynamic> _$GroupsInfoToJson(GroupsInfo instance) =>
       'createTime': instance.createTime,
     };
 
-GroupsTop3Members _$GroupsTop3MembersFromJson(Map<String, dynamic> json) {
-  return GroupsTop3Members(
+GroupMembers _$GroupMembersFromJson(Map<String, dynamic> json) {
+  return GroupMembers(
     json['id'] as int,
     json['userID'] as String?,
     json['loginName'] as String?,
@@ -220,7 +182,7 @@ GroupsTop3Members _$GroupsTop3MembersFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$GroupsTop3MembersToJson(GroupsTop3Members instance) =>
+Map<String, dynamic> _$GroupMembersToJson(GroupMembers instance) =>
     <String, dynamic>{
       'id': instance.id,
       'userID': instance.userID,

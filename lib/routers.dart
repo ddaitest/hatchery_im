@@ -14,6 +14,7 @@ import 'package:hatchery_im/business/block/blockList.dart';
 import 'package:hatchery_im/business/login/phone/otp_page.dart';
 import 'package:hatchery_im/business/about/about.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page.dart';
+import 'package:hatchery_im/business/group_page/group_profile.dart';
 import 'package:hatchery_im/common/widget/webview_common.dart';
 import 'business/chat_detail/chat_detail_page.dart';
 import 'business/contacts/contactsApply/receiveContactsApply.dart';
@@ -80,6 +81,11 @@ class Routers {
         return CupertinoPageRoute(
             builder: (_) =>
                 WebViewPage(map["url"], map["path"], map["title"] ?? ""));
+      case '/group_profile':
+        return MaterialPageRoute(
+            builder: (_) => GroupProfilePage(
+                  groupID: settings.arguments.toString(),
+                ));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:

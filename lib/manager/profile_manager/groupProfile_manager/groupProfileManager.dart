@@ -13,11 +13,8 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 class GroupProfileManager extends ChangeNotifier {
-  UsersInfo? usersInfo;
-  Map<String, dynamic>? usersInfoMap;
-  //拉黑列表
-  List<BlockList>? blockContactsList;
-  bool isBlock = false;
+  GroupInfo? groupInfo;
+  GroupMembers? groupMembers;
 
   /// 初始化
   init(String groupId) {
@@ -26,22 +23,12 @@ class GroupProfileManager extends ChangeNotifier {
 
   void refreshData(String friendId) {}
 
-  void setBlock(bool value, String friendId) {
-    if (value) {
-      blockFriend(friendId);
-    } else {
-      delBlockFriend(friendId);
-    }
-    isBlock = value;
-  }
-
   Future<dynamic> getGroupProfileData(String groupId) async {
     ApiResult result = await API.getGroupInfo(groupId);
     if (result.isSuccess()) {
-      usersInfo = UsersInfo.fromJson(result.getData());
-      usersInfoMap = result.getData();
+      groupInfo = Groups.fromJson(result.getData()).group;
       print(
-          "DEBUG=> getFriendProfileData result.getData() ${usersInfo!.nickName}");
+          "DEBUG=> getGroupProfileData result.getData() ${groupInfo!.groupName}");
       notifyListeners();
     } else {
       showToast('${result.info}');
@@ -73,45 +60,6 @@ class GroupProfileManager extends ChangeNotifier {
     } else {
       showToast('${result.info}');
     }
-  }
-
-  Future<dynamic> blockFriend(String friendId) async {
-    List<String> friendList = [];
-    friendList.add(friendId);
-    ApiResult result = await API.blockFriend(friendList);
-    if (result.isSuccess()) {
-      showToast('好友已拉黑');
-      notifyListeners();
-    } else {
-      showToast('${result.info}');
-    }
-  }
-
-  Future<dynamic> delBlockFriend(String userID) async {
-    List<String> blackUserIds = [];
-    blackUserIds.add(userID);
-    ApiResult result = await API.delBlockFriend(blackUserIds);
-    if (result.isSuccess()) {
-      showToast('已移除黑名单');
-      notifyListeners();
-    } else {
-      showToast('${result.info}');
-    }
-  }
-
-  Future<dynamic> queryBlockListRes({
-    int size = 999,
-    int current = 0,
-  }) async {
-    API.getBlockList(size, current).then((value) {
-      if (value.isSuccess()) {
-        blockContactsList =
-            value.getDataList((m) => BlockList.fromJson(m), type: 1);
-        return blockContactsList;
-      } else {
-        return false;
-      }
-    });
   }
 
   @override

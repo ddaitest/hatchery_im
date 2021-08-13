@@ -561,11 +561,11 @@ class API {
     }
   }
 
-  ///获取用户信息
-  static Future<ApiResult> getGroupInfo(String userID) async {
+  ///获取群组信息
+  static Future<ApiResult> getGroupInfo(String groupID) async {
     init();
     try {
-      Response response = await _dio.get("/groups/members",
+      Response response = await _dio.get("/groups/$groupID",
           // queryParameters: queryParam,
           options: Options(
             headers: {"BEE_TOKEN": _token},

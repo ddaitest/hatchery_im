@@ -22,6 +22,7 @@ import 'package:hatchery_im/manager/profile_manager/myProfile_manager/profileEdi
 import 'package:hatchery_im/manager/contacts_manager/friendApplyManager.dart';
 import 'package:hatchery_im/manager/block_manager/blockListManager.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
+import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupProfileManager.dart';
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 
 void main() {
@@ -51,7 +52,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SearchNewContactsManager()),
         ChangeNotifierProvider(create: (_) => ContactsApplyManager()),
         ChangeNotifierProvider(create: (_) => GroupsManager()),
-        // ChangeNotifierProvider(create: (_) => NewGroupsManager()),
+        ChangeNotifierProvider(create: (_) => GroupProfileManager()),
         ChangeNotifierProvider(create: (_) => MyProfileManager()),
         ChangeNotifierProvider(create: (_) => FriendProfileManager()),
         ChangeNotifierProvider(create: (_) => ProfileEditManager()),

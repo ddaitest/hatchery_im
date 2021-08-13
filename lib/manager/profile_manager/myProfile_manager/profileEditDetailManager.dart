@@ -72,7 +72,7 @@ class ProfileEditDetailManager extends ChangeNotifier {
       } catch (e) {}
     } else {
       showToast('请重新登录');
-      SP.delete(SPKey.userInfo);
+      UserCentre.logout();
       Future.delayed(
           Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }

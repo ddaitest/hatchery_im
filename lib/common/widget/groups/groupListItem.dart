@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/manager/contacts_manager/contactsManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -26,6 +27,8 @@ class GroupListItem extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   child: ListTile(
                     dense: true,
+                    onTap: () => Routers.navigateTo('/group_profile',
+                        arg: groupsLists![index].group.groupId),
 
                     /// 群头像，没有头像则返回默认头像
                     leading: Container(
@@ -64,7 +67,7 @@ class GroupListItem extends StatelessWidget {
         : IndicatorView();
   }
 
-  _groupMembersAvatar(List<GroupsTop3Members> top3Members, int groupsMembers) {
+  _groupMembersAvatar(List<GroupMembers> top3Members, int groupsMembers) {
     List<Widget> _avatarList = [];
     double off = 18.0;
     for (var i = 0; i < 3; i++) {
