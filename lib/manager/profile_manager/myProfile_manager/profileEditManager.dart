@@ -22,19 +22,15 @@ class ProfileEditManager extends ChangeNotifier {
   }
 
   _getStoredForMyProfileData() async {
-    String? stored = SP.getString(SPKey.userInfo);
-    if (stored != null) {
-      try {
-        var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        myProfileData = userInfo;
-        print("_myProfileData ${myProfileData!.icon}");
-        imageUrl = myProfileData!.icon ?? '';
-      } catch (e) {}
+    myProfileData = UserCentre.getInfo();
+    if (myProfileData != null) {
+      print("_myProfileData ${myProfileData!.loginName}");
+      imageUrl = myProfileData!.icon ?? '';
     } else {
       showToast('请重新登录');
-      SP.delete(SPKey.userInfo);
+      UserCentre.logout();
       Future.delayed(
-          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/'));
+          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }
   }
 
@@ -65,7 +61,7 @@ class ProfileEditManager extends ChangeNotifier {
         value['info'].addAll(result.getData());
         print("DEBUG=> value result.getData() ${value['info']}");
         // SP.set(SPKey.userInfo, jsonEncode(value));
-        UserCentre.save(jsonEncode(value));
+        UserCentre.saveUserInfo(jsonEncode(value));
       });
     } else {
       showToast('${result.info}');

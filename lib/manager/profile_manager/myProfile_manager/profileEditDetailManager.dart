@@ -47,7 +47,7 @@ class ProfileEditDetailManager extends ChangeNotifier {
           value['info'].addAll(result.getData());
           print("DEBUG=> value result.getData() ${value['info']}");
           // SP.set(SPKey.userInfo, jsonEncode(value));
-          UserCentre.save(jsonEncode(value));
+          UserCentre.saveUserInfo(jsonEncode(value));
         });
 
         Future.delayed(Duration(milliseconds: 500), () {

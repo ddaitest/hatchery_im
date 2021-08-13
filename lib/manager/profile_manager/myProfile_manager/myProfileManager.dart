@@ -7,6 +7,7 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 class MyProfileManager extends ChangeNotifier {
@@ -37,25 +38,20 @@ class MyProfileManager extends ChangeNotifier {
   }
 
   _getStoredForMyProfileData() async {
-    String? stored = SP.getString(SPKey.userInfo);
-    if (stored != null) {
-      print("_myProfileData ${stored}");
-      try {
-        var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        myProfileData = userInfo;
-        print("_myProfileData ${myProfileData!.nickName}");
-        notifyListeners();
-      } catch (e) {}
+    myProfileData = UserCentre.getInfo();
+    if (myProfileData != null) {
+      print("_myProfileData ${myProfileData!.loginName}");
+      notifyListeners();
     } else {
       showToast('请重新登录');
-      SP.delete(SPKey.userInfo);
+      UserCentre.logout();
       Future.delayed(
           Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }
   }
 
   logOutMethod() {
-    SP.delete(SPKey.userInfo);
+    UserCentre.logout();
     Future.delayed(
         Duration.zero, () => Routers.navigateAndRemoveUntil('/login'));
   }

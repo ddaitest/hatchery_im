@@ -45,7 +45,7 @@ class LoginManager extends ChangeNotifier {
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()['info']}");
       // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
-      UserCentre.save(jsonEncode(result.getData()));
+      UserCentre.saveUserInfo(jsonEncode(result.getData()));
       MessageCentre.init();
       Routers.navigateAndRemoveUntil('/');
     } else {
@@ -72,7 +72,7 @@ class LoginManager extends ChangeNotifier {
     if (result.isSuccess()) {
       print("DEBUG=> result.getData() ${result.getData()}");
       // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
-      UserCentre.save(jsonEncode(result.getData()));
+      UserCentre.saveUserInfo(jsonEncode(result.getData()));
       MessageCentre.init();
       Routers.navigateAndRemoveUntil('/');
     } else {

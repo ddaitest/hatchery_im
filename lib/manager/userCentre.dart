@@ -27,9 +27,9 @@ class UserCentre {
     return _token ?? "";
   }
 
-  static void save(String data) {
+  static void saveUserInfo(String data) {
     SP.set(SPKey.userInfo, data);
-    _token = jsonDecode(data)['token'];
+    _info = MyProfile.fromJson(jsonDecode(data)['info']);
   }
 
   static bool isLogin() {
