@@ -16,29 +16,28 @@ class FriendApplyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-        create: (context) => FriendApplyManager(),
-        child: Scaffold(
-            appBar: AppBarFactory.backButton('申请添加好友'),
-            body: Container(
-                padding: const EdgeInsets.only(right: 16.0, left: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 10.0.h),
-                    Text(
-                      '申请理由',
-                      style: Flavors.textStyles.friendApplyTitleText,
-                    ),
-                    _applyTextView(),
-                    Text(
-                      '设置备注',
-                      style: Flavors.textStyles.friendApplyTitleText,
-                    ),
-                    _remarkView(),
-                    _submitBtn()
-                  ],
-                ))));
+    manager.init();
+    return Scaffold(
+        appBar: AppBarFactory.backButton('申请添加好友'),
+        body: Container(
+            padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 10.0.h),
+                Text(
+                  '申请理由',
+                  style: Flavors.textStyles.friendApplyTitleText,
+                ),
+                _applyTextView(),
+                Text(
+                  '设置备注',
+                  style: Flavors.textStyles.friendApplyTitleText,
+                ),
+                _remarkView(),
+                _submitBtn()
+              ],
+            )));
   }
 
   Widget _applyTextView() {

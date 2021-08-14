@@ -22,7 +22,7 @@ extension ExtendedDio on Dio {
           'HTTP.onResponse: statusCode = ${response.statusCode} ;data = ${response.data} ');
       if (response.statusCode == 403) {
         showToast('请重新登录');
-        SP.delete(SPKey.userInfo);
+        UserCentre.logout();
         Routers.navigateAndRemoveUntil('/login');
       }
       return handler.next(response); // continue

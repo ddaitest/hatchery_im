@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
@@ -18,21 +19,18 @@ class FriendApplyManager extends ChangeNotifier {
   TextEditingController applyTextEditingController = TextEditingController();
   TextEditingController remarkEditingController = TextEditingController();
 
-  FriendApplyManager() {
+  init() {
     _getStoredForMyProfileData();
   }
 
   Future _getStoredForMyProfileData() async {
-    String? stored = SP.getString(SPKey.userInfo);
-    if (stored != null) {
-      print("_myProfileData ${stored}");
-      try {
-        MyProfile userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        applyTextEditingController.text = '我是';
-      } catch (e) {}
+    MyProfile? _myProfile = UserCentre.getInfo();
+    if (_myProfile != null) {
+      print("_myProfileData ${_myProfile.nickName}");
+      applyTextEditingController.text = '我是 ${_myProfile.nickName}';
     } else {
       showToast('请重新登录');
-      SP.delete(SPKey.userInfo);
+      UserCentre.logout();
       Future.delayed(
           Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }

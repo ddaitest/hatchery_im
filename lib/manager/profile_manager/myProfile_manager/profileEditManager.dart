@@ -69,15 +69,15 @@ class ProfileEditManager extends ChangeNotifier {
   }
 
   Future _getMyProfileData() async {
-    String? stored = SP.getString(SPKey.userInfo);
-    if (stored != null) {
-      print("_myProfileData ${stored}");
+    String? _stored = SP.getString(SPKey.userInfo);
+    if (_stored != null) {
+      print("DEBUG=> _stored _myProfileData ${_stored}");
       try {
-        return jsonDecode(stored);
+        return jsonDecode(_stored);
       } catch (e) {}
     } else {
       showToast('请重新登录');
-      SP.delete(SPKey.userInfo);
+      UserCentre.logout();
       Future.delayed(
           Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }
