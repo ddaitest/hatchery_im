@@ -13,6 +13,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
+import 'package:hatchery_im/business/group_page/group_profile/groupProfileMembersModel.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -33,6 +34,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
 
   @override
   void dispose() {
+    manager.isManager = false;
     super.dispose();
   }
 
@@ -41,8 +43,44 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-            appBar: AppBarFactory.backButton('${manager.groupInfo!.groupName}'),
-            body: _mainContainer()));
+            appBar: AppBar(
+              title: Selector<GroupProfileManager, List<GroupMembers>?>(
+                  builder: (BuildContext context, List<GroupMembers>? value,
+                      Widget? child) {
+                    return Text(
+                      value != null ? '群组信息(${value.length})' : '群组信息',
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500),
+                    );
+                  },
+                  selector: (BuildContext context,
+                      GroupProfileManager groupProfileManager) {
+                    return groupProfileManager.groupMembersList ?? null;
+                  },
+                  shouldRebuild: (pre, next) => (pre != next)),
+              centerTitle: true,
+              backgroundColor: Colors.transparent,
+              brightness: Brightness.light,
+              elevation: 0.0,
+              leading: Container(
+                padding: const EdgeInsets.all(6.0),
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back, size: 30.0, color: Colors.black),
+                  onPressed: () =>
+                      Navigator.of(App.navState.currentContext!).pop(true),
+                ),
+              ),
+              automaticallyImplyLeading: false,
+            ),
+            body: ListView(
+              physics: const BouncingScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                _membersView(),
+              ],
+            )));
   }
 
   Future<bool> _onWillPop() async {
@@ -50,21 +88,15 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
     return true;
   }
 
-  Widget _mainContainer() {
-    return Selector<GroupProfileManager, GroupInfo?>(
-        builder: (BuildContext context, GroupInfo? value, Widget? child) {
-          return Container(
-              padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
-              child: Column(
-                children: [
-                  _topViewForFriend(value),
-                  Container(height: 40.0.h),
-                ],
-              ));
+  Widget _membersView() {
+    return Selector<GroupProfileManager, List<GroupMembers>?>(
+        builder:
+            (BuildContext context, List<GroupMembers>? value, Widget? child) {
+          return GroupMembersGrid(value);
         },
         selector:
             (BuildContext context, GroupProfileManager groupProfileManager) {
-          return groupProfileManager.groupInfo ?? null;
+          return groupProfileManager.groupMembersList ?? null;
         },
         shouldRebuild: (pre, next) => (pre != next));
   }

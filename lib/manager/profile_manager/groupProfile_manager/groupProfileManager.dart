@@ -11,14 +11,17 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 
 class GroupProfileManager extends ChangeNotifier {
   GroupInfo? groupInfo;
-  GroupMembers? groupMembers;
+  List<GroupMembers>? groupMembersList;
+  bool isManager = false;
 
   /// 初始化
   init(String groupId) {
     getGroupProfileData(groupId);
+    getGroupMembersData(groupId);
   }
 
   void refreshData(String friendId) {}
@@ -27,43 +30,55 @@ class GroupProfileManager extends ChangeNotifier {
     ApiResult result = await API.getGroupInfo(groupId);
     if (result.isSuccess()) {
       groupInfo = Groups.fromJson(result.getData()).group;
-      print(
-          "DEBUG=> getGroupProfileData result.getData() ${groupInfo!.groupName}");
+      // groupMembersList = Groups.fromJson(result.getData()).top3Members;
+      print("DEBUG=> getGroupProfileData groupInfo ${groupInfo!.groupName}");
+      // print(
+      //     "DEBUG=> getGroupProfileData groupMembersList ${groupMembersList![0].nickName}");
       notifyListeners();
     } else {
       showToast('${result.info}');
     }
   }
 
-  Future<dynamic> setFriendRemark(String friendId, String remarkText) async {
-    ApiResult result = await API.setFriendRemarkData(friendId, remarkText);
+  Future<dynamic> getGroupMembersData(String groupId) async {
+    ApiResult result = await API.getGroupMembers(groupId);
     if (result.isSuccess()) {
-      showToast('备注修改成功');
-      Future.delayed(Duration(milliseconds: 200), () {
-        Navigator.of(App.navState.currentContext!).pop(true);
-      });
+      groupMembersList =
+          result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
+      print(
+          "DEBUG=> getGroupMembersData result.getData() ${groupMembersList![0].nickName}");
+      _checkManager();
+      notifyListeners();
     } else {
       showToast('${result.info}');
     }
   }
 
-  Future<dynamic> deleteFriend(String friendId) async {
-    List<String> friendList = [];
-    friendList.add(friendId);
-    ApiResult result = await API.deleteFriend(friendList);
-    if (result.isSuccess()) {
-      showToast('好友已删除');
-      Future.delayed(Duration(milliseconds: 200), () {
-        Navigator.of(App.navState.currentContext!).pop(false);
-        Navigator.of(App.navState.currentContext!).pop(true);
+  void _checkManager() {
+    _getStoredForMyProfileData().then((value) {
+      groupMembersList!.forEach((element) {
+        if (element.userID == value!.userID && element.groupRole != 0)
+          isManager = true;
       });
+    });
+  }
+
+  Future<MyProfile?> _getStoredForMyProfileData() async {
+    MyProfile? myProfileData = UserCentre.getInfo();
+    if (myProfileData != null) {
+      print("_myProfileData ${myProfileData.loginName}");
+      return myProfileData;
     } else {
-      showToast('${result.info}');
+      showToast('请重新登录');
+      UserCentre.logout();
+      Future.delayed(
+          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
     }
   }
 
   @override
   void dispose() {
+    isManager = false;
     super.dispose();
   }
 }

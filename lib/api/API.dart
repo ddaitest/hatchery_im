@@ -577,6 +577,28 @@ class API {
     }
   }
 
+  ///获取群成员信息
+  static Future<ApiResult> getGroupMembers(String groupId,
+      {int page = 0, int size = 99}) async {
+    init();
+    Map<String, dynamic> queryParam = {
+      "groupId": groupId,
+      "page": page,
+      "size": size,
+    };
+    try {
+      Response response = await _dio.get("/groups/members",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///发起好友申请
   static Future<ApiResult> friendApplyRes(
       String userID, String? desc, String? remarks) async {

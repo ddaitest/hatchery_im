@@ -23,7 +23,9 @@ class MyProfilePage extends StatelessWidget {
         MyProfileManager myProfileManager, Widget? child) {
       return Scaffold(
           appBar: buildAppBar(myProfileManager),
-          body: ProfileBody(myProfileManager));
+          body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ProfileBody(myProfileManager)));
     });
   }
 
