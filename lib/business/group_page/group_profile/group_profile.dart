@@ -37,6 +37,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
     manager.isManager = false;
     manager.groupInfo = null;
     manager.groupMembersList?.clear();
+    manager.nickNameForGroup = null;
     super.dispose();
   }
 
@@ -100,7 +101,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
               children: [
                 GroupProfileMenuItem(
                   titleText: '群组名称',
-                  trailingText: '${value?.groupName}',
+                  trailingText: '${value?.groupName ?? ''}',
                   showDivider: false,
                 ),
                 GroupProfileMenuItem(
@@ -117,8 +118,17 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                 GroupProfileMenuItem(
                   titleText: '我在本群的昵称',
                   trailingText: '${manager.nickNameForGroup ?? ''}',
-                  trailingTextMaxLine: 2,
+                  trailingTextMaxLine: 1,
                   showDivider: false,
+                  onTap: () => Routers.navigateTo('/profile_edit_detail', arg: {
+                    'appBarText': '我在本群的昵称',
+                    'inputText': '${manager.nickNameForGroup ?? ''}',
+                    'hintText': '修改昵称',
+                    'maxLength': 20,
+                    'maxLine': 1,
+                    'onlyNumber': false
+                  }).then((value) =>
+                      value ? manager.refreshData(widget.groupID!) : null),
                 ),
               ],
             ),

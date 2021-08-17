@@ -25,16 +25,15 @@ class GroupProfileManager extends ChangeNotifier {
     getGroupMembersData(groupId);
   }
 
-  void refreshData(String friendId) {}
+  void refreshData(String groupId) {
+    init(groupId);
+  }
 
   Future<dynamic> getGroupProfileData(String groupId) async {
     ApiResult result = await API.getGroupInfo(groupId);
     if (result.isSuccess()) {
       groupInfo = Groups.fromJson(result.getData()).group;
-      // groupMembersList = Groups.fromJson(result.getData()).top3Members;
       print("DEBUG=> getGroupProfileData groupInfo ${groupInfo!.groupName}");
-      // print(
-      //     "DEBUG=> getGroupProfileData groupMembersList ${groupMembersList![0].nickName}");
       notifyListeners();
     } else {
       showToast('${result.info}');
@@ -55,12 +54,16 @@ class GroupProfileManager extends ChangeNotifier {
     }
   }
 
-  void _checkManager() {
+  void _checkManager() async {
     _getStoredForMyProfileData().then((value) {
       groupMembersList!.forEach((element) {
-        if (element.userID == value!.userID && element.groupRole != 0)
+        if (value!.userID == element.userID) {
+          nickNameForGroup = element.groupNickName ?? element.nickName;
+          print("DEBUG=> nickNameForGroup ${nickNameForGroup}");
+        }
+        if (element.userID == value.userID && element.groupRole != 0) {
           isManager = true;
-        nickNameForGroup = element.groupNickName ?? value.nickName;
+        }
       });
     });
   }
@@ -75,6 +78,19 @@ class GroupProfileManager extends ChangeNotifier {
       UserCentre.logout();
       Future.delayed(
           Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
+    }
+  }
+
+  Future<dynamic> updateGroupNickNameData(
+      String groupId, String groupNickName) async {
+    ApiResult result = await API.updateGroupNickName(groupId, groupNickName);
+    if (result.isSuccess()) {
+      showToast('群昵称修改成功');
+      Future.delayed(Duration(milliseconds: 200), () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+      });
+    } else {
+      showToast('${result.info}');
     }
   }
 

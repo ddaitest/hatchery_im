@@ -15,7 +15,7 @@ import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import '../edit_profile/edit_detail.dart';
+import '../../../common/widget/profile/edit_detail.dart';
 
 class FriendProfilePage extends StatefulWidget {
   final String? userID;

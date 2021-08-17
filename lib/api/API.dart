@@ -599,6 +599,27 @@ class API {
     }
   }
 
+  ///修改群内昵称
+  static Future<ApiResult> updateGroupNickName(
+      String groupId, String? groupNickName) async {
+    Map<String, String> body = {
+      "groupId": groupId,
+      "groupNickName": groupNickName!,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/update/nickname",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///发起好友申请
   static Future<ApiResult> friendApplyRes(
       String userID, String? desc, String? remarks) async {

@@ -13,7 +13,8 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
-import 'package:hatchery_im/business/profile_page/edit_profile/edit_detail.dart';
+import 'package:hatchery_im/common/widget/profile/edit_detail.dart';
+import 'package:hatchery_im/routers.dart';
 
 class ProfileEditPage extends StatefulWidget {
   @override
@@ -128,17 +129,14 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget _dataCellView(String title, String trailingText, {bool isTap = true}) {
     return GestureDetector(
       onTap: () => isTap
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => ProfileEditDetailPage(
-                        '$title',
-                        trailingText,
-                        '$title',
-                        maxLength: title == '个人简介' || title == '地址' ? 60 : 20,
-                        maxLine: title == '个人简介' || title == '地址' ? 4 : 2,
-                        onlyNumber: title == '手机号' ? true : false,
-                      ))).then((value) => value ? manager.refreshData() : null)
+          ? Routers.navigateTo('/profile_edit_detail', arg: {
+              'appBarText': '$title',
+              'inputText': '$trailingText',
+              'hintText': '$title',
+              'maxLength': title == '个人简介' || title == '地址' ? 60 : 20,
+              'maxLine': title == '个人简介' || title == '地址' ? 4 : 2,
+              'onlyNumber': title == '手机号' ? true : false
+            }).then((value) => value ? manager.refreshData() : null)
           : null,
       child: ProfileEditMenuItem(
         title,

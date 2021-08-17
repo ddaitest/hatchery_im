@@ -14,6 +14,7 @@ import 'package:hatchery_im/business/block/blockList.dart';
 import 'package:hatchery_im/business/login/phone/otp_page.dart';
 import 'package:hatchery_im/business/about/about.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page.dart';
+import 'package:hatchery_im/common/widget/profile/edit_detail.dart';
 import 'package:hatchery_im/business/group_page/group_profile/group_profile.dart';
 import 'package:hatchery_im/common/widget/webview_common.dart';
 import 'business/chat_detail/chat_detail_page.dart';
@@ -84,8 +85,19 @@ class Routers {
       case '/group_profile':
         return MaterialPageRoute(
             builder: (_) => GroupProfilePage(
-                  groupID: settings.arguments.toString(),
+                  groupID: settings.arguments as String,
                 ));
+      case '/profile_edit_detail':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return CupertinoPageRoute(
+            builder: (_) => ProfileEditDetailPage(
+                appBarText: map['appBarText'],
+                inputText: map['inputText'],
+                hintText: map['hintText'],
+                hideText: map['hideText'] ?? false,
+                maxLength: map['maxLength'],
+                maxLine: map['maxLine'] ?? 1,
+                onlyNumber: map['onlyNumber'] ?? false));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:
