@@ -23,7 +23,7 @@ class GroupMembersGrid extends StatelessWidget {
     return groupMembersList != null
         ? Container(
             color: Flavors.colorInfo.mainBackGroundColor,
-            padding: const EdgeInsets.all(13.0),
+            padding: const EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
             child: GridView.builder(
               itemCount: manager.isManager
                   ? groupMembersList!.length + 2
@@ -64,8 +64,12 @@ class GroupMembersGrid extends StatelessWidget {
         ),
         Expanded(
             child: Container(
-          height: 50.0,
-          child: Text('$name'),
+          height: 50.0.h,
+          child: Text('$name',
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: Flavors.textStyles.groupProfileMembersNameText,
+              overflow: TextOverflow.ellipsis),
         )),
       ],
     );
@@ -78,12 +82,12 @@ class GroupMembersGrid extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.only(bottom: 12.0),
         child: CircleAvatar(
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: Colors.blueGrey[200],
           radius: 20.0,
           child: Center(
             child: Icon(
               managerType == managerAddType ? Icons.add : Icons.remove,
-              color: Colors.white,
+              color: Flavors.colorInfo.mainBackGroundColor,
               size: 20.0,
             ),
           ),

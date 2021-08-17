@@ -10,9 +10,9 @@ import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/common/widget/imageDetail.dart';
+import 'package:hatchery_im/business/group_page/group_profile/groupMenuItem.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
-import 'package:hatchery_im/common/widget/loading_Indicator.dart';
+import 'package:hatchery_im/business/profile_page/body.dart';
 import 'package:hatchery_im/business/group_page/group_profile/groupProfileMembersModel.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -35,6 +35,8 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
   @override
   void dispose() {
     manager.isManager = false;
+    manager.groupInfo = null;
+    manager.groupMembersList?.clear();
     super.dispose();
   }
 
@@ -61,7 +63,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                   },
                   shouldRebuild: (pre, next) => (pre != next)),
               centerTitle: true,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Flavors.colorInfo.mainBackGroundColor,
               brightness: Brightness.light,
               elevation: 0.0,
               leading: Container(
@@ -79,6 +81,8 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
               shrinkWrap: true,
               children: [
                 _membersView(),
+                SizedBox(height: 8.0.h),
+                _groupInfoView()
               ],
             )));
   }
@@ -86,6 +90,45 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
   Future<bool> _onWillPop() async {
     Navigator.of(App.navState.currentContext!).pop(true);
     return true;
+  }
+
+  Widget _groupInfoView() {
+    return Selector<GroupProfileManager, GroupInfo?>(
+        builder: (BuildContext context, GroupInfo? value, Widget? child) {
+          return Container(
+            child: Column(
+              children: [
+                GroupProfileMenuItem(
+                  titleText: '群组名称',
+                  trailingText: '${value?.groupName}',
+                  showDivider: false,
+                ),
+                GroupProfileMenuItem(
+                  titleText: '群简介',
+                  trailingText: '${value?.groupDescription ?? '没有群简介'}',
+                  showDivider: false,
+                ),
+                GroupProfileMenuItem(
+                  titleText: '群公告',
+                  trailingText: '${value?.notes ?? '未设置'}',
+                  trailingTextMaxLine: 2,
+                  showDivider: false,
+                ),
+                GroupProfileMenuItem(
+                  titleText: '我在本群的昵称',
+                  trailingText: '${manager.nickNameForGroup ?? ''}',
+                  trailingTextMaxLine: 2,
+                  showDivider: false,
+                ),
+              ],
+            ),
+          );
+        },
+        selector:
+            (BuildContext context, GroupProfileManager groupProfileManager) {
+          return groupProfileManager.groupInfo ?? null;
+        },
+        shouldRebuild: (pre, next) => (pre != next));
   }
 
   Widget _membersView() {

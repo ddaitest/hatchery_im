@@ -16,6 +16,7 @@ import 'package:hatchery_im/manager/userCentre.dart';
 class GroupProfileManager extends ChangeNotifier {
   GroupInfo? groupInfo;
   List<GroupMembers>? groupMembersList;
+  String? nickNameForGroup;
   bool isManager = false;
 
   /// 初始化
@@ -59,6 +60,7 @@ class GroupProfileManager extends ChangeNotifier {
       groupMembersList!.forEach((element) {
         if (element.userID == value!.userID && element.groupRole != 0)
           isManager = true;
+        nickNameForGroup = element.groupNickName ?? value.nickName;
       });
     });
   }

@@ -223,6 +223,12 @@ class TextStyles {
       fontSize: 15.0.sp,
       fontWeight: FontWeight.bold,
       color: ColorInfo().mainTextColor);
+
+  final TextStyle groupProfileMembersNameText = TextStyle(
+    fontSize: 12.0.sp,
+    color: ColorInfo().subtitleColor,
+    fontWeight: FontWeight.normal,
+  );
 }
 
 class SizesInfo {
