@@ -137,6 +137,7 @@ class GroupProfileEditDetailPage extends StatelessWidget {
   final int? maxLength;
   final int? maxLine;
   final bool onlyNumber;
+  final int sendType;
   final TextEditingController textEditingController = TextEditingController();
   GroupProfileEditDetailPage(
       {this.groupId,
@@ -146,7 +147,8 @@ class GroupProfileEditDetailPage extends StatelessWidget {
       this.hideText = false,
       this.maxLength,
       this.maxLine = 1,
-      this.onlyNumber = false});
+      this.onlyNumber = false,
+      this.sendType = 0});
 
   final manager = App.manager<GroupProfileManager>();
 
@@ -159,10 +161,21 @@ class GroupProfileEditDetailPage extends StatelessWidget {
               padding: const EdgeInsets.all(6.0),
               child: TextButton(
                 onPressed: () {
-                  print("DEBUG=> ${textEditingController.text}");
+                  /// todo 区分提交的项目
+                  /// sendType: 1、群组名称；2、群简介；3、群公告；4、群昵称
                   if (textEditingController.text != '') {
-                    manager.updateGroupNickNameData(
-                        groupId!, textEditingController.text);
+                    if (sendType == 1)
+                      manager.updateGroupName(
+                          groupId!, textEditingController.text);
+                    if (sendType == 2)
+                      manager.updateGroupDescription(
+                          groupId!, textEditingController.text);
+                    if (sendType == 3)
+                      manager.updateGroupNotes(
+                          groupId!, textEditingController.text);
+                    if (sendType == 4)
+                      manager.updateGroupNickNameData(
+                          groupId!, textEditingController.text);
                   } else {
                     showToast('修改内容不能为空');
                   }

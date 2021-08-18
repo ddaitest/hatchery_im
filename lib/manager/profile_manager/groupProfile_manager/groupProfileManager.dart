@@ -54,6 +54,44 @@ class GroupProfileManager extends ChangeNotifier {
     }
   }
 
+  Future<dynamic> updateGroupName(String groupId, String newGroupName) async {
+    ApiResult result = await API.updateGroupName(groupId, newGroupName);
+    if (result.isSuccess()) {
+      Future.delayed(Duration(milliseconds: 200), () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+      });
+      showToast('群名称修改成功');
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
+  Future<dynamic> updateGroupDescription(
+      String groupId, String groupDescription) async {
+    ApiResult result =
+        await API.updateGroupDescription(groupId, groupDescription);
+    if (result.isSuccess()) {
+      Future.delayed(Duration(milliseconds: 200), () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+      });
+      showToast('群简介修改成功');
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
+  Future<dynamic> updateGroupNotes(String groupId, String groupNotes) async {
+    ApiResult result = await API.updateGroupNotes(groupId, groupNotes);
+    if (result.isSuccess()) {
+      Future.delayed(Duration(milliseconds: 200), () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+      });
+      showToast('群公告修改成功');
+    } else {
+      showToast('${result.info}');
+    }
+  }
+
   void _checkManager() async {
     String myUserID = UserCentre.getUserID();
     for (var i = 0; i < groupMembersList!.length; i++) {

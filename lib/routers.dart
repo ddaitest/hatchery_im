@@ -102,14 +102,16 @@ class Routers {
         Map map = settings.arguments as Map<String, dynamic>;
         return CupertinoPageRoute(
             builder: (_) => GroupProfileEditDetailPage(
-                groupId: map['groupId'],
-                appBarText: map['appBarText'],
-                inputText: map['inputText'],
-                hintText: map['hintText'],
-                hideText: map['hideText'] ?? false,
-                maxLength: map['maxLength'],
-                maxLine: map['maxLine'] ?? 1,
-                onlyNumber: map['onlyNumber'] ?? false));
+                  groupId: map['groupId'],
+                  appBarText: map['appBarText'],
+                  inputText: map['inputText'],
+                  hintText: map['hintText'],
+                  hideText: map['hideText'] ?? false,
+                  maxLength: map['maxLength'],
+                  maxLine: map['maxLine'] ?? 1,
+                  onlyNumber: map['onlyNumber'] ?? false,
+                  sendType: map['sendType'] ?? 0,
+                ));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:

@@ -599,6 +599,69 @@ class API {
     }
   }
 
+  ///修改群名称
+  static Future<ApiResult> updateGroupName(
+      String groupId, String? groupName) async {
+    Map<String, String> body = {
+      "groupId": groupId,
+      "groupName": groupName!,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/update/name",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///修改群简介
+  static Future<ApiResult> updateGroupDescription(
+      String groupId, String? groupDescription) async {
+    Map<String, String> body = {
+      "groupId": groupId,
+      "groupDescription": groupDescription!,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/update/description",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///修改群公告
+  static Future<ApiResult> updateGroupNotes(
+      String groupId, String? notes) async {
+    Map<String, String> body = {
+      "groupId": groupId,
+      "notes": notes!,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/update/notes",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///修改群内昵称
   static Future<ApiResult> updateGroupNickName(
       String groupId, String? groupNickName) async {

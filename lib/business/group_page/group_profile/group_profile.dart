@@ -94,6 +94,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
   }
 
   Widget _groupInfoView() {
+    print("DEBUG=> _groupInfoView");
     return Selector<GroupProfileManager, GroupInfo?>(
         builder: (BuildContext context, GroupInfo? value, Widget? child) {
           return Container(
@@ -103,35 +104,55 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                   titleText: '群组名称',
                   trailingText: '${value?.groupName ?? ''}',
                   showDivider: false,
+                  onTap: () =>
+                      Routers.navigateTo('/group_profile_edit_detail', arg: {
+                    'groupId': widget.groupID,
+                    'appBarText': '群组名称',
+                    'inputText': '${value!.groupName ?? ''}',
+                    'hintText': '修改群组名称',
+                    'maxLength': 20,
+                    'maxLine': 1,
+                    'onlyNumber': false,
+                    'sendType': 1
+                  }).then((value) =>
+                          value ? manager.refreshData(widget.groupID!) : null),
                 ),
                 GroupProfileMenuItem(
                   titleText: '群简介',
                   trailingText: '${value?.groupDescription ?? '没有群简介'}',
                   showDivider: false,
+                  onTap: () =>
+                      Routers.navigateTo('/group_profile_edit_detail', arg: {
+                    'groupId': widget.groupID,
+                    'appBarText': '群简介',
+                    'inputText': '${value!.groupDescription ?? ''}',
+                    'hintText': '修改群简介',
+                    'maxLength': 40,
+                    'maxLine': 4,
+                    'onlyNumber': false,
+                    'sendType': 2
+                  }).then((value) =>
+                          value ? manager.refreshData(widget.groupID!) : null),
                 ),
                 GroupProfileMenuItem(
                   titleText: '群公告',
                   trailingText: '${value?.notes ?? '未设置'}',
                   trailingTextMaxLine: 2,
                   showDivider: false,
-                ),
-                GroupProfileMenuItem(
-                  titleText: '我在本群的昵称',
-                  trailingText: '${manager.nickNameForGroup ?? ''}',
-                  trailingTextMaxLine: 1,
-                  showDivider: false,
                   onTap: () =>
                       Routers.navigateTo('/group_profile_edit_detail', arg: {
                     'groupId': widget.groupID,
-                    'appBarText': '我在本群的昵称',
-                    'inputText': '${manager.nickNameForGroup ?? ''}',
-                    'hintText': '修改昵称',
-                    'maxLength': 20,
-                    'maxLine': 1,
-                    'onlyNumber': false
+                    'appBarText': '群公告',
+                    'inputText': '${value!.notes ?? ''}',
+                    'hintText': '修改群公告',
+                    'maxLength': 40,
+                    'maxLine': 4,
+                    'onlyNumber': false,
+                    'sendType': 3
                   }).then((value) =>
                           value ? manager.refreshData(widget.groupID!) : null),
                 ),
+                _groupNickNameItem()
               ],
             ),
           );
@@ -140,8 +161,36 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
             (BuildContext context, GroupProfileManager groupProfileManager) {
           return groupProfileManager.groupInfo ?? null;
         },
-        shouldRebuild: (pre, next) =>
-            (pre != next || manager.nickNameForGroup));
+        shouldRebuild: (pre, next) => (pre != next));
+  }
+
+  Widget _groupNickNameItem() {
+    print("DEBUG=> _groupNickNameItem");
+    return Selector<GroupProfileManager, String?>(
+        builder: (BuildContext context, String? value, Widget? child) {
+          return GroupProfileMenuItem(
+            titleText: '我在本群的昵称',
+            trailingText: '${manager.nickNameForGroup ?? ''}',
+            trailingTextMaxLine: 1,
+            showDivider: false,
+            onTap: () => Routers.navigateTo('/group_profile_edit_detail', arg: {
+              'groupId': widget.groupID,
+              'appBarText': '我在本群的昵称',
+              'inputText': '${manager.nickNameForGroup ?? ''}',
+              'hintText': '修改昵称',
+              'maxLength': 20,
+              'maxLine': 1,
+              'onlyNumber': false,
+              'sendType': 4
+            }).then(
+                (value) => value ? manager.refreshData(widget.groupID!) : null),
+          );
+        },
+        selector:
+            (BuildContext context, GroupProfileManager groupProfileManager) {
+          return groupProfileManager.nickNameForGroup ?? '';
+        },
+        shouldRebuild: (pre, next) => (pre != next));
   }
 
   Widget _membersView() {
