@@ -159,6 +159,7 @@ class GroupProfileEditDetailPage extends StatelessWidget {
               padding: const EdgeInsets.all(6.0),
               child: TextButton(
                 onPressed: () {
+                  print("DEBUG=> ${textEditingController.text}");
                   if (textEditingController.text != '') {
                     manager.updateGroupNickNameData(
                         groupId!, textEditingController.text);

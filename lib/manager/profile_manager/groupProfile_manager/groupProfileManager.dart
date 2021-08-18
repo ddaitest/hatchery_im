@@ -55,17 +55,20 @@ class GroupProfileManager extends ChangeNotifier {
   }
 
   void _checkManager() async {
-    _getStoredForMyProfileData().then((value) {
-      groupMembersList!.forEach((element) {
-        if (value!.userID == element.userID) {
-          nickNameForGroup = element.groupNickName ?? element.nickName;
-          print("DEBUG=> nickNameForGroup ${nickNameForGroup}");
-        }
-        if (element.userID == value.userID && element.groupRole != 0) {
-          isManager = true;
-        }
-      });
-    });
+    String myUserID = UserCentre.getUserID();
+    for (var i = 0; i < groupMembersList!.length; i++) {
+      if (groupMembersList![i].userID == myUserID &&
+          groupMembersList![i].groupRole != 0) {
+        nickNameForGroup =
+            groupMembersList![i].groupNickName ?? groupMembersList![i].nickName;
+        isManager = true;
+        break;
+      } else if (groupMembersList![i].userID == myUserID) {
+        nickNameForGroup =
+            groupMembersList![i].groupNickName ?? groupMembersList![i].nickName;
+        break;
+      }
+    }
   }
 
   Future<MyProfile?> _getStoredForMyProfileData() async {

@@ -8,6 +8,8 @@ import '../config.dart';
 class UserCentre {
   static MyProfile? _info;
   static String? _token;
+  static String? _userID;
+  static String? _nickName;
 
   static MyProfile? getInfo() {
     if (_info == null) {
@@ -25,6 +27,20 @@ class UserCentre {
       }
     }
     return _token ?? "";
+  }
+
+  static String getUserID() {
+    if (_info != null) {
+      _userID = _info!.userID;
+    }
+    return _userID ?? "";
+  }
+
+  String getNickName() {
+    if (_info != null) {
+      _nickName = _info!.nickName;
+    }
+    return _nickName ?? "";
   }
 
   static void saveUserInfo(String data) {

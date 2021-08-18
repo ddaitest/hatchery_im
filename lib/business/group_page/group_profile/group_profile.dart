@@ -120,7 +120,9 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                   trailingText: '${manager.nickNameForGroup ?? ''}',
                   trailingTextMaxLine: 1,
                   showDivider: false,
-                  onTap: () => Routers.navigateTo('/profile_edit_detail', arg: {
+                  onTap: () =>
+                      Routers.navigateTo('/group_profile_edit_detail', arg: {
+                    'groupId': widget.groupID,
                     'appBarText': '我在本群的昵称',
                     'inputText': '${manager.nickNameForGroup ?? ''}',
                     'hintText': '修改昵称',
@@ -128,7 +130,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                     'maxLine': 1,
                     'onlyNumber': false
                   }).then((value) =>
-                      value ? manager.refreshData(widget.groupID!) : null),
+                          value ? manager.refreshData(widget.groupID!) : null),
                 ),
               ],
             ),
@@ -138,7 +140,8 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
             (BuildContext context, GroupProfileManager groupProfileManager) {
           return groupProfileManager.groupInfo ?? null;
         },
-        shouldRebuild: (pre, next) => (pre != next));
+        shouldRebuild: (pre, next) =>
+            (pre != next || manager.nickNameForGroup));
   }
 
   Widget _membersView() {

@@ -98,6 +98,18 @@ class Routers {
                 maxLength: map['maxLength'],
                 maxLine: map['maxLine'] ?? 1,
                 onlyNumber: map['onlyNumber'] ?? false));
+      case '/group_profile_edit_detail':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return CupertinoPageRoute(
+            builder: (_) => GroupProfileEditDetailPage(
+                groupId: map['groupId'],
+                appBarText: map['appBarText'],
+                inputText: map['inputText'],
+                hintText: map['hintText'],
+                hideText: map['hideText'] ?? false,
+                maxLength: map['maxLength'],
+                maxLine: map['maxLine'] ?? 1,
+                onlyNumber: map['onlyNumber'] ?? false));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:
