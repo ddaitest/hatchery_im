@@ -4,23 +4,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 
-class CheckBoxContactsUsersItem extends StatefulWidget {
-  final List<Friends> friendsLists;
+class CheckBoxGroupMembersItem extends StatefulWidget {
+  final List<GroupMembers> groupMembers;
   final manager;
-  CheckBoxContactsUsersItem(this.friendsLists, this.manager);
+  CheckBoxGroupMembersItem(this.groupMembers, this.manager);
   @override
-  _CheckBoxContactsUsersItemState createState() =>
-      _CheckBoxContactsUsersItemState();
+  _CheckBoxGroupMembersItemState createState() =>
+      _CheckBoxGroupMembersItemState();
 }
 
-class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
+class _CheckBoxGroupMembersItemState extends State<CheckBoxGroupMembersItem> {
   Map<String, bool> _isChecked = Map();
 
   @override
   void initState() {
-    if (widget.friendsLists.isNotEmpty) {
-      widget.friendsLists.forEach((element) {
-        _isChecked[element.friendId] = false;
+    if (widget.groupMembers.isNotEmpty) {
+      widget.groupMembers.forEach((element) {
+        _isChecked[element.userID!] = false;
       });
     }
 
@@ -30,7 +30,7 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: widget.friendsLists.length,
+      itemCount: widget.groupMembers.length,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
@@ -39,9 +39,9 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
           padding: EdgeInsets.only(left: 6, right: 6, top: 10, bottom: 10),
           child: CheckboxListTile(
               tristate: false,
-              secondary: widget.friendsLists.isNotEmpty
+              secondary: widget.groupMembers.isNotEmpty
                   ? CachedNetworkImage(
-                      imageUrl: widget.friendsLists[index].icon,
+                      imageUrl: widget.groupMembers[index].icon!,
                       placeholder: (context, url) => CircleAvatar(
                             backgroundImage:
                                 AssetImage('images/default_avatar.png'),
@@ -63,37 +63,26 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
                       maxRadius: 20,
                     ),
               title: Container(
-                child: widget.friendsLists.isNotEmpty
+                child: widget.groupMembers.isNotEmpty
                     ? Text(
-                        widget.friendsLists[index].nickName,
+                        widget.groupMembers[index].nickName!,
                         style: Flavors.textStyles.friendsText,
                       )
                     : LoadingView(),
               ),
-              subtitle: widget.friendsLists[index].remarks != null
-                  ? Container(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: widget.friendsLists.isNotEmpty
-                          ? Text(
-                              '备注：${widget.friendsLists[index].remarks}',
-                              style: Flavors.textStyles.friendsSubtitleText,
-                            )
-                          : LoadingView(),
-                    )
-                  : null,
               activeColor: Flavors.colorInfo.mainColor,
-              value: _isChecked[widget.friendsLists[index].friendId] ?? false,
+              value: _isChecked[widget.groupMembers[index].userID] ?? false,
               onChanged: (value) {
                 print("DEBUG=> value $value");
-                _isChecked[widget.friendsLists[index].friendId] = value!;
-                if (widget.friendsLists.isNotEmpty) {
+                _isChecked[widget.groupMembers[index].userID!] = value!;
+                if (widget.groupMembers.isNotEmpty) {
                   setState(() {
-                    if (_isChecked[widget.friendsLists[index].friendId]!) {
+                    if (_isChecked[widget.groupMembers[index].userID]!) {
                       widget.manager.addSelectedFriendsIntoList(
-                          widget.friendsLists[index]);
+                          widget.groupMembers[index]);
                     } else {
                       widget.manager.removeSelectedFriendsIntoList(
-                          widget.friendsLists[index]);
+                          widget.groupMembers[index]);
                     }
                   });
                 }
