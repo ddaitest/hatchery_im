@@ -104,53 +104,59 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                   titleText: '群组名称',
                   trailingText: '${value?.groupName ?? ''}',
                   showDivider: false,
-                  onTap: () =>
-                      Routers.navigateTo('/group_profile_edit_detail', arg: {
-                    'groupId': widget.groupID,
-                    'appBarText': '群组名称',
-                    'inputText': '${value!.groupName ?? ''}',
-                    'hintText': '修改群组名称',
-                    'maxLength': 20,
-                    'maxLine': 1,
-                    'onlyNumber': false,
-                    'sendType': 1
-                  }).then((value) =>
-                          value ? manager.refreshData(widget.groupID!) : null),
+                  trailingView: manager.isManager ? null : Container(),
+                  onTap: () => manager.isManager
+                      ? Routers.navigateTo('/group_profile_edit_detail', arg: {
+                          'groupId': widget.groupID,
+                          'appBarText': '群组名称',
+                          'inputText': '${value!.groupName ?? ''}',
+                          'hintText': '修改群组名称',
+                          'maxLength': 20,
+                          'maxLine': 1,
+                          'onlyNumber': false,
+                          'sendType': 1
+                        }).then((value) =>
+                          value ? manager.refreshData(widget.groupID!) : null)
+                      : null,
                 ),
                 GroupProfileMenuItem(
                   titleText: '群简介',
                   trailingText: '${value?.groupDescription ?? '没有群简介'}',
                   showDivider: false,
-                  onTap: () =>
-                      Routers.navigateTo('/group_profile_edit_detail', arg: {
-                    'groupId': widget.groupID,
-                    'appBarText': '群简介',
-                    'inputText': '${value!.groupDescription ?? ''}',
-                    'hintText': '修改群简介',
-                    'maxLength': 40,
-                    'maxLine': 4,
-                    'onlyNumber': false,
-                    'sendType': 2
-                  }).then((value) =>
-                          value ? manager.refreshData(widget.groupID!) : null),
+                  trailingView: manager.isManager ? null : Container(),
+                  onTap: () => manager.isManager
+                      ? Routers.navigateTo('/group_profile_edit_detail', arg: {
+                          'groupId': widget.groupID,
+                          'appBarText': '群简介',
+                          'inputText': '${value!.groupDescription ?? ''}',
+                          'hintText': '修改群简介',
+                          'maxLength': 40,
+                          'maxLine': 4,
+                          'onlyNumber': false,
+                          'sendType': 2
+                        }).then((value) =>
+                          value ? manager.refreshData(widget.groupID!) : null)
+                      : null,
                 ),
                 GroupProfileMenuItem(
                   titleText: '群公告',
                   trailingText: '${value?.notes ?? '未设置'}',
                   trailingTextMaxLine: 2,
                   showDivider: false,
-                  onTap: () =>
-                      Routers.navigateTo('/group_profile_edit_detail', arg: {
-                    'groupId': widget.groupID,
-                    'appBarText': '群公告',
-                    'inputText': '${value!.notes ?? ''}',
-                    'hintText': '修改群公告',
-                    'maxLength': 40,
-                    'maxLine': 4,
-                    'onlyNumber': false,
-                    'sendType': 3
-                  }).then((value) =>
-                          value ? manager.refreshData(widget.groupID!) : null),
+                  trailingView: manager.isManager ? null : Container(),
+                  onTap: () => manager.isManager
+                      ? Routers.navigateTo('/group_profile_edit_detail', arg: {
+                          'groupId': widget.groupID,
+                          'appBarText': '群公告',
+                          'inputText': '${value!.notes ?? ''}',
+                          'hintText': '修改群公告',
+                          'maxLength': 40,
+                          'maxLine': 4,
+                          'onlyNumber': false,
+                          'sendType': 3
+                        }).then((value) =>
+                          value ? manager.refreshData(widget.groupID!) : null)
+                      : null,
                 ),
                 _groupNickNameItem()
               ],

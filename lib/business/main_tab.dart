@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/business/chat_home/chat_page.dart';
 import 'package:hatchery_im/business/contacts/contacts_page.dart';
-import 'package:hatchery_im/business/group_page/group.dart';
+import 'package:hatchery_im/business/group_page/groupList.dart';
 import 'package:hatchery_im/business/profile_page/my_profile.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/log.dart';

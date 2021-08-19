@@ -5,13 +5,13 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
-import 'package:hatchery_im/manager/contacts_manager/contactsManager.dart';
+import 'package:hatchery_im/manager/group_manager/groupsManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/aboutAvatar.dart';
 
 class GroupListItem extends StatelessWidget {
   final List<Groups>? groupsLists;
-  final manager = App.manager<ContactsManager>();
+  final manager = App.manager<GroupsManager>();
   GroupListItem(this.groupsLists);
 
   @override
@@ -28,7 +28,8 @@ class GroupListItem extends StatelessWidget {
                   child: ListTile(
                     dense: true,
                     onTap: () => Routers.navigateTo('/group_profile',
-                        arg: groupsLists![index].group.groupId),
+                            arg: groupsLists![index].group.groupId)
+                        .then((value) => value ? manager.refreshData() : null),
 
                     /// 群头像，没有头像则返回默认头像
                     leading: Container(

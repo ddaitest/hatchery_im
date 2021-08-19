@@ -11,7 +11,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/business/chat_home/chat_page.dart';
 import 'package:hatchery_im/business/contacts/contacts_page.dart';
-import 'package:hatchery_im/business/group_page/group.dart';
+import 'package:hatchery_im/business/group_page/groupList.dart';
 import 'package:hatchery_im/business/profile_page/my_profile.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
