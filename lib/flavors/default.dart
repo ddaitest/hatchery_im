@@ -126,7 +126,7 @@ class TextStyles {
 
   final TextStyle newGroupNextBtnText = TextStyle(
       fontSize: 14.0.sp,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w500,
       color: ColorInfo().btnTextColor);
 
   final TextStyle chatDetailAppBarNameText = TextStyle(

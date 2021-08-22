@@ -7,6 +7,7 @@ import 'package:hatchery_im/business/profile_page/friendProfile/friendInfoMore_p
 import 'package:hatchery_im/business/splash/splash.dart';
 import 'package:hatchery_im/business/test/TestPage.dart';
 import 'package:hatchery_im/business/group_page/groupList.dart';
+import 'package:hatchery_im/common/widget/selectContactsModel.dart';
 import 'package:hatchery_im/business/search/searchNewContacts.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendProfile_page.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendSetting_page.dart';
@@ -40,6 +41,17 @@ class Routers {
         return MaterialPageRoute(builder: (_) => OTPPage());
       case '/group':
         return MaterialPageRoute(builder: (_) => GroupPage());
+      case '/select_contacts_model':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return CupertinoPageRoute(
+            builder: (_) => SelectContactsModelPage(
+                  titleText: map['titleText'],
+                  leastSelected: map['leastSelected'],
+                  nextPageBtnText: map['nextPageBtnText'],
+                  tipsText: map['tipsText'],
+                  selectContactsType: map['selectContactsType'],
+                  groupMembersFriendId: map['groupMembersFriendId'] ?? [''],
+                ));
       case '/friend_profile':
         return MaterialPageRoute(
             builder: (_) => FriendProfilePage(

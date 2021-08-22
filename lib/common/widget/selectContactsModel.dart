@@ -22,12 +22,14 @@ class SelectContactsModelPage extends StatefulWidget {
   final String nextPageBtnText;
   final String tipsText;
   final SelectContactsType selectContactsType;
+  final List<String>? groupMembersFriendId;
   SelectContactsModelPage(
       {required this.titleText,
       required this.leastSelected,
       required this.nextPageBtnText,
       required this.tipsText,
-      required this.selectContactsType});
+      required this.selectContactsType,
+      this.groupMembersFriendId});
 
   @override
   _SelectContactsModelState createState() => _SelectContactsModelState();
@@ -37,63 +39,60 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   final manager = App.manager<SelectContactsModelManager>();
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => SelectContactsModelManager(),
-        child: Consumer(
-          builder: (BuildContext context,
-              SelectContactsModelManager selectContactsModelManager,
-              Widget? child) {
-            return WillPopScope(
-                onWillPop: _onWillPop,
-                child: Scaffold(
-                    appBar: AppBarFactory
-                        .backButton('${widget.titleText}', actions: [
-                      Container(
-                          padding: const EdgeInsets.all(6.0),
-                          child: TextButton(
-                            onPressed: () {
-                              selectContactsModelManager
-                                          .selectFriendsList.length <
-                                      widget.leastSelected
-                                  ? showToast('最少选择${widget.leastSelected}名好友')
-                                  : _submitBtn(selectContactsModelManager);
-                            },
-                            child: Text(
-                              '${widget.nextPageBtnText}',
-                              style: Flavors.textStyles.newGroupNextBtnText,
-                            ),
-                          )),
-                    ]),
-                    body: ListView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        SearchBarView(
-                            searchHintText: "搜索好友",
-                            textEditingController:
-                                selectContactsModelManager.searchController,
-                            isEnabled: true),
-                        selectContactsModelManager.selectFriendsList.isNotEmpty
-                            ? _tipsView("已选择的好友")
-                            : Container(),
-                        _selectedContactsView(selectContactsModelManager),
-                        SizedBox(
-                          height: 10.0.w,
-                        ),
-                        _tipsView("${widget.tipsText}"),
-                        _contactsListView(selectContactsModelManager),
-                      ],
-                    )));
-          },
-        ));
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+            appBar: AppBarFactory.backButton('${widget.titleText}', actions: [
+              Container(
+                  padding: const EdgeInsets.all(6.0),
+                  child: TextButton(
+                    onPressed: () {
+                      manager.selectFriendsList.length < widget.leastSelected
+                          ? showToast('最少选择${widget.leastSelected}名好友')
+                          : _submitBtn();
+                    },
+                    child: Text(
+                      '${widget.nextPageBtnText}',
+                      style: Flavors.textStyles.newGroupNextBtnText,
+                    ),
+                  )),
+            ]),
+            body: Selector<SelectContactsModelManager, List<Friends>?>(
+                builder: (BuildContext context, List<Friends>? value,
+                    Widget? child) {
+                  return ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      SearchBarView(
+                          searchHintText: "搜索好友",
+                          textEditingController: manager.searchController,
+                          isEnabled: true),
+                      manager.selectFriendsList.isNotEmpty
+                          ? _tipsView("已选择的好友")
+                          : Container(),
+                      _selectedContactsView(),
+                      SizedBox(
+                        height: 10.0.w,
+                      ),
+                      _tipsView("${widget.tipsText}"),
+                      _contactsListView(),
+                    ],
+                  );
+                },
+                selector: (BuildContext context,
+                    SelectContactsModelManager selectContactsModelManager) {
+                  return selectContactsModelManager.friendsList ?? null;
+                },
+                shouldRebuild: (pre, next) => (pre != next))));
   }
 
-  Widget _selectedContactsView(selectContactsModelManager) {
+  Widget _selectedContactsView() {
     List<Widget> selectList = [];
-    selectContactsModelManager.selectFriendsList.forEach((element) {
+    manager.selectFriendsList.forEach((element) {
       selectList.add(_selectContactsItem(element.icon));
     });
-    return selectContactsModelManager.selectFriendsList.isNotEmpty
+    return manager.selectFriendsList.isNotEmpty
         ? Container(
             color: Colors.white,
             padding: const EdgeInsets.all(16.0),
@@ -137,15 +136,20 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
     );
   }
 
-  Widget _contactsListView(selectContactsModelManager) {
-    return selectContactsModelManager.friendsList != null
+  Widget _contactsListView() {
+    return manager.friendsList != null
         ? CheckBoxContactsUsersItem(
-            selectContactsModelManager.friendsList, selectContactsModelManager)
+            manager.friendsList!,
+            widget.groupMembersFriendId == null
+                ? []
+                : widget.groupMembersFriendId!,
+            widget.selectContactsType,
+            manager)
         : IndicatorView();
   }
 
   ///提交并返回
-  void _submitBtn(selectContactsModelManager) {
+  void _submitBtn() {
     String myNickName = '';
     String? stored = SP.getString(SPKey.userInfo);
     if (stored != null) {
@@ -155,27 +159,25 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
         print("_myProfileData ${userInfo.nickName}");
       } catch (e) {}
       String groupName = '';
-      String groupDescription = '';
-      String groupNotes = '';
-      String groupImageUrl = '';
-      List<Friends> selectFriends =
-          selectContactsModelManager.selectFriendsList;
+      // String groupDescription = '';
+      // String groupNotes = '';
+      // String groupImageUrl = '';
+      List<Friends> selectFriends = manager.selectFriendsList;
       List<String> friendsId = [];
       for (var i = 0; i < selectFriends.length; i++) {
         friendsId.add(selectFriends[i].friendId);
         if (i < 2) {
           groupName =
-              '${selectFriends[i].remarks ?? selectFriends[i].nickName}${i != 1 ? '' : '、'}' +
-                  groupName;
+              '${selectFriends[i].nickName}${i != 1 ? '' : '、'}' + groupName;
         }
       }
-      groupName = myNickName + ' ' + groupName + '的群组';
+      groupName = myNickName + '、' + groupName + '的群组';
 
-      if (widget.selectContactsType == SelectContactsType.Group) {
+      if (widget.selectContactsType == SelectContactsType.CreateGroup) {
         print("DEBUG=> groupName $groupName");
         print("DEBUG=> friendsId $friendsId");
-        selectContactsModelManager.submit(
-            groupName, groupDescription, groupImageUrl, groupNotes, friendsId);
+        // selectContactsModelManager.submit(
+        //     groupName, groupDescription, groupImageUrl, groupNotes, friendsId);
       } else if (widget.selectContactsType == SelectContactsType.Share) {}
     }
   }
@@ -188,7 +190,6 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   @override
   void dispose() {
     manager.selectFriendsList.clear();
-    manager.searchController.dispose();
     super.dispose();
   }
 }

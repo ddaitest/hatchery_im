@@ -16,6 +16,7 @@ import 'package:hatchery_im/manager/userCentre.dart';
 class GroupProfileManager extends ChangeNotifier {
   GroupInfo? groupInfo;
   List<GroupMembers>? groupMembersList;
+  List<String> groupMembersFriendsId = [];
   String? nickNameForGroup;
   bool isManager = false;
 
@@ -47,6 +48,9 @@ class GroupProfileManager extends ChangeNotifier {
           result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
       print(
           "DEBUG=> getGroupMembersData result.getData() ${groupMembersList![0].nickName}");
+      groupMembersList!.forEach((element) {
+        groupMembersFriendsId.add(element.userID!);
+      });
       _checkManager();
       notifyListeners();
     } else {

@@ -30,19 +30,31 @@ class SelectContactsModelManager extends ChangeNotifier {
 
   void _searchInputListener() {
     searchController.addListener(() {
-      print("DEBUG=> backFriendsList$backupFriendsList");
       String _inputText = searchController.text;
       friendsList = List.from(backupFriendsList);
       if (_inputText.isNotEmpty) {
-        friendsList!
-            .removeWhere((element) => !element.nickName.contains(_inputText));
-        friendsList!.removeWhere((element) =>
-            element.remarks != null && !element.remarks!.contains(_inputText));
+        print('DEBUG=> _inputText $_inputText');
+        friendsList!.removeWhere((element) {
+          if (element.remarks == null) {
+            if (element.nickName.contains(_inputText)) {
+              return false;
+            } else {
+              return true;
+            }
+          } else {
+            if (element.nickName.contains(_inputText) ||
+                element.remarks!.contains(_inputText)) {
+              return false;
+            } else {
+              return true;
+            }
+          }
+        });
       } else {
         friendsList = List.from(backupFriendsList);
         print("DEBUG=> else $backupFriendsList");
       }
-
+      print("DEBUG=> friendsList $friendsList");
       notifyListeners();
     });
   }
@@ -92,7 +104,6 @@ class SelectContactsModelManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
   }
 }

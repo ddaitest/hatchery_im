@@ -57,6 +57,8 @@ class SlideActionInfo {
 }
 
 enum SelectContactsType {
-  Group,
+  CreateGroup,
+  AddGroupMember,
+  DeleteGroupMember,
   Share,
 }

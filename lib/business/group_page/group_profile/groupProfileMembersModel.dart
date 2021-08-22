@@ -6,6 +6,9 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupProfileManager.dart';
 
+import '../../../config.dart';
+import '../../../routers.dart';
+
 enum ManagerType {
   add,
   delete,
@@ -37,9 +40,9 @@ class GroupMembersGrid extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 if (manager.isManager) {
                   if (index == groupMembersList!.length) {
-                    return _managerBtnView(managerAddType);
+                    return _managerBtnView(managerAddType, index);
                   } else if (index == groupMembersList!.length + 1) {
-                    return _managerBtnView(managerDeleteType);
+                    return _managerBtnView(managerDeleteType, index);
                   } else {
                     return _groupAvatarItem(groupMembersList![index].icon!,
                         groupMembersList![index].nickName!);
@@ -75,9 +78,17 @@ class GroupMembersGrid extends StatelessWidget {
     );
   }
 
-  Widget _managerBtnView(ManagerType managerType) {
+  Widget _managerBtnView(ManagerType managerType, int index) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => Routers.navigateTo('/select_contacts_model', arg: {
+        'titleText': '邀请入群',
+        'tipsText': '请至少选择一名好友',
+        'leastSelected': 1,
+        'nextPageBtnText': '邀请',
+        'selectContactsType': SelectContactsType.AddGroupMember,
+        'groupMembersFriendId': manager.groupMembersFriendsId
+      }).then((value) =>
+          value ? manager.refreshData(manager.groupInfo!.groupId!) : null),
       child: Container(
         alignment: Alignment.center,
         padding: const EdgeInsets.only(bottom: 12.0),
