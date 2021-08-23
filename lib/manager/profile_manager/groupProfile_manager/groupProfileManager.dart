@@ -18,6 +18,7 @@ class GroupProfileManager extends ChangeNotifier {
   List<GroupMembers>? groupMembersList;
   String? nickNameForGroup;
   bool isManager = false;
+  String? myUserId;
 
   /// 初始化
   init(String groupId) {

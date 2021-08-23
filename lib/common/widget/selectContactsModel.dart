@@ -15,6 +15,7 @@ import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 
 class SelectContactsModelPage extends StatefulWidget {
   final String titleText;
@@ -37,6 +38,16 @@ class SelectContactsModelPage extends StatefulWidget {
 
 class _SelectContactsModelState extends State<SelectContactsModelPage> {
   final manager = App.manager<SelectContactsModelManager>();
+
+  @override
+  void initState() {
+    manager.init();
+    if (widget.selectContactsType == SelectContactsType.DeleteGroupMember)
+      widget.groupMembersList
+          ?.removeWhere((element) => element.userID == UserCentre.getUserID());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -139,7 +150,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   Widget _contactsListView() {
     return manager.friendsList != null
         ? CheckBoxContactsUsersItem(manager.friendsList!,
-            widget.groupMembersList ?? [], widget.selectContactsType, manager)
+            widget.groupMembersList, widget.selectContactsType, manager)
         : IndicatorView();
   }
 

@@ -24,10 +24,6 @@ class SelectContactsModelManager extends ChangeNotifier {
     _searchInputListener();
   }
 
-  SelectContactsModelManager() {
-    init();
-  }
-
   void _searchInputListener() {
     searchController.addListener(() {
       String _inputText = searchController.text;

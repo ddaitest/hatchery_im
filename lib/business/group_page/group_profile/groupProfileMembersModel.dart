@@ -9,17 +9,10 @@ import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupPr
 import '../../../config.dart';
 import '../../../routers.dart';
 
-enum ManagerType {
-  add,
-  delete,
-}
-
 class GroupMembersGrid extends StatelessWidget {
   final List<GroupMembers>? groupMembersList;
   GroupMembersGrid(this.groupMembersList);
   final manager = App.manager<GroupProfileManager>();
-  final managerAddType = ManagerType.add;
-  final managerDeleteType = ManagerType.delete;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +33,11 @@ class GroupMembersGrid extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 if (manager.isManager) {
                   if (index == groupMembersList!.length) {
-                    return _managerBtnView(managerAddType, index);
+                    return _managerBtnView(
+                        SelectContactsType.AddGroupMember, index);
                   } else if (index == groupMembersList!.length + 1) {
-                    return _managerBtnView(managerDeleteType, index);
+                    return _managerBtnView(
+                        SelectContactsType.DeleteGroupMember, index);
                   } else {
                     return _groupAvatarItem(groupMembersList![index].icon!,
                         groupMembersList![index].nickName!);
@@ -78,17 +73,23 @@ class GroupMembersGrid extends StatelessWidget {
     );
   }
 
-  Widget _managerBtnView(ManagerType managerType, int index) {
+  Widget _managerBtnView(SelectContactsType selectContactsType, int index) {
     return GestureDetector(
       onTap: () => Routers.navigateTo('/select_contacts_model', arg: {
-        'titleText': managerType == managerAddType ? '邀请入群' : '移出群组',
+        'titleText': selectContactsType == SelectContactsType.AddGroupMember
+            ? '邀请入群'
+            : '移出群组',
         'tipsText': '请至少选择一名好友',
         'leastSelected': 1,
-        'nextPageBtnText': managerType == managerAddType ? '邀请' : '确定',
-        'selectContactsType': managerType == managerAddType
-            ? SelectContactsType.AddGroupMember
-            : SelectContactsType.DeleteGroupMember,
-        'groupMembersList': manager.groupMembersList
+        'nextPageBtnText':
+            selectContactsType == SelectContactsType.AddGroupMember
+                ? '邀请'
+                : '确定',
+        'selectContactsType':
+            selectContactsType == SelectContactsType.AddGroupMember
+                ? SelectContactsType.AddGroupMember
+                : SelectContactsType.DeleteGroupMember,
+        'groupMembersList': manager.groupMembersList!
       }).then((value) =>
           value ? manager.refreshData(manager.groupInfo!.groupId!) : null),
       child: Container(
@@ -99,7 +100,9 @@ class GroupMembersGrid extends StatelessWidget {
           radius: 20.0,
           child: Center(
             child: Icon(
-              managerType == managerAddType ? Icons.add : Icons.remove,
+              selectContactsType == SelectContactsType.AddGroupMember
+                  ? Icons.add
+                  : Icons.remove,
               color: Flavors.colorInfo.mainBackGroundColor,
               size: 20.0,
             ),
