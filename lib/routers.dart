@@ -50,7 +50,7 @@ class Routers {
                   nextPageBtnText: map['nextPageBtnText'],
                   tipsText: map['tipsText'],
                   selectContactsType: map['selectContactsType'],
-                  groupMembersFriendId: map['groupMembersFriendId'] ?? [''],
+                  groupMembersList: map['groupMembersList'] ?? [],
                 ));
       case '/friend_profile':
         return MaterialPageRoute(

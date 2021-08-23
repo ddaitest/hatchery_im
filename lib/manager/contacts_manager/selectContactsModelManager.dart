@@ -67,7 +67,7 @@ class SelectContactsModelManager extends ChangeNotifier {
       if (value.isSuccess()) {
         friendsList = value.getDataList((m) => Friends.fromJson(m), type: 1);
         backupFriendsList = List.from(friendsList!);
-        // print('DEBUG=>  _queryFriendsRes ${friendsList[0].nickName}');
+        print('DEBUG=>  _queryFriendsRes ${friendsList![0].nickName}');
         notifyListeners();
       }
     });

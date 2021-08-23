@@ -81,12 +81,14 @@ class GroupMembersGrid extends StatelessWidget {
   Widget _managerBtnView(ManagerType managerType, int index) {
     return GestureDetector(
       onTap: () => Routers.navigateTo('/select_contacts_model', arg: {
-        'titleText': '邀请入群',
+        'titleText': managerType == managerAddType ? '邀请入群' : '移出群组',
         'tipsText': '请至少选择一名好友',
         'leastSelected': 1,
-        'nextPageBtnText': '邀请',
-        'selectContactsType': SelectContactsType.AddGroupMember,
-        'groupMembersFriendId': manager.groupMembersFriendsId
+        'nextPageBtnText': managerType == managerAddType ? '邀请' : '确定',
+        'selectContactsType': managerType == managerAddType
+            ? SelectContactsType.AddGroupMember
+            : SelectContactsType.DeleteGroupMember,
+        'groupMembersList': manager.groupMembersList
       }).then((value) =>
           value ? manager.refreshData(manager.groupInfo!.groupId!) : null),
       child: Container(

@@ -75,7 +75,8 @@ class ContactsUsersList extends StatelessWidget {
                         width: Flavors.sizesInfo.screenWidth - 100.0.w,
                         child: friendsLists != null
                             ? Text(
-                                friendsLists![index].remarks != null
+                                friendsLists![index].remarks != null &&
+                                        friendsLists![index].remarks! != ''
                                     ? friendsLists![index].remarks!
                                     : friendsLists![index].nickName,
                                 style: Flavors.textStyles.friendsText,

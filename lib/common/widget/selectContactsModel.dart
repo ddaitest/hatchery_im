@@ -22,14 +22,14 @@ class SelectContactsModelPage extends StatefulWidget {
   final String nextPageBtnText;
   final String tipsText;
   final SelectContactsType selectContactsType;
-  final List<String>? groupMembersFriendId;
+  final List<GroupMembers>? groupMembersList;
   SelectContactsModelPage(
       {required this.titleText,
       required this.leastSelected,
       required this.nextPageBtnText,
       required this.tipsText,
       required this.selectContactsType,
-      this.groupMembersFriendId});
+      this.groupMembersList});
 
   @override
   _SelectContactsModelState createState() => _SelectContactsModelState();
@@ -138,13 +138,8 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
 
   Widget _contactsListView() {
     return manager.friendsList != null
-        ? CheckBoxContactsUsersItem(
-            manager.friendsList!,
-            widget.groupMembersFriendId == null
-                ? []
-                : widget.groupMembersFriendId!,
-            widget.selectContactsType,
-            manager)
+        ? CheckBoxContactsUsersItem(manager.friendsList!,
+            widget.groupMembersList ?? [], widget.selectContactsType, manager)
         : IndicatorView();
   }
 
