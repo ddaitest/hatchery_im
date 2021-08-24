@@ -60,9 +60,14 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                   padding: const EdgeInsets.all(6.0),
                   child: TextButton(
                     onPressed: () {
-                      manager.selectFriendsList.length < widget.leastSelected
-                          ? showToast('最少选择${widget.leastSelected}名好友')
-                          : _submitBtn();
+                      widget.selectContactsType ==
+                              SelectContactsType.DeleteGroupMember
+                          ? manager.selectGroupMembersList.length
+                          : manager.selectFriendsList.length <
+                                  widget.leastSelected
+                              ? showToast(
+                                  '最少选择${widget.leastSelected}${widget.selectContactsType == SelectContactsType.DeleteGroupMember ? '名群成员' : '名好友'}')
+                              : _submitBtn();
                     },
                     child: Text(
                       '${widget.nextPageBtnText}',
@@ -70,83 +75,49 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                     ),
                   )),
             ]),
-            body: widget.selectContactsType ==
-                    SelectContactsType.DeleteGroupMember
-                ? Selector<SelectContactsModelManager, List<GroupMembers>?>(
-                    builder: (BuildContext context, List<GroupMembers>? value,
-                        Widget? child) {
-                      return ListView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          SearchBarView(
-                              searchHintText: "搜索好友",
-                              textEditingController: manager.searchController,
-                              isEnabled: true),
-                          manager.selectGroupMembersList.isNotEmpty
-                              ? _tipsView("已选择的群成员")
-                              : Container(),
-                          _selectedContactsView(),
-                          SizedBox(
-                            height: 10.0.w,
-                          ),
-                          _tipsView("${widget.tipsText}"),
-                          value != null
-                              ? value.isNotEmpty
-                                  ? _contactsListView(null)
-                                  : IndicatorView(
-                                      tipsText: '没有群成员', showLoadingIcon: false)
-                              : IndicatorView()
-                        ],
-                      );
-                    },
-                    selector: (BuildContext context,
-                        SelectContactsModelManager selectContactsModelManager) {
-                      return selectContactsModelManager.groupMembersList ??
-                          null;
-                    },
-                    shouldRebuild: (pre, next) => (pre != next))
-                : Selector<SelectContactsModelManager, List<Friends>?>(
-                    builder: (BuildContext context, List<Friends>? value,
-                        Widget? child) {
-                      return ListView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          SearchBarView(
-                              searchHintText: "搜索好友",
-                              textEditingController: manager.searchController,
-                              isEnabled: true),
-                          manager.selectFriendsList.isNotEmpty
-                              ? _tipsView("已选择的好友")
-                              : Container(),
-                          _selectedContactsView(),
-                          SizedBox(
-                            height: 10.0.w,
-                          ),
-                          _tipsView("${widget.tipsText}"),
-                          value != null
-                              ? value.isNotEmpty
-                                  ? _contactsListView(value)
-                                  : IndicatorView(
-                                      tipsText: '没有联系人', showLoadingIcon: false)
-                              : IndicatorView()
-                        ],
-                      );
-                    },
-                    selector: (BuildContext context,
-                        SelectContactsModelManager selectContactsModelManager) {
-                      return selectContactsModelManager.friendsList ?? null;
-                    },
-                    shouldRebuild: (pre, next) => (pre != next))));
+            body: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: <Widget>[
+                SearchBarView(
+                    searchHintText: "搜索好友",
+                    textEditingController: manager.searchController,
+                    isEnabled: true),
+                manager.selectFriendsList.isNotEmpty ||
+                        manager.selectGroupMembersList.isNotEmpty
+                    ? _tipsView("已选择的群成员")
+                    : Container(),
+                Consumer(
+                  builder: (BuildContext context,
+                      SelectContactsModelManager selectContactsModelManager,
+                      Widget? child) {
+                    return _selectedContactsView(
+                        selectContactsModelManager, widget.selectContactsType);
+                  },
+                ),
+                SizedBox(
+                  height: 10.0.w,
+                ),
+                _tipsView("${widget.tipsText}"),
+                _contactsListView(),
+              ],
+            )));
   }
 
-  Widget _selectedContactsView() {
+  Widget _selectedContactsView(
+      selectContactsModelManager, SelectContactsType selectContactsType) {
     List<Widget> selectList = [];
-    manager.selectFriendsList.forEach((element) {
-      selectList.add(_selectContactsItem(element.icon));
-    });
-    return manager.selectFriendsList.isNotEmpty
+    if (selectContactsType == SelectContactsType.DeleteGroupMember) {
+      selectContactsModelManager.selectGroupMembersList.forEach((element) {
+        selectList.add(_selectContactsItem(element.icon!));
+      });
+    } else {
+      selectContactsModelManager.selectFriendsList.forEach((element) {
+        selectList.add(_selectContactsItem(element.icon));
+      });
+    }
+    return selectContactsModelManager.selectFriendsList.isNotEmpty |
+            selectContactsModelManager.selectGroupMembersList.isNotEmpty
         ? Container(
             color: Colors.white,
             padding: const EdgeInsets.all(16.0),
@@ -190,10 +161,41 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
     );
   }
 
-  Widget _contactsListView(friendsList) {
-    print("DEBUG=> manager.friendsList! ${friendsList}");
-    return CheckBoxContactsUsersItem(friendsList ?? [],
-        manager.groupMembersList, widget.selectContactsType, manager);
+  Widget _contactsListView() {
+    // print("DEBUG=> manager.friendsList! ${friendsList}");
+    return Selector<SelectContactsModelManager, List<dynamic>?>(
+        builder: (BuildContext context, List<dynamic>? value, Widget? child) {
+          if (value != null) {
+            if (value.isNotEmpty) {
+              if (widget.selectContactsType ==
+                  SelectContactsType.DeleteGroupMember) {
+                return CheckBoxContactsUsersItem(
+                    manager.friendsList ?? [],
+                    value as List<GroupMembers>,
+                    widget.selectContactsType,
+                    manager);
+              } else {
+                return CheckBoxContactsUsersItem(
+                    value as List<Friends>,
+                    widget.groupMembersList,
+                    widget.selectContactsType,
+                    manager);
+              }
+            } else {
+              return IndicatorView(tipsText: '没有群成员', showLoadingIcon: false);
+            }
+          } else {
+            return IndicatorView();
+          }
+        },
+        selector: (BuildContext context,
+            SelectContactsModelManager selectContactsModelManager) {
+          return widget.selectContactsType ==
+                  SelectContactsType.DeleteGroupMember
+              ? selectContactsModelManager.groupMembersList ?? null
+              : selectContactsModelManager.friendsList ?? null;
+        },
+        shouldRebuild: (pre, next) => (pre != next));
   }
 
   ///提交并返回
@@ -239,6 +241,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   void dispose() {
     manager.selectFriendsList.clear();
     manager.selectGroupMembersList.clear();
+    manager.selectList.clear();
     manager.searchController.text = '';
     super.dispose();
   }

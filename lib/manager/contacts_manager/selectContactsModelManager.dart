@@ -24,6 +24,7 @@ class SelectContactsModelManager extends ChangeNotifier {
   // 搜索用
   List<Friends> backupFriendsList = [];
   List<GroupMembers> backupGroupMembersList = [];
+  List<Widget> selectList = [];
 
   /// 初始化
   init(SelectContactsType selectContactsType) {
@@ -33,7 +34,6 @@ class SelectContactsModelManager extends ChangeNotifier {
       _searchFriendsInputListener();
     } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
       _searchGroupMembersInputListener();
-      notifyListeners();
     }
   }
 
