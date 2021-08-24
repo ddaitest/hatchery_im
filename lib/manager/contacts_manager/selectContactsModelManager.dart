@@ -8,23 +8,36 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 
 class SelectContactsModelManager extends ChangeNotifier {
   TextEditingController searchController = TextEditingController();
   //联系人列表 数据
   List<Friends>? friendsList;
+  // 群组成员数据
+  List<GroupMembers>? groupMembersList;
   // checkBox选择的联系人
   List<Friends> selectFriendsList = [];
+  // checkBox选择的群成员
+  List<GroupMembers> selectGroupMembersList = [];
+  // 搜索用
   List<Friends> backupFriendsList = [];
+  List<GroupMembers> backupGroupMembersList = [];
 
   /// 初始化
-  init() {
-    _queryFriendsRes();
-    _searchInputListener();
+  init(SelectContactsType selectContactsType) {
+    if (selectContactsType == SelectContactsType.CreateGroup ||
+        selectContactsType == SelectContactsType.AddGroupMember) {
+      _queryFriendsRes();
+      _searchFriendsInputListener();
+    } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
+      _searchGroupMembersInputListener();
+      notifyListeners();
+    }
   }
 
-  void _searchInputListener() {
+  void _searchFriendsInputListener() {
     searchController.addListener(() {
       String _inputText = searchController.text;
       friendsList = List.from(backupFriendsList);
@@ -55,6 +68,28 @@ class SelectContactsModelManager extends ChangeNotifier {
     });
   }
 
+  void _searchGroupMembersInputListener() {
+    searchController.addListener(() {
+      String _inputText = searchController.text;
+      groupMembersList = List.from(backupGroupMembersList);
+      if (_inputText.isNotEmpty) {
+        print('DEBUG=> backupGroupMembersList _inputText $_inputText');
+        groupMembersList!.removeWhere((element) {
+          if (element.nickName!.contains(_inputText)) {
+            return false;
+          } else {
+            return true;
+          }
+        });
+      } else {
+        groupMembersList = List.from(backupGroupMembersList);
+        print("DEBUG=> backupGroupMembersList else $backupGroupMembersList");
+      }
+      print("DEBUG=> groupMembersList $groupMembersList");
+      notifyListeners();
+    });
+  }
+
   _queryFriendsRes({
     int size = 999,
     int page = 0,
@@ -67,6 +102,11 @@ class SelectContactsModelManager extends ChangeNotifier {
         notifyListeners();
       }
     });
+  }
+
+  void copyGroupMembersToList(List<GroupMembers> groupMembers) {
+    groupMembersList = groupMembers;
+    backupGroupMembersList = groupMembers;
   }
 
   Future<bool> submit(
@@ -93,13 +133,24 @@ class SelectContactsModelManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addSelectedGroupMembersIntoList(GroupMembers groupMembers) {
+    selectGroupMembersList.add(groupMembers);
+    notifyListeners();
+  }
+
   void removeSelectedFriendsIntoList(Friends friends) {
     selectFriendsList.remove(friends);
     notifyListeners();
   }
 
+  void removeSelectedGroupMembersIntoList(GroupMembers groupMembers) {
+    selectGroupMembersList.remove(groupMembers);
+    notifyListeners();
+  }
+
   @override
   void dispose() {
+    searchController.dispose();
     super.dispose();
   }
 }

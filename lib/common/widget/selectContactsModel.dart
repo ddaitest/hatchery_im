@@ -41,10 +41,12 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
 
   @override
   void initState() {
-    manager.init();
-    if (widget.selectContactsType == SelectContactsType.DeleteGroupMember)
+    if (widget.selectContactsType == SelectContactsType.DeleteGroupMember) {
       widget.groupMembersList
           ?.removeWhere((element) => element.userID == UserCentre.getUserID());
+      manager.copyGroupMembersToList(widget.groupMembersList!);
+    }
+    manager.init(widget.selectContactsType);
     super.initState();
   }
 
@@ -68,34 +70,75 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                     ),
                   )),
             ]),
-            body: Selector<SelectContactsModelManager, List<Friends>?>(
-                builder: (BuildContext context, List<Friends>? value,
-                    Widget? child) {
-                  return ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    children: <Widget>[
-                      SearchBarView(
-                          searchHintText: "搜索好友",
-                          textEditingController: manager.searchController,
-                          isEnabled: true),
-                      manager.selectFriendsList.isNotEmpty
-                          ? _tipsView("已选择的好友")
-                          : Container(),
-                      _selectedContactsView(),
-                      SizedBox(
-                        height: 10.0.w,
-                      ),
-                      _tipsView("${widget.tipsText}"),
-                      _contactsListView(),
-                    ],
-                  );
-                },
-                selector: (BuildContext context,
-                    SelectContactsModelManager selectContactsModelManager) {
-                  return selectContactsModelManager.friendsList ?? null;
-                },
-                shouldRebuild: (pre, next) => (pre != next))));
+            body: widget.selectContactsType ==
+                    SelectContactsType.DeleteGroupMember
+                ? Selector<SelectContactsModelManager, List<GroupMembers>?>(
+                    builder: (BuildContext context, List<GroupMembers>? value,
+                        Widget? child) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          SearchBarView(
+                              searchHintText: "搜索好友",
+                              textEditingController: manager.searchController,
+                              isEnabled: true),
+                          manager.selectGroupMembersList.isNotEmpty
+                              ? _tipsView("已选择的群成员")
+                              : Container(),
+                          _selectedContactsView(),
+                          SizedBox(
+                            height: 10.0.w,
+                          ),
+                          _tipsView("${widget.tipsText}"),
+                          value != null
+                              ? value.isNotEmpty
+                                  ? _contactsListView(null)
+                                  : IndicatorView(
+                                      tipsText: '没有群成员', showLoadingIcon: false)
+                              : IndicatorView()
+                        ],
+                      );
+                    },
+                    selector: (BuildContext context,
+                        SelectContactsModelManager selectContactsModelManager) {
+                      return selectContactsModelManager.groupMembersList ??
+                          null;
+                    },
+                    shouldRebuild: (pre, next) => (pre != next))
+                : Selector<SelectContactsModelManager, List<Friends>?>(
+                    builder: (BuildContext context, List<Friends>? value,
+                        Widget? child) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          SearchBarView(
+                              searchHintText: "搜索好友",
+                              textEditingController: manager.searchController,
+                              isEnabled: true),
+                          manager.selectFriendsList.isNotEmpty
+                              ? _tipsView("已选择的好友")
+                              : Container(),
+                          _selectedContactsView(),
+                          SizedBox(
+                            height: 10.0.w,
+                          ),
+                          _tipsView("${widget.tipsText}"),
+                          value != null
+                              ? value.isNotEmpty
+                                  ? _contactsListView(value)
+                                  : IndicatorView(
+                                      tipsText: '没有联系人', showLoadingIcon: false)
+                              : IndicatorView()
+                        ],
+                      );
+                    },
+                    selector: (BuildContext context,
+                        SelectContactsModelManager selectContactsModelManager) {
+                      return selectContactsModelManager.friendsList ?? null;
+                    },
+                    shouldRebuild: (pre, next) => (pre != next))));
   }
 
   Widget _selectedContactsView() {
@@ -147,11 +190,10 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
     );
   }
 
-  Widget _contactsListView() {
-    return manager.friendsList != null
-        ? CheckBoxContactsUsersItem(manager.friendsList!,
-            widget.groupMembersList, widget.selectContactsType, manager)
-        : IndicatorView();
+  Widget _contactsListView(friendsList) {
+    print("DEBUG=> manager.friendsList! ${friendsList}");
+    return CheckBoxContactsUsersItem(friendsList ?? [],
+        manager.groupMembersList, widget.selectContactsType, manager);
   }
 
   ///提交并返回
@@ -196,6 +238,8 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   @override
   void dispose() {
     manager.selectFriendsList.clear();
+    manager.selectGroupMembersList.clear();
+    manager.searchController.text = '';
     super.dispose();
   }
 }

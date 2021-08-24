@@ -27,9 +27,6 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
     print("DEBUG=> friendsLists ${widget.friendsLists}");
     if (widget.selectContactsType == SelectContactsType.CreateGroup) {
       print("DEBUG=> CreateGroup CreateGroup");
-      widget.friendsLists.forEach((element) {
-        _isChecked[element.friendId] = false;
-      });
     } else {
       if (widget.groupMembersList != null) {
         if (widget.groupMembersList!.isNotEmpty) {
@@ -46,18 +43,8 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
                 _isChecked[element.friendId] = false;
               }
             });
-          } else if (widget.selectContactsType ==
-              SelectContactsType.DeleteGroupMember) {
-            print("DEBUG=> DeleteGroupMember ${widget.groupMembersList!}");
-            // widget.groupMembersList!.forEach((element) {
-            //   _isChecked[element.userID!] = false;
-            // });
           }
-        } else {
-          Navigator.of(App.navState.currentContext!).pop(true);
         }
-      } else {
-        Navigator.of(App.navState.currentContext!).pop(true);
       }
     }
 
@@ -83,36 +70,107 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
           color: Colors.white,
           padding: EdgeInsets.only(left: 6, right: 6, top: 10, bottom: 10),
           child: CheckboxListTile(
-            dense: false,
-            tristate: false,
-            selected: false,
-            secondary: _avatarView(index, widget.selectContactsType),
-            title: _titleView(index, widget.selectContactsType),
-            subtitle: _subtitleView(index, widget.selectContactsType),
-            activeColor: Flavors.colorInfo.mainColor,
-            value: _setCheckBoxValue(index, widget.selectContactsType),
+              dense: false,
+              tristate: false,
+              secondary: _avatarView(index, widget.selectContactsType),
+              title: _titleView(index, widget.selectContactsType),
+              subtitle: _subtitleView(index, widget.selectContactsType),
+              activeColor: Flavors.colorInfo.mainColor,
+              value: _setCheckBoxValue(index, widget.selectContactsType),
+              onChanged: widget.selectContactsType ==
+                          SelectContactsType.CreateGroup ||
+                      widget.selectContactsType ==
+                          SelectContactsType.AddGroupMember
+                  ? groupMembersFriendId
+                          .contains(widget.friendsLists[index].friendId)
+                      ? null
+                      : (value) {
+                          print("DEBUG=> value $value");
+                          if (widget.friendsLists.isNotEmpty) {
+                            _isChecked[widget.friendsLists[index].friendId] =
+                                value!;
+                            setState(() {
+                              if (_isChecked[
+                                  widget.friendsLists[index].friendId]!) {
+                                widget.manager.addSelectedFriendsIntoList(
+                                    widget.friendsLists[index]);
+                              } else {
+                                widget.manager.removeSelectedFriendsIntoList(
+                                    widget.friendsLists[index]);
+                              }
+                            });
+                          }
+                        }
+                  : (value) {
+                      if (widget.groupMembersList!.isNotEmpty ||
+                          widget.groupMembersList != null) {
+                        setState(() {
+                          _isChecked[widget.groupMembersList![index].userID!] =
+                              value!;
+                          if (_isChecked[
+                              widget.groupMembersList![index].userID]!) {
+                            widget.manager.addSelectedGroupMembersIntoList(
+                                widget.groupMembersList![index]);
+                          } else {
+                            widget.manager.removeSelectedGroupMembersIntoList(
+                                widget.groupMembersList![index]);
+                          }
+                        });
+                      }
+                    }
 
-            /// todo
-            onChanged: null,
-            // onChanged: groupMembersFriendId
-            //         .contains(widget.friendsLists[index].friendId)
-            //     ? null
-            //     : (value) {
-            //         print("DEBUG=> value $value");
-            //         _isChecked[widget.friendsLists[index].friendId] = value!;
-            //         if (widget.friendsLists.isNotEmpty) {
-            //           setState(() {
-            //             if (_isChecked[widget.friendsLists[index].friendId]!) {
-            //               widget.manager.addSelectedFriendsIntoList(
-            //                   widget.friendsLists[index]);
-            //             } else {
-            //               widget.manager.removeSelectedFriendsIntoList(
-            //                   widget.friendsLists[index]);
-            //             }
-            //           });
-            //         }
-            //       },
-          ),
+              // onChanged: widget.selectContactsType ==
+              //             SelectContactsType.CreateGroup ||
+              //         widget.selectContactsType ==
+              //                 SelectContactsType.AddGroupMember &&
+              //             groupMembersFriendId
+              //                 .contains(widget.friendsLists[index].friendId)
+              //     ? null
+              //     : (value) {
+              //         if (widget.selectContactsType ==
+              //                 SelectContactsType.CreateGroup ||
+              //             widget.selectContactsType ==
+              //                 SelectContactsType.AddGroupMember) {
+              //           if (!groupMembersFriendId
+              //               .contains(widget.friendsLists[index].friendId)) {
+              //             {
+              //               print("DEBUG=> value $value");
+              //               _isChecked[widget.friendsLists[index].friendId] =
+              //                   value!;
+              //               if (widget.friendsLists.isNotEmpty) {
+              //                 setState(() {
+              //                   if (_isChecked[
+              //                       widget.friendsLists[index].friendId]!) {
+              //                     widget.manager.addSelectedFriendsIntoList(
+              //                         widget.friendsLists[index]);
+              //                   } else {
+              //                     widget.manager.removeSelectedFriendsIntoList(
+              //                         widget.friendsLists[index]);
+              //                   }
+              //                 });
+              //               }
+              //             }
+              //           }
+              //         } else if (widget.selectContactsType ==
+              //             SelectContactsType.DeleteGroupMember) {
+              //           if (widget.groupMembersList!.isNotEmpty ||
+              //               widget.groupMembersList != null) {
+              //             _isChecked[widget.groupMembersList![index].userID!] =
+              //                 value!;
+              //             setState(() {
+              //               if (_isChecked[
+              //                   widget.groupMembersList![index].userID]!) {
+              //                 widget.manager.addSelectedGroupMembersIntoList(
+              //                     widget.groupMembersList![index]);
+              //               } else {
+              //                 widget.manager.removeSelectedGroupMembersIntoList(
+              //                     widget.groupMembersList![index]);
+              //               }
+              //             });
+              //           }
+              //         }
+              //       },
+              ),
         );
       },
     );
@@ -249,4 +307,22 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
       return false;
     }
   }
+
+  // else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
+  //      _isChecked[widget.groupMembersList![index].userID!] = value!;
+  //      if (widget.groupMembersList!.isNotEmpty) {
+  //        setState(() {
+  //          if (_isChecked[widget.groupMembersList![index].userID!]!) {
+  //            widget.manager
+  //                .addSelectedFriendsIntoList(widget.groupMembersList![index]);
+  //          } else {
+  //            widget.manager.removeSelectedGroupMembersIntoList(
+  //                widget.groupMembersList![index]);
+  //          }
+  //        });
+  //      }
+  //    } else {
+  //      return null;
+  //    }
+  //  }
 }
