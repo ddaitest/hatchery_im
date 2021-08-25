@@ -377,7 +377,8 @@ class API {
     init();
     try {
       Response response = await _dio.post("/groups/kick/member",
-          data: json.encode(body),
+          // data: json.encode(body),
+          data: body,
           options: Options(
             headers: {"BEE_TOKEN": _token},
           ));

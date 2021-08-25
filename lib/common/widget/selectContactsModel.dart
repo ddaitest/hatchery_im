@@ -62,8 +62,12 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                   padding: const EdgeInsets.all(6.0),
                   child: TextButton(
                     onPressed: () {
-                      if (manager.selectGroupMembersList.length <
-                          widget.leastSelected) {
+                      if (widget.selectContactsType ==
+                              SelectContactsType.DeleteGroupMember
+                          ? manager.selectGroupMembersList.length <
+                              widget.leastSelected
+                          : manager.selectFriendsList.length <
+                              widget.leastSelected) {
                         showToast(
                             '最少选择${widget.leastSelected}${widget.selectContactsType == SelectContactsType.DeleteGroupMember ? '名群成员' : '名好友'}');
                       } else {
@@ -121,7 +125,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
     return selectContactsModelManager.selectFriendsList.isNotEmpty |
             selectContactsModelManager.selectGroupMembersList.isNotEmpty
         ? Container(
-            color: Colors.white,
+            color: Flavors.colorInfo.mainBackGroundColor,
             padding: const EdgeInsets.all(16.0),
             child: Wrap(
               spacing: 10, //主轴上子控件的间距
@@ -234,20 +238,20 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           inviteJoinMembersInfo: null);
     } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
       List<Map<String, String>> _deleteMembersInfo = [];
-      Map<String, String> _membersInfoMap = {
-        'kcikUserID': '',
-        'kcikUserNick': ''
-      };
       manager.selectGroupMembersList.forEach((element) {
+        Map<String, String> _membersInfoMap = {
+          'kcikUserID': '',
+          'kcikUserNick': ''
+        };
         _membersInfoMap['kcikUserID'] = element.userID!;
         _membersInfoMap['kcikUserNick'] = element.nickName!;
         _deleteMembersInfo.add(_membersInfoMap);
       });
       print("DEBUG=> _deleteMembersInfo $_deleteMembersInfo");
-      // manager.submit(
-      //     selectContactsType: selectContactsType,
-      //     groupID: groupId,
-      //     deleteMembersInfo: _deleteMembersInfo);
+      manager.submit(
+          selectContactsType: selectContactsType,
+          groupID: groupId,
+          deleteMembersInfo: _deleteMembersInfo);
     }
   }
 
