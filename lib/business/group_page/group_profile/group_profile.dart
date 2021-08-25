@@ -203,7 +203,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
     return Selector<GroupProfileManager, List<GroupMembers>?>(
         builder:
             (BuildContext context, List<GroupMembers>? value, Widget? child) {
-          return GroupMembersGrid(value);
+          return GroupMembersGrid(widget.groupID, value);
         },
         selector:
             (BuildContext context, GroupProfileManager groupProfileManager) {

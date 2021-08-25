@@ -45,6 +45,7 @@ class Routers {
         Map map = settings.arguments as Map<String, dynamic>;
         return CupertinoPageRoute(
             builder: (_) => SelectContactsModelPage(
+                  groupId: map['groupId'] ?? '',
                   titleText: map['titleText'],
                   leastSelected: map['leastSelected'],
                   nextPageBtnText: map['nextPageBtnText'],

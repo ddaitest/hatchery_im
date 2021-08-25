@@ -365,6 +365,52 @@ class API {
     }
   }
 
+  ///群组踢人
+  static Future<ApiResult> deleteGroupMembers(
+    String groupID,
+    List<Map<String, String>> items,
+  ) async {
+    Map<String, dynamic> body = {
+      "groupID": groupID,
+      "items": items,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/kick/member",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///群组邀请
+  static Future<ApiResult> inviteJoinGroup(
+    String groupID,
+    List<Map<String, String>> items,
+  ) async {
+    Map<String, dynamic> body = {
+      "groupID": groupID,
+      "items": items,
+    };
+    init();
+    try {
+      Response response = await _dio.post("/groups/invit",
+          data: json.encode(body),
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取好友信息
   static Future<ApiResult> getFriendInfo(
     String friendId,

@@ -18,6 +18,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 
 class SelectContactsModelPage extends StatefulWidget {
+  final String groupId;
   final String titleText;
   final int leastSelected;
   final String nextPageBtnText;
@@ -25,7 +26,8 @@ class SelectContactsModelPage extends StatefulWidget {
   final SelectContactsType selectContactsType;
   final List<GroupMembers>? groupMembersList;
   SelectContactsModelPage(
-      {required this.titleText,
+      {required this.groupId,
+      required this.titleText,
       required this.leastSelected,
       required this.nextPageBtnText,
       required this.tipsText,
@@ -60,14 +62,14 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                   padding: const EdgeInsets.all(6.0),
                   child: TextButton(
                     onPressed: () {
-                      widget.selectContactsType ==
-                              SelectContactsType.DeleteGroupMember
-                          ? manager.selectGroupMembersList.length
-                          : manager.selectFriendsList.length <
-                                  widget.leastSelected
-                              ? showToast(
-                                  '最少选择${widget.leastSelected}${widget.selectContactsType == SelectContactsType.DeleteGroupMember ? '名群成员' : '名好友'}')
-                              : _submitBtn();
+                      if (manager.selectGroupMembersList.length <
+                          widget.leastSelected) {
+                        showToast(
+                            '最少选择${widget.leastSelected}${widget.selectContactsType == SelectContactsType.DeleteGroupMember ? '名群成员' : '名好友'}');
+                      } else {
+                        _submitBtnVoid(
+                            widget.selectContactsType, widget.groupId);
+                      }
                     },
                     child: Text(
                       '${widget.nextPageBtnText}',
@@ -199,36 +201,53 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
   }
 
   ///提交并返回
-  void _submitBtn() {
-    String myNickName = '';
-    String? stored = SP.getString(SPKey.userInfo);
-    if (stored != null) {
-      try {
-        var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-        myNickName = userInfo.nickName ?? '';
-        print("_myProfileData ${userInfo.nickName}");
-      } catch (e) {}
+  void _submitBtnVoid(SelectContactsType selectContactsType, String groupId) {
+    if (selectContactsType == SelectContactsType.CreateGroup) {
+      String? myNickName = UserCentre.getInfo()!.nickName ?? '';
       String groupName = '';
-      // String groupDescription = '';
-      // String groupNotes = '';
-      // String groupImageUrl = '';
+      String groupDescription = '';
+      String groupNotes = '';
+      String groupImageUrl = '';
       List<Friends> selectFriends = manager.selectFriendsList;
-      List<String> friendsId = [];
+      List<String> friendsIdList = [];
       for (var i = 0; i < selectFriends.length; i++) {
-        friendsId.add(selectFriends[i].friendId);
+        friendsIdList.add(selectFriends[i].friendId);
         if (i < 2) {
           groupName =
               '${selectFriends[i].nickName}${i != 1 ? '' : '、'}' + groupName;
         }
       }
       groupName = myNickName + '、' + groupName + '的群组';
-
-      if (widget.selectContactsType == SelectContactsType.CreateGroup) {
-        print("DEBUG=> groupName $groupName");
-        print("DEBUG=> friendsId $friendsId");
-        // selectContactsModelManager.submit(
-        //     groupName, groupDescription, groupImageUrl, groupNotes, friendsId);
-      } else if (widget.selectContactsType == SelectContactsType.Share) {}
+      print("DEBUG=> groupName $groupName");
+      print("DEBUG=> friendsIdList $friendsIdList");
+      manager.submit(
+          selectContactsType: selectContactsType,
+          groupName: groupName,
+          groupDescription: groupDescription,
+          groupIcon: groupImageUrl,
+          notes: groupNotes,
+          members: friendsIdList);
+    } else if (selectContactsType == SelectContactsType.AddGroupMember) {
+      manager.submit(
+          selectContactsType: selectContactsType,
+          groupID: groupId,
+          inviteJoinMembersInfo: null);
+    } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
+      List<Map<String, String>> _deleteMembersInfo = [];
+      Map<String, String> _membersInfoMap = {
+        'kcikUserID': '',
+        'kcikUserNick': ''
+      };
+      manager.selectGroupMembersList.forEach((element) {
+        _membersInfoMap['kcikUserID'] = element.userID!;
+        _membersInfoMap['kcikUserNick'] = element.nickName!;
+        _deleteMembersInfo.add(_membersInfoMap);
+      });
+      print("DEBUG=> _deleteMembersInfo $_deleteMembersInfo");
+      // manager.submit(
+      //     selectContactsType: selectContactsType,
+      //     groupID: groupId,
+      //     deleteMembersInfo: _deleteMembersInfo);
     }
   }
 
@@ -242,7 +261,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
     manager.selectFriendsList.clear();
     manager.selectGroupMembersList.clear();
     manager.selectList.clear();
-    manager.searchController.text = '';
+    manager.searchController.dispose();
     super.dispose();
   }
 }

@@ -10,8 +10,9 @@ import '../../../config.dart';
 import '../../../routers.dart';
 
 class GroupMembersGrid extends StatelessWidget {
+  final String? groupId;
   final List<GroupMembers>? groupMembersList;
-  GroupMembersGrid(this.groupMembersList);
+  GroupMembersGrid(this.groupId, this.groupMembersList);
   final manager = App.manager<GroupProfileManager>();
 
   @override
@@ -76,6 +77,7 @@ class GroupMembersGrid extends StatelessWidget {
   Widget _managerBtnView(SelectContactsType selectContactsType, int index) {
     return GestureDetector(
       onTap: () => Routers.navigateTo('/select_contacts_model', arg: {
+        'groupId': groupId,
         'titleText': selectContactsType == SelectContactsType.AddGroupMember
             ? '邀请入群'
             : '移出群组',

@@ -12,7 +12,7 @@ import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 
 class SelectContactsModelManager extends ChangeNotifier {
-  TextEditingController searchController = TextEditingController();
+  late TextEditingController searchController;
   //联系人列表 数据
   List<Friends>? friendsList;
   // 群组成员数据
@@ -28,6 +28,7 @@ class SelectContactsModelManager extends ChangeNotifier {
 
   /// 初始化
   init(SelectContactsType selectContactsType) {
+    searchController = TextEditingController();
     if (selectContactsType == SelectContactsType.CreateGroup ||
         selectContactsType == SelectContactsType.AddGroupMember) {
       _queryFriendsRes();
@@ -90,7 +91,7 @@ class SelectContactsModelManager extends ChangeNotifier {
     });
   }
 
-  _queryFriendsRes({
+  void _queryFriendsRes({
     int size = 999,
     int page = 0,
   }) async {
@@ -110,22 +111,40 @@ class SelectContactsModelManager extends ChangeNotifier {
   }
 
   Future<bool> submit(
-    String groupName,
-    String groupDescription,
-    String groupIcon,
-    String notes,
-    List<dynamic> members,
-  ) async {
-    ApiResult result = await API.createNewGroup(
-        groupName, groupDescription, groupIcon, notes, members);
-    if (result.isSuccess()) {
-      print("DEBUG=> result.getData() ${result.getData()}");
-      showToast('创建群组成功');
+      {SelectContactsType? selectContactsType,
+      String? groupID,
+      String? groupName,
+      String? groupDescription,
+      String? groupIcon,
+      String? notes,
+      List<dynamic>? members,
+      List<Map<String, String>>? deleteMembersInfo,
+      List<Map<String, String>>? inviteJoinMembersInfo}) async {
+    ApiResult apiResult;
+    String successToastText = '';
+    String failToastText = '';
+    if (selectContactsType == SelectContactsType.CreateGroup) {
+      apiResult = await API.createNewGroup(
+          groupName!, groupDescription!, groupIcon!, notes!, members!);
+      successToastText = '创建群组成功';
+      failToastText = '创建群组失败';
+    } else if (selectContactsType == SelectContactsType.AddGroupMember) {
+      apiResult = await API.inviteJoinGroup(groupID!, inviteJoinMembersInfo!);
+      successToastText = '已发送入群申请';
+      failToastText = '入群申请发送失败';
+    } else {
+      apiResult = await API.deleteGroupMembers(groupID!, deleteMembersInfo!);
+      successToastText = '已移出群组';
+      failToastText = '移出群组失败';
+    }
+    if (apiResult.isSuccess()) {
+      print("DEBUG=> result.getData() ${apiResult.getData()}");
+      showToast('$successToastText');
       Navigator.of(App.navState.currentContext!).pop(true);
     } else {
-      showToast('创建群组失败');
+      showToast('$failToastText');
     }
-    return result.isSuccess();
+    return apiResult.isSuccess();
   }
 
   void addSelectedFriendsIntoList(Friends friends) {
@@ -150,7 +169,6 @@ class SelectContactsModelManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
   }
 }

@@ -252,22 +252,4 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
       return false;
     }
   }
-
-  // else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
-  //      _isChecked[widget.groupMembersList![index].userID!] = value!;
-  //      if (widget.groupMembersList!.isNotEmpty) {
-  //        setState(() {
-  //          if (_isChecked[widget.groupMembersList![index].userID!]!) {
-  //            widget.manager
-  //                .addSelectedFriendsIntoList(widget.groupMembersList![index]);
-  //          } else {
-  //            widget.manager.removeSelectedGroupMembersIntoList(
-  //                widget.groupMembersList![index]);
-  //          }
-  //        });
-  //      }
-  //    } else {
-  //      return null;
-  //    }
-  //  }
 }
