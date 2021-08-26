@@ -34,6 +34,10 @@ class ApiInfo {
 }
 
 class TextStyles {
+  final TextStyle mainPopText = TextStyle(
+      fontSize: 13.0.sp,
+      fontWeight: FontWeight.normal,
+      color: ColorInfo().darkGreyColor);
   final TextStyle noDataText = TextStyle(
       fontSize: 16.0.sp,
       fontWeight: FontWeight.w400,

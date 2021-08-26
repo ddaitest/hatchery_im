@@ -100,6 +100,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       case '创建群组':
         Routers.navigateTo("/create_group");
         break;
+      case '扫一扫':
+        Routers.navigateTo("/qrCode_scan");
+        break;
       case 'TestPage':
         Routers.navigateTo("/test");
         break;
@@ -116,12 +119,17 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
               ? AppBarFactory.getMain(title, actions: [
                   PopupMenuButton<String>(
                     onSelected: handleClick,
-                    icon: Icon(Icons.more_vert, size: 30, color: Colors.black),
+                    icon: Icon(Icons.more_vert,
+                        size: 25, color: Flavors.colorInfo.darkGreyColor),
                     itemBuilder: (BuildContext context) {
-                      return {'添加好友', '创建群组', 'TestPage'}.map((String choice) {
+                      return {'添加好友', '创建群组', '扫一扫', 'TestPage'}
+                          .map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
-                          child: Text(choice),
+                          child: Text(
+                            choice,
+                            style: Flavors.textStyles.mainPopText,
+                          ),
                         );
                       }).toList();
                     },

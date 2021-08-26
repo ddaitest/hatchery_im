@@ -6,6 +6,7 @@ import 'package:hatchery_im/business/profile_page/edit_profile/profile_edit_page
 import 'package:hatchery_im/business/profile_page/friendProfile/friendInfoMore_page.dart';
 import 'package:hatchery_im/business/splash/splash.dart';
 import 'package:hatchery_im/business/test/TestPage.dart';
+import 'package:hatchery_im/common/widget/qrCode/qr_scan.dart';
 import 'package:hatchery_im/business/group_page/groupList.dart';
 import 'package:hatchery_im/common/widget/selectContactsModel.dart';
 import 'package:hatchery_im/business/search/searchNewContacts.dart';
@@ -125,6 +126,8 @@ class Routers {
                   onlyNumber: map['onlyNumber'] ?? false,
                   sendType: map['sendType'] ?? 0,
                 ));
+      case '/qrCode_scan':
+        return MaterialPageRoute(builder: (_) => QRScanPage());
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:
