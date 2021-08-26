@@ -216,6 +216,8 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
       List<String> friendsIdList = [];
       for (var i = 0; i < selectFriends.length; i++) {
         friendsIdList.add(selectFriends[i].friendId);
+
+        /// 拼凑群名称
         if (i < 2) {
           groupName =
               '${selectFriends[i].nickName}${i != 1 ? '' : '、'}' + groupName;
@@ -232,6 +234,17 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           notes: groupNotes,
           members: friendsIdList);
     } else if (selectContactsType == SelectContactsType.AddGroupMember) {
+      List<Map<String, String>> _addMembersInfo = [];
+      manager.selectFriendsList.forEach((element) {
+        Map<String, String> _membersInfoMap = {
+          'kcikUserID': '',
+          'kcikUserNick': ''
+        };
+        _membersInfoMap['kcikUserID'] = element.friendId;
+        _membersInfoMap['kcikUserNick'] = element.nickName;
+        _addMembersInfo.add(_membersInfoMap);
+      });
+      print("DEBUG=> _addMembersInfo $_addMembersInfo");
       manager.submit(
           selectContactsType: selectContactsType,
           groupID: groupId,
