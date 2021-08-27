@@ -234,21 +234,15 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           notes: groupNotes,
           members: friendsIdList);
     } else if (selectContactsType == SelectContactsType.AddGroupMember) {
-      List<Map<String, String>> _addMembersInfo = [];
+      print("DEBUG=> manager.selectFriendsList ${manager.selectFriendsList}");
+      List<String> _joinMembersInfo = [];
       manager.selectFriendsList.forEach((element) {
-        Map<String, String> _membersInfoMap = {
-          'kcikUserID': '',
-          'kcikUserNick': ''
-        };
-        _membersInfoMap['kcikUserID'] = element.friendId;
-        _membersInfoMap['kcikUserNick'] = element.nickName;
-        _addMembersInfo.add(_membersInfoMap);
+        _joinMembersInfo.add(element.friendId);
       });
-      print("DEBUG=> _addMembersInfo $_addMembersInfo");
       manager.submit(
           selectContactsType: selectContactsType,
           groupID: groupId,
-          inviteJoinMembersInfo: null);
+          inviteJoinMembersInfo: _joinMembersInfo);
     } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
       List<Map<String, String>> _deleteMembersInfo = [];
       manager.selectGroupMembersList.forEach((element) {

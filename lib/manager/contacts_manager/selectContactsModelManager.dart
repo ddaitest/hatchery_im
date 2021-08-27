@@ -119,7 +119,7 @@ class SelectContactsModelManager extends ChangeNotifier {
       String? notes,
       List<dynamic>? members,
       List<Map<String, String>>? deleteMembersInfo,
-      List<Map<String, String>>? inviteJoinMembersInfo}) async {
+      List<String>? inviteJoinMembersInfo}) async {
     ApiResult apiResult;
     String successToastText = '';
     String failToastText = '';

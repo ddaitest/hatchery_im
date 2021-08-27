@@ -12,7 +12,7 @@ extension ExtendedDio on Dio {
   initWrapper() {
     InterceptorsWrapper wrapper =
         InterceptorsWrapper(onRequest: (options, handler) {
-      print('HTTP.onRequest: ${options.data} ');
+      print('HTTP.body: ${options.data} ');
       print('HTTP.url: ${options.uri} ');
       print('HTTP.headers: ${options.headers} ');
       print('HTTP.queryParameters: ${options.queryParameters} ');
@@ -391,11 +391,12 @@ class API {
   ///群组邀请
   static Future<ApiResult> inviteJoinGroup(
     String groupID,
-    List<Map<String, String>> items,
+    List<String> receiverIDs,
   ) async {
     Map<String, dynamic> body = {
       "groupID": groupID,
-      "items": items,
+      "receiverIDs": receiverIDs,
+      "note": "",
     };
     init();
     try {

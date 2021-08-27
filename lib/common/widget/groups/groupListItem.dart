@@ -71,7 +71,7 @@ class GroupListItem extends StatelessWidget {
   _groupMembersAvatar(List<GroupMembers> top3Members, int groupsMembers) {
     List<Widget> _avatarList = [];
     double off = 18.0;
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < top3Members.length; i++) {
       _avatarList.add(Positioned(
           left: off * i, child: netWorkAvatar(top3Members[i].icon!, 12.0)));
     }

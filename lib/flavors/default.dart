@@ -240,6 +240,7 @@ class SizesInfo {
   final screenHeight = 1.sh; // 屏幕高度
 }
 
+/// 配色网站：https://mycolor.space/?hex=%2373AEF5&sub=1
 class ColorInfo {
   final mainColor = const Color(0xFF73AEF5);
   final mainTextColor = Colors.white;
