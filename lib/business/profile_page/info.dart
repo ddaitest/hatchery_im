@@ -28,18 +28,44 @@ class Info extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(bottom: 10.0), //10
-                  height: 120.0.h,
-                  width: 120.0.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 4.0, //8
+                Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.1),
+                              offset: Offset(0, 10))
+                        ],
+                        shape: BoxShape.circle,
+                      ),
+                      child: netWorkAvatar(imageUrl, 60),
                     ),
-                  ),
-                  child: netWorkAvatar(imageUrl, 120),
+                    Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          height: 40.0.h,
+                          width: 40.0.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              width: 4,
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                            ),
+                            color: Flavors.colorInfo.mainColor,
+                          ),
+                          child: Icon(
+                            Icons.qr_code_2_outlined,
+                            color: Colors.white,
+                          ),
+                        )),
+                  ],
                 ),
                 Text(
                   name,

@@ -78,6 +78,7 @@ class _QRScanPageState extends State<QRScanPage> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
+        print("DEBUG=> qr code result ${result}");
       });
     });
   }

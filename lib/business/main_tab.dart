@@ -98,7 +98,14 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
         Routers.navigateTo('/search_new_contacts');
         break;
       case '创建群组':
-        Routers.navigateTo("/create_group");
+        Routers.navigateTo('/select_contacts_model', arg: {
+          'titleText': '创建群组',
+          'tipsText': '请至少选择两名好友作为群成员',
+          'leastSelected': 2,
+          'nextPageBtnText': '完成',
+          'selectContactsType': SelectContactsType.CreateGroup,
+          'groupMembersFriendId': ['']
+        });
         break;
       case '扫一扫':
         Routers.navigateTo("/qrCode_scan");
