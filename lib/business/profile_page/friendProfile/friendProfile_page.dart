@@ -237,8 +237,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return Container(
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () =>
-            Routers.navigateTo('/friend_apply', arg: widget.userID!),
+        onPressed: () {
+          if (widget.userID! != manager.myProfileData?.userID) {
+            Routers.navigateTo('/friend_apply', arg: widget.userID!);
+          } else {
+            showToast('不能添加自己为好友');
+          }
+        },
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,

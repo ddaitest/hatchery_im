@@ -6,8 +6,6 @@ import 'body.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class MyProfilePage extends StatelessWidget {
   @override

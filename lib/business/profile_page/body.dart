@@ -16,6 +16,7 @@ class ProfileBody extends StatelessWidget {
           imageUrl: "${myProfileManager.myProfileData.icon}",
           name: "${myProfileManager.myProfileData.nickName ?? ''}",
           account: "${myProfileManager.myProfileData.loginName ?? ''}",
+          userID: "${myProfileManager.myProfileData.userID ?? null}",
         ),
         SizedBox(height: 20.0.h),
         ProfileMenuItem('images/notice.png', "消息通知"),

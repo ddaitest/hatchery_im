@@ -11,9 +11,11 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 
 class FriendProfileManager extends ChangeNotifier {
   UsersInfo? usersInfo;
+  MyProfile? myProfileData = UserCentre.getInfo();
   Map<String, dynamic>? usersInfoMap;
   //拉黑列表
   List<BlockList>? blockContactsList;

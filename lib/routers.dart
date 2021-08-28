@@ -7,6 +7,7 @@ import 'package:hatchery_im/business/profile_page/friendProfile/friendInfoMore_p
 import 'package:hatchery_im/business/splash/splash.dart';
 import 'package:hatchery_im/business/test/TestPage.dart';
 import 'package:hatchery_im/common/widget/qrCode/qr_scan.dart';
+import 'package:hatchery_im/business/profile_page/qrcode_card.dart';
 import 'package:hatchery_im/business/group_page/groupList.dart';
 import 'package:hatchery_im/common/widget/selectContactsModel.dart';
 import 'package:hatchery_im/business/search/searchNewContacts.dart';
@@ -128,6 +129,14 @@ class Routers {
                 ));
       case '/qrCode_scan':
         return MaterialPageRoute(builder: (_) => QRScanPage());
+      case '/my_qrCode_card':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => QRCodeCardPage(
+                avatarUrl: map['avatarUrl'],
+                nickName: map['nickName'],
+                account: map['account'],
+                userID: map['userID']));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:

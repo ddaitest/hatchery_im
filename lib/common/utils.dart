@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert' as convert;
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/common/widget/upgrade_view.dart';
-import 'package:hatchery_im/config.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 showUpgrade({int delayedSecond = 0}) {
   Future.delayed(Duration(seconds: delayedSecond), () {
@@ -85,57 +86,6 @@ getRoundIcon(IconData icon) {
   );
 }
 
-Widget getAvatar(String url, {int? size}) {
-  return Container(
-    width: 36,
-    height: 36,
-    child: CachedNetworkImage(
-      imageUrl: url,
-      height: (size ?? 22).toDouble(),
-      width: (size ?? 22).toDouble(),
-      color: Colors.white,
-    ),
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      border: Border.all(color: colorPrimary, width: 2),
-    ),
-  );
-}
-
-Widget getMainIcon(int publishType, {int? size}) {
-  if (publishType != 1) {
-    return Container(
-      width: 36,
-      height: 36,
-      child: Icon(
-        Icons.directions_car,
-        color: Colors.white,
-        size: 22,
-      ),
-      decoration: BoxDecoration(
-        color: colorPrimary,
-        shape: BoxShape.circle,
-        border: Border.all(color: colorPrimary, width: 2),
-      ),
-    );
-  } else {
-    return Container(
-      width: 36,
-      height: 36,
-      child: Icon(
-        Icons.record_voice_over,
-        color: Colors.white,
-        size: 22,
-      ),
-      decoration: BoxDecoration(
-        color: colorPrimary,
-        shape: BoxShape.circle,
-        border: Border.all(color: colorPrimary, width: 2),
-      ),
-    );
-  }
-}
-
 /// return A positive number if a>b , negative number if a<b , 0 if a=b
 int compareVersion(String a, String b) {
   var as = a.split(".").map((string) => int.tryParse(string));
@@ -173,6 +123,17 @@ showSnackBar(BuildContext context, String word) {
     content: Text(word, textAlign: TextAlign.center),
     backgroundColor: colorPrimary,
   ));
+}
+
+Widget qrImageModel(
+    {String key = '', String value = '', double imageSize = 320.0}) {
+  String dataText = convert.jsonEncode({key: value});
+  return QrImage(
+    data: '$dataText',
+    version: QrVersions.auto,
+    size: imageSize,
+    gapless: false,
+  );
 }
 
 enum DialogDemoAction {

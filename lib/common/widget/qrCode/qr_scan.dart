@@ -1,11 +1,15 @@
-import 'dart:developer';
+import 'dart:convert';
+import 'dart:convert' as convert;
 import 'dart:io';
+import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:hatchery_im/routers.dart';
 
 class QRScanPage extends StatefulWidget {
   @override
@@ -15,6 +19,7 @@ class QRScanPage extends StatefulWidget {
 class _QRScanPageState extends State<QRScanPage> {
   Barcode? result;
   QRViewController? controller;
+  String? qrCodeText;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   // In order to get hot reload to work we need to pause the camera if the platform
@@ -30,24 +35,30 @@ class _QRScanPageState extends State<QRScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(alignment: AlignmentDirectional.topStart, children: [
-      Column(
-        children: <Widget>[
-          Expanded(flex: 4, child: _buildQrView(context)),
-        ],
-      ),
-      Builder(
-        builder: (context) => GestureDetector(
-          onTap: () => Navigator.of(App.navState.currentContext!).pop(true),
-          child: Container(
-            padding: const EdgeInsets.only(left: 25.0, top: 50.0),
-            child: Icon(Icons.arrow_back,
-                size: 30.0, color: Flavors.colorInfo.mainBackGroundColor),
-          ),
-        ),
-      ),
-    ]));
+    return qrCodeText == null
+        ? Scaffold(
+            body: Stack(alignment: AlignmentDirectional.topStart, children: [
+            Center(child: _buildQrView(context)),
+            Builder(
+              builder: (context) => GestureDetector(
+                onTap: () =>
+                    Navigator.of(App.navState.currentContext!).pop(true),
+                child: Container(
+                  padding: const EdgeInsets.only(left: 25.0, top: 50.0),
+                  child: Icon(Icons.arrow_back,
+                      size: 30.0, color: Flavors.colorInfo.mainBackGroundColor),
+                ),
+              ),
+            ),
+          ]))
+        : Scaffold(
+            appBar: AppBarFactory.backButton('扫码结果'),
+            body: Container(
+              width: Flavors.sizesInfo.screenWidth,
+              height: Flavors.sizesInfo.screenHeight,
+              child: Text('$qrCodeText'),
+            ),
+          );
   }
 
   Widget _buildQrView(BuildContext context) {
@@ -72,14 +83,16 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
+    this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-        print("DEBUG=> qr code result ${result}");
-      });
+      result = scanData;
+      if (result!.code.isNotEmpty) {
+        controller.stopCamera();
+        print("DEBUG=> qr code result ${result!.code}");
+        // _checkResult(result!.code);
+        Future.delayed(
+            Duration(milliseconds: 500), () => _checkResult(result!.code));
+      }
     });
   }
 
@@ -88,6 +101,17 @@ class _QRScanPageState extends State<QRScanPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('没有获得摄像头权限')),
       );
+    }
+  }
+
+  void _checkResult(String result) {
+    Map<String, dynamic> map = json.decode(result);
+    print("DEBUG=> qr code map ${map['userID']}");
+    if (map.containsKey('userID')) {
+      Routers.navigateReplace('/friend_profile', arg: map['userID']);
+    } else if (map.containsKey('groupID')) {
+    } else {
+      qrCodeText = result;
     }
   }
 
