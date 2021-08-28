@@ -62,3 +62,9 @@ enum SelectContactsType {
   DeleteGroupMember,
   Share,
 }
+
+enum addFriendOriginType {
+  Normal,
+  QRCode,
+  ShareCard,
+}
