@@ -46,7 +46,7 @@ class GroupProfileManager extends ChangeNotifier {
     if (result.isSuccess()) {
       groupMembersList =
           result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
-      print("DEBUG=> getGroupMembersData result.getData() ${groupMembersList}");
+      print("DEBUG=> getGroupMembersData result.getData() $groupMembersList");
       _checkManager();
       notifyListeners();
     } else {
@@ -109,19 +109,6 @@ class GroupProfileManager extends ChangeNotifier {
     }
   }
 
-  Future<MyProfile?> _getStoredForMyProfileData() async {
-    MyProfile? myProfileData = UserCentre.getInfo();
-    if (myProfileData != null) {
-      print("_myProfileData ${myProfileData.loginName}");
-      return myProfileData;
-    } else {
-      showToast('请重新登录');
-      UserCentre.logout();
-      Future.delayed(
-          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
-    }
-  }
-
   Future<dynamic> updateGroupNickNameData(
       String groupId, String groupNickName) async {
     ApiResult result = await API.updateGroupNickName(groupId, groupNickName);
@@ -132,6 +119,20 @@ class GroupProfileManager extends ChangeNotifier {
       });
     } else {
       showToast('${result.info}');
+    }
+  }
+
+  Future<bool> quitGroupRes(String groupId) async {
+    ApiResult result = await API.quitGroup(groupId);
+    if (result.isSuccess()) {
+      showToast('群组已退出');
+      Future.delayed(Duration(milliseconds: 500), () {
+        Navigator.of(App.navState.currentContext!).pop(true);
+      });
+      return result.isSuccess();
+    } else {
+      showToast('${result.info}');
+      return false;
     }
   }
 

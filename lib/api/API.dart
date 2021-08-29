@@ -412,6 +412,21 @@ class API {
     }
   }
 
+  ///退出群组
+  static Future<ApiResult> quitGroup(String groupID) async {
+    init();
+    try {
+      Response response = await _dio.get("/groups/out/$groupID",
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
   ///获取好友信息
   static Future<ApiResult> getFriendInfo(
     String friendId,

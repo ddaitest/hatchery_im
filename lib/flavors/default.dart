@@ -233,6 +233,26 @@ class TextStyles {
     color: ColorInfo().subtitleColor,
     fontWeight: FontWeight.normal,
   );
+
+  final TextStyle groupProfileQuitBtnText = TextStyle(
+      fontSize: 16.0.sp,
+      fontWeight: FontWeight.normal,
+      color: ColorInfo().redColor);
+
+  final TextStyle qrCodeCardNickNameText = TextStyle(
+    fontSize: 16.0.sp,
+    color: ColorInfo().diver,
+    fontWeight: FontWeight.normal,
+  );
+
+  final TextStyle qrCodeCardSubtitleText = TextStyle(
+    fontSize: 12.0.sp,
+    color: ColorInfo().subtitleColor,
+    fontWeight: FontWeight.normal,
+  );
+
+  final TextStyle sheetMenuText = TextStyle(
+      fontSize: 16.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w500);
 }
 
 class SizesInfo {

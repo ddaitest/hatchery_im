@@ -7,11 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/config.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:hatchery_im/routers.dart';
 
 class QRScanPage extends StatefulWidget {
+  final QRCodeScanOriginType qrCodeScanOriginType;
+  QRScanPage({this.qrCodeScanOriginType = QRCodeScanOriginType.Camera});
   @override
   _QRScanPageState createState() => _QRScanPageState();
 }
@@ -35,30 +37,36 @@ class _QRScanPageState extends State<QRScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    return qrCodeText == null
-        ? Scaffold(
-            body: Stack(alignment: AlignmentDirectional.topStart, children: [
-            Center(child: _buildQrView(context)),
-            Builder(
-              builder: (context) => GestureDetector(
-                onTap: () =>
-                    Navigator.of(App.navState.currentContext!).pop(true),
-                child: Container(
-                  padding: const EdgeInsets.only(left: 25.0, top: 50.0),
-                  child: Icon(Icons.arrow_back,
-                      size: 30.0, color: Flavors.colorInfo.mainBackGroundColor),
+    if (widget.qrCodeScanOriginType == QRCodeScanOriginType.Camera) {
+      return qrCodeText == null
+          ? Scaffold(
+              body: Stack(alignment: AlignmentDirectional.topStart, children: [
+              Center(child: _buildQrView(context)),
+              Builder(
+                builder: (context) => GestureDetector(
+                  onTap: () =>
+                      Navigator.of(App.navState.currentContext!).pop(true),
+                  child: Container(
+                    padding: const EdgeInsets.only(left: 25.0, top: 50.0),
+                    child: Icon(Icons.arrow_back,
+                        size: 30.0,
+                        color: Flavors.colorInfo.mainBackGroundColor),
+                  ),
                 ),
               ),
-            ),
-          ]))
-        : Scaffold(
-            appBar: AppBarFactory.backButton('扫码结果'),
-            body: Container(
-              width: Flavors.sizesInfo.screenWidth,
-              height: Flavors.sizesInfo.screenHeight,
-              child: Text('$qrCodeText'),
-            ),
-          );
+            ]))
+          : Scaffold(
+              appBar: AppBarFactory.backButton('扫码结果'),
+              body: Container(
+                padding: const EdgeInsets.all(10.0),
+                child: SelectableText('$qrCodeText'),
+              ),
+            );
+    } else if (widget.qrCodeScanOriginType == QRCodeScanOriginType.LongTap) {
+      return Container();
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildQrView(BuildContext context) {
@@ -105,13 +113,17 @@ class _QRScanPageState extends State<QRScanPage> {
   }
 
   void _checkResult(String result) {
-    Map<String, dynamic> map = json.decode(result);
-    print("DEBUG=> qr code map ${map['userID']}");
-    if (map.containsKey('userID')) {
-      Routers.navigateReplace('/friend_profile', arg: map['userID']);
-    } else if (map.containsKey('groupID')) {
-    } else {
-      qrCodeText = result;
+    try {
+      Map<String, dynamic> map = json.decode(result);
+      print("DEBUG=> qr code map ${map['userID']}");
+      if (map.containsKey('userID')) {
+        Routers.navigateReplace('/friend_profile', arg: map['userID']);
+      } else if (map.containsKey('groupID')) {}
+    } catch (e) {
+      setState(() {
+        qrCodeText = result;
+        controller?.stopCamera();
+      });
     }
   }
 

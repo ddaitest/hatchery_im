@@ -63,6 +63,11 @@ enum SelectContactsType {
   Share,
 }
 
+enum QRCodeScanOriginType {
+  Camera,
+  LongTap,
+}
+
 enum addFriendOriginType {
   Normal,
   QRCode,

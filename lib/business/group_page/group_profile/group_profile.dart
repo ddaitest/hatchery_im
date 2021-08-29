@@ -1,3 +1,4 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -77,6 +78,21 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                 ),
               ),
               automaticallyImplyLeading: false,
+              actions: [
+                TextButton(
+                  onPressed: () => dialogModel(
+                      titleText: '确认退出群组?',
+                      confirmText: '退出群组后将无法撤回',
+                      confirmBtnTap: () {
+                        Navigator.of(App.navState.currentContext!).pop(false);
+                        manager.quitGroupRes(widget.groupID!);
+                      }),
+                  child: Text(
+                    "退群",
+                    style: Flavors.textStyles.groupProfileQuitBtnText,
+                  ),
+                ),
+              ],
             ),
             body: ListView(
               physics: const BouncingScrollPhysics(),
@@ -84,7 +100,9 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
               children: [
                 _membersView(),
                 SizedBox(height: 8.0.h),
-                _groupInfoView()
+                _groupInfoView(),
+                SizedBox(height: 30.0.h),
+                _joinGroupChatDetailBtn(),
               ],
             )));
   }
@@ -211,5 +229,23 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
           return groupProfileManager.groupMembersList ?? null;
         },
         shouldRebuild: (pre, next) => (pre != next));
+  }
+
+  Widget _joinGroupChatDetailBtn() {
+    return Container(
+      child: TextButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          elevation: 0.0,
+          primary: Flavors.colorInfo.mainBackGroundColor,
+          padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
+        ),
+        child: Text(
+          '进入群聊',
+          textAlign: TextAlign.center,
+          style: Flavors.textStyles.friendProfileBtnText,
+        ),
+      ),
+    );
   }
 }

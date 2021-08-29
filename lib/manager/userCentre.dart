@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/tools.dart';
-
+import 'package:hatchery_im/common/utils.dart';
 import '../config.dart';
+import '../routers.dart';
 
 class UserCentre {
   static MyProfile? _info;
@@ -12,9 +12,11 @@ class UserCentre {
   static String? _nickName;
 
   static MyProfile? getInfo() {
-    if (_info == null) {
-      _info =
-          MyProfile.fromJson(jsonDecode(SP.getString(SPKey.userInfo))['info']);
+    String? userInfoSP = SP.getString(SPKey.userInfo);
+    if (userInfoSP != null) {
+      if (_info == null) {
+        _info = MyProfile.fromJson(jsonDecode(userInfoSP)['info']);
+      }
     }
     return _info;
   }

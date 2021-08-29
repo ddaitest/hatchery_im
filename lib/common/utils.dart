@@ -1,11 +1,17 @@
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'dart:io';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'AppContext.dart';
 import 'theme.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
@@ -30,6 +36,46 @@ void showToast(String title,
       backgroundColor: Colors.grey[200],
       textColor: Flavors.colorInfo.diver,
       fontSize: 15.0);
+}
+
+dialogModel(
+    {CoolAlertType showType = CoolAlertType.info,
+    bool showCancel = true,
+    VoidCallback? confirmBtnTap,
+    String? titleText,
+    String? confirmText}) {
+  return CoolAlert.show(
+    context: App.navState.currentContext!,
+    type: showType,
+    showCancelBtn: showCancel,
+    cancelBtnText: '取消',
+    confirmBtnText: '确认',
+    confirmBtnColor: Flavors.colorInfo.mainColor,
+    onConfirmBtnTap: confirmBtnTap,
+    title: '$titleText',
+    text: "$confirmText",
+  );
+}
+
+/// 保存图片到相册
+Future<bool> saveImageToGallery(Uint8List? image) async {
+  //检查是否有存储权限
+  if (!await Permission.storage.status.isGranted) {
+    PermissionStatus status = await Permission.storage.request();
+    if (status.isDenied) {
+      return false;
+    }
+  }
+  try {
+    final result = await ImageGallerySaver.saveImage(image!);
+    if (result['isSuccess']) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
 }
 
 launchUrl(String url) async {

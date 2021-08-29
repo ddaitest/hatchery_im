@@ -394,7 +394,17 @@ class BlockListItem extends StatelessWidget {
             ),
             trailing: blockContactsList != null
                 ? TextButton(
-                    onPressed: () => _blockConfirmDialog(index),
+                    onPressed: () => dialogModel(
+                        titleText: '确认移出黑名单?',
+                        confirmText: '移出黑名单后可以收到对方的消息',
+                        confirmBtnTap: () {
+                          Navigator.of(App.navState.currentContext!).pop(true);
+                          manager
+                              .delBlockFriend(blockContactsList![index].userID)
+                              .then((value) {
+                            manager.refreshData();
+                          });
+                        }),
                     child: Text('移出黑名单',
                         style: Flavors.textStyles.blockListDelBtnText),
                   )
@@ -402,25 +412,6 @@ class BlockListItem extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  _blockConfirmDialog(int index) {
-    return CoolAlert.show(
-      context: App.navState.currentContext!,
-      type: CoolAlertType.info,
-      showCancelBtn: true,
-      cancelBtnText: '取消',
-      confirmBtnText: '确认',
-      confirmBtnColor: Flavors.colorInfo.mainColor,
-      onConfirmBtnTap: () {
-        Navigator.of(App.navState.currentContext!).pop(true);
-        manager.delBlockFriend(blockContactsList![index].userID).then((value) {
-          manager.refreshData();
-        });
-      },
-      title: '确认移出黑名单?',
-      text: "移出黑名单后可以收到对方的消息",
     );
   }
 }

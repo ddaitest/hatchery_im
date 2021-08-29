@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'common/AppContext.dart';
@@ -82,6 +83,15 @@ class MyApp extends StatelessWidget {
         initialRoute: '/splash',
         // initialRoute: '/test',
         onGenerateRoute: Routers.generateRoute,
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('zh', 'CN'),
+          const Locale('en', 'US'),
+        ],
       ),
     );
   }
