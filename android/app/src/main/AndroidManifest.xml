@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.daivp.hatchery_im">
    <application
+        android:requestLegacyExternalStorage="true"
         android:label="hatchery_im"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">

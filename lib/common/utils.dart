@@ -1,10 +1,10 @@
 import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
 import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -66,14 +66,10 @@ Future<bool> saveImageToGallery(Uint8List? image) async {
       return false;
     }
   }
-  try {
-    final result = await ImageGallerySaver.saveImage(image!);
-    if (result['isSuccess']) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (e) {
+  final result = await ImageGallerySaver.saveImage(image!);
+  if (result['isSuccess']) {
+    return true;
+  } else {
     return false;
   }
 }
