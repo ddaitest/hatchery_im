@@ -1,3 +1,4 @@
+import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/chat_detail/voiceMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/imageMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
+import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
@@ -95,21 +97,21 @@ class _ChatBubbleState extends State<ChatBubble>
         {
           var temp = widget.friendsHistoryMessages.content;
           //TODO
-          finalView = ImageMessageWidget(temp["TODO"], belongType);
+          finalView = ImageMessageWidget(temp["img_url"], belongType);
         }
         break;
       case "VIDEO":
         {
           //TODO
           var temp = widget.friendsHistoryMessages.content;
-          finalView = ImageMessageWidget(temp["TODO"], belongType);
+          finalView = VideoMessageWidget(temp["video_url"], belongType);
         }
         break;
       case "VOICE":
         {
           //TODO
           var temp = widget.friendsHistoryMessages.content;
-          finalView = ImageMessageWidget(temp["TODO"], belongType);
+          finalView = VoiceMessageWidget(temp["voice_url"], belongType);
         }
         break;
       case "FILE":
@@ -124,10 +126,11 @@ class _ChatBubbleState extends State<ChatBubble>
         break;
       case "CARD":
         {
-          finalView = _textMessageView(belongType);
+          var temp = widget.friendsHistoryMessages.content;
+          finalView = CardMessageWidget(belongType, temp);
         }
         break;
-      case "STICKER":
+      case "GEO":
         {
           finalView = _textMessageView(belongType);
         }
@@ -153,7 +156,7 @@ class _ChatBubbleState extends State<ChatBubble>
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Text('${widget.friendsHistoryMessages.content}',
+      child: Text('${widget.friendsHistoryMessages.content['text']}',
           maxLines: 10,
           softWrap: true,
           style: widget.messageBelongType == MessageBelongType.Receiver

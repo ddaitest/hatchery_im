@@ -27,7 +27,7 @@ import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupPr
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
