@@ -226,7 +226,7 @@ class ModelHelper {
       "",
       msg.icon,
       msg.source,
-      msg.content,
+      msg.content as String,
       msg.contentType,
       DateTime.now().toString(),
       msg.groupId,
@@ -250,7 +250,7 @@ class ModelHelper {
         msg.to,
         msg.icon,
         msg.source,
-        msg.content,
+        msg.content as String,
         msg.contentType,
         DateTime.now().toString(),
         "");

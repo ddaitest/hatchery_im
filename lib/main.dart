@@ -29,19 +29,19 @@ import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
+    /// 此 强制竖屏 方法只支持Android ios通过Xcode打开Flutter项目中的iOS工程, 根据下图找到 Device Orientation 这一项 勾选需要支持的布局方向
+    /// https://www.codercto.com/a/60738.html
+    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    ///这是设置状态栏的图标和字体的颜色
+    ///Brightness.light  一般都是显示为白色
+    ///Brightness.dark 一般都是显示为黑色
     SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-
-        ///这是设置状态栏的图标和字体的颜色
-        ///Brightness.light  一般都是显示为白色
-        ///Brightness.dark 一般都是显示为黑色
         statusBarIconBrightness: Brightness.dark);
     SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
   }
 
-  /// 强制竖屏
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(
     MultiProvider(
       providers: [

@@ -233,7 +233,7 @@ class MessageCentre {
         contentType);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
-    message.progress = MSG_SENDING;
+    // message.progress = MSG_SENDING;
     LocalStore.addMessage(message);
   }
 
@@ -250,7 +250,7 @@ class MessageCentre {
         contentType);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
-    message.progress = MSG_SENDING;
+    // message.progress = MSG_SENDING;
     LocalStore.addMessage(message);
   }
 
@@ -270,7 +270,7 @@ class MyEngineHandler implements EngineCallback {
   void onMessageRead(String localId, String serverId) {
     Message? msg = LocalStore.findCache(localId);
     if (msg != null) {
-      msg.progress = MSG_READ;
+      // msg.progress = MSG_READ;
       msg.save();
     }
   }
@@ -279,7 +279,7 @@ class MyEngineHandler implements EngineCallback {
   void onMessageSent(String localId, String serverId) {
     Message? msg = LocalStore.findCache(localId);
     if (msg != null) {
-      msg.progress = MSG_SENT;
+      // msg.progress = MSG_SENT;
       msg.save();
     }
   }

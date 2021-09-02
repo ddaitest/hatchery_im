@@ -293,11 +293,11 @@ class Message extends HiveObject {
   String? receiver;
   String icon;
   String source;
-  Map<String, dynamic> content;
+  String content;
   String contentType;
   String createTime;
   String? groupID;
-  int progress = 0; // 0默认; 1发送中; 2发送完成; 3已读; 4收到的消息。
+  // int progress = 0; // 0默认; 1发送中; 2发送完成; 3已读; 4收到的消息。
 
   Message(
     this.id,

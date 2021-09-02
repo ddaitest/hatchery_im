@@ -204,12 +204,12 @@ Future<DialogDemoAction?>? showLoadingDialog(
       });
 }
 
-Widget dividerViewCommon() {
+Widget dividerViewCommon({double indent = 10.0, double endIndent = 10.0}) {
   return Divider(
     height: 0.5,
     thickness: 0.5,
-    indent: 10,
-    endIndent: 10,
+    indent: indent,
+    endIndent: endIndent,
     color: Flavors.colorInfo.dividerColor,
   );
 }

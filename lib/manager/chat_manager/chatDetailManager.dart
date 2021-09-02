@@ -14,6 +14,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:record/record.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +38,8 @@ class ChatDetailManager extends ChangeNotifier {
 
   /// 初始化
   init(String friendId) {
+    myProfileData = UserCentre.getInfo();
+    queryFriendsHistoryMessages(friendId, 0);
     currentFriendId = friendId;
     _loadLatest();
     //添加监听
@@ -64,21 +67,21 @@ class ChatDetailManager extends ChangeNotifier {
     // MessageCentre().loadMore(currentFriendId)
   }
 
-  // queryFriendsHistoryMessages(String friendId, int? currentMsgID,
-  //     {int page = 0, int size = 100}) async {
-  //   API
-  //       .messageHistoryWithFriend(
-  //           friendID: friendId,
-  //           size: size,
-  //           page: page,
-  //           currentMsgID: currentMsgID!)
-  //       .then((value) {
-  //     if (value.isSuccess()) {
-  //       messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
-  //       notifyListeners();
-  //     }
-  //   });
-  // }
+  queryFriendsHistoryMessages(String friendId, int? currentMsgID,
+      {int page = 0, int size = 100}) async {
+    API
+        .messageHistoryWithFriend(
+            friendID: friendId,
+            size: size,
+            page: page,
+            currentMsgID: currentMsgID!)
+        .then((value) {
+      if (value.isSuccess()) {
+        messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
+        notifyListeners();
+      }
+    });
+  }
 
   // _getStoredForMyProfileData() async {
   //   String? stored = SP.getString(SPKey.userInfo);

@@ -10,20 +10,19 @@ import 'package:hatchery_im/common/utils.dart';
 
 import '../../../routers.dart';
 
-class CardMessageWidget extends StatelessWidget {
+class FileMessageWidget extends StatelessWidget {
   final MessageBelongType messageBelongType;
   final Map<String, dynamic> content;
-  CardMessageWidget(this.messageBelongType, this.content);
+  FileMessageWidget(this.messageBelongType, this.content);
 
   @override
   Widget build(BuildContext context) {
-    return _cardMessageView(messageBelongType);
+    return _fileMessageView(messageBelongType);
   }
 
-  Widget _cardMessageView(MessageBelongType belongType) {
+  Widget _fileMessageView(MessageBelongType belongType) {
     return GestureDetector(
-      onTap: () =>
-          Routers.navigateTo('/friend_profile', arg: content['user_id']),
+      onTap: () => launchUrl(content['file_url'].toString()),
       child: Container(
           height: 90.0.h,
           width: 180.0.w,
@@ -48,14 +47,14 @@ class CardMessageWidget extends StatelessWidget {
                   Container(
                       width: 100.0.w,
                       child: Text(
-                        '${content['nick']}',
+                        '${content['name']}',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       )),
                 ],
               ),
               dividerViewCommon(indent: 0.0, endIndent: 0.0),
-              Text('个人名片', style: Flavors.textStyles.chatStyleCardBottomText)
+              Text('文件', style: Flavors.textStyles.chatStyleCardBottomText)
             ],
           )),
     );

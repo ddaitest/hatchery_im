@@ -23,11 +23,12 @@ class MessageAdapter extends TypeAdapter<Message> {
       fields[5] as String,
       fields[6] as String,
       fields[7] as String,
-      (fields[8] as Map).cast<String, dynamic>(),
+      fields[8] as String,
       fields[9] as String,
       fields[10] as String,
       fields[11] as String,
-    )..progress = fields[12];
+    );
+    // )..progress = fields[12];
   }
 
   @override
@@ -58,8 +59,8 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..write(obj.createTime)
       ..writeByte(11)
       ..write(obj.groupID)
-      ..writeByte(12)
-      ..write(obj.progress);
+      ..writeByte(12);
+    // ..write(obj.progress);
   }
 
   @override

@@ -145,6 +145,9 @@ class TextStyles {
   final TextStyle chatBubbleTimeText =
       TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
 
+  final TextStyle chatStyleCardBottomText =
+      TextStyle(fontSize: 10.0.sp, color: ColorInfo().subtitleColor);
+
   final TextStyle chatBubbleVoiceSenderText =
       TextStyle(fontSize: 15.0.sp, color: ColorInfo().mainTextColor);
 

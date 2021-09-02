@@ -1,4 +1,5 @@
 import 'package:hatchery_im/api/engine/entity.dart';
+import 'dart:convert' as convert;
 import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:hatchery_im/common/widget/chat_detail/voiceMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/imageMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
+import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
 
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
@@ -88,14 +90,23 @@ class _ChatBubbleState extends State<ChatBubble>
       case "TEXT":
         {
           // finalView = ImageMessageWidget(imageTestUrl, belongType);
-          finalView = _textMessageView(belongType);
+          // finalView = _textMessageView(belongType);
+          Map<String, dynamic> temp = {
+            "icon":
+                "https://img0.baidu.com/it/u=1406515706,336510358&fm=26&fmt=auto&gp=0.jpg",
+            "file_url":
+                "https://files.cherryshop.app/files/2021-07-19/F1626672634601.jpg",
+            "name": "文件名"
+          };
+          finalView = FileMessageWidget(belongType, temp);
           // finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
           // finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
         break;
       case "IMAGE":
         {
-          var temp = widget.friendsHistoryMessages.content;
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
           //TODO
           finalView = ImageMessageWidget(temp["img_url"], belongType);
         }
@@ -103,20 +114,24 @@ class _ChatBubbleState extends State<ChatBubble>
       case "VIDEO":
         {
           //TODO
-          var temp = widget.friendsHistoryMessages.content;
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
           finalView = VideoMessageWidget(temp["video_url"], belongType);
         }
         break;
       case "VOICE":
         {
           //TODO
-          var temp = widget.friendsHistoryMessages.content;
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
           finalView = VoiceMessageWidget(temp["voice_url"], belongType);
         }
         break;
       case "FILE":
         {
-          finalView = _textMessageView(belongType);
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView = FileMessageWidget(belongType, temp);
         }
         break;
       case "URL":
@@ -126,7 +141,8 @@ class _ChatBubbleState extends State<ChatBubble>
         break;
       case "CARD":
         {
-          var temp = widget.friendsHistoryMessages.content;
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
           finalView = CardMessageWidget(belongType, temp);
         }
         break;
@@ -145,6 +161,8 @@ class _ChatBubbleState extends State<ChatBubble>
   }
 
   Widget _textMessageView(MessageBelongType belongType) {
+    Map<String, dynamic> temp =
+        convert.jsonDecode(widget.friendsHistoryMessages.content);
     return Container(
       constraints: BoxConstraints(
         maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
@@ -156,7 +174,7 @@ class _ChatBubbleState extends State<ChatBubble>
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Text('${widget.friendsHistoryMessages.content['text']}',
+      child: Text('${temp['text']}',
           maxLines: 10,
           softWrap: true,
           style: widget.messageBelongType == MessageBelongType.Receiver
@@ -166,7 +184,7 @@ class _ChatBubbleState extends State<ChatBubble>
   }
 
   CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
-    if (belongType == MessageBelongType.Receiver) {
+    if (belongType != MessageBelongType.Receiver) {
       return CrossAxisAlignment.end;
     } else {
       return CrossAxisAlignment.start;
