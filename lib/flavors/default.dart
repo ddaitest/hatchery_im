@@ -143,7 +143,7 @@ class TextStyles {
       TextStyle(fontSize: 13.0.sp, color: ColorInfo().diver, height: 1.5);
 
   final TextStyle chatBubbleTimeText =
-      TextStyle(fontSize: 12.0.sp, color: ColorInfo().subtitleColor);
+      TextStyle(fontSize: 10.0.sp, color: ColorInfo().subtitleColor);
 
   final TextStyle chatStyleCardBottomText =
       TextStyle(fontSize: 10.0.sp, color: ColorInfo().subtitleColor);

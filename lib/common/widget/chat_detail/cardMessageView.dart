@@ -25,7 +25,6 @@ class CardMessageWidget extends StatelessWidget {
       onTap: () =>
           Routers.navigateTo('/friend_profile', arg: content['user_id']),
       child: Container(
-          height: 90.0.h,
           width: 180.0.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -38,24 +37,30 @@ class CardMessageWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  netWorkAvatar(content['icon'], 15.0),
-                  SizedBox(
-                    width: 10.0.w,
-                  ),
-                  Container(
-                      width: 100.0.w,
-                      child: Text(
-                        '${content['nick']}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )),
-                ],
-              ),
+              Container(
+                  width: 150.0.w,
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      netWorkAvatar(content['icon'], 15.0),
+                      SizedBox(
+                        width: 10.0.w,
+                      ),
+                      Container(
+                          width: 100.0.w,
+                          child: Text(
+                            '${content['nick']}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          )),
+                    ],
+                  )),
               dividerViewCommon(indent: 0.0, endIndent: 0.0),
-              Text('个人名片', style: Flavors.textStyles.chatStyleCardBottomText)
+              Container(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text('个人名片',
+                      style: Flavors.textStyles.chatStyleCardBottomText))
             ],
           )),
     );

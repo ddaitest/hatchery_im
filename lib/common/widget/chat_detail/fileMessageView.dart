@@ -24,7 +24,6 @@ class FileMessageWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => launchUrl(content['file_url'].toString()),
       child: Container(
-          height: 90.0.h,
           width: 180.0.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -37,24 +36,29 @@ class FileMessageWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  netWorkAvatar(content['icon'], 15.0),
-                  SizedBox(
-                    width: 10.0.w,
-                  ),
-                  Container(
-                      width: 100.0.w,
-                      child: Text(
-                        '${content['name']}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )),
-                ],
+              Container(
+                width: 150.0.w,
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    netWorkAvatar(content['icon'], 15.0),
+                    SizedBox(
+                      width: 10.0.w,
+                    ),
+                    Text(
+                      '${content['name']}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
               dividerViewCommon(indent: 0.0, endIndent: 0.0),
-              Text('文件', style: Flavors.textStyles.chatStyleCardBottomText)
+              Container(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text('文件',
+                      style: Flavors.textStyles.chatStyleCardBottomText))
             ],
           )),
     );

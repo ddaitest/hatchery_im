@@ -42,41 +42,46 @@ class _ChatBubbleState extends State<ChatBubble>
   }
 
   Widget _chatBubbleView(String? avatarUrl) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      textDirection: widget.messageBelongType == MessageBelongType.Receiver
-          ? TextDirection.ltr
-          : TextDirection.rtl,
+    return Column(
       children: [
-        CachedNetworkImage(
-            imageUrl: avatarUrl!,
-            placeholder: (context, url) => CircleAvatar(
-                  backgroundImage: AssetImage('images/default_avatar.png'),
-                  maxRadius: 20,
-                ),
-            errorWidget: (context, url, error) => CircleAvatar(
-                  backgroundImage: AssetImage('images/default_avatar.png'),
-                  maxRadius: 20,
-                ),
-            imageBuilder: (context, imageProvider) {
-              return CircleAvatar(
-                backgroundImage: imageProvider,
-                maxRadius: 20,
-              );
-            }),
-        SizedBox(width: 10.0.w),
-        Column(
-          crossAxisAlignment: _createTimePosition(widget.messageBelongType),
+        Container(
+          padding: const EdgeInsets.only(bottom: 10.0),
+          child: Text(
+              '${checkMessageTime(widget.friendsHistoryMessages.createTime)}',
+              maxLines: 1,
+              softWrap: true,
+              style: Flavors.textStyles.chatBubbleTimeText),
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          textDirection: widget.messageBelongType == MessageBelongType.Receiver
+              ? TextDirection.ltr
+              : TextDirection.rtl,
           children: [
+            Container(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: CachedNetworkImage(
+                    imageUrl: avatarUrl!,
+                    placeholder: (context, url) => CircleAvatar(
+                          backgroundImage:
+                              AssetImage('images/default_avatar.png'),
+                          maxRadius: 20,
+                        ),
+                    errorWidget: (context, url, error) => CircleAvatar(
+                          backgroundImage:
+                              AssetImage('images/default_avatar.png'),
+                          maxRadius: 20,
+                        ),
+                    imageBuilder: (context, imageProvider) {
+                      return CircleAvatar(
+                        backgroundImage: imageProvider,
+                        maxRadius: 20,
+                      );
+                    })),
+            SizedBox(width: 15.0.w),
             switchMessageTypeView(widget.friendsHistoryMessages.contentType,
                 widget.messageBelongType),
-            SizedBox(height: 5.0.h),
-            Text(
-                '${checkMessageTime(widget.friendsHistoryMessages.createTime)}',
-                maxLines: 10,
-                softWrap: true,
-                style: Flavors.textStyles.chatBubbleTimeText),
           ],
         ),
       ],
@@ -93,12 +98,11 @@ class _ChatBubbleState extends State<ChatBubble>
           // finalView = _textMessageView(belongType);
           Map<String, dynamic> temp = {
             "icon":
-                "https://img0.baidu.com/it/u=1406515706,336510358&fm=26&fmt=auto&gp=0.jpg",
-            "file_url":
                 "https://files.cherryshop.app/files/2021-07-19/F1626672634601.jpg",
-            "name": "文件名"
+            "nick": "Lee Chen",
+            "user_id": "U202115215031100001"
           };
-          finalView = FileMessageWidget(belongType, temp);
+          finalView = CardMessageWidget(belongType, temp);
           // finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
           // finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
@@ -183,11 +187,11 @@ class _ChatBubbleState extends State<ChatBubble>
     );
   }
 
-  CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
-    if (belongType != MessageBelongType.Receiver) {
-      return CrossAxisAlignment.end;
-    } else {
-      return CrossAxisAlignment.start;
-    }
-  }
+  // CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
+  //   if (belongType == MessageBelongType.Receiver) {
+  //     return CrossAxisAlignment.end;
+  //   } else {
+  //     return CrossAxisAlignment.start;
+  //   }
+  // }
 }
