@@ -17,8 +17,8 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  AppManager _appManager = App.manager<AppManager>();
-  SplashManager _splashManager = App.manager<SplashManager>();
+  final _appManager = App.manager<AppManager>();
+  final _splashManager = App.manager<SplashManager>();
 
   @override
   void initState() {
@@ -29,20 +29,16 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder:
-        (BuildContext context, SplashManager splashManager, Widget? child) {
-      return Scaffold(
-        backgroundColor: Flavors.colorInfo.mainColor,
-        body: _fullScreenBackgroundView(splashManager),
-      );
-    });
+    return Scaffold(
+      body: _fullScreenBackgroundView(),
+    );
   }
 
-  Widget _fullScreenBackgroundView(splashManager) {
+  Widget _fullScreenBackgroundView() {
     print('DEBUG=> _fullScreenBackgroundView 重绘了。。。。。。。。。。');
     return Container(
-      height: double.infinity,
-      width: double.infinity,
+      height: Flavors.sizesInfo.screenHeight,
+      width: Flavors.sizesInfo.screenWidth,
       alignment: Alignment.topCenter,
       padding: const EdgeInsets.only(top: 200.0),
       decoration: BoxDecoration(
@@ -62,11 +58,11 @@ class _SplashPageState extends State<SplashPage> {
         style: Flavors.textStyles.splashLogoText,
         child: AnimatedTextKit(
           animatedTexts: [
-            WavyAnimatedText('BEE  IM'),
+            WavyAnimatedText('BEE IM'),
           ],
           isRepeatingAnimation: false,
           onFinished: () {
-            splashManager.goto();
+            _splashManager.goto();
           },
         ),
       ),

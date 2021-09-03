@@ -36,6 +36,11 @@ class AppManager extends ChangeNotifier {
 
   /// 初始化
   init() {
+    /// 此 强制竖屏 方法只支持Android ios通过Xcode打开Flutter项目中的iOS工程, 根据下图找到 Device Orientation 这一项 勾选需要支持的布局方向
+    /// 放到main中会报错，没时间找原因
+    /// https://www.codercto.com/a/60738.html
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     /// 后台监听初始化
     // BackgroundListen().init();
     SP.init().then((sp) {
