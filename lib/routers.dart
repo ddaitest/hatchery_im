@@ -28,6 +28,8 @@ import 'common/AppContext.dart';
 import 'common/log.dart';
 import 'package:hatchery_im/api/entity.dart';
 
+import 'common/widget/map_view.dart';
+
 class Routers {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -139,6 +141,8 @@ class Routers {
                 userID: map['userID']));
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
+      case '/map_view':
+        return MaterialPageRoute(builder: (_) => ShowMapPageBody());
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

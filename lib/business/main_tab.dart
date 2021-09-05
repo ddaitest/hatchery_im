@@ -113,6 +113,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       case 'TestPage':
         Routers.navigateTo("/test");
         break;
+      case 'MapView':
+        Routers.navigateTo("/map_view");
+        break;
     }
   }
 
@@ -129,7 +132,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
                     icon: Icon(Icons.more_vert,
                         size: 25, color: Flavors.colorInfo.darkGreyColor),
                     itemBuilder: (BuildContext context) {
-                      return {'添加好友', '创建群组', '扫一扫', 'TestPage'}
+                      return {'添加好友', '创建群组', '扫一扫', 'TestPage', 'MapView'}
                           .map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,

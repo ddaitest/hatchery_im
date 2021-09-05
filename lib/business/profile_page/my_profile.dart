@@ -20,14 +20,14 @@ class MyProfilePage extends StatelessWidget {
     return Consumer(builder: (BuildContext context,
         MyProfileManager myProfileManager, Widget? child) {
       return Scaffold(
-          appBar: buildAppBar(myProfileManager),
+          appBar: _buildAppBar(myProfileManager),
           body: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: ProfileBody(myProfileManager)));
     });
   }
 
-  AppBar buildAppBar(myProfileManager) {
+  AppBar _buildAppBar(myProfileManager) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Flavors.colorInfo.mainColor,

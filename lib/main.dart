@@ -25,6 +25,7 @@ import 'package:hatchery_im/manager/block_manager/blockListManager.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupProfileManager.dart';
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
+import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +60,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),
         ChangeNotifierProvider(create: (_) => SelectContactsModelManager()),
+        ChangeNotifierProvider(create: (_) => ShowMapManager()),
       ],
       child: MyApp(),
     ),
