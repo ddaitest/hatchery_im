@@ -23,6 +23,12 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
   }
 
   @override
+  void dispose() {
+    manager.stopLocation();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final AMapWidget map = AMapWidget(
       onMapCreated: onMapCreated,

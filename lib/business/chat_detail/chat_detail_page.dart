@@ -29,7 +29,6 @@ class ChatDetailPage extends StatefulWidget {
 class _ChatDetailPageState extends State<ChatDetailPage> {
   TextEditingController textEditingController = TextEditingController();
   final manager = App.manager<ChatDetailManager>();
-  final showMapManager = App.manager<ShowMapManager>();
   List<SendMenuItems> menuItems = [
     SendMenuItems(text: "照片", icons: Icons.image, color: Colors.amber),
     SendMenuItems(text: "视频", icons: Icons.camera_alt, color: Colors.orange),
@@ -41,7 +40,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    showMapManager.init();
     manager.init(widget.usersInfo!.userID);
     // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
@@ -49,7 +47,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
-    showMapManager.stopLocation();
     manager.messagesList.clear();
     manager.isVoiceModel = false;
     manager.cancelTimer();

@@ -8,13 +8,16 @@ import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
 
 class ShowMapManager extends ChangeNotifier {
-  AMapFlutterLocation _locationPlugin = AMapFlutterLocation();
+  final _locationPlugin = AMapFlutterLocation();
   Map<String, Object>? locationResult;
   StreamSubscription<Map<String, Object>>? _locationListener;
 
   /// 初始化
   init() {
     _buildLocation();
+    Future.delayed(Duration(milliseconds: 1000), () {
+      _locationListen();
+    });
   }
 
   Future<dynamic> _buildLocation() async {
@@ -62,18 +65,18 @@ class ShowMapManager extends ChangeNotifier {
     ///开始定位之前设置定位参数
     _setLocationOption();
     _locationPlugin.startLocation();
-    _locationListen();
   }
 
   ///停止定位
   void stopLocation() {
     ///移除定位监听
-    if (null != _locationListener) {
-      _locationListener?.cancel();
+    if (_locationListener != null) {
+      _locationListener!.cancel();
+      print("DEBUG=> _locationListener ${_locationListener!.cancel()}");
     }
 
     ///销毁定位
-    _locationPlugin.destroy();
+    _locationPlugin.stopLocation();
   }
 
   void _locationListen() {
@@ -92,7 +95,7 @@ class ShowMapManager extends ChangeNotifier {
     AMapLocationOption locationOption = AMapLocationOption();
 
     ///是否单次定位
-    locationOption.onceLocation = false;
+    locationOption.onceLocation = true;
 
     ///是否需要返回逆地理信息
     locationOption.needAddress = true;
@@ -137,13 +140,5 @@ class ShowMapManager extends ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
-
-    ///移除定位监听
-    if (null != _locationListener) {
-      _locationListener?.cancel();
-    }
-
-    ///销毁定位
-    _locationPlugin.destroy();
   }
 }
