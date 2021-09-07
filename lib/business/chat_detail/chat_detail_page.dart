@@ -6,6 +6,7 @@ import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.da
 import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
+import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,7 @@ class ChatDetailPage extends StatefulWidget {
 class _ChatDetailPageState extends State<ChatDetailPage> {
   TextEditingController textEditingController = TextEditingController();
   final manager = App.manager<ChatDetailManager>();
+  final showMapManager = App.manager<ShowMapManager>();
   List<SendMenuItems> menuItems = [
     SendMenuItems(text: "照片", icons: Icons.image, color: Colors.amber),
     SendMenuItems(text: "视频", icons: Icons.camera_alt, color: Colors.orange),
@@ -39,6 +41,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
+    showMapManager.init();
     manager.init(widget.usersInfo!.userID);
     // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
@@ -46,6 +49,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
+    showMapManager.stopLocation();
     manager.messagesList.clear();
     manager.isVoiceModel = false;
     manager.cancelTimer();

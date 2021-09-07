@@ -22,7 +22,7 @@ ThemeData getTheme() {
       primaryColor: Colors.white,
       backgroundColor: Colors.white,
 //      unselectedWidgetColor: Colors.grey,
-      textTheme: TextTheme(subhead: textStyleLabel));
+      textTheme: TextTheme(subtitle1: textStyleLabel));
 }
 
 const Color colorPrimaryDark = const Color(0xff203152);
