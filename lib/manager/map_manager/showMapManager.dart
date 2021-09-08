@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/tools.dart';
@@ -9,6 +11,7 @@ import 'package:amap_flutter_location/amap_location_option.dart';
 
 class ShowMapManager extends ChangeNotifier {
   final _locationPlugin = AMapFlutterLocation();
+  late AMapController _aMapController;
   Map<String, Object>? locationResult;
   StreamSubscription<Map<String, Object>>? _locationListener;
 
@@ -69,24 +72,24 @@ class ShowMapManager extends ChangeNotifier {
 
   ///停止定位
   void stopLocation() {
-    ///移除定位监听
-    if (_locationListener != null) {
-      _locationListener!.cancel();
-      print("DEBUG=> _locationListener ${_locationListener!.cancel()}");
-    }
-
     ///销毁定位
-    _locationPlugin.stopLocation();
+    _locationListener?.cancel();
+    _locationPlugin.destroy();
   }
 
   void _locationListen() {
+    if (locationResult != null)
+      _moveCameraMethod(locationResult!['latitude'] as double,
+          locationResult!['longitude'] as double);
+    print("DEBUG=> locationResult 1 ${locationResult}");
+
     ///注册定位结果监听
     _locationListener = _locationPlugin
         .onLocationChanged()
         .listen((Map<String, Object> result) {
       locationResult = result;
-      print("DEBUG=> locationResult $locationResult");
-      notifyListeners();
+      _moveCameraMethod(locationResult!['latitude'] as double,
+          locationResult!['longitude'] as double);
     });
   }
 
@@ -135,6 +138,15 @@ class ShowMapManager extends ChangeNotifier {
 
     ///将定位参数设置给定位插件
     _locationPlugin.setLocationOption(locationOption);
+  }
+
+  void onMapCreated(AMapController controller) {
+    _aMapController = controller;
+  }
+
+  void _moveCameraMethod(double latitude, double longitude) {
+    _aMapController.moveCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(latitude, longitude), zoom: 15)));
   }
 
   @override
