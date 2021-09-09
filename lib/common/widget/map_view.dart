@@ -24,6 +24,7 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
   void initState() {
     if (widget.position != null) {
       _setCustomMapPin();
+      _checkLocalMapApp();
     }
     manager.init(widget.mapOriginType, widget.position);
     super.initState();
@@ -36,12 +37,15 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
   }
 
   void _setCustomMapPin() async {
-    final availableMaps = await MapLauncher.installedMaps;
-    print("DEBUG=> availableMaps $availableMaps");
     Marker marker = Marker(
         position: widget.position!,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed));
     _initMarkerMap[marker.id] = marker;
+  }
+
+  void _checkLocalMapApp() async {
+    final availableMaps = await MapLauncher.installedMaps;
+    print("DEBUG=> availableMaps $availableMaps");
   }
 
   @override
