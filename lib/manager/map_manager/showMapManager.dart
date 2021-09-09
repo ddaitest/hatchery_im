@@ -9,6 +9,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
 
+import '../../config.dart';
+
 class ShowMapManager extends ChangeNotifier {
   final _locationPlugin = AMapFlutterLocation();
   late AMapController _aMapController;
@@ -16,9 +18,14 @@ class ShowMapManager extends ChangeNotifier {
   StreamSubscription<Map<String, Object>>? _locationListener;
 
   /// 初始化
-  init() {
+  init(MapOriginType mapOriginType, LatLng? position) {
     _buildLocation();
-    _locationListen();
+    _locationListen(mapOriginType);
+    if (mapOriginType == MapOriginType.Share) {
+      Future.delayed(Duration(milliseconds: 300), () {
+        moveCameraMethod(position!, zoomLevel: 17.0);
+      });
+    }
   }
 
   Future<dynamic> _buildLocation() async {
@@ -74,15 +81,19 @@ class ShowMapManager extends ChangeNotifier {
     _locationPlugin.destroy();
   }
 
-  void _locationListen() {
+  void _locationListen(mapOriginType) {
     ///注册定位结果监听
     _locationListener = _locationPlugin
         .onLocationChanged()
         .listen((Map<String, Object> result) {
       locationResult = result;
-      moveCameraMethod(locationResult!['latitude'] as double,
-          locationResult!['longitude'] as double);
-      print("DEBUG=> locationResult $locationResult");
+      if (mapOriginType == MapOriginType.Send) {
+        Future.delayed(Duration(milliseconds: 800), () {
+          moveCameraMethod(LatLng(locationResult!['latitude'] as double,
+              locationResult!['longitude'] as double));
+        });
+        print("DEBUG=> locationResult $locationResult");
+      }
     });
   }
 
@@ -137,10 +148,9 @@ class ShowMapManager extends ChangeNotifier {
     _aMapController = controller;
   }
 
-  void moveCameraMethod(double latitude, double longitude,
-      {double zoomLevel = 15.0}) {
+  void moveCameraMethod(LatLng latLng, {double zoomLevel = 15.0}) {
     _aMapController.moveCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(latitude, longitude), zoom: zoomLevel)));
+        CameraPosition(target: latLng, zoom: zoomLevel)));
   }
 
   @override

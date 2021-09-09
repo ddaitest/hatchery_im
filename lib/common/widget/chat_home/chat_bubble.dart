@@ -13,6 +13,9 @@ import 'package:hatchery_im/common/widget/chat_detail/imageMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
+import 'package:hatchery_im/common/widget/chat_detail/locationMessageView.dart';
+
+import '../../../config.dart';
 
 class ChatBubble extends StatefulWidget {
   final String avatarPicUrl;
@@ -97,12 +100,13 @@ class _ChatBubbleState extends State<ChatBubble>
           // finalView = ImageMessageWidget(imageTestUrl, belongType);
           // finalView = _textMessageView(belongType);
           Map<String, dynamic> temp = {
-            "icon":
-                "https://files.cherryshop.app/files/2021-07-19/F1626672634601.jpg",
-            "nick": "Lee Chen",
-            "user_id": "U202115215031100001"
+            "name": "北京市顺义区通运路28号靠近北京顺义银座村镇银行(马坡支行)",
+            "icon": "",
+            "latitude": "39.93324",
+            "longitude": "116.42077"
           };
-          finalView = CardMessageWidget(belongType, temp);
+          finalView =
+              LocationMessageWidget(belongType, temp, MapOriginType.Share);
           // finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
           // finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
@@ -152,7 +156,10 @@ class _ChatBubbleState extends State<ChatBubble>
         break;
       case "GEO":
         {
-          finalView = _textMessageView(belongType);
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView =
+              LocationMessageWidget(belongType, temp, MapOriginType.Share);
         }
         break;
       default:

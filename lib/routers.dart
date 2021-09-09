@@ -142,7 +142,12 @@ class Routers {
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       case '/map_view':
-        return MaterialPageRoute(builder: (_) => ShowMapPageBody());
+        Map map = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => ShowMapPageBody(
+                  mapOriginType: map['mapOriginType'],
+                  position: map['position'],
+                ));
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
-
+import 'package:map_launcher/map_launcher.dart';
 import '../AppContext.dart';
 import '../utils.dart';
 
@@ -23,10 +23,9 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
   final Map<String, Marker> _initMarkerMap = <String, Marker>{};
   void initState() {
     if (widget.position != null) {
-      Marker marker = Marker(position: widget.position!);
-      _initMarkerMap[marker.id] = marker;
+      _setCustomMapPin();
     }
-    manager.init();
+    manager.init(widget.mapOriginType, widget.position);
     super.initState();
   }
 
@@ -36,12 +35,21 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
     super.dispose();
   }
 
+  void _setCustomMapPin() async {
+    final availableMaps = await MapLauncher.installedMaps;
+    print("DEBUG=> availableMaps $availableMaps");
+    Marker marker = Marker(
+        position: widget.position!,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed));
+    _initMarkerMap[marker.id] = marker;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+            height: Flavors.sizesInfo.screenHeight,
+            width: Flavors.sizesInfo.screenWidth,
             child: _mapViewContainer()));
   }
 
@@ -49,20 +57,13 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
     return Stack(
       alignment: AlignmentDirectional.topStart,
       children: [
-        widget.mapOriginType == MapOriginType.Send
-            ? AMapWidget(
-                onMapCreated: manager.onMapCreated,
-                myLocationStyleOptions: MyLocationStyleOptions(true,
-                    circleFillColor: Colors.transparent,
-                    circleStrokeColor: Colors.transparent),
-              )
-            : AMapWidget(
-                onMapCreated: manager.onMapCreated,
-                myLocationStyleOptions: MyLocationStyleOptions(true,
-                    circleFillColor: Colors.transparent,
-                    circleStrokeColor: Colors.transparent),
-                markers: Set<Marker>.of(_initMarkerMap.values),
-              ),
+        AMapWidget(
+          onMapCreated: manager.onMapCreated,
+          myLocationStyleOptions: MyLocationStyleOptions(true,
+              circleFillColor: Colors.transparent,
+              circleStrokeColor: Colors.transparent),
+          markers: Set<Marker>.of(_initMarkerMap.values),
+        ),
         Builder(
           builder: (context) => GestureDetector(
             onTap: () => Navigator.of(App.navState.currentContext!).pop(true),
@@ -87,20 +88,23 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
         Positioned(
           right: 20.0,
           top: 60.0,
-          child: TextButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              elevation: 0.0,
-              primary: Flavors.colorInfo.mainColor,
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
+          child: Container(
+            height: 40.0.h,
+            child: TextButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                elevation: 0.0,
+                primary: Flavors.colorInfo.mainColor,
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4.0),
+                ),
               ),
-            ),
-            child: Text(
-              widget.mapOriginType == MapOriginType.Send ? '发送' : '导航',
-              textAlign: TextAlign.center,
-              style: Flavors.textStyles.chatHomeSlideText,
+              child: Text(
+                widget.mapOriginType == MapOriginType.Send ? '发送' : '导航',
+                textAlign: TextAlign.center,
+                style: Flavors.textStyles.chatHomeSlideText,
+              ),
             ),
           ),
         ),
@@ -109,9 +113,9 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
           bottom: 60.0,
           child: GestureDetector(
             onTap: () async => manager.locationResult != null
-                ? manager.moveCameraMethod(
+                ? manager.moveCameraMethod(LatLng(
                     manager.locationResult!['latitude'] as double,
-                    manager.locationResult!['longitude'] as double)
+                    manager.locationResult!['longitude'] as double))
                 : showToast('没有获取到当前位置'),
             child: Container(
               child: Image.asset('images/my_locate.png'),

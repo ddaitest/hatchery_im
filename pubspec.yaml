@@ -69,6 +69,7 @@ dependencies:
   screenshot: ^1.2.3
   amap_flutter_location: ^2.0.0
   amap_flutter_map: ^2.0.2
+  map_launcher: ^2.1.1
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -114,7 +114,8 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
         Routers.navigateTo("/test");
         break;
       case 'MapView':
-        Routers.navigateTo("/map_view");
+        Routers.navigateTo("/map_view",
+            arg: {'mapOriginType': MapOriginType.Send, 'position': null});
         break;
     }
   }
