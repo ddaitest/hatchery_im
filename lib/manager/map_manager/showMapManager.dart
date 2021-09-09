@@ -18,9 +18,7 @@ class ShowMapManager extends ChangeNotifier {
   /// 初始化
   init() {
     _buildLocation();
-    Future.delayed(Duration(milliseconds: 1000), () {
-      _locationListen();
-    });
+    _locationListen();
   }
 
   Future<dynamic> _buildLocation() async {
@@ -36,7 +34,6 @@ class ShowMapManager extends ChangeNotifier {
     // 申请权限
     bool hasLocationPermission = await _requestLocationPermission();
     if (hasLocationPermission) {
-      showToast("有定位权限");
       return true;
     } else {
       showToast("没有获取到定位权限");
@@ -78,18 +75,14 @@ class ShowMapManager extends ChangeNotifier {
   }
 
   void _locationListen() {
-    if (locationResult != null)
-      _moveCameraMethod(locationResult!['latitude'] as double,
-          locationResult!['longitude'] as double);
-    print("DEBUG=> locationResult 1 ${locationResult}");
-
     ///注册定位结果监听
     _locationListener = _locationPlugin
         .onLocationChanged()
         .listen((Map<String, Object> result) {
       locationResult = result;
-      _moveCameraMethod(locationResult!['latitude'] as double,
+      moveCameraMethod(locationResult!['latitude'] as double,
           locationResult!['longitude'] as double);
+      print("DEBUG=> locationResult $locationResult");
     });
   }
 
@@ -144,9 +137,10 @@ class ShowMapManager extends ChangeNotifier {
     _aMapController = controller;
   }
 
-  void _moveCameraMethod(double latitude, double longitude) {
+  void moveCameraMethod(double latitude, double longitude,
+      {double zoomLevel = 15.0}) {
     _aMapController.moveCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(latitude, longitude), zoom: 15)));
+        CameraPosition(target: LatLng(latitude, longitude), zoom: zoomLevel)));
   }
 
   @override

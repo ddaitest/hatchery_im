@@ -67,8 +67,6 @@ dependencies:
   qr_flutter: ^4.0.0
   image_gallery_saver: ^1.6.9
   screenshot: ^1.2.3
-  flutter_map: ^0.13.1
-  latlong2: ^0.8.0
   amap_flutter_location: ^2.0.0
   amap_flutter_map: ^2.0.2
 

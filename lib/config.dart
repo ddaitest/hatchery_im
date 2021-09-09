@@ -73,3 +73,8 @@ enum addFriendOriginType {
   QRCode,
   ShareCard,
 }
+
+enum MapOriginType {
+  Share,
+  Send,
+}
