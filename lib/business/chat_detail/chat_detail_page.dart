@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
@@ -13,6 +14,9 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/config.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import '../../routers.dart';
 
 enum MessageBelongType {
   Sender,
@@ -34,8 +38,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     SendMenuItems(text: "视频", icons: Icons.camera_alt, color: Colors.orange),
     SendMenuItems(
         text: "文件", icons: Icons.insert_drive_file, color: Colors.blue),
-    SendMenuItems(text: "位置", icons: Icons.location_on, color: Colors.green),
-    SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
+    SendMenuItems(
+        text: "位置",
+        icons: Icons.location_on,
+        color: Colors.green,
+        onTap: () => Routers.navigateTo('/map_view',
+            arg: {'mapOriginType': MapOriginType.Send, 'position': null})),
+    // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
   ];
 
   @override
@@ -62,6 +71,37 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         children: <Widget>[
           _messageInfoView(),
           _inputMainView(),
+          EmojiPicker(
+            onEmojiSelected: (category, emoji) {
+              // Do something when emoji is tapped
+            },
+            onBackspacePressed: () {
+              // Backspace-Button tapped logic
+              // Remove this line to also remove the button in the UI
+            },
+            config: Config(
+                columns: 7,
+                emojiSizeMax: 32 *
+                    (Platform.isIOS
+                        ? 1.30
+                        : 1.0), // Issue: https://github.com/flutter/flutter/issues/28894
+                verticalSpacing: 0,
+                horizontalSpacing: 0,
+                initCategory: Category.RECENT,
+                bgColor: Color(0xFFF2F2F2),
+                indicatorColor: Colors.blue,
+                iconColor: Colors.grey,
+                iconColorSelected: Colors.blue,
+                progressIndicatorColor: Colors.blue,
+                showRecentsTab: true,
+                recentsLimit: 28,
+                noRecentsText: "No Recents",
+                noRecentsStyle:
+                    const TextStyle(fontSize: 20, color: Colors.black26),
+                tabIndicatorAnimDuration: kTabScrollDuration,
+                categoryIcons: const CategoryIcons(),
+                buttonMode: ButtonMode.MATERIAL),
+          )
         ],
       ),
     );
@@ -79,6 +119,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return ChatBubble(
+                userID: widget.usersInfo!.userID,
                 avatarPicUrl: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
@@ -247,7 +288,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         context: context,
         builder: (context) {
           return Container(
-            // height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height / 2,
             color: Color(0xff737373),
             child: Container(
               decoration: BoxDecoration(
@@ -259,17 +300,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: 16,
+                    height: 16.0.h,
                   ),
                   Center(
                     child: Container(
-                      height: 4,
-                      width: 50,
+                      height: 4.0.h,
+                      width: 50.0.w,
                       color: Colors.grey.shade200,
                     ),
                   ),
                   SizedBox(
-                    height: 10,
+                    height: 10.0.h,
                   ),
                   ListView.builder(
                     itemCount: menuItems.length,
@@ -277,18 +318,19 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                         child: ListTile(
+                          onTap: menuItems[index].onTap,
                           leading: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
                               color: menuItems[index].color!.shade50,
                             ),
-                            height: 50,
-                            width: 50,
+                            height: 50.0.h,
+                            width: 50.0.w,
                             child: Icon(
                               menuItems[index].icons,
-                              size: 20,
+                              size: 20.0,
                               color: menuItems[index].color!.shade400,
                             ),
                           ),

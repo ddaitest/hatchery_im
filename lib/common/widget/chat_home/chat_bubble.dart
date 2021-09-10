@@ -14,16 +14,19 @@ import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/locationMessageView.dart';
+import 'package:hatchery_im/routers.dart';
 
 import '../../../config.dart';
 
 class ChatBubble extends StatefulWidget {
+  final String userID;
   final String avatarPicUrl;
   final MessageBelongType messageBelongType;
   final Message friendsHistoryMessages;
 
   ChatBubble(
-      {required this.avatarPicUrl,
+      {required this.userID,
+      required this.avatarPicUrl,
       required this.messageBelongType,
       required this.friendsHistoryMessages});
 
@@ -62,26 +65,32 @@ class _ChatBubbleState extends State<ChatBubble>
               ? TextDirection.ltr
               : TextDirection.rtl,
           children: [
-            Container(
-                padding: const EdgeInsets.only(top: 5.0),
-                child: CachedNetworkImage(
-                    imageUrl: avatarUrl!,
-                    placeholder: (context, url) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
+            GestureDetector(
+              onTap: () => widget.messageBelongType ==
+                      MessageBelongType.Receiver
+                  ? Routers.navigateTo('/friend_profile', arg: widget.userID)
+                  : null,
+              child: Container(
+                  padding: const EdgeInsets.only(top: 5.0),
+                  child: CachedNetworkImage(
+                      imageUrl: avatarUrl!,
+                      placeholder: (context, url) => CircleAvatar(
+                            backgroundImage:
+                                AssetImage('images/default_avatar.png'),
+                            maxRadius: 20,
+                          ),
+                      errorWidget: (context, url, error) => CircleAvatar(
+                            backgroundImage:
+                                AssetImage('images/default_avatar.png'),
+                            maxRadius: 20,
+                          ),
+                      imageBuilder: (context, imageProvider) {
+                        return CircleAvatar(
+                          backgroundImage: imageProvider,
                           maxRadius: 20,
-                        ),
-                    errorWidget: (context, url, error) => CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/default_avatar.png'),
-                          maxRadius: 20,
-                        ),
-                    imageBuilder: (context, imageProvider) {
-                      return CircleAvatar(
-                        backgroundImage: imageProvider,
-                        maxRadius: 20,
-                      );
-                    })),
+                        );
+                      })),
+            ),
             SizedBox(width: 15.0.w),
             switchMessageTypeView(widget.friendsHistoryMessages.contentType,
                 widget.messageBelongType),
