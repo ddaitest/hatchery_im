@@ -24,9 +24,11 @@ import 'package:hatchery_im/common/tools.dart';
 import '../../config.dart';
 
 class ChatDetailManager extends ChangeNotifier {
+  final TextEditingController textEditingController = TextEditingController();
   MyProfile? myProfileData;
   bool isVoiceModel = false;
   bool isRecording = false;
+  bool emojiShowing = false;
   List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
@@ -38,12 +40,19 @@ class ChatDetailManager extends ChangeNotifier {
 
   /// 初始化
   init(String friendId) {
+    _inputTextListen();
     myProfileData = UserCentre.getInfo();
     queryFriendsHistoryMessages(friendId, 0);
     currentFriendId = friendId;
     _loadLatest();
     //添加监听
     MessageCentre().listenMessage((news) {}, friendId);
+  }
+
+  _inputTextListen() {
+    textEditingController.addListener(() {
+      print("DEBUG=> _inputTextListen ${textEditingController.text}");
+    });
   }
 
   /// 加载最新的消息，数据来源 本地。
@@ -59,6 +68,15 @@ class ChatDetailManager extends ChangeNotifier {
         loadMore();
       }
     });
+  }
+
+  void setEmojiShowStatus({bool? showStatus}) {
+    if (showStatus != null) {
+      emojiShowing = showStatus;
+    } else {
+      emojiShowing = !emojiShowing;
+    }
+    notifyListeners();
   }
 
   /// 加载更多历史消息

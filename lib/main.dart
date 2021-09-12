@@ -28,6 +28,8 @@ import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 
+import 'manager/emojiModel_manager.dart';
+
 void main() {
   // WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isAndroid) {
@@ -62,6 +64,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),
         ChangeNotifierProvider(create: (_) => SelectContactsModelManager()),
         ChangeNotifierProvider(create: (_) => ShowMapManager()),
+        ChangeNotifierProvider(create: (_) => EmojiModelManager()),
       ],
       child: MyApp(),
     ),

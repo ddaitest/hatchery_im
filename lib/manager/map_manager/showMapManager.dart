@@ -1,13 +1,18 @@
 import 'dart:async';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
+import 'package:map_launcher/map_launcher.dart';
 
 import '../../config.dart';
 
@@ -15,6 +20,7 @@ class ShowMapManager extends ChangeNotifier {
   final _locationPlugin = AMapFlutterLocation();
   late AMapController _aMapController;
   Map<String, Object>? locationResult;
+  List<Widget> sheetMenuActionList = [];
   StreamSubscription<Map<String, Object>>? _locationListener;
 
   /// 初始化
@@ -26,6 +32,7 @@ class ShowMapManager extends ChangeNotifier {
         moveCameraMethod(position!, zoomLevel: 17.0);
       });
     }
+    mapLauncherMethod();
   }
 
   Future<dynamic> _buildLocation() async {
@@ -151,6 +158,37 @@ class ShowMapManager extends ChangeNotifier {
   void moveCameraMethod(LatLng latLng, {double zoomLevel = 15.0}) {
     _aMapController.moveCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: latLng, zoom: zoomLevel)));
+  }
+
+  void mapLauncherMethod() async {
+    final availableMaps = await MapLauncher.installedMaps;
+    availableMaps.forEach((element) {
+      if (element.mapName == "Amap" ||
+          element.mapName == "Baidu Maps" ||
+          element.mapName == "Google Maps") {
+        sheetMenuActionList.add(
+          CupertinoActionSheetAction(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 40.0.w,
+                    height: 40.0.h,
+                    child: SvgPicture.asset(
+                      element.icon,
+                    ),
+                  ),
+                  Container(width: 20.0.w),
+                  Text('${element.mapName}'),
+                ],
+              ),
+              onPressed: () {
+                Navigator.pop(App.navState.currentContext!);
+              }),
+        );
+      }
+    });
+    print("DEBUG=> availableMaps ${sheetMenuActionList}");
   }
 
   @override

@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/manager/emojiModel_manager.dart';
 import 'package:vibration/vibration.dart';
 import 'package:hatchery_im/business/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
@@ -15,7 +17,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
+import 'package:hatchery_im/common/widget/emojiModel.dart';
 import '../../routers.dart';
 
 enum MessageBelongType {
@@ -31,8 +33,8 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  TextEditingController textEditingController = TextEditingController();
   final manager = App.manager<ChatDetailManager>();
+  final emojiModelManager = App.manager<EmojiModelManager>();
   List<SendMenuItems> menuItems = [
     SendMenuItems(text: "照片", icons: Icons.image, color: Colors.amber),
     SendMenuItems(text: "视频", icons: Icons.camera_alt, color: Colors.orange),
@@ -59,6 +61,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     manager.messagesList.clear();
     manager.isVoiceModel = false;
     manager.cancelTimer();
+    manager.emojiShowing = false;
+    manager.textEditingController.clear();
     super.dispose();
   }
 
@@ -71,37 +75,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         children: <Widget>[
           _messageInfoView(),
           _inputMainView(),
-          EmojiPicker(
-            onEmojiSelected: (category, emoji) {
-              // Do something when emoji is tapped
-            },
-            onBackspacePressed: () {
-              // Backspace-Button tapped logic
-              // Remove this line to also remove the button in the UI
-            },
-            config: Config(
-                columns: 7,
-                emojiSizeMax: 32 *
-                    (Platform.isIOS
-                        ? 1.30
-                        : 1.0), // Issue: https://github.com/flutter/flutter/issues/28894
-                verticalSpacing: 0,
-                horizontalSpacing: 0,
-                initCategory: Category.RECENT,
-                bgColor: Color(0xFFF2F2F2),
-                indicatorColor: Colors.blue,
-                iconColor: Colors.grey,
-                iconColorSelected: Colors.blue,
-                progressIndicatorColor: Colors.blue,
-                showRecentsTab: true,
-                recentsLimit: 28,
-                noRecentsText: "No Recents",
-                noRecentsStyle:
-                    const TextStyle(fontSize: 20, color: Colors.black26),
-                tabIndicatorAnimDuration: kTabScrollDuration,
-                categoryIcons: const CategoryIcons(),
-                buttonMode: ButtonMode.MATERIAL),
-          )
+          _emojiInputView()
         ],
       ),
     );
@@ -172,7 +146,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   color: Colors.grey[400],
                   indent: 0.5,
                   endIndent: 0.5,
-                  width: 0.5,
+                  width: 0.5.w,
                   thickness: 0.5,
                 ),
               ),
@@ -183,6 +157,43 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       selector: (BuildContext context, ChatDetailManager chatDetailManager) {
         return chatDetailManager.isVoiceModel;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
+  }
+
+  Widget _emojiInputView() {
+    return Selector<ChatDetailManager, bool>(
+      builder: (BuildContext context, bool value, Widget? child) {
+        return value
+            ? Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  EmojiModelView(),
+                  Container(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0.5,
+                        primary: Flavors.colorInfo.mainColor,
+                        padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                      ),
+                      child: Text(
+                        '发送',
+                        style: Flavors.textStyles.chatHomeSlideText,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            : Container();
+      },
+      selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+        return chatDetailManager.emojiShowing;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );
@@ -203,7 +214,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         onTap: () {
           /// 点击先收起键盘
           FocusScope.of(context).requestFocus(FocusNode());
-          showModal();
+
+          /// 设置表情选择框是否显示
+          manager.setEmojiShowStatus();
         },
         child: Image.asset('images/emojiBtn.png'));
   }
@@ -211,12 +224,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget _textInputView() {
     return Container(
       width: Flavors.sizesInfo.screenWidth - 140.0.w,
-      child: TextField(
-        controller: textEditingController,
+      child: TextFormField(
+        controller: manager.textEditingController,
+        onTap: () => manager.setEmojiShowStatus(showStatus: false),
         maxLines: null,
         minLines: 1,
         maxLength: 140,
-        keyboardType: TextInputType.name,
+        textInputAction: TextInputAction.send,
+        keyboardType: TextInputType.text,
         cursorColor: Flavors.colorInfo.mainColor,
         decoration: InputDecoration(
             hintText: "请输入文字...",

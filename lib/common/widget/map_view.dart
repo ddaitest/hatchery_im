@@ -1,4 +1,5 @@
 import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
@@ -33,6 +34,7 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
   @override
   void dispose() {
     manager.stopLocation();
+    manager.sheetMenuActionList.clear();
     super.dispose();
   }
 
@@ -95,7 +97,9 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
           child: Container(
             height: 40.0.h,
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                _showSheetMenu();
+              },
               style: ElevatedButton.styleFrom(
                 elevation: 0.0,
                 primary: Flavors.colorInfo.mainColor,
@@ -127,6 +131,19 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
           ),
         ),
       ],
+    );
+  }
+
+  _showSheetMenu() {
+    showCupertinoModalPopup<String>(
+      context: App.navState.currentContext!,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: manager.sheetMenuActionList,
+        cancelButton: CupertinoActionSheetAction(
+            child: const Text('取消'),
+            isDefaultAction: false,
+            onPressed: () => Navigator.pop(context)),
+      ),
     );
   }
 }
