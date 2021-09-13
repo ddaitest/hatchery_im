@@ -110,12 +110,16 @@ class QRCodeCardState extends State<QRCodeCardPage> {
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <Widget>[
           CupertinoActionSheetAction(
-              child: Text('分享给其他人'),
+              child: Text('分享给其他人',
+                  style: TextStyle(color: Flavors.colorInfo.mainColor)),
+              isDefaultAction: true,
               onPressed: () {
                 Navigator.pop(context);
               }),
           CupertinoActionSheetAction(
-              child: const Text('保存二维码'),
+              child: Text('保存二维码',
+                  style: TextStyle(color: Flavors.colorInfo.mainColor)),
+              isDefaultAction: true,
               onPressed: () {
                 _saveQRImage();
                 Navigator.pop(context);

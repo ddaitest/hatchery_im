@@ -154,7 +154,6 @@ class LoginPageState extends State<LoginPage> {
               obscureText: false,
               controller: loginManager.phoneNumController,
               countryCodeTextColor: Flavors.colorInfo.mainTextColor,
-              dropDownArrowColor: Flavors.colorInfo.mainTextColor,
               style: Flavors.textStyles.loginNormalText,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly, //只输入数字

@@ -58,7 +58,6 @@ class OTPPage extends StatelessWidget {
                           searchText: '搜索国家',
                           obscureText: false,
                           countryCodeTextColor: Flavors.colorInfo.mainTextColor,
-                          dropDownArrowColor: Flavors.colorInfo.mainTextColor,
                           autofocus: true,
                           style: Flavors.textStyles.loginNormalText,
                           decoration: InputDecoration(

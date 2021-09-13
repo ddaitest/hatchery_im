@@ -9,6 +9,7 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
@@ -48,8 +49,8 @@ class ShowMapManager extends ChangeNotifier {
       await Future.delayed(Duration(milliseconds: 1000), () {
         moveCameraMethod(position!, zoomLevel: 17.0);
       });
+      mapLauncherMethod(addressName!, position!);
     }
-    mapLauncherMethod(addressName!, position!);
   }
 
   Future<dynamic> _buildLocation() async {
@@ -185,20 +186,13 @@ class ShowMapManager extends ChangeNotifier {
           element.mapName == "Google Maps") {
         sheetMenuActionList.add(
           CupertinoActionSheetAction(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 30.0.w,
-                    height: 30.0.h,
-                    child: SvgPicture.asset(
-                      element.icon,
-                    ),
-                  ),
-                  Container(width: 20.0.w),
-                  Text('${_setAppName(element.mapName)}'),
-                ],
+              child: Center(
+                child: Text(
+                  '${_setAppName(element.mapName)}',
+                  style: TextStyle(color: Flavors.colorInfo.mainColor),
+                ),
               ),
+              isDefaultAction: true,
               onPressed: () async {
                 await MapLauncher.showMarker(
                     title: '$address',
