@@ -13,8 +13,12 @@ import '../utils.dart';
 
 class ShowMapPageBody extends StatefulWidget {
   final MapOriginType mapOriginType;
+  final String? addressName;
   final LatLng? position;
-  ShowMapPageBody({this.mapOriginType = MapOriginType.Send, this.position});
+  ShowMapPageBody(
+      {this.mapOriginType = MapOriginType.Send,
+      this.addressName,
+      this.position});
   @override
   State<StatefulWidget> createState() => _ShowMapPageState();
 }
@@ -27,7 +31,7 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
       _setCustomMapPin();
       _checkLocalMapApp();
     }
-    manager.init(widget.mapOriginType, widget.position);
+    manager.init(widget.mapOriginType, widget.addressName, widget.position);
     super.initState();
   }
 
@@ -98,7 +102,13 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
             height: 40.0.h,
             child: TextButton(
               onPressed: () {
-                _showSheetMenu();
+                if (widget.mapOriginType == MapOriginType.Send) {
+                  showToast("${manager.locationResult}");
+                } else {
+                  manager.sheetMenuActionList.isEmpty
+                      ? showToast('没有安装对应的地图app（例如：高德、百度、Google）')
+                      : _showSheetMenu();
+                }
               },
               style: ElevatedButton.styleFrom(
                 elevation: 0.0,
@@ -138,6 +148,7 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
     showCupertinoModalPopup<String>(
       context: App.navState.currentContext!,
       builder: (BuildContext context) => CupertinoActionSheet(
+        title: Text("导航至目的地"),
         actions: manager.sheetMenuActionList,
         cancelButton: CupertinoActionSheetAction(
             child: const Text('取消'),

@@ -109,10 +109,10 @@ class _ChatBubbleState extends State<ChatBubble>
           // finalView = ImageMessageWidget(imageTestUrl, belongType);
           // finalView = _textMessageView(belongType);
           Map<String, dynamic> temp = {
-            "name": "北京市顺义区通运路28号靠近北京顺义银座村镇银行(马坡支行)",
+            "name": "北京市门头沟体育馆",
             "icon": "",
-            "latitude": "39.93324",
-            "longitude": "116.42077"
+            "latitude": "39.941325",
+            "longitude": "116.101292"
           };
           finalView =
               LocationMessageWidget(belongType, temp, MapOriginType.Share);

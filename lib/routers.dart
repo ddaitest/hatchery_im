@@ -146,6 +146,7 @@ class Routers {
         return MaterialPageRoute(
             builder: (_) => ShowMapPageBody(
                   mapOriginType: map['mapOriginType'],
+                  addressName: map['address'],
                   position: map['position'],
                 ));
       default:

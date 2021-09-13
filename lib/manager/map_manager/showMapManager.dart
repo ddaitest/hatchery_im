@@ -9,10 +9,10 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:map_launcher/map_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:amap_flutter_location/amap_flutter_location.dart';
 import 'package:amap_flutter_location/amap_location_option.dart';
-import 'package:map_launcher/map_launcher.dart';
 
 import '../../config.dart';
 
@@ -23,16 +23,33 @@ class ShowMapManager extends ChangeNotifier {
   List<Widget> sheetMenuActionList = [];
   StreamSubscription<Map<String, Object>>? _locationListener;
 
+  static _setAppName(String appName) {
+    String finalAppName = '';
+    switch (appName) {
+      case "Amap":
+        finalAppName = "高德地图";
+        break;
+      case "Baidu Maps":
+        finalAppName = "百度地图";
+        break;
+      case "Google Maps":
+        finalAppName = "Google Maps";
+        break;
+    }
+    return finalAppName;
+  }
+
   /// 初始化
-  init(MapOriginType mapOriginType, LatLng? position) {
+  init(MapOriginType mapOriginType, String? addressName,
+      LatLng? position) async {
     _buildLocation();
     _locationListen(mapOriginType);
     if (mapOriginType == MapOriginType.Share) {
-      Future.delayed(Duration(milliseconds: 300), () {
+      await Future.delayed(Duration(milliseconds: 1000), () {
         moveCameraMethod(position!, zoomLevel: 17.0);
       });
     }
-    mapLauncherMethod();
+    mapLauncherMethod(addressName!, position!);
   }
 
   Future<dynamic> _buildLocation() async {
@@ -155,12 +172,12 @@ class ShowMapManager extends ChangeNotifier {
     _aMapController = controller;
   }
 
-  void moveCameraMethod(LatLng latLng, {double zoomLevel = 15.0}) {
-    _aMapController.moveCamera(CameraUpdate.newCameraPosition(
+  Future<dynamic> moveCameraMethod(LatLng latLng, {double zoomLevel = 15.0}) {
+    return _aMapController.moveCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: latLng, zoom: zoomLevel)));
   }
 
-  void mapLauncherMethod() async {
+  void mapLauncherMethod(String address, LatLng position) async {
     final availableMaps = await MapLauncher.installedMaps;
     availableMaps.forEach((element) {
       if (element.mapName == "Amap" ||
@@ -172,17 +189,23 @@ class ShowMapManager extends ChangeNotifier {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    width: 40.0.w,
-                    height: 40.0.h,
+                    width: 30.0.w,
+                    height: 30.0.h,
                     child: SvgPicture.asset(
                       element.icon,
                     ),
                   ),
                   Container(width: 20.0.w),
-                  Text('${element.mapName}'),
+                  Text('${_setAppName(element.mapName)}'),
                 ],
               ),
-              onPressed: () {
+              onPressed: () async {
+                await MapLauncher.showMarker(
+                    title: '$address',
+                    description: '$address',
+                    mapType: element.mapType,
+                    coords: Coords(position.latitude, position.longitude),
+                    zoom: 15);
                 Navigator.pop(App.navState.currentContext!);
               }),
         );
