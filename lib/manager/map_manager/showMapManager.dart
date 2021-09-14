@@ -36,6 +36,12 @@ class ShowMapManager extends ChangeNotifier {
       case "Google Maps":
         finalAppName = "Google Maps";
         break;
+      case "Tencent (QQ Maps)":
+        finalAppName = "腾讯地图";
+        break;
+      default:
+        finalAppName = "第三方地图";
+        break;
     }
     return finalAppName;
   }
@@ -183,6 +189,7 @@ class ShowMapManager extends ChangeNotifier {
     availableMaps.forEach((element) {
       if (element.mapName == "Amap" ||
           element.mapName == "Baidu Maps" ||
+          element.mapName == "Tencent (QQ Maps)" ||
           element.mapName == "Google Maps") {
         sheetMenuActionList.add(
           CupertinoActionSheetAction(
