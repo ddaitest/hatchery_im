@@ -28,6 +28,7 @@ import 'common/AppContext.dart';
 import 'common/log.dart';
 import 'package:hatchery_im/api/entity.dart';
 
+import 'common/widget/imageDetail.dart';
 import 'common/widget/map_view.dart';
 
 class Routers {
@@ -139,8 +140,14 @@ class Routers {
                 nickName: map['nickName'],
                 account: map['account'],
                 userID: map['userID']));
-      case '/test':
-        return MaterialPageRoute(builder: (_) => TestPage());
+      case '/imageDetail':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => ImageDetailViewPage(
+                  image: map['image'] ?? null,
+                  imageFile: map['imageFile'] ?? null,
+                  imageUrl: map['imageUrl'] ?? null,
+                ));
       case '/map_view':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
@@ -149,6 +156,8 @@ class Routers {
                   addressName: map['address'],
                   position: map['position'],
                 ));
+      case '/test':
+        return MaterialPageRoute(builder: (_) => TestPage());
       default:
         return CupertinoPageRoute(
             builder: (_) => Scaffold(

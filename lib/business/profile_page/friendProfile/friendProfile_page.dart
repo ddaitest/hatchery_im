@@ -80,7 +80,11 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       child: Row(
         children: [
           usersInfo != null
-              ? netWorkAvatar(usersInfo.icon, 40.0)
+              ? GestureDetector(
+                  onTap: () => Routers.navigateTo('/imageDetail',
+                      arg: {"imageUrl": usersInfo.icon}),
+                  child: netWorkAvatar(usersInfo.icon, 40.0),
+                )
               : CircleAvatar(
                   backgroundImage: AssetImage('images/default_avatar.png'),
                   maxRadius: 40.0,

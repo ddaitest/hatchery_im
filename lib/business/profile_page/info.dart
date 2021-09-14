@@ -76,8 +76,9 @@ class Info extends StatelessWidget {
                           )),
                     ],
                   ),
+                  SizedBox(height: 5.0.h),
                   Text(
-                    name,
+                    '$name',
                     style: TextStyle(
                       fontSize: 22.0.sp, // 22
                       color: Flavors.colorInfo.diver,
@@ -85,7 +86,7 @@ class Info extends StatelessWidget {
                   ),
                   SizedBox(height: 5.0.h), //5
                   Text(
-                    account,
+                    '账号：$account',
                     style: TextStyle(
                       fontSize: 14.0.sp,
                       fontWeight: FontWeight.w400,

@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
 
+import '../../../routers.dart';
+
 class ImageMessageWidget extends StatefulWidget {
   final String imageMessageUrl;
   final MessageBelongType messageBelongType;
@@ -59,10 +61,8 @@ class _ImageMessageWidgetState extends State<ImageMessageWidget>
             ),
         imageBuilder: (context, imageProvider) {
           return GestureDetector(
-            onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => ImageDetailViewPage(image: imageProvider))),
+            onTap: () => Routers.navigateTo('/imageDetail',
+                arg: {"image": imageProvider}),
             child: Container(
               constraints:
                   BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/manager/profile_manager/myProfile_manager/myProfileManager.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,7 +32,6 @@ class MyProfilePage extends StatelessWidget {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Flavors.colorInfo.mainColor,
-      brightness: Brightness.light,
       actions: <Widget>[
         TextButton(
           onPressed: () => Routers.navigateTo("/profile_edit")
@@ -46,6 +46,7 @@ class MyProfilePage extends StatelessWidget {
           ),
         ),
       ],
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     );
   }
 }

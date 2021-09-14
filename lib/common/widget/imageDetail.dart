@@ -10,8 +10,9 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 class ImageDetailViewPage extends StatelessWidget {
   final ImageProvider? image;
   final File? imageFile;
+  final String? imageUrl;
 
-  ImageDetailViewPage({this.image, this.imageFile});
+  ImageDetailViewPage({this.image, this.imageFile, this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +30,29 @@ class ImageDetailViewPage extends StatelessWidget {
         ),
         centerTitle: true,
         backgroundColor: Colors.black,
-        brightness: Brightness.light,
         elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
-      body: _photoView(image, file: imageFile),
+      body:
+          _photoView(imageInfo: image, file: imageFile, urlForImage: imageUrl),
     );
   }
 
-  Widget _photoView(ImageProvider? imageInfo, {File? file}) {
+  Widget _photoView(
+      {ImageProvider? imageInfo, File? file, String? urlForImage}) {
     return Container(
         width: Flavors.sizesInfo.screenWidth,
         height: Flavors.sizesInfo.screenHeight,
-        child: imageInfo == null
+        child: imageInfo == null && file == null
             ? PhotoView(
-                imageProvider: FileImage(file!),
+                imageProvider: CachedNetworkImageProvider(urlForImage!),
               )
-            : PhotoView(
-                imageProvider: imageInfo,
-              ));
+            : imageInfo == null
+                ? PhotoView(
+                    imageProvider: FileImage(file!),
+                  )
+                : PhotoView(
+                    imageProvider: imageInfo,
+                  ));
   }
 }

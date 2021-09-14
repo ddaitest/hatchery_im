@@ -159,10 +159,12 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           ),
           bottomNavigationBar: BottomAppBar(
               color: Flavors.colorInfo.mainBackGroundColor, //底部工具栏的颜色。
-              // shape: CircularNotchedRectangle(),
+              shape: manager.customMenuInfo != null
+                  ? CircularNotchedRectangle()
+                  : null,
               //设置底栏的形状，一般使用这个都是为了和floatingActionButton融合，
               // 所以使用的值都是CircularNotchedRectangle(),有缺口的圆形矩形。
-              elevation: 1.0,
+              elevation: 0.0,
               child: Container(
                 height: 50.0.h,
                 child: Row(
@@ -188,17 +190,21 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
           Container(
             child: FloatingActionButton(
               backgroundColor: Flavors.colorInfo.mainBackGroundColor,
-              elevation: 0.5,
+              elevation: 0.0,
               onPressed: () => Routers.navigateTo('/web_view',
                   arg: {"url": manager.customMenuInfo!.url!}),
               child: _floatingPicView(),
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(top: 6.0),
-            child: Text(
-              '${manager.customMenuInfo?.title ?? ''}',
-              style: Flavors.textStyles.homeTabFloatingText,
+            width: 50.0.w,
+            child: Center(
+              child: Text(
+                '${manager.customMenuInfo?.title ?? ''}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Flavors.textStyles.homeTabFloatingText,
+              ),
             ),
           ),
         ],
@@ -239,7 +245,6 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
       Log.log("$index", color: LColor.RED);
       _tabIndex = index;
       _setAppBarInfo();
-
       _pageController.jumpToPage(index);
     });
   }
