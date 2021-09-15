@@ -26,6 +26,8 @@ class ShowMapPageBody extends StatefulWidget {
 class _ShowMapPageState extends State<ShowMapPageBody> {
   final manager = App.manager<ShowMapManager>();
   final Map<String, Marker> _initMarkerMap = <String, Marker>{};
+  static const AMapApiKey amapApiKeys =
+      AMapApiKey(iosKey: 'd22e41d0d901d767f70898dfa28bf61b');
   void initState() {
     if (widget.position != null) {
       _setCustomMapPin();
@@ -68,6 +70,7 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
       alignment: AlignmentDirectional.topStart,
       children: [
         AMapWidget(
+          apiKey: amapApiKeys,
           onMapCreated: manager.onMapCreated,
           myLocationStyleOptions: MyLocationStyleOptions(true,
               circleFillColor: Colors.transparent,
