@@ -3,6 +3,8 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
+import 'package:hive/hive.dart';
 import 'package:vibration/vibration.dart';
 import 'package:hatchery_im/business/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
@@ -27,7 +29,9 @@ enum MessageBelongType {
 
 class ChatDetailPage extends StatefulWidget {
   final UsersInfo? usersInfo;
+
   ChatDetailPage({this.usersInfo});
+
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
@@ -79,6 +83,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         ],
       ),
     );
+  }
+
+  Widget _messageInfoView2() {
+    return ValueListenableBuilder(
+        valueListenable: LocalStore.listenMessage(),
+        builder: (context, Box<Message> box, _) {
+          String content = "<${box.values.length}>";
+          box.values.forEach((element) {
+            content += "(${element.content})";
+          });
+          return Text(content);
+        });
   }
 
   Widget _messageInfoView() {

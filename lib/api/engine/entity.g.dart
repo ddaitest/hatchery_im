@@ -60,7 +60,7 @@ CSSendMessage _$CSSendMessageFromJson(Map<String, dynamic> json) {
     json['to'] as String,
     json['icon'] as String,
     json['source'] as String,
-    json['content'] as Map<String, dynamic>,
+    json['content'] as String,
     json['content_type'] as String,
   );
 }

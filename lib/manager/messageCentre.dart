@@ -222,7 +222,7 @@ class MessageCentre {
   /// string type //聊天类型（CHAT表示单聊，GROUP表示群聊）
   /// string to //接受者(用户ID)
   /// string content_type
-  sendMessage(String to, Map<String, dynamic> content, String contentType) {
+  sendMessage(String to, String content, String contentType) {
     CSSendMessage msg = Protocols.sendMessage(
         _userInfo?.userID ?? "",
         _userInfo!.nickName!,
@@ -255,7 +255,7 @@ class MessageCentre {
   }
 
   static sendTextMessage(String to, String text) {
-    _singleton.sendMessage(to, {"text": text}, "TEXT");
+    _singleton.sendMessage(to, "text:$text", "TEXT");
   }
 
   static void disconnect() => engine?.disconnect();

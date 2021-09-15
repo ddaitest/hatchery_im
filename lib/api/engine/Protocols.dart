@@ -30,7 +30,7 @@ class Protocols {
           String to,
           String icon,
           String source,
-          Map<String, dynamic> content,
+          String content,
           String contentType) =>
       CSSendMessage(getMsgID(), Types.CHAT.stringValue(), "", from, nick, to,
           icon, source, content, contentType);
