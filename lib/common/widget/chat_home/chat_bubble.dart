@@ -107,15 +107,17 @@ class _ChatBubbleState extends State<ChatBubble>
       case "TEXT":
         {
           // finalView = ImageMessageWidget(imageTestUrl, belongType);
-          // finalView = _textMessageView(belongType);
-          Map<String, dynamic> temp = {
-            "name": "北京市门头沟体育馆",
-            "icon": "",
-            "latitude": "39.941325",
-            "longitude": "116.101292"
-          };
-          finalView =
-              LocationMessageWidget(belongType, temp, MapOriginType.Share);
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView = _textMessageView(temp, belongType);
+          // Map<String, dynamic> temp = {
+          //   "name": "北京市门头沟体育馆",
+          //   "icon": "",
+          //   "latitude": "39.941325",
+          //   "longitude": "116.101292"
+          // };
+          // finalView =
+          //     LocationMessageWidget(belongType, temp, MapOriginType.Share);
           // finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
           // finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
@@ -153,7 +155,9 @@ class _ChatBubbleState extends State<ChatBubble>
         break;
       case "URL":
         {
-          finalView = _textMessageView(belongType);
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView = _textMessageView(temp, belongType);
         }
         break;
       case "CARD":
@@ -173,16 +177,17 @@ class _ChatBubbleState extends State<ChatBubble>
         break;
       default:
         {
-          finalView = _textMessageView(belongType);
+          Map<String, dynamic> temp =
+              convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView = _textMessageView(temp, belongType);
         }
         break;
     }
     return finalView;
   }
 
-  Widget _textMessageView(MessageBelongType belongType) {
-    Map<String, dynamic> temp =
-        convert.jsonDecode(widget.friendsHistoryMessages.content);
+  Widget _textMessageView(
+      Map<String, dynamic> content, MessageBelongType belongType) {
     return Container(
       constraints: BoxConstraints(
         maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
@@ -194,7 +199,7 @@ class _ChatBubbleState extends State<ChatBubble>
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Text('${temp['text']}',
+      child: Text('${content['text']}',
           maxLines: 10,
           softWrap: true,
           style: widget.messageBelongType == MessageBelongType.Receiver

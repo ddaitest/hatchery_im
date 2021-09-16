@@ -61,5 +61,9 @@
         <string>iosamap</string>
         <string>here-location</string>
     </array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>使用位置分享需开启定位服务</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>使用位置分享需一直使用定位服务</string>
 </dict>
 </plist>
