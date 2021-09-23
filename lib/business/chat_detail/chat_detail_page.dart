@@ -22,11 +22,6 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/common/widget/emojiModel.dart';
 import '../../routers.dart';
 
-enum MessageBelongType {
-  Sender,
-  Receiver,
-}
-
 class ChatDetailPage extends StatefulWidget {
   final UsersInfo? usersInfo;
 
@@ -42,11 +37,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   List<SendMenuItems> menuItems = [
     SendMenuItems(text: "照片", icons: Icons.image, color: Colors.amber),
     SendMenuItems(
-        text: "视频",
+        text: "拍摄",
         icons: Icons.camera_alt,
         color: Colors.orange,
         onTap: () => App.manager<ChatDetailManager>()
-            .pick(App.navState.currentContext!)),
+            .pickCamera(App.navState.currentContext!)),
     SendMenuItems(
         text: "文件", icons: Icons.insert_drive_file, color: Colors.blue),
     SendMenuItems(

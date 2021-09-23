@@ -34,6 +34,7 @@ class ChatDetailManager extends ChangeNotifier {
   List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
+  String? mediaUrl;
   Timer? timer;
   int recordTiming = 0;
 
@@ -53,12 +54,13 @@ class ChatDetailManager extends ChangeNotifier {
     MessageCentre().listenMessage((news) {}, friendId);
   }
 
-  Future<void> pick(BuildContext context) async {
+  Future<void> pickCamera(BuildContext context) async {
     final Size size = MediaQuery.of(context).size;
     final double scale = MediaQuery.of(context).devicePixelRatio;
     final AssetEntity? _entity = await CameraPicker.pickFromCamera(
       context,
       enableRecording: true,
+      shouldDeletePreviewFile: true,
     );
     if (_entity != null && entity != _entity) {
       entity = _entity;
@@ -66,6 +68,22 @@ class ChatDetailManager extends ChangeNotifier {
         (size.width * scale).toInt(),
         (size.height * scale).toInt(),
       );
+      String _mediaFilePath = File.fromRawPath(data!).path;
+      print("DEBUG=> _mediaFilePath $_mediaFilePath");
+      uploadMediaFile(_mediaFilePath);
+    }
+  }
+
+  uploadMediaFile(String filePath) async {
+    ApiResult result =
+        await ApiForFileService.uploadFile(filePath, (count, total) {});
+    if (result.isSuccess()) {
+      final url = result.getData();
+      if (url is String) {
+        mediaUrl = url;
+        print("DEBUG=> mediaUrl = $mediaUrl");
+        notifyListeners();
+      }
     }
   }
 

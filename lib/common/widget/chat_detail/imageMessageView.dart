@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/widget/imageDetail.dart';
-
+import '../../../config.dart';
 import '../../../routers.dart';
 
 class ImageMessageWidget extends StatefulWidget {

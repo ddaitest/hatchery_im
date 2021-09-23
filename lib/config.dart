@@ -56,6 +56,11 @@ class SlideActionInfo {
   const SlideActionInfo(this.label, this.icon, this.iconColor, {this.onTap});
 }
 
+enum MessageBelongType {
+  Sender,
+  Receiver,
+}
+
 enum SelectContactsType {
   CreateGroup,
   AddGroupMember,

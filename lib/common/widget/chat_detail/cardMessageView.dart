@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
-
+import '../../../config.dart';
 import '../../../routers.dart';
 
 class CardMessageWidget extends StatelessWidget {

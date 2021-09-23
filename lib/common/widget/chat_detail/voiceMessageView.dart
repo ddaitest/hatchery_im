@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 
+import '../../../config.dart';
+
 class VoiceMessageWidget extends StatefulWidget {
   final String voiceMessageUrl;
   final MessageBelongType messageBelongType;
