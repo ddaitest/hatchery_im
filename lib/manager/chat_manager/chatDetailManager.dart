@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/manager/app_manager/app_handler.dart';
@@ -22,6 +23,7 @@ import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import '../../config.dart';
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 class ChatDetailManager extends ChangeNotifier {
   final TextEditingController textEditingController = TextEditingController();
@@ -37,6 +39,8 @@ class ChatDetailManager extends ChangeNotifier {
 
   String currentFriendId = "";
   int currentMessageID = 0;
+  AssetEntity? entity;
+  Uint8List? data;
 
   /// 初始化
   init(String friendId) {
@@ -47,6 +51,22 @@ class ChatDetailManager extends ChangeNotifier {
     _loadLatest();
     //添加监听
     MessageCentre().listenMessage((news) {}, friendId);
+  }
+
+  Future<void> pick(BuildContext context) async {
+    final Size size = MediaQuery.of(context).size;
+    final double scale = MediaQuery.of(context).devicePixelRatio;
+    final AssetEntity? _entity = await CameraPicker.pickFromCamera(
+      context,
+      enableRecording: true,
+    );
+    if (_entity != null && entity != _entity) {
+      entity = _entity;
+      data = await _entity.thumbDataWithSize(
+        (size.width * scale).toInt(),
+        (size.height * scale).toInt(),
+      );
+    }
   }
 
   _inputTextListen() {
@@ -196,7 +216,7 @@ class ChatDetailManager extends ChangeNotifier {
       final url = result.getData();
       if (url is String) {
         voiceUrl = url;
-        print("DEBUG=> voiceUrl = ${voiceUrl}");
+        print("DEBUG=> voiceUrl = $voiceUrl");
         notifyListeners();
       }
     }

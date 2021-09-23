@@ -72,6 +72,7 @@ dependencies:
   map_launcher: ^2.1.1
   emoji_picker_flutter: ^1.0.7
   flutter_svg: ^0.22.0 #ANDROID IOS LINUX MACOS WINDOWS
+  wechat_camera_picker: ^2.4.2
 
 
   # The following adds the Cupertino Icons font to your application.
