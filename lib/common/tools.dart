@@ -13,6 +13,7 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:crypto/crypto.dart';
 import '../config.dart';
+import 'package:video_compress/video_compress.dart';
 
 Future<String> compressionImage(filePath) async {
   ImageProperties properties =
@@ -28,6 +29,18 @@ Future<String> compressionImage(filePath) async {
         targetHeight: height);
     return compressedFile.path;
   }
+}
+
+Future<String> compressionVideo(filePath) async {
+  await VideoCompress.deleteAllCache();
+  final MediaInfo? info = await VideoCompress.compressVideo(
+    filePath,
+    quality: VideoQuality.Res960x540Quality,
+    deleteOrigin: false,
+    includeAudio: true,
+  );
+  print("DEBUG=> ###### ${info!.path}");
+  return info.path!;
 }
 
 class SP {

@@ -68,9 +68,19 @@ class ChatDetailManager extends ChangeNotifier {
         (size.width * scale).toInt(),
         (size.height * scale).toInt(),
       );
-      String _mediaFilePath = File.fromRawPath(data!).path;
-      print("DEBUG=> _mediaFilePath $_mediaFilePath");
-      uploadMediaFile(_mediaFilePath);
+      // var _mediaFilePath = File.fromRawPath(Utf8Encoder().convert('aaaaa.jpg'))
+      //     .writeAsBytes(data!)
+      //     .toString();
+      entity!.file.then((value) {
+        if (value!.path.split(".")[1] == 'jpg') {
+          compressionImage(value.path)
+              .then((compressionValue) => uploadMediaFile(compressionValue));
+        } else {
+          compressionVideo(value.path)
+              .then((compressionValue) => uploadMediaFile(compressionValue));
+        }
+      });
+      // ;
     }
   }
 
