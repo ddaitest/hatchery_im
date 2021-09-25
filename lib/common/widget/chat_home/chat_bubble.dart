@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'dart:convert' as convert;
 import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
@@ -126,6 +128,8 @@ class _ChatBubbleState extends State<ChatBubble>
         {
           Map<String, dynamic> temp =
               convert.jsonDecode(widget.friendsHistoryMessages.content);
+          print("DEBUG=> widget. ${widget.friendsHistoryMessages.content}");
+
           //TODO
           finalView = ImageMessageWidget(temp["img_url"], belongType);
         }

@@ -73,7 +73,8 @@ class ChatDetailManager extends ChangeNotifier {
           compressionImage(value.path).then((compressionValue) {
             uploadMediaFile(compressionValue).then((uploadMediaUrl) {
               if (uploadMediaUrl != null) {
-                messagesList.add(setMediaMessageMap("IMAGE", uploadMediaUrl));
+                messagesList.insert(
+                    0, setMediaMessageMap("IMAGE", uploadMediaUrl));
                 notifyListeners();
               }
             });
@@ -82,7 +83,8 @@ class ChatDetailManager extends ChangeNotifier {
           compressionVideo(value.path).then((compressionValue) {
             uploadMediaFile(compressionValue).then((uploadMediaUrl) {
               if (uploadMediaUrl != null) {
-                messagesList.add(setMediaMessageMap("VIDEO", uploadMediaUrl));
+                messagesList.insert(
+                    0, setMediaMessageMap("VIDEO", uploadMediaUrl));
                 notifyListeners();
               }
             });
@@ -95,10 +97,21 @@ class ChatDetailManager extends ChangeNotifier {
 
   Message setMediaMessageMap(String messageType, String mediaUrl) {
     Map<String, dynamic> map = {
-      "content": {"img_url": mediaUrl},
-      "content_type": messageType
+      "id": 0,
+      "type": "",
+      "userMsgID": "",
+      "sender": "",
+      "nick": "",
+      "receiver": "",
+      "icon": "",
+      "source": "",
+      "content": messageType == 'IMAGE'
+          ? convert.jsonEncode({"img_url": "$mediaUrl"})
+          : convert.jsonEncode({"video_url": "$mediaUrl"}),
+      "createTime": "2021-08-09T17:47:23.000+00:00",
+      "contentType": messageType
     };
-    return map as Message;
+    return Message.fromJson(map);
   }
 
   Future<String?> uploadMediaFile(String filePath) async {
@@ -163,8 +176,9 @@ class ChatDetailManager extends ChangeNotifier {
             currentMsgID: currentMsgID!)
         .then((value) {
       if (value.isSuccess()) {
+        print("DEBUG=> messagesList ${value.getData()}");
         messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
-        print("DEBUG=> messagesList ${messagesList[0]}");
+
         notifyListeners();
       }
     });
