@@ -22,6 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'dart:convert' as convert;
 import '../../config.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -34,7 +35,6 @@ class ChatDetailManager extends ChangeNotifier {
   List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
-  String? mediaUrl;
   Timer? timer;
   int recordTiming = 0;
 
@@ -68,32 +68,52 @@ class ChatDetailManager extends ChangeNotifier {
         (size.width * scale).toInt(),
         (size.height * scale).toInt(),
       );
-      // var _mediaFilePath = File.fromRawPath(Utf8Encoder().convert('aaaaa.jpg'))
-      //     .writeAsBytes(data!)
-      //     .toString();
       entity!.file.then((value) {
         if (value!.path.split(".")[1] == 'jpg') {
-          compressionImage(value.path)
-              .then((compressionValue) => uploadMediaFile(compressionValue));
+          compressionImage(value.path).then((compressionValue) {
+            uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+              if (uploadMediaUrl != null) {
+                messagesList.add(setMediaMessageMap("IMAGE", uploadMediaUrl));
+                notifyListeners();
+              }
+            });
+          });
         } else {
-          compressionVideo(value.path)
-              .then((compressionValue) => uploadMediaFile(compressionValue));
+          compressionVideo(value.path).then((compressionValue) {
+            uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+              if (uploadMediaUrl != null) {
+                messagesList.add(setMediaMessageMap("VIDEO", uploadMediaUrl));
+                notifyListeners();
+              }
+            });
+          });
         }
       });
       // ;
     }
   }
 
-  uploadMediaFile(String filePath) async {
+  Message setMediaMessageMap(String messageType, String mediaUrl) {
+    Map<String, dynamic> map = {
+      "content": {"img_url": mediaUrl},
+      "content_type": messageType
+    };
+    return map as Message;
+  }
+
+  Future<String?> uploadMediaFile(String filePath) async {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {});
     if (result.isSuccess()) {
       final url = result.getData();
       if (url is String) {
-        mediaUrl = url;
-        print("DEBUG=> mediaUrl = $mediaUrl");
-        notifyListeners();
+        print("DEBUG=> mediaUrl = $url");
+        return url;
+      } else {
+        showToast("上传失败，请重试");
       }
+    } else {
+      showToast("上传失败，请重试");
     }
   }
 
@@ -144,6 +164,7 @@ class ChatDetailManager extends ChangeNotifier {
         .then((value) {
       if (value.isSuccess()) {
         messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
+        print("DEBUG=> messagesList ${messagesList[0]}");
         notifyListeners();
       }
     });
