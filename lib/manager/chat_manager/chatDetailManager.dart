@@ -64,38 +64,28 @@ class ChatDetailManager extends ChangeNotifier {
     );
     if (_entity != null && entity != _entity) {
       entity = _entity;
-      data = await _entity.thumbDataWithSize(
-        (size.width * scale).toInt(),
-        (size.height * scale).toInt(),
-      );
       entity!.file.then((value) {
-        if (value!.path.split(".")[1] == 'jpg') {
+        if (value!.path.split(".")[1] != 'mp4') {
+          messagesList.insert(0, setMediaMessageMap("IMAGE", value.path));
+          notifyListeners();
           compressionImage(value.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-              if (uploadMediaUrl != null) {
-                messagesList.insert(
-                    0, setMediaMessageMap("IMAGE", uploadMediaUrl));
-              }
-            });
+            uploadMediaFile(compressionValue).then((uploadMediaUrl) {});
           });
         } else {
+          messagesList.insert(0, setMediaMessageMap("VIDEO", value.path));
+          notifyListeners();
           compressionVideo(value.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-              if (uploadMediaUrl != null) {
-                messagesList.insert(
-                    0, setMediaMessageMap("VIDEO", uploadMediaUrl));
-              }
-            });
+            uploadMediaFile(compressionValue).then((uploadMediaUrl) {});
           });
         }
       });
-      notifyListeners();
     }
   }
 
   Message setMediaMessageMap(String messageType, String mediaUrl) {
+    DateTime _timeNow = DateTime.now();
     Map<String, dynamic> map = {
-      "id": 0,
+      "id": _timeNow.millisecond,
       "type": "",
       "userMsgID": "",
       "sender": UserCentre.getUserID(),
@@ -106,7 +96,7 @@ class ChatDetailManager extends ChangeNotifier {
       "content": messageType == 'IMAGE'
           ? convert.jsonEncode({"img_url": "$mediaUrl"})
           : convert.jsonEncode({"video_url": "$mediaUrl"}),
-      "createTime": "2021-08-09T17:47:23.000+00:00",
+      "createTime": _timeNow.toString(),
       "contentType": messageType
     };
     return Message.fromJson(map);

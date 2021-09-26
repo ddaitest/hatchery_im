@@ -36,14 +36,9 @@ class ChatBubble extends StatefulWidget {
   _ChatBubbleState createState() => _ChatBubbleState();
 }
 
-class _ChatBubbleState extends State<ChatBubble>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
+class _ChatBubbleState extends State<ChatBubble> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
         child: _chatBubbleView('${widget.avatarPicUrl}'));
