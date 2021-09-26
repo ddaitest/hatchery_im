@@ -75,7 +75,6 @@ class ChatDetailManager extends ChangeNotifier {
               if (uploadMediaUrl != null) {
                 messagesList.insert(
                     0, setMediaMessageMap("IMAGE", uploadMediaUrl));
-                notifyListeners();
               }
             });
           });
@@ -85,13 +84,12 @@ class ChatDetailManager extends ChangeNotifier {
               if (uploadMediaUrl != null) {
                 messagesList.insert(
                     0, setMediaMessageMap("VIDEO", uploadMediaUrl));
-                notifyListeners();
               }
             });
           });
         }
       });
-      // ;
+      notifyListeners();
     }
   }
 
@@ -100,7 +98,7 @@ class ChatDetailManager extends ChangeNotifier {
       "id": 0,
       "type": "",
       "userMsgID": "",
-      "sender": "",
+      "sender": UserCentre.getUserID(),
       "nick": "",
       "receiver": "",
       "icon": "",
