@@ -55,8 +55,8 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   Future<void> pickCamera(BuildContext context) async {
-    final Size size = MediaQuery.of(context).size;
-    final double scale = MediaQuery.of(context).devicePixelRatio;
+    // final Size size = MediaQuery.of(context).size;
+    // final double scale = MediaQuery.of(context).devicePixelRatio;
     final AssetEntity? _entity = await CameraPicker.pickFromCamera(
       context,
       enableRecording: true,
@@ -69,13 +69,13 @@ class ChatDetailManager extends ChangeNotifier {
           messagesList.insert(0, setMediaMessageMap("IMAGE", value.path));
           notifyListeners();
           compressionImage(value.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((uploadMediaUrl) {});
+            uploadMediaFile(compressionValue);
           });
         } else {
           messagesList.insert(0, setMediaMessageMap("VIDEO", value.path));
           notifyListeners();
           compressionVideo(value.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((uploadMediaUrl) {});
+            uploadMediaFile(compressionValue);
           });
         }
       });

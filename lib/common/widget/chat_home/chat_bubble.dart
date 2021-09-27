@@ -132,17 +132,21 @@ class _ChatBubbleState extends State<ChatBubble> {
       case "VIDEO":
         {
           //TODO
-          Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
-          finalView = VideoMessageWidget(temp["video_url"], belongType);
+          // Map<String, dynamic> temp =
+          //     convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView = VideoMessageWidget(
+              widget.friendsHistoryMessages.content, belongType);
         }
         break;
       case "VOICE":
         {
           //TODO
-          Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
-          finalView = VoiceMessageWidget(temp["voice_url"], belongType);
+          // print(
+          //     "DEBUG=> widget.friendsHistoryMessages.content ${widget.friendsHistoryMessages.content}");
+          // Map<String, dynamic> temp =
+          //     convert.jsonDecode(widget.friendsHistoryMessages.content);
+          finalView = VoiceMessageWidget(
+              widget.friendsHistoryMessages.content, belongType);
         }
         break;
       case "FILE":
