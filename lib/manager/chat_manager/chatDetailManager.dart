@@ -40,8 +40,6 @@ class ChatDetailManager extends ChangeNotifier {
 
   String currentFriendId = "";
   int currentMessageID = 0;
-  AssetEntity? entity;
-  Uint8List? data;
 
   /// 初始化
   init(String friendId) {
@@ -55,6 +53,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   Future<void> pickCamera(BuildContext context) async {
+    AssetEntity? entity;
     // final Size size = MediaQuery.of(context).size;
     // final double scale = MediaQuery.of(context).devicePixelRatio;
     final AssetEntity? _entity = await CameraPicker.pickFromCamera(
@@ -64,7 +63,7 @@ class ChatDetailManager extends ChangeNotifier {
     );
     if (_entity != null && entity != _entity) {
       entity = _entity;
-      entity!.file.then((value) {
+      entity.file.then((value) {
         if (value!.path.split(".")[1] != 'mp4') {
           messagesList.insert(0, setMediaMessageMap("IMAGE", value.path));
           notifyListeners();
@@ -74,6 +73,7 @@ class ChatDetailManager extends ChangeNotifier {
         } else {
           messagesList.insert(0, setMediaMessageMap("VIDEO", value.path));
           notifyListeners();
+          print("DEBUG=> messagesList${messagesList[0].content}");
           compressionVideo(value.path).then((compressionValue) {
             uploadMediaFile(compressionValue);
           });
