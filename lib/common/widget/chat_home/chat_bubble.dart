@@ -134,7 +134,10 @@ class _ChatBubbleState extends State<ChatBubble> {
           //TODO
           Map<String, dynamic> temp =
               convert.jsonDecode(widget.friendsHistoryMessages.content);
-          finalView = VideoMessageWidget(temp["video_url"], belongType);
+          finalView = VideoMessageWidget(
+              convert.jsonDecode(
+                  widget.friendsHistoryMessages.content)["video_url"],
+              belongType);
         }
         break;
       case "VOICE":

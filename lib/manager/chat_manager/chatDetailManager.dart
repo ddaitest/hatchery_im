@@ -71,7 +71,9 @@ class ChatDetailManager extends ChangeNotifier {
         } else {
           messagesList.insert(0, setMediaMessageMap("VIDEO", value.path));
           notifyListeners();
-          print("DEBUG=> messagesList${messagesList[0].content}");
+          messagesList.forEach((element) {
+            print("DEBUG=> messagesList${element.content}");
+          });
           compressionVideo(value.path).then((compressionValue) {
             uploadMediaFile(compressionValue).then((value) => null);
           });
@@ -102,7 +104,10 @@ class ChatDetailManager extends ChangeNotifier {
 
   Future<String?> uploadMediaFile(String filePath) async {
     ApiResult result =
-        await ApiForFileService.uploadFile(filePath, (count, total) {});
+        await ApiForFileService.uploadFile(filePath, (count, total) {
+      var uploadProgress = count.toDouble() / total.toDouble();
+      print("DEBUG=> uploadProgress = $uploadProgress");
+    });
     if (result.isSuccess()) {
       final url = result.getData();
       if (url is String) {
@@ -162,7 +167,6 @@ class ChatDetailManager extends ChangeNotifier {
             currentMsgID: currentMsgID!)
         .then((value) {
       if (value.isSuccess()) {
-        print("DEBUG=> messagesList ${value.getData()}");
         messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
 
         notifyListeners();
