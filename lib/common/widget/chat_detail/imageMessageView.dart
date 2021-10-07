@@ -9,89 +9,77 @@ import 'package:hatchery_im/common/widget/imageDetail.dart';
 import '../../../config.dart';
 import '../../../routers.dart';
 
-class ImageMessageWidget extends StatefulWidget {
+class ImageMessageWidget extends StatelessWidget {
   final String imageMessageUrl;
   final MessageBelongType messageBelongType;
   ImageMessageWidget(this.imageMessageUrl, this.messageBelongType);
-  @override
-  _ImageMessageWidgetState createState() => _ImageMessageWidgetState();
-}
-
-class _ImageMessageWidgetState extends State<ImageMessageWidget>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return _imageMessageView(widget.messageBelongType);
+    return _imageMessageView();
   }
 
-  Widget _imageMessageView(MessageBelongType belongType) {
-    if (widget.imageMessageUrl.contains("http")) {
-      return CachedNetworkImage(
-          width: 130.0.w,
-          fit: BoxFit.cover,
-          imageUrl: widget.imageMessageUrl,
-          // imageUrl: widget.friendsHistoryMessages.content,
-          placeholder: (context, url) => Container(
-                width: 150.0.w,
-                height: 100.0.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Flavors.colorInfo.mainBackGroundColor,
-                ),
-                child: Center(
-                  child: CupertinoActivityIndicator(),
-                ),
-              ),
-          errorWidget: (context, url, error) => Container(
-                width: 150.0.w,
-                height: 100.0.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Flavors.colorInfo.mainBackGroundColor,
-                ),
-                child: Center(
-                  child: Icon(Icons.image_not_supported_outlined, size: 40),
-                ),
-              ),
-          imageBuilder: (context, imageProvider) {
-            return GestureDetector(
-              onTap: () => Routers.navigateTo('/imageDetail',
-                  arg: {"image": imageProvider}),
-              child: Container(
-                constraints:
-                    BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Image(image: imageProvider, fit: BoxFit.cover),
-                ),
-              ),
-            );
-          });
+  Widget _imageMessageView() {
+    if (imageMessageUrl.contains("https://")) {
+      return GestureDetector(
+          onTap: () => Routers.navigateTo('/imageDetail',
+              arg: {"imageUrl": imageMessageUrl}),
+          child: CachedNetworkImage(
+              width: 130.0.w,
+              fit: BoxFit.cover,
+              imageUrl: imageMessageUrl,
+              // imageUrl: friendsHistoryMessages.content,
+              placeholder: (context, url) => Container(
+                    width: 150.0.w,
+                    height: 100.0.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Flavors.colorInfo.mainBackGroundColor,
+                    ),
+                    child: Center(
+                      child: CupertinoActivityIndicator(),
+                    ),
+                  ),
+              errorWidget: (context, url, error) => Container(
+                    width: 150.0.w,
+                    height: 100.0.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Flavors.colorInfo.mainBackGroundColor,
+                    ),
+                    child: Center(
+                      child: Icon(Icons.image_not_supported_outlined, size: 40),
+                    ),
+                  ),
+              imageBuilder: (context, imageProvider) {
+                return GestureDetector(
+                  onTap: () => Routers.navigateTo('/imageDetail',
+                      arg: {"image": imageProvider}),
+                  child: Container(
+                    constraints:
+                        BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image(image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+                );
+              }));
     } else {
-      return Container(
-        constraints: BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.file(
-            File(widget.imageMessageUrl),
-            width: 130.0.w,
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
+      return GestureDetector(
+          onTap: () => Routers.navigateTo('/imageDetail',
+              arg: {"imageFile": File(imageMessageUrl)}),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.file(
+                File(imageMessageUrl),
+                width: 130.0.w,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ));
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

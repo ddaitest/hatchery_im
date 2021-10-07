@@ -34,27 +34,32 @@ class ChatDetailPage extends StatefulWidget {
 class _ChatDetailPageState extends State<ChatDetailPage> {
   final manager = App.manager<ChatDetailManager>();
   final emojiModelManager = App.manager<EmojiModelManager>();
-  List<SendMenuItems> menuItems = [
-    SendMenuItems(text: "照片", icons: Icons.image, color: Colors.amber),
-    SendMenuItems(
-        text: "拍摄",
-        icons: Icons.camera_alt,
-        color: Colors.orange,
-        onTap: () => App.manager<ChatDetailManager>()
-            .pickCamera(App.navState.currentContext!)),
-    SendMenuItems(
-        text: "文件", icons: Icons.insert_drive_file, color: Colors.blue),
-    SendMenuItems(
-        text: "位置",
-        icons: Icons.location_on,
-        color: Colors.green,
-        onTap: () => Routers.navigateTo('/map_view',
-            arg: {'mapOriginType': MapOriginType.Send, 'position': null})),
-    // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
-  ];
+  List<SendMenuItems> menuItems = [];
 
   @override
   void initState() {
+    menuItems = [
+      SendMenuItems(
+          text: "相册",
+          icons: Icons.image,
+          color: Colors.amber,
+          onTap: () => manager.getImageByGallery()),
+      SendMenuItems(
+          text: "拍摄",
+          icons: Icons.camera_alt,
+          color: Colors.orange,
+          onTap: () => App.manager<ChatDetailManager>()
+              .pickCamera(App.navState.currentContext!)),
+      SendMenuItems(
+          text: "文件", icons: Icons.insert_drive_file, color: Colors.blue),
+      SendMenuItems(
+          text: "位置",
+          icons: Icons.location_on,
+          color: Colors.green,
+          onTap: () => Routers.navigateTo('/map_view',
+              arg: {'mapOriginType': MapOriginType.Send, 'position': null})),
+      // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
+    ];
     manager.init(widget.usersInfo!.userID);
     // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
@@ -104,8 +109,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         return Flexible(
           child: ListView.builder(
             itemCount: value.length,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             reverse: true,
-            padding: EdgeInsets.only(top: 10, bottom: 10),
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return ChatBubble(

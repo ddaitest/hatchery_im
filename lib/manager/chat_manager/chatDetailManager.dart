@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/app_manager/app_handler.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -21,6 +23,8 @@ import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+
 import 'package:hatchery_im/common/tools.dart';
 import 'dart:convert' as convert;
 import '../../config.dart';
@@ -41,6 +45,12 @@ class ChatDetailManager extends ChangeNotifier {
   String currentFriendId = "";
   int currentMessageID = 0;
 
+  int? videoHeight;
+  int? videoWidth;
+  AssetEntity? _entity;
+
+  VideoLoadType videoLoadType = VideoLoadType.Fail;
+
   /// 初始化
   init(String friendId) {
     _inputTextListen();
@@ -55,25 +65,25 @@ class ChatDetailManager extends ChangeNotifier {
   Future<void> pickCamera(BuildContext context) async {
     // final Size size = MediaQuery.of(context).size;
     // final double scale = MediaQuery.of(context).devicePixelRatio;
-    final AssetEntity? _entity = await CameraPicker.pickFromCamera(
-      context,
-      enableRecording: true,
-      shouldDeletePreviewFile: true,
-    );
+    Navigator.pop(App.navState.currentContext!);
+    _entity = await CameraPicker.pickFromCamera(context,
+        enableRecording: true, shouldDeletePreviewFile: true);
     if (_entity != null) {
-      _entity.file.then((value) {
+      _entity!.file.then((value) {
         if (value!.path.split(".")[1] != 'mp4') {
           messagesList.insert(0, setMediaMessageMap("IMAGE", value.path));
-          notifyListeners();
-          compressionImage(value.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((value) => null);
+          value.length().then((int lengthValue) {
+            if (lengthValue > 2080000) {
+              compressionImage(value.path).then((compressionValue) {
+                uploadMediaFile(compressionValue).then((value) => null);
+              });
+            } else {
+              uploadMediaFile(value.path).then((value) => null);
+            }
           });
         } else {
+          print("DEBUG=> value.path ${value.path}");
           messagesList.insert(0, setMediaMessageMap("VIDEO", value.path));
-          notifyListeners();
-          messagesList.forEach((element) {
-            print("DEBUG=> messagesList${element.content}");
-          });
           compressionVideo(value.path).then((compressionValue) {
             uploadMediaFile(compressionValue).then((value) => null);
           });
@@ -85,7 +95,7 @@ class ChatDetailManager extends ChangeNotifier {
   Message setMediaMessageMap(String messageType, String mediaUrl) {
     DateTime _timeNow = DateTime.now();
     Map<String, dynamic> map = {
-      "id": _timeNow.millisecond,
+      "id": _timeNow.microsecond,
       "type": "",
       "userMsgID": "",
       "sender": UserCentre.getUserID(),
@@ -93,12 +103,12 @@ class ChatDetailManager extends ChangeNotifier {
       "receiver": "",
       "icon": "",
       "source": "",
-      "content": messageType == 'IMAGE'
-          ? convert.jsonEncode({"img_url": "$mediaUrl"})
-          : convert.jsonEncode({"video_url": "$mediaUrl"}),
+      "content": convert.jsonEncode(
+          {messageType == 'VIDEO' ? "video_url" : "img_url": "$mediaUrl"}),
       "createTime": _timeNow.toString(),
       "contentType": messageType
     };
+    print("DEBUG=> messagesList map $map");
     return Message.fromJson(map);
   }
 
@@ -106,6 +116,7 @@ class ChatDetailManager extends ChangeNotifier {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {
       var uploadProgress = count.toDouble() / total.toDouble();
+      // todo 思路1：根据list 的index set map
       print("DEBUG=> uploadProgress = $uploadProgress");
     });
     if (result.isSuccess()) {
@@ -115,10 +126,66 @@ class ChatDetailManager extends ChangeNotifier {
         return url;
       } else {
         showToast("上传失败，请重试");
+        return '';
       }
     } else {
       showToast("上传失败，请重试");
+      return '';
     }
+  }
+
+  Future getImageByGallery() async {
+    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+        App.navState.currentContext!,
+        requestType: RequestType.common,
+        themeColor: Flavors.colorInfo.mainColor);
+    if (assets == null) {
+      return null;
+    } else {
+      assets.forEach((element) {
+        if (element.type == AssetType.image) {
+          element.file.then((fileValue) {
+            print("DEBUG=> fileValue!.path ${fileValue!.path}");
+            messagesList.insert(0, setMediaMessageMap("IMAGE", fileValue.path));
+            fileValue.length().then((lengthValue) {
+              if (lengthValue > 2080000) {
+                compressionImage(fileValue.path).then((compressionValue) {
+                  uploadMediaFile(compressionValue).then((value) => null);
+                });
+              } else {
+                uploadMediaFile(fileValue.path).then((value) => null);
+              }
+            });
+          });
+        } else {
+          element.file.then((fileValue) {
+            messagesList.insert(
+                0, setMediaMessageMap("VIDEO", fileValue!.path));
+            compressionVideo(fileValue.path).then((compressionValue) {
+              uploadMediaFile(compressionValue).then((value) => null);
+            });
+          });
+        }
+      });
+    }
+    // final pickImages =
+    //     await ImagePicker().pickImage(source: ImageSource.gallery);
+    // Navigator.pop(App.navState.currentContext!);
+    // if (pickImages == null) {
+    //   return null;
+    // } else {
+    //   messagesList.insert(0, setMediaMessageMap("IMAGE", pickImages.path));
+    //   pickImages.length().then((int lengthValue) {
+    //     if (lengthValue > 2080000) {
+    //       compressionImage(pickImages.path).then((compressionValue) {
+    //         uploadMediaFile(compressionValue).then((value) => null);
+    //       });
+    //     } else {
+    //       uploadMediaFile(pickImages.path).then((value) => null);
+    //     }
+    //   });
+    //   print("DEBUG=> pickImages ${pickImages.path}");
+    // }
   }
 
   _inputTextListen() {

@@ -31,17 +31,7 @@ import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'manager/emojiModel_manager.dart';
 
 void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid) {
-    ///这是设置状态栏的图标和字体的颜色
-    ///Brightness.light  一般都是显示为白色
-    ///Brightness.dark 一般都是显示为黑色
-    SystemUiOverlayStyle systemUiOverlayStyle = SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark);
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
-  }
-
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
       providers: [

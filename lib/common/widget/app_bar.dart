@@ -14,7 +14,7 @@ class AppBarFactory {
       ),
       centerTitle: false,
       backgroundColor: backGroundColorList,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
       elevation: 0.0,
       automaticallyImplyLeading: false,
       actions: actions ?? [],
@@ -30,7 +30,7 @@ class AppBarFactory {
       ),
       centerTitle: true,
       backgroundColor: Colors.transparent,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
       automaticallyImplyLeading: true,
       elevation: 0.0,
     );
@@ -48,7 +48,7 @@ class AppBarFactory {
       ),
       centerTitle: true,
       backgroundColor: backGroundColor,
-      brightness: Brightness.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
       elevation: 0.0,
       leading: Container(
         padding: const EdgeInsets.all(6.0),

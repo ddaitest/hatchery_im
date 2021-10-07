@@ -6,6 +6,7 @@ import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,11 +17,13 @@ import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/locationMessageView.dart';
+import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:provider/provider.dart';
 
 import '../../../config.dart';
 
-class ChatBubble extends StatefulWidget {
+class ChatBubble extends StatelessWidget {
   final String userID;
   final String avatarPicUrl;
   final MessageBelongType messageBelongType;
@@ -33,15 +36,10 @@ class ChatBubble extends StatefulWidget {
       required this.friendsHistoryMessages});
 
   @override
-  _ChatBubbleState createState() => _ChatBubbleState();
-}
-
-class _ChatBubbleState extends State<ChatBubble> {
-  @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-        child: _chatBubbleView('${widget.avatarPicUrl}'));
+        child: _chatBubbleView('${avatarPicUrl}'));
   }
 
   Widget _chatBubbleView(String? avatarUrl) {
@@ -49,8 +47,7 @@ class _ChatBubbleState extends State<ChatBubble> {
       children: [
         Container(
           padding: const EdgeInsets.only(bottom: 10.0),
-          child: Text(
-              '${checkMessageTime(widget.friendsHistoryMessages.createTime)}',
+          child: Text('${checkMessageTime(friendsHistoryMessages.createTime)}',
               maxLines: 1,
               softWrap: true,
               style: Flavors.textStyles.chatBubbleTimeText),
@@ -58,14 +55,13 @@ class _ChatBubbleState extends State<ChatBubble> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          textDirection: widget.messageBelongType == MessageBelongType.Receiver
+          textDirection: messageBelongType == MessageBelongType.Receiver
               ? TextDirection.ltr
               : TextDirection.rtl,
           children: [
             GestureDetector(
-              onTap: () => widget.messageBelongType ==
-                      MessageBelongType.Receiver
-                  ? Routers.navigateTo('/friend_profile', arg: widget.userID)
+              onTap: () => messageBelongType == MessageBelongType.Receiver
+                  ? Routers.navigateTo('/friend_profile', arg: userID)
                   : null,
               child: Container(
                   padding: const EdgeInsets.only(top: 5.0),
@@ -89,8 +85,12 @@ class _ChatBubbleState extends State<ChatBubble> {
                       })),
             ),
             SizedBox(width: 15.0.w),
-            switchMessageTypeView(widget.friendsHistoryMessages.contentType,
-                widget.messageBelongType),
+            switchMessageTypeView(
+                friendsHistoryMessages.contentType, messageBelongType),
+            // SizedBox(width: 15.0.w),
+            // friendsHistoryMessages.contentType == "VIDEO"
+            //     ? _videoLoadView()
+            //     : Container()
           ],
         ),
       ],
@@ -105,7 +105,7 @@ class _ChatBubbleState extends State<ChatBubble> {
         {
           // finalView = ImageMessageWidget(imageTestUrl, belongType);
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
+              convert.jsonDecode(friendsHistoryMessages.content);
           finalView = _textMessageView(temp, belongType);
           // Map<String, dynamic> temp = {
           //   "name": "北京市门头沟体育馆",
@@ -122,8 +122,8 @@ class _ChatBubbleState extends State<ChatBubble> {
       case "IMAGE":
         {
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
-          print("DEBUG=> widget. ${widget.friendsHistoryMessages.content}");
+              convert.jsonDecode(friendsHistoryMessages.content);
+          print("DEBUG=>  ${friendsHistoryMessages.content}");
 
           //TODO
           finalView = ImageMessageWidget(temp["img_url"], belongType);
@@ -133,49 +133,46 @@ class _ChatBubbleState extends State<ChatBubble> {
         {
           //TODO
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
-          finalView = VideoMessageWidget(
-              convert.jsonDecode(
-                  widget.friendsHistoryMessages.content)["video_url"],
-              belongType);
+              convert.jsonDecode(friendsHistoryMessages.content);
+          finalView = VideoMessageWidget(temp["video_url"], belongType);
         }
         break;
       case "VOICE":
         {
           //TODO
           // print(
-          //     "DEBUG=> widget.friendsHistoryMessages.content ${widget.friendsHistoryMessages.content}");
+          //     "DEBUG=> friendsHistoryMessages.content ${friendsHistoryMessages.content}");
           // Map<String, dynamic> temp =
-          //     convert.jsonDecode(widget.friendsHistoryMessages.content);
-          finalView = VoiceMessageWidget(
-              widget.friendsHistoryMessages.content, belongType);
+          //     convert.jsonDecode(friendsHistoryMessages.content);
+          finalView =
+              VoiceMessageWidget(friendsHistoryMessages.content, belongType);
         }
         break;
       case "FILE":
         {
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
+              convert.jsonDecode(friendsHistoryMessages.content);
           finalView = FileMessageWidget(belongType, temp);
         }
         break;
       case "URL":
         {
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
+              convert.jsonDecode(friendsHistoryMessages.content);
           finalView = _textMessageView(temp, belongType);
         }
         break;
       case "CARD":
         {
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
+              convert.jsonDecode(friendsHistoryMessages.content);
           finalView = CardMessageWidget(belongType, temp);
         }
         break;
       case "GEO":
         {
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
+              convert.jsonDecode(friendsHistoryMessages.content);
           finalView =
               LocationMessageWidget(belongType, temp, MapOriginType.Share);
         }
@@ -183,7 +180,7 @@ class _ChatBubbleState extends State<ChatBubble> {
       default:
         {
           Map<String, dynamic> temp =
-              convert.jsonDecode(widget.friendsHistoryMessages.content);
+              convert.jsonDecode(friendsHistoryMessages.content);
           finalView = _textMessageView(temp, belongType);
         }
         break;
@@ -207,7 +204,7 @@ class _ChatBubbleState extends State<ChatBubble> {
       child: Text('${content['text']}',
           maxLines: 10,
           softWrap: true,
-          style: widget.messageBelongType == MessageBelongType.Receiver
+          style: messageBelongType == MessageBelongType.Receiver
               ? Flavors.textStyles.chatBubbleReceiverText
               : Flavors.textStyles.chatBubbleSenderText),
     );
@@ -219,5 +216,37 @@ class _ChatBubbleState extends State<ChatBubble> {
   //   } else {
   //     return CrossAxisAlignment.start;
   //   }
+  // }
+
+  // Widget _videoLoadView() {
+  //   return Selector<ChatDetailManager, VideoLoadType>(
+  //     builder: (BuildContext context, VideoLoadType value, Widget? child) {
+  //       if (value == VideoLoadType.Loading) {
+  //         return Container(
+  //           child: CupertinoActivityIndicator(),
+  //         );
+  //       } else if (value == VideoLoadType.Fail) {
+  //         return Container(
+  //           child: CircleAvatar(
+  //             backgroundColor: Colors.pink,
+  //             maxRadius: 10,
+  //             child: Center(
+  //               child: Icon(
+  //                 Icons.clear,
+  //                 color: Colors.white,
+  //                 size: 15,
+  //               ),
+  //             ),
+  //           ),
+  //         );
+  //       } else {
+  //         return Container();
+  //       }
+  //     },
+  //     selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+  //       return chatDetailManager.videoLoadType;
+  //     },
+  //     shouldRebuild: (pre, next) => (pre != next),
+  //   );
   // }
 }

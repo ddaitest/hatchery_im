@@ -83,3 +83,10 @@ enum MapOriginType {
   Share,
   Send,
 }
+
+enum VideoLoadType {
+  None,
+  Loading,
+  Fail,
+  Done,
+}

@@ -147,15 +147,13 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
                   ),
                 ])
               : null,
-          body: SafeArea(
-            child: PageView(
-              physics: const NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              children: _tabBodies,
-              // onPageChanged: (page) {
-              //   setState(() => _tabIndex = page);
-              // },
-            ),
+          body: PageView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            children: _tabBodies,
+            // onPageChanged: (page) {
+            //   setState(() => _tabIndex = page);
+            // },
           ),
           bottomNavigationBar: BottomAppBar(
               color: Flavors.colorInfo.mainBackGroundColor, //底部工具栏的颜色。
