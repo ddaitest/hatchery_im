@@ -68,34 +68,17 @@ class ChatDetailManager extends ChangeNotifier {
     Navigator.pop(App.navState.currentContext!);
     _entity = await CameraPicker.pickFromCamera(context,
         enableRecording: true, shouldDeletePreviewFile: true);
-    if (_entity != null) {
-      _entity!.file.then((value) {
-        if (value!.path.split(".")[1] != 'mp4') {
-          messagesList.insert(0, setMediaMessageMap("IMAGE", value.path));
-          value.length().then((int lengthValue) {
-            if (lengthValue > 2080000) {
-              compressionImage(value.path).then((compressionValue) {
-                uploadMediaFile(compressionValue).then((value) => null);
-              });
-            } else {
-              uploadMediaFile(value.path).then((value) => null);
-            }
-          });
-        } else {
-          print("DEBUG=> value.path ${value.path}");
-          messagesList.insert(0, setMediaMessageMap("VIDEO", value.path));
-          compressionVideo(value.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((value) => null);
-          });
-        }
-      });
+    if (_entity == null) {
+      return null;
+    } else {
+      sendLocalMessage(_entity);
     }
   }
 
-  Message setMediaMessageMap(String messageType, String mediaUrl) {
-    DateTime _timeNow = DateTime.now();
+  Message setMediaMessageMap(
+      DateTime dateTime, String messageType, String mediaUrl) {
     Map<String, dynamic> map = {
-      "id": _timeNow.microsecond,
+      "id": dateTime.millisecondsSinceEpoch,
       "type": "",
       "userMsgID": "",
       "sender": UserCentre.getUserID(),
@@ -105,19 +88,23 @@ class ChatDetailManager extends ChangeNotifier {
       "source": "",
       "content": convert.jsonEncode(
           {messageType == 'VIDEO' ? "video_url" : "img_url": "$mediaUrl"}),
-      "createTime": _timeNow.toString(),
+      "createTime": dateTime.toString(),
       "contentType": messageType
     };
     print("DEBUG=> messagesList map $map");
     return Message.fromJson(map);
   }
 
-  Future<String?> uploadMediaFile(String filePath) async {
+  Future<String?> uploadMediaFile(int id, String filePath) async {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {
       var uploadProgress = count.toDouble() / total.toDouble();
       // todo 思路1：根据list 的index set map
-      print("DEBUG=> uploadProgress = $uploadProgress");
+      Map<String, dynamic> progressMap = {
+        "id": id,
+        "uploadProgress": uploadProgress
+      };
+      print("DEBUG=> uploadProgress = $progressMap");
     });
     if (result.isSuccess()) {
       final url = result.getData();
@@ -134,58 +121,48 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
+  void sendLocalMessage(AssetEntity? assetEntity) {
+    DateTime _timeNow = DateTime.now();
+    assetEntity!.file.then((fileValue) {
+      if (assetEntity.type == AssetType.image) {
+        print("DEBUG=> fileValue!.path ${fileValue!.path}");
+        messagesList.insert(
+            0, setMediaMessageMap(_timeNow, "IMAGE", fileValue.path));
+        fileValue.length().then((lengthValue) {
+          if (lengthValue > 2080000) {
+            compressionImage(fileValue.path).then((compressionValue) {
+              uploadMediaFile(_timeNow.millisecondsSinceEpoch, compressionValue)
+                  .then((value) => null);
+            });
+          } else {
+            uploadMediaFile(_timeNow.millisecondsSinceEpoch, fileValue.path)
+                .then((value) => null);
+          }
+        });
+      } else if (assetEntity.type == AssetType.video) {
+        messagesList.insert(
+            0, setMediaMessageMap(_timeNow, "VIDEO", fileValue!.path));
+        compressionVideo(fileValue.path).then((compressionValue) {
+          uploadMediaFile(_timeNow.millisecondsSinceEpoch, compressionValue)
+              .then((value) => null);
+        });
+      }
+    });
+  }
+
   Future getImageByGallery() async {
     final List<AssetEntity>? assets = await AssetPicker.pickAssets(
         App.navState.currentContext!,
         requestType: RequestType.common,
         themeColor: Flavors.colorInfo.mainColor);
+    Navigator.pop(App.navState.currentContext!);
     if (assets == null) {
       return null;
     } else {
       assets.forEach((element) {
-        if (element.type == AssetType.image) {
-          element.file.then((fileValue) {
-            print("DEBUG=> fileValue!.path ${fileValue!.path}");
-            messagesList.insert(0, setMediaMessageMap("IMAGE", fileValue.path));
-            fileValue.length().then((lengthValue) {
-              if (lengthValue > 2080000) {
-                compressionImage(fileValue.path).then((compressionValue) {
-                  uploadMediaFile(compressionValue).then((value) => null);
-                });
-              } else {
-                uploadMediaFile(fileValue.path).then((value) => null);
-              }
-            });
-          });
-        } else {
-          element.file.then((fileValue) {
-            messagesList.insert(
-                0, setMediaMessageMap("VIDEO", fileValue!.path));
-            compressionVideo(fileValue.path).then((compressionValue) {
-              uploadMediaFile(compressionValue).then((value) => null);
-            });
-          });
-        }
+        sendLocalMessage(element);
       });
     }
-    // final pickImages =
-    //     await ImagePicker().pickImage(source: ImageSource.gallery);
-    // Navigator.pop(App.navState.currentContext!);
-    // if (pickImages == null) {
-    //   return null;
-    // } else {
-    //   messagesList.insert(0, setMediaMessageMap("IMAGE", pickImages.path));
-    //   pickImages.length().then((int lengthValue) {
-    //     if (lengthValue > 2080000) {
-    //       compressionImage(pickImages.path).then((compressionValue) {
-    //         uploadMediaFile(compressionValue).then((value) => null);
-    //       });
-    //     } else {
-    //       uploadMediaFile(pickImages.path).then((value) => null);
-    //     }
-    //   });
-    //   print("DEBUG=> pickImages ${pickImages.path}");
-    // }
   }
 
   _inputTextListen() {
