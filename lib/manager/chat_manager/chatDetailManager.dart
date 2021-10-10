@@ -66,21 +66,29 @@ class ChatDetailManager extends ChangeNotifier {
     _loadLatest();
     //添加监听
     // MessageCentre().listenMessage((news) {}, friendId);
-    _readMessages(friendId);
+    _readMessages(friendId, false);
     LocalStore.listenMessage().addListener(() {
-      _readMessages(friendId);
+      _readMessages(friendId, true);
     });
+    var x = DateTime.now().toString();
   }
 
-  void _readMessages(String friendId) {
+  void _readMessages(String friendId, bool notify) {
     Log.red("listenMessage >> friendId =$friendId");
+    LocalStore.messageBox!.values.forEach((element) {
+      Log.red("messages >> ${element.toJson()}");
+    });
     var temp = LocalStore.messageBox!.values
         .where((element) =>
             element.receiver == friendId || element.sender == friendId)
         .toList();
     if (temp.length != messagesList.length) {
       messagesList = temp;
-      notifyListeners();
+      messagesList.sort((a, b) =>
+          DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime)));
+      if (notify) {
+        notifyListeners();
+      }
     }
   }
 

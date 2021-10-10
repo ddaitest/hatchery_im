@@ -260,13 +260,13 @@ class ModelHelper {
         msg.msgId,
         msg.from,
         msg.nick,
-        msg.to,
+        "",
         msg.icon,
         msg.source,
         msg.content as String,
         msg.contentType,
         DateTime.now().toString(),
-        "");
+        msg.to);
     return message;
   }
 }
