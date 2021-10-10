@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:hatchery_im/business/chat_home/chat_page.dart';
 import 'package:hatchery_im/business/contacts/contacts_page.dart';
 import 'package:hatchery_im/business/group_page/groupList.dart';
 import 'package:hatchery_im/business/profile_page/my_profile.dart';
+
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
@@ -43,6 +45,7 @@ class AppManager extends ChangeNotifier {
 
     /// 后台监听初始化
     // BackgroundListen().init();
+    Log.log("app manager. init ");
     SP.init().then((sp) {
       _getConfigFromSP();
       DeviceInfo.init();

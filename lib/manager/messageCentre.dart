@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/api/API.dart';
@@ -255,7 +254,7 @@ class MessageCentre {
   }
 
   static sendTextMessage(String to, String text) {
-    _singleton.sendMessage(to, "text:$text", "TEXT");
+    _singleton.sendMessage(to, jsonEncode({"text": text}), "TEXT");
   }
 
   static void disconnect() => engine?.disconnect();

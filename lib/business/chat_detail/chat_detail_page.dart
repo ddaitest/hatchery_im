@@ -90,17 +90,17 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  Widget _messageInfoView2() {
-    return ValueListenableBuilder(
-        valueListenable: LocalStore.listenMessage(),
-        builder: (context, Box<Message> box, _) {
-          String content = "<${box.values.length}>";
-          box.values.forEach((element) {
-            content += "(${element.content})";
-          });
-          return Text(content);
-        });
-  }
+  // Widget _messageInfoView2() {
+  //   return ValueListenableBuilder(
+  //       valueListenable: LocalStore.listenMessage(),
+  //       builder: (context, Box<Message> box, _) {
+  //         String content = "<${box.values.length}>";
+  //         box.values.forEach((element) {
+  //           content += "(${element.content})";
+  //         });
+  //         return Text(content);
+  //       });
+  // }
 
   Widget _messageInfoView() {
     return Selector<ChatDetailManager, List<Message>>(
@@ -253,6 +253,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         minLines: 1,
         maxLength: 140,
         textInputAction: TextInputAction.send,
+        onFieldSubmitted: (term) {
+          manager.sendTextMessage(term);
+        },
         keyboardType: TextInputType.text,
         cursorColor: Flavors.colorInfo.mainColor,
         decoration: InputDecoration(

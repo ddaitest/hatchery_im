@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'Adapters.dart';
@@ -12,6 +13,7 @@ class LocalStore {
 
   static init() async {
     if (!initDone) {
+      Log.log("LocalStore. init ");
       initDone = true;
       await Hive.initFlutter();
       Hive.registerAdapter(SessionAdapter());
