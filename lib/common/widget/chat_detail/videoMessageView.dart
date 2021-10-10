@@ -7,22 +7,32 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:video_player/video_player.dart';
 import '../../../config.dart';
 
-class VideoMessageWidget extends StatelessWidget {
+class VideoMessageWidget extends StatefulWidget {
   final String videoMessageUrl;
   final MessageBelongType messageBelongType;
   VideoMessageWidget(this.videoMessageUrl, this.messageBelongType);
+  @override
+  _VideoMessageWidgetState createState() => _VideoMessageWidgetState();
+}
+
+class _VideoMessageWidgetState extends State<VideoMessageWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
   FlickManager? flickManager;
+
   @override
   Widget build(BuildContext context) {
-    return _voiceMessageView(messageBelongType);
+    super.build(context);
+    return _voiceMessageView(widget.messageBelongType);
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
     flickManager = FlickManager(
       autoPlay: false,
-      videoPlayerController: videoMessageUrl.contains("https://")
-          ? VideoPlayerController.network(videoMessageUrl)
-          : VideoPlayerController.file(File(videoMessageUrl)),
+      videoPlayerController: widget.videoMessageUrl.contains("https://")
+          ? VideoPlayerController.network(widget.videoMessageUrl)
+          : VideoPlayerController.file(File(widget.videoMessageUrl)),
     );
     return Container(
       constraints: BoxConstraints(maxWidth: 200.0.w, maxHeight: 150.0.h),
@@ -35,5 +45,11 @@ class VideoMessageWidget extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    flickManager?.dispose();
+    super.dispose();
   }
 }

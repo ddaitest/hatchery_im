@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:video_compress/video_compress.dart';
 
 import 'package:hatchery_im/common/tools.dart';
 import 'dart:convert' as convert;
@@ -41,10 +42,10 @@ class ChatDetailManager extends ChangeNotifier {
   String? voiceUrl;
   Timer? timer;
   int recordTiming = 0;
-
   String currentFriendId = "";
   int currentMessageID = 0;
-
+  Map<String, dynamic> uploadProgressMaps = {};
+  List<Map<String, dynamic>> uploadFailList = [];
   int? videoHeight;
   int? videoWidth;
   AssetEntity? _entity;
@@ -66,8 +67,7 @@ class ChatDetailManager extends ChangeNotifier {
     // final Size size = MediaQuery.of(context).size;
     // final double scale = MediaQuery.of(context).devicePixelRatio;
     Navigator.pop(App.navState.currentContext!);
-    _entity = await CameraPicker.pickFromCamera(context,
-        enableRecording: true, shouldDeletePreviewFile: true);
+    _entity = await CameraPicker.pickFromCamera(context, enableRecording: true);
     if (_entity == null) {
       return null;
     } else {
@@ -77,7 +77,8 @@ class ChatDetailManager extends ChangeNotifier {
 
   Message setMediaMessageMap(
       DateTime dateTime, String messageType, String mediaUrl) {
-    Map<String, dynamic> map = {
+    Map<String, dynamic> map = {};
+    map = {
       "id": dateTime.millisecondsSinceEpoch,
       "type": "",
       "userMsgID": "",
@@ -104,7 +105,7 @@ class ChatDetailManager extends ChangeNotifier {
         "id": id,
         "uploadProgress": uploadProgress
       };
-      print("DEBUG=> uploadProgress = $progressMap");
+      print("DEBUG=> uploadProgress = $id $uploadProgress");
     });
     if (result.isSuccess()) {
       final url = result.getData();
@@ -151,16 +152,20 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   Future getImageByGallery() async {
-    final List<AssetEntity>? assets = await AssetPicker.pickAssets(
-        App.navState.currentContext!,
-        requestType: RequestType.common,
-        themeColor: Flavors.colorInfo.mainColor);
+    final List<AssetEntity>? assets =
+        await AssetPicker.pickAssets(App.navState.currentContext!,
+            requestType: RequestType.common,
+            // maxAssets: 1,
+            themeColor: Flavors.colorInfo.mainColor);
     Navigator.pop(App.navState.currentContext!);
     if (assets == null) {
       return null;
     } else {
       assets.forEach((element) {
-        sendLocalMessage(element);
+        Future.delayed(Duration.zero, () {
+          VideoCompress.cancelCompression()
+              .then((value) => sendLocalMessage(element));
+        });
       });
     }
   }
