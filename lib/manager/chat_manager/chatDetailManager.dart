@@ -5,8 +5,10 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/app_manager/app_handler.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
@@ -22,6 +24,7 @@ import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
+
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -31,7 +34,6 @@ import '../../config.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 class ChatDetailManager extends ChangeNotifier {
-  final TextEditingController textEditingController = TextEditingController();
   MyProfile? myProfileData;
   bool isVoiceModel = false;
   bool isRecording = false;
@@ -50,16 +52,35 @@ class ChatDetailManager extends ChangeNotifier {
   AssetEntity? _entity;
 
   VideoLoadType videoLoadType = VideoLoadType.Fail;
+  final TextEditingController textEditingController = TextEditingController();
 
+  // ValueListenable<Box<Message>> messages = LocalStore.listenMessage();
   /// 初始化
   init(String friendId) {
-    _inputTextListen();
+    // _inputTextListen();
     myProfileData = UserCentre.getInfo();
-    queryFriendsHistoryMessages(friendId, 0);
+    var myId = UserCentre.getUserID();
+    // queryFriendsHistoryMessages(friendId, 0);
     currentFriendId = friendId;
     _loadLatest();
     //添加监听
-    MessageCentre().listenMessage((news) {}, friendId);
+    // MessageCentre().listenMessage((news) {}, friendId);
+    _readMessages(friendId);
+    LocalStore.listenMessage().addListener(() {
+      _readMessages(friendId);
+    });
+  }
+
+  void _readMessages(String friendId) {
+    Log.red("listenMessage >> friendId =$friendId");
+    var temp = LocalStore.messageBox!.values
+        .where((element) =>
+            element.receiver == friendId || element.sender == friendId)
+        .toList();
+    if (temp.length != messagesList.length) {
+      messagesList = temp;
+      notifyListeners();
+    }
   }
 
   Future<void> pickCamera(BuildContext context) async {
@@ -165,11 +186,11 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  _inputTextListen() {
-    textEditingController.addListener(() {
-      print("DEBUG=> _inputTextListen ${textEditingController.text}");
-    });
-  }
+  // _inputTextListen() {
+  //   textEditingController.addListener(() {
+  //     print("DEBUG=> _inputTextListen ${textEditingController.text}");
+  //   });
+  // }
 
   /// 加载最新的消息，数据来源 本地。
   _loadLatest() {
@@ -317,5 +338,9 @@ class ChatDetailManager extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  void sendTextMessage(String term) {
+    MessageCentre.sendTextMessage(currentFriendId, term);
   }
 }
