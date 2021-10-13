@@ -100,13 +100,14 @@ class ChatBubble extends StatelessWidget {
   Widget switchMessageTypeView(
       String messageType, MessageBelongType belongType) {
     Widget finalView;
+    String content = convert.jsonDecode(friendsHistoryMessages.content)['text'];
     switch (messageType) {
       case "TEXT":
         {
           // finalView = ImageMessageWidget(imageTestUrl, belongType);
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          finalView = _textMessageView(temp, belongType);
+
+          print("DEBUG=> friendsHistoryMessages.content ${content}");
+          finalView = _textMessageView(content, belongType);
           // Map<String, dynamic> temp = {
           //   "name": "北京市门头沟体育馆",
           //   "icon": "",
@@ -121,31 +122,18 @@ class ChatBubble extends StatelessWidget {
         break;
       case "IMAGE":
         {
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          print("DEBUG=>  ${friendsHistoryMessages.content}");
-
           //TODO
-          finalView = ImageMessageWidget(temp["img_url"], belongType);
+          finalView = ImageMessageWidget(content, belongType);
         }
         break;
       case "VIDEO":
         {
-          //TODO
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          finalView = VideoMessageWidget(temp["video_url"], belongType);
+          finalView = VideoMessageWidget(content, belongType);
         }
         break;
       case "VOICE":
         {
-          //TODO
-          // print(
-          //     "DEBUG=> friendsHistoryMessages.content ${friendsHistoryMessages.content}");
-          // Map<String, dynamic> temp =
-          //     convert.jsonDecode(friendsHistoryMessages.content);
-          finalView =
-              VoiceMessageWidget(friendsHistoryMessages.content, belongType);
+          finalView = VoiceMessageWidget(content, belongType);
         }
         break;
       case "FILE":
@@ -157,18 +145,14 @@ class ChatBubble extends StatelessWidget {
         break;
       case "URL":
         {
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          finalView = _textMessageView(temp, belongType);
+          finalView = _textMessageView(content, belongType);
         }
         break;
-      case "CARD":
-        {
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          finalView = CardMessageWidget(belongType, temp);
-        }
-        break;
+      // case "CARD":
+      //   {
+      //     finalView = CardMessageWidget(belongType, content);
+      //   }
+      //   break;
       case "GEO":
         {
           Map<String, dynamic> temp =
@@ -179,17 +163,14 @@ class ChatBubble extends StatelessWidget {
         break;
       default:
         {
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          finalView = _textMessageView(temp, belongType);
+          finalView = _textMessageView(content, belongType);
         }
         break;
     }
     return finalView;
   }
 
-  Widget _textMessageView(
-      Map<String, dynamic> content, MessageBelongType belongType) {
+  Widget _textMessageView(String content, MessageBelongType belongType) {
     return Container(
       constraints: BoxConstraints(
         maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
@@ -201,7 +182,7 @@ class ChatBubble extends StatelessWidget {
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Text('${content['text']}',
+      child: Text('$content',
           maxLines: 10,
           softWrap: true,
           style: messageBelongType == MessageBelongType.Receiver
@@ -210,43 +191,43 @@ class ChatBubble extends StatelessWidget {
     );
   }
 
-  // CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
-  //   if (belongType == MessageBelongType.Receiver) {
-  //     return CrossAxisAlignment.end;
-  //   } else {
-  //     return CrossAxisAlignment.start;
-  //   }
-  // }
+// CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
+//   if (belongType == MessageBelongType.Receiver) {
+//     return CrossAxisAlignment.end;
+//   } else {
+//     return CrossAxisAlignment.start;
+//   }
+// }
 
-  // Widget _videoLoadView() {
-  //   return Selector<ChatDetailManager, VideoLoadType>(
-  //     builder: (BuildContext context, VideoLoadType value, Widget? child) {
-  //       if (value == VideoLoadType.Loading) {
-  //         return Container(
-  //           child: CupertinoActivityIndicator(),
-  //         );
-  //       } else if (value == VideoLoadType.Fail) {
-  //         return Container(
-  //           child: CircleAvatar(
-  //             backgroundColor: Colors.pink,
-  //             maxRadius: 10,
-  //             child: Center(
-  //               child: Icon(
-  //                 Icons.clear,
-  //                 color: Colors.white,
-  //                 size: 15,
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //       } else {
-  //         return Container();
-  //       }
-  //     },
-  //     selector: (BuildContext context, ChatDetailManager chatDetailManager) {
-  //       return chatDetailManager.videoLoadType;
-  //     },
-  //     shouldRebuild: (pre, next) => (pre != next),
-  //   );
-  // }
+// Widget _videoLoadView() {
+//   return Selector<ChatDetailManager, VideoLoadType>(
+//     builder: (BuildContext context, VideoLoadType value, Widget? child) {
+//       if (value == VideoLoadType.Loading) {
+//         return Container(
+//           child: CupertinoActivityIndicator(),
+//         );
+//       } else if (value == VideoLoadType.Fail) {
+//         return Container(
+//           child: CircleAvatar(
+//             backgroundColor: Colors.pink,
+//             maxRadius: 10,
+//             child: Center(
+//               child: Icon(
+//                 Icons.clear,
+//                 color: Colors.white,
+//                 size: 15,
+//               ),
+//             ),
+//           ),
+//         );
+//       } else {
+//         return Container();
+//       }
+//     },
+//     selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+//       return chatDetailManager.videoLoadType;
+//     },
+//     shouldRebuild: (pre, next) => (pre != next),
+//   );
+// }
 }

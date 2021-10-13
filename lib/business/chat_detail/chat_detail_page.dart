@@ -225,7 +225,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return GestureDetector(
         onTap: () {
           /// 点击先收起键盘
-          FocusScope.of(context).requestFocus(FocusNode());
+          FocusScope.of(context).unfocus();
           showModal();
         },
         child: Image.asset('images/moreBtn.png'));
@@ -235,7 +235,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return GestureDetector(
         onTap: () {
           /// 点击先收起键盘
-          FocusScope.of(context).requestFocus(FocusNode());
+          FocusScope.of(context).unfocus();
 
           /// 设置表情选择框是否显示
           manager.setEmojiShowStatus();
@@ -302,7 +302,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget _voiceRecordBtnView(bool isVoice) {
     return GestureDetector(
       onLongPress: () {
-        FocusScope.of(context).requestFocus(FocusNode());
+        FocusScope.of(context).unfocus();
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
         manager.timingStartMethod();
