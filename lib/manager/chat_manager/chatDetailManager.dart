@@ -61,7 +61,7 @@ class ChatDetailManager extends ChangeNotifier {
     // _inputTextListen();
     myProfileData = UserCentre.getInfo();
     var myId = UserCentre.getUserID();
-    // queryFriendsHistoryMessages(friendId, 0);
+    queryFriendsHistoryMessages(friendId, 0);
     currentFriendId = friendId;
     _loadLatest();
     //添加监听

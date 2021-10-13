@@ -255,6 +255,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
           manager.sendTextMessage(term);
+          manager.textEditingController.clear();
         },
         keyboardType: TextInputType.text,
         cursorColor: Flavors.colorInfo.mainColor,
