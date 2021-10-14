@@ -195,7 +195,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   Container(
                     padding: const EdgeInsets.all(15.0),
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        manager.sendTextMessage(
+                            manager.textEditingController.text);
+                        manager.textEditingController.clear();
+                      },
                       style: ElevatedButton.styleFrom(
                         elevation: 0.5,
                         primary: Flavors.colorInfo.mainColor,

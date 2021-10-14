@@ -257,6 +257,18 @@ class MessageCentre {
     _singleton.sendMessage(to, jsonEncode({"text": text}), "TEXT");
   }
 
+  static sendImageMessage(String to, String imageUrl) {
+    _singleton.sendMessage(to, jsonEncode({"img_url": imageUrl}), "IMAGE");
+  }
+
+  static sendVideoMessage(String to, String videoUrl) {
+    _singleton.sendMessage(to, jsonEncode({"video_url": videoUrl}), "VIDEO");
+  }
+
+  static sendVoiceMessage(String to, String voiceUrl) {
+    _singleton.sendMessage(to, jsonEncode({"voice_url": voiceUrl}), "VOICE");
+  }
+
   static void disconnect() => engine?.disconnect();
 }
 
