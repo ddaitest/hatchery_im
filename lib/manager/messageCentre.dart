@@ -14,6 +14,7 @@ import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:crypto/crypto.dart';
 import 'contacts_manager/Constants.dart';
 import '../store/LocalStore.dart';
+import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'MsgHelper.dart';
 import 'app_manager/app_handler.dart';
 
@@ -267,6 +268,14 @@ class MessageCentre {
 
   static sendVoiceMessage(String to, String voiceUrl) {
     _singleton.sendMessage(to, jsonEncode({"voice_url": voiceUrl}), "VOICE");
+  }
+
+  static sendGeoMessage(String to, Map<String, dynamic> positionMap) {
+    _singleton.sendMessage(to, jsonEncode(positionMap), "GEO");
+  }
+
+  static sendFileMessage(String to, Map<String, dynamic> fileMap) {
+    _singleton.sendMessage(to, jsonEncode(fileMap), "FILE");
   }
 
   static void disconnect() => engine?.disconnect();

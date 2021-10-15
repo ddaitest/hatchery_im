@@ -24,8 +24,7 @@ class LocationMessageWidget extends StatelessWidget {
   }
 
   Widget _locationMessageView(MessageBelongType belongType) {
-    LatLng position = LatLng(
-        double.parse(content['latitude']), double.parse(content['longitude']));
+    LatLng position = LatLng(content['latitude'], content['longitude']);
     return GestureDetector(
       onTap: () => Routers.navigateTo('/map_view', arg: {
         'mapOriginType': mapOriginType,
@@ -36,9 +35,7 @@ class LocationMessageWidget extends StatelessWidget {
           width: 180.0.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: belongType == MessageBelongType.Receiver
-                ? Colors.white
-                : Flavors.colorInfo.mainColor,
+            color: Colors.white,
           ),
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -55,7 +52,7 @@ class LocationMessageWidget extends StatelessWidget {
               dividerViewCommon(indent: 0.0, endIndent: 0.0),
               Container(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Text('位置分享 - ${content['name']}',
+                  child: Text('${content['name']}',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: Flavors.textStyles.chatStyleCardBottomText))

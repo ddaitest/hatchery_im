@@ -46,7 +46,7 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..write(obj.contentType)
       ..write(obj.createTime)
       ..write(obj.groupID);
-      // ..writeByte(12);
+    // ..writeByte(12);
     // ..write(obj.progress);
   }
 

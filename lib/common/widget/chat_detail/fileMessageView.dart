@@ -27,9 +27,7 @@ class FileMessageWidget extends StatelessWidget {
           width: 180.0.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: belongType == MessageBelongType.Receiver
-                ? Colors.white
-                : Flavors.colorInfo.mainColor,
+            color: Colors.white,
           ),
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -39,28 +37,32 @@ class FileMessageWidget extends StatelessWidget {
               Container(
                 width: 150.0.w,
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    netWorkAvatar(content['icon'], 15.0),
-                    SizedBox(
-                      width: 10.0.w,
-                    ),
-                    Text(
-                      '${content['name']}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                child: Text(
+                  '${content['name']}',
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               dividerViewCommon(indent: 0.0, endIndent: 0.0),
               Container(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Text('文件',
+                  child: Text('${setFileSize(content['content_length'])}',
                       style: Flavors.textStyles.chatStyleCardBottomText))
             ],
           )),
     );
+  }
+
+  String setFileSize(var fileSize) {
+    return fileSize.toString();
+    // if (fileSize != null) {
+    //   if (fileSize >= 1000) {
+    //     return "${(content['content_length'] / 1000).toStringAsFixed(2)} MB";
+    //   } else {
+    //     return "${content['content_length'].toStringAsFixed(0)} KB";
+    //   }
+    // } else {
+    //   return '';
+    // }
   }
 }

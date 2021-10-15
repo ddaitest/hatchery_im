@@ -249,16 +249,16 @@ checkMessageTime(String createTime) {
           '${_responseCreateTime.year}${_responseCreateTime.month}${_responseCreateTime.day}');
   if (differenceTime == 0) {
     _finalShowTime =
-        '${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+        '${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
   } else if (differenceTime == 1) {
     _finalShowTime =
-        '昨天 ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+        '昨天 ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
   } else if (differenceTime > 1 && differenceTime <= 7) {
     _finalShowTime =
-        '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+        '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
   } else {
     _finalShowTime =
-        '${_responseCreateTime.year}-${_responseCreateTime.month}-${_responseCreateTime.day} ${_responseCreateTime.hour}:${_responseCreateTime.minute}';
+        '${_responseCreateTime.year}-${_responseCreateTime.month.toString().padLeft(2, '0')}-${_responseCreateTime.day.toString().padLeft(2, '0')} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
   }
   return _finalShowTime;
 }
@@ -368,7 +368,11 @@ class CacheInfo {
     if (null == value) {
       return 0;
     }
-    List<String> unitArr = []..add('B')..add('K')..add('M')..add('G');
+    List<String> unitArr = []
+      ..add('B')
+      ..add('K')
+      ..add('M')
+      ..add('G');
     int index = 0;
     while (value > 1024) {
       index++;

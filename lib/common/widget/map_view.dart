@@ -108,8 +108,13 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
             child: TextButton(
               onPressed: () {
                 if (widget.mapOriginType == MapOriginType.Send) {
-                  showToast("${manager.locationResult}");
-                  chatDetailManager.sendMessage(term, messageType);
+                  print("DEBUG=> locationResult ${manager.locationResult}");
+                  chatDetailManager.sendMessage({
+                    "name": "${manager.locationResult!['description']}",
+                    "longitude": manager.locationResult!['longitude'],
+                    "latitude": manager.locationResult!['latitude']
+                  }, "GEO");
+                  Navigator.pop(App.navState.currentContext!);
                 } else {
                   manager.sheetMenuActionList.isEmpty
                       ? showToast('没有安装对应的地图app（例如：高德、百度、Google）')

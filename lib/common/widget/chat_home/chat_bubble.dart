@@ -137,9 +137,7 @@ class ChatBubble extends StatelessWidget {
         break;
       case "FILE":
         {
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
-          finalView = FileMessageWidget(belongType, temp);
+          finalView = FileMessageWidget(belongType, content);
         }
         break;
       case "URL":
@@ -154,10 +152,8 @@ class ChatBubble extends StatelessWidget {
       //   break;
       case "GEO":
         {
-          Map<String, dynamic> temp =
-              convert.jsonDecode(friendsHistoryMessages.content);
           finalView =
-              LocationMessageWidget(belongType, temp, MapOriginType.Share);
+              LocationMessageWidget(belongType, content, MapOriginType.Share);
         }
         break;
       default:

@@ -28,7 +28,7 @@ import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:video_compress/video_compress.dart';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'dart:convert' as convert;
 import '../../config.dart';
@@ -59,14 +59,14 @@ class ChatDetailManager extends ChangeNotifier {
   /// 初始化
   init(String friendId) {
     // _inputTextListen();
-    myProfileData = UserCentre.getInfo();
-    var myId = UserCentre.getUserID();
-    queryFriendsHistoryMessages(friendId, 0);
+    // myProfileData = UserCentre.getInfo();
+
+    queryFriendsHistoryMessages();
     currentFriendId = friendId;
     _loadLatest();
     //添加监听
     // MessageCentre().listenMessage((news) {}, friendId);
-    _readMessages(friendId, false);
+    _readMessages(friendId, true);
     LocalStore.listenMessage().addListener(() {
       _readMessages(friendId, true);
     });
@@ -74,13 +74,14 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void _readMessages(String friendId, bool notify) {
+    String myId = UserCentre.getUserID();
     Log.red("listenMessage >> friendId =$friendId");
     LocalStore.messageBox!.values.forEach((element) {
       Log.red("messages >> ${element.toJson()}");
     });
     var temp = LocalStore.messageBox!.values
-        .where((element) =>
-            element.receiver == friendId || element.sender == friendId)
+        .where(
+            (element) => element.receiver == friendId || element.sender == myId)
         .toList();
     if (temp.length != messagesList.length) {
       messagesList = temp;
@@ -205,11 +206,22 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  // _inputTextListen() {
-  //   textEditingController.addListener(() {
-  //     print("DEBUG=> _inputTextListen ${textEditingController.text}");
-  //   });
-  // }
+  Future<void> pickFile() async {
+    Navigator.pop(App.navState.currentContext!);
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      DateTime _timeNow = DateTime.now();
+      uploadMediaFile(_timeNow.millisecondsSinceEpoch, result.files[0].path!)
+          .then((uploadMediaUrl) {
+        if (uploadMediaUrl != "")
+          sendMessage({
+            "name": "${result.files[0].name}",
+            "file_url": uploadMediaUrl,
+            "content_length": result.files[0].size / 1024
+          }, "FILE");
+      });
+    }
+  }
 
   /// 加载最新的消息，数据来源 本地。
   _loadLatest() {
@@ -241,22 +253,7 @@ class ChatDetailManager extends ChangeNotifier {
     // MessageCentre().loadMore(currentFriendId)
   }
 
-  queryFriendsHistoryMessages(String friendId, int? currentMsgID,
-      {int page = 0, int size = 100}) async {
-    API
-        .messageHistoryWithFriend(
-            friendID: friendId,
-            size: size,
-            page: page,
-            currentMsgID: currentMsgID!)
-        .then((value) {
-      if (value.isSuccess()) {
-        messagesList = value.getDataList((m) => Message.fromJson(m), type: 0);
-
-        notifyListeners();
-      }
-    });
-  }
+  queryFriendsHistoryMessages() async {}
 
   // _getStoredForMyProfileData() async {
   //   String? stored = SP.getString(SPKey.userInfo);
@@ -312,7 +309,11 @@ class ChatDetailManager extends ChangeNotifier {
     print("DEBUG=> recordTiming $recordTiming");
     if (recordTiming >= 3) {
       Future.delayed(Duration(milliseconds: 500), () {
-        uploadVoiceFile(voicePath!);
+        DateTime _timeNow = DateTime.now();
+        uploadMediaFile(_timeNow.millisecondsSinceEpoch, voicePath!)
+            .then((uploadMediaUrl) {
+          if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "VOICE");
+        });
       });
     } else {
       showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
@@ -346,20 +347,7 @@ class ChatDetailManager extends ChangeNotifier {
     isRecording = false;
   }
 
-  uploadVoiceFile(String filePath) async {
-    ApiResult result =
-        await ApiForFileService.uploadFile(filePath, (count, total) {});
-    if (result.isSuccess()) {
-      final url = result.getData();
-      if (url is String) {
-        voiceUrl = url;
-        print("DEBUG=> voiceUrl = $voiceUrl");
-        notifyListeners();
-      }
-    }
-  }
-
-  void sendMessage(String term, String messageType) {
+  void sendMessage(var term, String messageType) {
     switch (messageType) {
       case "TEXT":
         MessageCentre.sendTextMessage(currentFriendId, term);
@@ -372,6 +360,12 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       case "VOICE":
         MessageCentre.sendVoiceMessage(currentFriendId, term);
+        break;
+      case "GEO":
+        MessageCentre.sendGeoMessage(currentFriendId, term);
+        break;
+      case "FILE":
+        MessageCentre.sendFileMessage(currentFriendId, term);
         break;
       default:
         MessageCentre.sendTextMessage(currentFriendId, term);

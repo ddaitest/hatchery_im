@@ -48,16 +48,21 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           text: "拍摄",
           icons: Icons.camera_alt,
           color: Colors.orange,
-          onTap: () => App.manager<ChatDetailManager>()
-              .pickCamera(App.navState.currentContext!)),
+          onTap: () => manager.pickCamera(App.navState.currentContext!)),
       SendMenuItems(
-          text: "文件", icons: Icons.insert_drive_file, color: Colors.blue),
+          text: "文件",
+          icons: Icons.insert_drive_file,
+          color: Colors.blue,
+          onTap: () => manager.pickFile()),
       SendMenuItems(
           text: "位置",
           icons: Icons.location_on,
           color: Colors.green,
-          onTap: () => Routers.navigateTo('/map_view',
-              arg: {'mapOriginType': MapOriginType.Send, 'position': null})),
+          onTap: () {
+            Routers.navigateTo('/map_view',
+                arg: {'mapOriginType': MapOriginType.Send, 'position': null});
+            Navigator.pop(App.navState.currentContext!);
+          }),
       // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
     ];
     manager.init(widget.usersInfo!.userID);
