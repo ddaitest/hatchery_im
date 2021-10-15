@@ -130,10 +130,10 @@ class ChatDetailManager extends ChangeNotifier {
         await ApiForFileService.uploadFile(filePath, (count, total) {
       var uploadProgress = count.toDouble() / total.toDouble();
       // todo 思路1：根据list 的index set map
-      Map<String, dynamic> progressMap = {
-        "id": id,
-        "uploadProgress": uploadProgress
-      };
+      // Map<String, dynamic> progressMap = {
+      //   "id": id,
+      //   "uploadProgress": uploadProgress
+      // };
       print("DEBUG=> uploadProgress = $id $uploadProgress");
     });
     if (result.isSuccess()) {
@@ -156,25 +156,31 @@ class ChatDetailManager extends ChangeNotifier {
     assetEntity!.file.then((fileValue) {
       if (assetEntity.type == AssetType.image) {
         print("DEBUG=> fileValue!.path ${fileValue!.path}");
-        messagesList.insert(
-            0, setMediaMessageMap(_timeNow, "IMAGE", fileValue.path));
+        // messagesList.insert(
+        //     0, setMediaMessageMap(_timeNow, "IMAGE", fileValue.path));
         fileValue.length().then((lengthValue) {
           if (lengthValue > 2080000) {
             compressionImage(fileValue.path).then((compressionValue) {
               uploadMediaFile(_timeNow.millisecondsSinceEpoch, compressionValue)
-                  .then((value) => null);
+                  .then((uploadMediaUrl) {
+                if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "IMAGE");
+              });
             });
           } else {
             uploadMediaFile(_timeNow.millisecondsSinceEpoch, fileValue.path)
-                .then((value) => null);
+                .then((uploadMediaUrl) {
+              if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "IMAGE");
+            });
           }
         });
       } else if (assetEntity.type == AssetType.video) {
-        messagesList.insert(
-            0, setMediaMessageMap(_timeNow, "VIDEO", fileValue!.path));
-        compressionVideo(fileValue.path).then((compressionValue) {
+        // messagesList.insert(
+        //     0, setMediaMessageMap(_timeNow, "VIDEO", fileValue!.path));
+        compressionVideo(fileValue!.path).then((compressionValue) {
           uploadMediaFile(_timeNow.millisecondsSinceEpoch, compressionValue)
-              .then((value) => null);
+              .then((uploadMediaUrl) {
+            if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "VIDEO");
+          });
         });
       }
     });
@@ -353,7 +359,23 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void sendTextMessage(String term) {
-    MessageCentre.sendTextMessage(currentFriendId, term);
+  void sendMessage(String term, String messageType) {
+    switch (messageType) {
+      case "TEXT":
+        MessageCentre.sendTextMessage(currentFriendId, term);
+        break;
+      case "IMAGE":
+        MessageCentre.sendImageMessage(currentFriendId, term);
+        break;
+      case "VIDEO":
+        MessageCentre.sendVideoMessage(currentFriendId, term);
+        break;
+      case "VOICE":
+        MessageCentre.sendVoiceMessage(currentFriendId, term);
+        break;
+      default:
+        MessageCentre.sendTextMessage(currentFriendId, term);
+        break;
+    }
   }
 }

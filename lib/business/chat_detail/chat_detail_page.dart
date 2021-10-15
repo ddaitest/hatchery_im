@@ -196,8 +196,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     padding: const EdgeInsets.all(15.0),
                     child: TextButton(
                       onPressed: () {
-                        manager.sendTextMessage(
-                            manager.textEditingController.text);
+                        manager.sendMessage(
+                            manager.textEditingController.text, "TEXT");
                         manager.textEditingController.clear();
                       },
                       style: ElevatedButton.styleFrom(
@@ -258,7 +258,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         maxLength: 140,
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
-          manager.sendTextMessage(term);
+          manager.sendMessage(term, "TEXT");
           manager.textEditingController.clear();
         },
         keyboardType: TextInputType.text,

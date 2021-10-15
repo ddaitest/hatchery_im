@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
+import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:map_launcher/map_launcher.dart';
 import '../AppContext.dart';
 import '../utils.dart';
@@ -25,6 +26,7 @@ class ShowMapPageBody extends StatefulWidget {
 
 class _ShowMapPageState extends State<ShowMapPageBody> {
   final manager = App.manager<ShowMapManager>();
+  final chatDetailManager = App.manager<ChatDetailManager>();
   final Map<String, Marker> _initMarkerMap = <String, Marker>{};
   static const AMapApiKey amapApiKeys =
       AMapApiKey(iosKey: 'd22e41d0d901d767f70898dfa28bf61b');
@@ -107,6 +109,7 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
               onPressed: () {
                 if (widget.mapOriginType == MapOriginType.Send) {
                   showToast("${manager.locationResult}");
+                  chatDetailManager.sendMessage(term, messageType);
                 } else {
                   manager.sheetMenuActionList.isEmpty
                       ? showToast('没有安装对应的地图app（例如：高德、百度、Google）')

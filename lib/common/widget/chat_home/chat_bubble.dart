@@ -100,14 +100,13 @@ class ChatBubble extends StatelessWidget {
   Widget switchMessageTypeView(
       String messageType, MessageBelongType belongType) {
     Widget finalView;
-    String content = convert.jsonDecode(friendsHistoryMessages.content)['text'];
+    Map<String, dynamic> content =
+        convert.jsonDecode(friendsHistoryMessages.content);
     switch (messageType) {
       case "TEXT":
         {
-          // finalView = ImageMessageWidget(imageTestUrl, belongType);
-
           print("DEBUG=> friendsHistoryMessages.content ${content}");
-          finalView = _textMessageView(content, belongType);
+          finalView = _textMessageView(content['text'], belongType);
           // Map<String, dynamic> temp = {
           //   "name": "北京市门头沟体育馆",
           //   "icon": "",
@@ -123,17 +122,17 @@ class ChatBubble extends StatelessWidget {
       case "IMAGE":
         {
           //TODO
-          finalView = ImageMessageWidget(content, belongType);
+          finalView = ImageMessageWidget(content['img_url'], belongType);
         }
         break;
       case "VIDEO":
         {
-          finalView = VideoMessageWidget(content, belongType);
+          finalView = VideoMessageWidget(content['video_url'], belongType);
         }
         break;
       case "VOICE":
         {
-          finalView = VoiceMessageWidget(content, belongType);
+          finalView = VoiceMessageWidget(content['voice_url'], belongType);
         }
         break;
       case "FILE":
@@ -145,7 +144,7 @@ class ChatBubble extends StatelessWidget {
         break;
       case "URL":
         {
-          finalView = _textMessageView(content, belongType);
+          finalView = _textMessageView(content['text'], belongType);
         }
         break;
       // case "CARD":
@@ -163,7 +162,7 @@ class ChatBubble extends StatelessWidget {
         break;
       default:
         {
-          finalView = _textMessageView(content, belongType);
+          finalView = _textMessageView(content['text'], belongType);
         }
         break;
     }
