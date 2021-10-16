@@ -120,7 +120,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return ChatBubble(
-                userID: widget.usersInfo!.userID,
+                userID: widget.usersInfo?.userID ?? '',
                 avatarPicUrl: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
