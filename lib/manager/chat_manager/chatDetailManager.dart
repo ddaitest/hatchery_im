@@ -59,14 +59,12 @@ class ChatDetailManager extends ChangeNotifier {
   /// 初始化
   init(String friendId) {
     // _inputTextListen();
-    // myProfileData = UserCentre.getInfo();
-
-    queryFriendsHistoryMessages();
+    myProfileData = UserCentre.getInfo();
     currentFriendId = friendId;
-    _loadLatest();
+    _loadLatest(currentFriendId);
     //添加监听
-    // MessageCentre().listenMessage((news) {}, friendId);
-    _readMessages(friendId, true);
+    // MessageCentre().listenMessage((news) {}, friendId);U202120615013800001
+    _readMessages(friendId, false);
     LocalStore.listenMessage().addListener(() {
       _readMessages(friendId, true);
     });
@@ -80,8 +78,8 @@ class ChatDetailManager extends ChangeNotifier {
       Log.red("messages >> ${element.toJson()}");
     });
     var temp = LocalStore.messageBox!.values
-        .where(
-            (element) => element.receiver == friendId || element.sender == myId)
+        .where((element) =>
+            element.receiver == friendId || element.sender == friendId)
         .toList();
     if (temp.length != messagesList.length) {
       messagesList = temp;
@@ -105,26 +103,26 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  Message setMediaMessageMap(
-      DateTime dateTime, String messageType, String mediaUrl) {
-    Map<String, dynamic> map = {};
-    map = {
-      "id": dateTime.millisecondsSinceEpoch,
-      "type": "",
-      "userMsgID": "",
-      "sender": UserCentre.getUserID(),
-      "nick": "",
-      "receiver": "",
-      "icon": "",
-      "source": "",
-      "content": convert.jsonEncode(
-          {messageType == 'VIDEO' ? "video_url" : "img_url": "$mediaUrl"}),
-      "createTime": dateTime.toString(),
-      "contentType": messageType
-    };
-    print("DEBUG=> messagesList map $map");
-    return Message.fromJson(map);
-  }
+  // Message setMediaMessageMap(
+  //     DateTime dateTime, String messageType, String mediaUrl) {
+  //   Map<String, dynamic> map = {};
+  //   map = {
+  //     "id": dateTime.millisecondsSinceEpoch,
+  //     "type": "",
+  //     "userMsgID": "",
+  //     "sender": UserCentre.getUserID(),
+  //     "nick": "",
+  //     "receiver": "",
+  //     "icon": "",
+  //     "source": "",
+  //     "content": convert.jsonEncode(
+  //         {messageType == 'VIDEO' ? "video_url" : "img_url": "$mediaUrl"}),
+  //     "createTime": dateTime.toString(),
+  //     "contentType": messageType
+  //   };
+  //   print("DEBUG=> messagesList map $map");
+  //   return Message.fromJson(map);
+  // }
 
   Future<String?> uploadMediaFile(int id, String filePath) async {
     ApiResult result =
@@ -198,10 +196,7 @@ class ChatDetailManager extends ChangeNotifier {
       return null;
     } else {
       assets.forEach((element) {
-        Future.delayed(Duration.zero, () {
-          VideoCompress.cancelCompression()
-              .then((value) => sendLocalMessage(element));
-        });
+        sendLocalMessage(element);
       });
     }
   }
@@ -224,9 +219,9 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   /// 加载最新的消息，数据来源 本地。
-  _loadLatest() {
+  _loadLatest(String friendId) {
     // 读本地
-    MessageCentre.getMessages(currentFriendId).then((value) {
+    MessageCentre.getMessages(friendId).then((value) {
       if (value.length > 0) {
         messagesList = value;
         notifyListeners();

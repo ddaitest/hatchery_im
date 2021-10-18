@@ -26,8 +26,8 @@ class StringsInfo {
 }
 
 class ApiInfo {
-  final String API_HOST = 'http://149.129.176.107:5858/api';
-  final String File_UPLOAD_PATH = 'http://149.129.176.107:5858/resources';
+  final String API_HOST = 'http://119.23.74.10:5858/api';
+  final String File_UPLOAD_PATH = 'http://119.23.74.10:5858/resources';
   final int API_CONNECT_TIMEOUT = 60000;
   final int API_RECEIVE_TIMEOUT = 60000;
   final String CONTENT_TYPE = 'application/json';

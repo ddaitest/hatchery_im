@@ -43,7 +43,7 @@ class Engine {
   WebSocketChannel? _channel;
 
   ///服务器地址
-  String _address = 'ws://149.129.176.107:5889/ws';
+  String _address = 'ws://119.23.74.10:5889/ws';
   String _userID = "";
   String _source = "";
   String _deviceId = "";

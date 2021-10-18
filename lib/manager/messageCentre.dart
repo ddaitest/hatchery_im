@@ -74,7 +74,7 @@ class MessageCentre {
       Log.red("MessageCentre.init error _token is $_token");
       return;
     }
-    engine?.init('ws://149.129.176.107:5889/ws', _userInfo?.userID ?? "",
+    engine?.init('ws://119.23.74.10:5889/ws', _userInfo?.userID ?? "",
         source: TARGET_PLATFORM);
     engine?.connect();
     engine?.setCallback(MyEngineHandler(centre));

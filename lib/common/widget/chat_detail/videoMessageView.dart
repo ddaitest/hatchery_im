@@ -30,7 +30,7 @@ class _VideoMessageWidgetState extends State<VideoMessageWidget>
   Widget _voiceMessageView(MessageBelongType belongType) {
     flickManager = FlickManager(
       autoPlay: false,
-      videoPlayerController: widget.videoMessageUrl.contains("https://")
+      videoPlayerController: widget.videoMessageUrl.contains("http://")
           ? VideoPlayerController.network(widget.videoMessageUrl)
           : VideoPlayerController.file(File(widget.videoMessageUrl)),
     );

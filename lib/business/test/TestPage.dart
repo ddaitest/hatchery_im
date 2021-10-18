@@ -33,16 +33,18 @@ class TestState extends State<TestPage> {
 
   // String to = "U202115215031100001";
   // String from = "U202114522384900001";
-  String to = "U202114522384900001";
+  // sender: U202121622163000001
+  // receiver: U202115215031100001
+  String to = "U202121622163000001";
   String from = "U202115215031100001";
 
   var ts1 = TextStyle(color: Colors.red);
   var ts2 = TextStyle(color: Colors.white);
 
   TextEditingController _controllerUID1 =
-      TextEditingController(text: "U202120615013800001");
-  TextEditingController _controllerUID2 =
       TextEditingController(text: "U202121622163000001");
+  TextEditingController _controllerUID2 =
+      TextEditingController(text: "U202115215031100001");
   TextEditingController _controllerContent =
       TextEditingController(text: "HELLO");
 
@@ -134,7 +136,8 @@ class TestState extends State<TestPage> {
   //   print("sendAuth");
   //   MessageCentre.sendAuth();
   // }
-
+  // sender: U202121622163000001
+  // receiver: U202115215031100001
   test1() {
     print("sendTextMessage");
     MessageCentre.sendTextMessage(

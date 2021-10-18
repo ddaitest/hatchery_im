@@ -59,9 +59,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           icons: Icons.location_on,
           color: Colors.green,
           onTap: () {
+            Navigator.pop(App.navState.currentContext!);
             Routers.navigateTo('/map_view',
                 arg: {'mapOriginType': MapOriginType.Send, 'position': null});
-            Navigator.pop(App.navState.currentContext!);
           }),
       // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
     ];

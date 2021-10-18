@@ -795,17 +795,7 @@ class ApiForFileService {
   )).initWrapper();
 
   static bool skipCheck = false;
-  static String? _userInfoData;
-  static String _token = '';
   static Map<String, dynamic> commonParamMap = DeviceInfo.info;
-
-  static _checkToken() {
-    _userInfoData = SP.getString(SPKey.userInfo);
-    if (_userInfoData != null) {
-      _token = jsonDecode(SP.getString(SPKey.userInfo))['token'];
-    }
-    return _token;
-  }
 
   static init() {
     if (!skipCheck) {
