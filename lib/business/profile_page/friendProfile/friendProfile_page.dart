@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/config.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/cupertino.dart';
@@ -218,8 +219,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return Container(
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () =>
-            Routers.navigateReplace('/chat_detail', arg: usersInfo),
+        onPressed: () => Routers.navigateTo('/chat_detail',
+            arg: {'chatType': "CHAT", 'usersInfo': usersInfo}),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,

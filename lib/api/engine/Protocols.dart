@@ -24,14 +24,8 @@ class Protocols {
           deviceId, loginIp);
 
   ///单聊消息（C-->S）
-  static CSSendMessage sendMessage(
-          String from,
-          String nick,
-          String to,
-          String icon,
-          String source,
-          String content,
-          String contentType) =>
+  static CSSendMessage sendMessage(String from, String nick, String to,
+          String icon, String source, String content, String contentType) =>
       CSSendMessage(getMsgID(), Types.CHAT.stringValue(), "", from, nick, to,
           icon, source, content, contentType);
 
@@ -43,14 +37,14 @@ class Protocols {
           String groupName,
           String icon,
           String source,
-          Map<String, dynamic> content,
+          String content,
           String contentType) =>
       CSSendGroupMessage(getMsgID(), Types.GROUP.stringValue(), "", from, nick,
           groupId, groupName, icon, source, content, contentType);
 
   ///单聊客户端ACK消息（C-->S）
-  static CSAckMessage ackMessage(String ackMsgId, String from, String to, String serverMsgId,
-          String source) =>
+  static CSAckMessage ackMessage(String ackMsgId, String from, String to,
+          String serverMsgId, String source) =>
       CSAckMessage(getMsgID(), ackMsgId, Types.CHAT_ACK.stringValue(), from, to,
           serverMsgId, source);
 }

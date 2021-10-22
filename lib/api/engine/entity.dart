@@ -128,7 +128,7 @@ class CSSendGroupMessage {
   String groupName; //群名
   String icon; //发送者头像
   String source; //来源信息(ANDROID/IOS/WEB/IOT/PC)
-  Map<String, dynamic> content; //发送内容（可根据content_type自定义内容）
+  String content; //发送内容（可根据content_type自定义内容）
   @JsonKey(name: 'content_type')
   String contentType;
 
@@ -354,7 +354,6 @@ class SCAck {
   String type = "SERVER_ACK";
 
   String from;
-
 
   SCAck(this.msgId, this.ackMsgLocalId, this.ackMsgServerId, this.type,
       this.from);

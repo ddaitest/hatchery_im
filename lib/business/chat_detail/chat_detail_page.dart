@@ -24,8 +24,11 @@ import '../../routers.dart';
 
 class ChatDetailPage extends StatefulWidget {
   final UsersInfo? usersInfo;
+  final String? groupId;
+  final String? groupName;
+  final String? chatType;
 
-  ChatDetailPage({this.usersInfo});
+  ChatDetailPage({this.usersInfo, this.chatType, this.groupId, this.groupName});
 
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
@@ -35,9 +38,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final manager = App.manager<ChatDetailManager>();
   final emojiModelManager = App.manager<EmojiModelManager>();
   List<SendMenuItems> menuItems = [];
+  String appTitleName = "";
 
   @override
   void initState() {
+    if (widget.usersInfo != null) {
+      appTitleName = widget.usersInfo!.nickName;
+    } else if (widget.groupName != null) {
+      appTitleName = widget.groupName!;
+    }
     menuItems = [
       SendMenuItems(
           text: "相册",
@@ -65,7 +74,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           }),
       // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
     ];
-    manager.init(widget.usersInfo!.userID);
+    manager.init(widget.chatType!,
+        friendId: widget.usersInfo != null ? widget.usersInfo!.userID : '',
+        groupId: widget.groupId!,
+        groupName: widget.groupName!);
     // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
   }
@@ -83,7 +95,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar.chatDetailAppBar(widget.usersInfo!.nickName),
+      appBar: ChatDetailPageAppBar.chatDetailAppBar(appTitleName),
       backgroundColor: Colors.grey[100],
       body: Column(
         children: <Widget>[
@@ -121,17 +133,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             itemBuilder: (context, index) {
               return ChatBubble(
                 userID: widget.usersInfo?.userID ?? '',
-                avatarPicUrl: manager.myProfileData!.userID!
-                            .compareTo(value[index].sender) ==
-                        0
-                    ? '${manager.myProfileData!.icon}'
-                    : '${widget.usersInfo!.icon}',
+                avatarPicUrl: _getAvatarPicUrl(value[index].sender)!,
                 messageBelongType: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
                     ? MessageBelongType.Sender
                     : MessageBelongType.Receiver,
-                friendsHistoryMessages: value[index],
+                contentMessages: value[index],
               );
             },
           ),
@@ -142,6 +150,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       },
       shouldRebuild: (pre, next) => (pre != next),
     );
+  }
+
+  String? _getAvatarPicUrl(String senderId) {
+    if (widget.usersInfo != null) {
+      if (manager.myProfileData!.userID!.compareTo(senderId) == 0) {
+        return manager.myProfileData!.icon;
+      } else {
+        return widget.usersInfo!.icon;
+      }
+    } else {
+      return "";
+    }
   }
 
   Widget _inputMainView() {

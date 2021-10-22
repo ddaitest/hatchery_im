@@ -56,6 +56,11 @@ class SlideActionInfo {
   const SlideActionInfo(this.label, this.icon, this.iconColor, {this.onTap});
 }
 
+// enum ChatType {
+//   CHAT,
+//   GROUP,
+// }
+
 enum MessageBelongType {
   Sender,
   Receiver,

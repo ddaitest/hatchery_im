@@ -83,9 +83,14 @@ class Routers {
       case '/block_list':
         return MaterialPageRoute(builder: (_) => BlockListPage());
       case '/chat_detail':
+        Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (_) =>
-                ChatDetailPage(usersInfo: settings.arguments as UsersInfo));
+            builder: (_) => ChatDetailPage(
+                  chatType: map['chatType'],
+                  usersInfo: map['usersInfo'] ?? null,
+                  groupId: map['groupId'] ?? '',
+                  groupName: map['groupName'] ?? '',
+                ));
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
       case '/about':
@@ -101,9 +106,11 @@ class Routers {
             builder: (_) =>
                 WebViewPage(map["url"], map["path"], map["title"] ?? ""));
       case '/group_profile':
+        Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
             builder: (_) => GroupProfilePage(
-                  groupID: settings.arguments as String,
+                  groupID: map['groupId'],
+                  groupName: map['groupName'],
                 ));
       case '/profile_edit_detail':
         Map map = settings.arguments as Map<String, dynamic>;

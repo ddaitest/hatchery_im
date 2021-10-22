@@ -27,9 +27,10 @@ class GroupListItem extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10),
                   child: ListTile(
                     dense: true,
-                    onTap: () => Routers.navigateTo('/group_profile',
-                            arg: groupsLists![index].group.groupId)
-                        .then((value) => value ? manager.refreshData() : null),
+                    onTap: () => Routers.navigateTo('/group_profile', arg: {
+                      "groupId": groupsLists![index].group.groupId,
+                      "groupName": groupsLists![index].group.groupName
+                    }).then((value) => value ? manager.refreshData() : null),
 
                     /// 群头像，没有头像则返回默认头像
                     leading: Container(

@@ -140,14 +140,14 @@ class TestState extends State<TestPage> {
   // receiver: U202115215031100001
   test1() {
     print("sendTextMessage");
-    MessageCentre.sendTextMessage(
-        _controllerUID1.text, _controllerContent.text);
+    MessageCentre.sendTextMessage("CHAT", _controllerContent.text,
+        friendId: _controllerUID1.text);
   }
 
   test2() {
     print("sendTextMessage");
-    MessageCentre.sendTextMessage(
-        _controllerUID2.text, _controllerContent.text);
+    MessageCentre.sendTextMessage("CHAT", _controllerContent.text,
+        friendId: _controllerUID2.text);
   }
 
   test3() {

@@ -231,19 +231,18 @@ class ModelHelper {
       } catch (e) {}
     }
     Message message = Message(
-      serverMsgId,
-      "GROUP",
-      msg.msgId,
-      msg.from,
-      msg.nick,
-      "",
-      msg.icon,
-      msg.source,
-      msg.content as String,
-      msg.contentType,
-      DateTime.now().toString(),
-      msg.groupId,
-    );
+        serverMsgId,
+        "GROUP",
+        msg.msgId,
+        msg.from,
+        msg.nick,
+        msg.groupId,
+        msg.icon,
+        msg.source,
+        msg.content,
+        msg.contentType,
+        DateTime.now().toString(),
+        "");
     return message;
   }
 
@@ -263,7 +262,7 @@ class ModelHelper {
         "",
         msg.icon,
         msg.source,
-        msg.content as String,
+        msg.content,
         msg.contentType,
         DateTime.now().toString(),
         msg.to);

@@ -27,19 +27,34 @@ class ChatBubble extends StatelessWidget {
   final String userID;
   final String avatarPicUrl;
   final MessageBelongType messageBelongType;
-  final Message friendsHistoryMessages;
+  final Message contentMessages;
 
   ChatBubble(
       {required this.userID,
       required this.avatarPicUrl,
       required this.messageBelongType,
-      required this.friendsHistoryMessages});
+      required this.contentMessages});
+
+  final manager = App.manager<ChatDetailManager>();
 
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
-        child: _chatBubbleView('${avatarPicUrl}'));
+        child: _chatBubbleView('${_getAvatarPicUrl()}'));
+  }
+
+  String _getAvatarPicUrl() {
+    if (avatarPicUrl == "") {
+      if (contentMessages.sender == manager.myProfileData!.userID) {
+        return manager.myProfileData!.icon!;
+      } else {
+        return contentMessages.icon;
+      }
+    }
+    {
+      return avatarPicUrl;
+    }
   }
 
   Widget _chatBubbleView(String? avatarUrl) {
@@ -47,7 +62,7 @@ class ChatBubble extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.only(bottom: 10.0),
-          child: Text('${checkMessageTime(friendsHistoryMessages.createTime)}',
+          child: Text('${checkMessageTime(contentMessages.createTime)}',
               maxLines: 1,
               softWrap: true,
               style: Flavors.textStyles.chatBubbleTimeText),
@@ -86,9 +101,9 @@ class ChatBubble extends StatelessWidget {
             ),
             SizedBox(width: 15.0.w),
             switchMessageTypeView(
-                friendsHistoryMessages.contentType, messageBelongType),
+                contentMessages.contentType, messageBelongType),
             // SizedBox(width: 15.0.w),
-            // friendsHistoryMessages.contentType == "VIDEO"
+            // contentMessages.contentType == "VIDEO"
             //     ? _videoLoadView()
             //     : Container()
           ],
@@ -100,12 +115,11 @@ class ChatBubble extends StatelessWidget {
   Widget switchMessageTypeView(
       String messageType, MessageBelongType belongType) {
     Widget finalView;
-    Map<String, dynamic> content =
-        convert.jsonDecode(friendsHistoryMessages.content);
+    Map<String, dynamic> content = convert.jsonDecode(contentMessages.content);
     switch (messageType) {
       case "TEXT":
         {
-          print("DEBUG=> friendsHistoryMessages.content ${content}");
+          print("DEBUG=> contentMessages.content ${content}");
           finalView = _textMessageView(content['text'], belongType);
           // Map<String, dynamic> temp = {
           //   "name": "北京市门头沟体育馆",

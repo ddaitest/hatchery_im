@@ -16,11 +16,13 @@ import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/business/profile_page/body.dart';
 import 'package:hatchery_im/business/group_page/group_profile/groupProfileMembersModel.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/config.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class GroupProfilePage extends StatefulWidget {
   final String? groupID;
-  GroupProfilePage({this.groupID});
+  final String? groupName;
+  GroupProfilePage({this.groupID, this.groupName});
   @override
   _GroupProfilePageState createState() => _GroupProfilePageState();
 }
@@ -234,7 +236,11 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
   Widget _joinGroupChatDetailBtn() {
     return Container(
       child: TextButton(
-        onPressed: () {},
+        onPressed: () => Routers.navigateTo('/chat_detail', arg: {
+          "chatType": "GROUP",
+          "groupId": widget.groupID,
+          "groupName": widget.groupName
+        }),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,
