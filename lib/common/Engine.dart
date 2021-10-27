@@ -116,7 +116,6 @@ class Engine {
 
   _send(Map<String, dynamic> object) {
     String json = jsonEncode(object).toString();
-    print("DEBUG=> _send $json");
     _channel?.sink.add(json);
   }
 
@@ -188,6 +187,12 @@ class Engine {
           break;
         case Types.PONG:
           SCPong.fromJson(json);
+          break;
+        case Types.AUTH:
+          // TODO: Handle this case.
+          break;
+        case Types.PING:
+          // TODO: Handle this case.
           break;
       }
     } catch (e) {

@@ -46,7 +46,7 @@ class LocalStore {
   static Map<String, Message> cache = Map();
 
   static void addMessage(Message msg) {
-    print("DEBUG=> GROUP addMessage");
+    print("DEBUG=> GROUP addMessage ${msg.groupID}");
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
     //update session
