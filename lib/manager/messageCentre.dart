@@ -231,6 +231,7 @@ class MessageCentre {
         TARGET_PLATFORM,
         content,
         contentType);
+    Log.yellow("sendMessage ${msg.toJson()}");
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
     // message.progress = MSG_SENDING;
@@ -248,7 +249,6 @@ class MessageCentre {
         TARGET_PLATFORM,
         content,
         contentType);
-    print("DEBUG=> sendGroupMessage ${msg.groupId}");
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
     // message.progress = MSG_SENDING;

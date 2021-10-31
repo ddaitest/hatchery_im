@@ -133,6 +133,7 @@ class Engine {
   }
 
   sendProtocol(Map<String, dynamic> object) {
+    Log.yellow("sendProtocol is $object");
     _send(object);
   }
 
@@ -217,6 +218,9 @@ class Engine {
 
   ///收到群聊消息。
   void _handleGroupMessage(CSSendGroupMessage msg) {
+    sendProtocol(Protocols.ackMessage(
+            msg.msgId, msg.from, "", msg.serverMsgId, msg.source)
+        .toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
     _callback?.onNewMessage(message);
   }

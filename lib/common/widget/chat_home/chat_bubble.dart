@@ -119,7 +119,6 @@ class ChatBubble extends StatelessWidget {
     switch (messageType) {
       case "TEXT":
         {
-          print("DEBUG=> contentMessages.content ${content}");
           finalView = _textMessageView(content['text'], belongType);
           // Map<String, dynamic> temp = {
           //   "name": "北京市门头沟体育馆",

@@ -84,13 +84,14 @@ class ChatDetailManager extends ChangeNotifier {
         ? "listenMessage >> friendId =$currentFriendId"
         : "listenMessage >> groupId =$currentGroupId");
     LocalStore.messageBox!.values.forEach((element) {
-      if (currentFriendId != "") {
-        Log.red("messages >> ${element.toJson()}");
-      } else {
-        if (element.groupID == currentGroupId) {
-          Log.red("messages >> ${element.toJson()}");
-        }
-      }
+      Log.red("messages >> ${element.content} ${element.groupID}");
+      // if (currentFriendId != "") {
+      //   Log.red("messages >> ${element.toJson()}");
+      // } else {
+      //   if (element.groupID == currentGroupId) {
+      //     Log.red("messages >> ${element.toJson()}");
+      //   }
+      // }
     });
     var temp = LocalStore.messageBox!.values
         .where((element) => currentFriendId != ""
