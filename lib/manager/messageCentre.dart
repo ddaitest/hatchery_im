@@ -243,6 +243,7 @@ class MessageCentre {
     CSSendGroupMessage msg = Protocols.sendGroupMessage(
         _userInfo?.userID ?? "",
         _userInfo!.nickName!,
+        _userInfo!.icon!,
         groupId,
         groupName,
         groupIcon,
@@ -256,54 +257,72 @@ class MessageCentre {
   }
 
   static sendTextMessage(String chatType, String text,
-      {String? groupId, String? groupName, String? friendId}) {
+      {String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
     chatType == "CHAT"
         ? _singleton.sendMessage(friendId!, jsonEncode({"text": text}), "TEXT")
-        : _singleton.sendGroupMessage(
-            groupId!, groupName!, "", jsonEncode({"text": text}), "TEXT");
+        : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
+            jsonEncode({"text": text}), "TEXT");
   }
 
   static sendImageMessage(String chatType, String imageUrl,
-      {String? groupId, String? groupName, String? friendId}) {
+      {String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
     chatType == "CHAT"
         ? _singleton.sendMessage(
             friendId!, jsonEncode({"img_url": imageUrl}), "IMAGE")
-        : _singleton.sendGroupMessage(groupId!, groupName!, "",
+        : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"img_url": imageUrl}), "IMAGE");
   }
 
   static sendVideoMessage(String chatType, String videoUrl,
-      {String? groupId, String? groupName, String? friendId}) {
+      {String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
     chatType == "CHAT"
         ? _singleton.sendMessage(
             friendId!, jsonEncode({"video_url": videoUrl}), "VIDEO")
-        : _singleton.sendGroupMessage(groupId!, groupName!, "",
+        : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"video_url": videoUrl}), "VIDEO");
   }
 
   static sendVoiceMessage(String chatType, String voiceUrl,
-      {String? groupId, String? groupName, String? friendId}) {
+      {String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
     chatType == "CHAT"
         ? _singleton.sendMessage(
             friendId!, jsonEncode({"voice_url": voiceUrl}), "VOICE")
-        : _singleton.sendGroupMessage(groupId!, groupName!, "",
+        : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"voice_url": voiceUrl}), "VOICE");
   }
 
   static sendGeoMessage(String chatType, Map<String, dynamic> positionMap,
-      {String? groupId, String? groupName, String? friendId}) {
+      {String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
     chatType == "CHAT"
         ? _singleton.sendMessage(friendId!, jsonEncode(positionMap), "GEO")
         : _singleton.sendGroupMessage(
-            groupId!, groupName!, "", jsonEncode(positionMap), "GEO");
+            groupId!, groupName!, groupIcon!, jsonEncode(positionMap), "GEO");
   }
 
   static sendFileMessage(String chatType, Map<String, dynamic> fileMap,
-      {String? groupId, String? groupName, String? friendId}) {
+      {String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
     chatType == "CHAT"
         ? _singleton.sendMessage(friendId!, jsonEncode(fileMap), "FILE")
         : _singleton.sendGroupMessage(
-            groupId!, groupName!, "", jsonEncode(fileMap), "FILE");
+            groupId!, groupName!, groupIcon!, jsonEncode(fileMap), "FILE");
   }
 
   static void disconnect() => engine?.disconnect();

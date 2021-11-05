@@ -54,6 +54,7 @@ class ChatDetailManager extends ChangeNotifier {
   String? currentChatType;
   String currentGroupId = "";
   String currentGroupName = "";
+  String currentGroupIcon = "";
 
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
@@ -61,13 +62,17 @@ class ChatDetailManager extends ChangeNotifier {
   // ValueListenable<Box<Message>> messages = LocalStore.listenMessage();
   /// 初始化
   init(String chatType,
-      {String friendId = "", String groupId = "", String groupName = ""}) {
+      {String friendId = "",
+      String groupId = "",
+      String groupName = "",
+      String groupIcon = ""}) {
     // _inputTextListen();
     myProfileData = UserCentre.getInfo();
     currentChatType = chatType;
     currentFriendId = friendId;
     currentGroupId = groupId;
     currentGroupName = groupName;
+    currentGroupIcon = groupIcon;
     // _loadLatest(currentFriendId);
     //添加监听
     // MessageCentre().listenMessage((news) {}, friendId);U202120615013800001
@@ -84,7 +89,8 @@ class ChatDetailManager extends ChangeNotifier {
         ? "listenMessage >> friendId =$currentFriendId"
         : "listenMessage >> groupId =$currentGroupId");
     LocalStore.messageBox!.values.forEach((element) {
-      Log.red("messages >> ${element.content} ${element.groupID}");
+      Log.red(
+          "messages >> ${element.content} ${element.groupID} ${element.icon}");
       // if (currentFriendId != "") {
       //   Log.red("messages >> ${element.toJson()}");
       // } else {
@@ -290,7 +296,7 @@ class ChatDetailManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  startVoiceRecord(String friendId) async {
+  startVoiceRecord() async {
     bool result = await Record().hasPermission();
     PermissionStatus status = await Permission.storage.status;
     DateTime _timeNow = DateTime.now();
@@ -298,9 +304,7 @@ class ChatDetailManager extends ChangeNotifier {
     String tempPath = tempDir.path;
     String voiceTempPath = '$tempPath/voiceFiles/';
     folderCreate(voiceTempPath);
-    voicePath =
-        '$voiceTempPath${friendId}_${_timeNow.millisecondsSinceEpoch}.mp3';
-
+    voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
     print("DEBUG=> $result / ${status.isDenied}");
     if (result && status.isDenied) {
       await Record().start(
@@ -366,43 +370,50 @@ class ChatDetailManager extends ChangeNotifier {
         MessageCentre.sendTextMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "IMAGE":
         MessageCentre.sendImageMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "VIDEO":
         MessageCentre.sendVideoMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "VOICE":
         MessageCentre.sendVoiceMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "GEO":
         MessageCentre.sendGeoMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "FILE":
         MessageCentre.sendFileMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       default:
         MessageCentre.sendTextMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
     }
   }

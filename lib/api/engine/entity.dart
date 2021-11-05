@@ -122,11 +122,13 @@ class CSSendGroupMessage {
   String serverMsgId; //服务端消息ID（由服务端生成。客户端不用过问
   String from; //发送者(用户ID)
   String nick; //发送者昵称
+  String icon; //发送者头像
   @JsonKey(name: 'group_id')
   String groupId; //群ID
   @JsonKey(name: 'group_name')
   String groupName; //群名
-  String icon; //发送者头像
+  @JsonKey(name: 'group_icon')
+  String groupIcon; //群图标
   String source; //来源信息(ANDROID/IOS/WEB/IOT/PC)
   String content; //发送内容（可根据content_type自定义内容）
   @JsonKey(name: 'content_type')
@@ -138,9 +140,10 @@ class CSSendGroupMessage {
       this.serverMsgId,
       this.from,
       this.nick,
+      this.icon,
       this.groupId,
       this.groupName,
-      this.icon,
+      this.groupIcon,
       this.source,
       this.content,
       this.contentType);

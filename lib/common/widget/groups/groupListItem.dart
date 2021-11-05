@@ -29,7 +29,8 @@ class GroupListItem extends StatelessWidget {
                     dense: true,
                     onTap: () => Routers.navigateTo('/group_profile', arg: {
                       "groupId": groupsLists![index].group.groupId,
-                      "groupName": groupsLists![index].group.groupName
+                      "groupName": groupsLists![index].group.groupName,
+                      "groupIcon": groupsLists![index].group.icon,
                     }).then((value) => value ? manager.refreshData() : null),
 
                     /// 群头像，没有头像则返回默认头像

@@ -33,14 +33,15 @@ class Protocols {
   static CSSendGroupMessage sendGroupMessage(
           String from,
           String nick,
+          String icon,
           String groupId,
           String groupName,
-          String icon,
+          String groupIcon,
           String source,
           String content,
           String contentType) =>
       CSSendGroupMessage(getMsgID(), Types.GROUP.stringValue(), "", from, nick,
-          groupId, groupName, icon, source, content, contentType);
+          icon, groupId, groupName, groupIcon, source, content, contentType);
 
   ///单聊客户端ACK消息（C-->S）
   static CSAckMessage ackMessage(String ackMsgId, String from, String to,

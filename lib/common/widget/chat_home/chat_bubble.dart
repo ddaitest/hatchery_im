@@ -49,10 +49,10 @@ class ChatBubble extends StatelessWidget {
       if (contentMessages.sender == manager.myProfileData!.userID) {
         return manager.myProfileData!.icon!;
       } else {
+        print("DEBUG=> contentMessages.icon ${contentMessages.icon}");
         return contentMessages.icon;
       }
-    }
-    {
+    } else {
       return avatarPicUrl;
     }
   }
