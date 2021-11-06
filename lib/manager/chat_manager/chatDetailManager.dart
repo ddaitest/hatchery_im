@@ -83,29 +83,34 @@ class ChatDetailManager extends ChangeNotifier {
     var x = DateTime.now().toString();
   }
 
+  @override
+  void dispose() {
+    messagesList.clear();
+    isVoiceModel = false;
+    cancelTimer();
+    emojiShowing = false;
+    textEditingController.clear();
+    currentFriendId = "";
+    currentGroupId = "";
+    currentGroupName = "";
+    currentGroupIcon = "";
+    super.dispose();
+  }
+
   void _readMessages(bool notify) {
-    String myId = UserCentre.getUserID();
+    var temp;
     Log.red(currentFriendId != ""
         ? "listenMessage >> friendId =$currentFriendId"
         : "listenMessage >> groupId =$currentGroupId");
     LocalStore.messageBox!.values.forEach((element) {
-      Log.red(
-          "messages >> ${element.content} ${element.groupID} ${element.icon}");
-      // if (currentFriendId != "") {
-      //   Log.red("messages >> ${element.toJson()}");
-      // } else {
-      //   if (element.groupID == currentGroupId) {
-      //     Log.red("messages >> ${element.toJson()}");
-      //   }
-      // }
+      temp = LocalStore.messageBox!.values
+          .where((element) => element.groupID == ""
+              ? element.receiver == currentFriendId ||
+                  element.sender == currentFriendId
+              : element.groupID == currentGroupId)
+          .toList();
     });
-    var temp = LocalStore.messageBox!.values
-        .where((element) => currentFriendId != ""
-            ? element.receiver == currentFriendId ||
-                element.sender == currentFriendId
-            : element.groupID == currentGroupId)
-        .toList();
-    if (temp.length != messagesList.length) {
+    if (temp != null && temp.length != messagesList.length) {
       messagesList = temp;
       messagesList.sort((a, b) =>
           DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime)));

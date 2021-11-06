@@ -91,11 +91,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
-    manager.messagesList.clear();
-    manager.isVoiceModel = false;
-    manager.cancelTimer();
-    manager.emojiShowing = false;
-    manager.textEditingController.clear();
+    // manager.dispose();
     super.dispose();
   }
 
@@ -140,7 +136,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             itemBuilder: (context, index) {
               return ChatBubble(
                 userID: widget.usersInfo?.userID ?? '',
-                avatarPicUrl: _getAvatarPicUrl(value[index].sender)!,
                 messageBelongType: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
