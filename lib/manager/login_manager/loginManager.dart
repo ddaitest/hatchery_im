@@ -29,6 +29,7 @@ class LoginManager extends ChangeNotifier {
   bool finishCountDown = true;
   int countDown = 10;
   Timer? countDownTimer;
+  bool isClickLoginBtn = false;
 
   /// 初始化
   init() {
@@ -41,17 +42,23 @@ class LoginManager extends ChangeNotifier {
   }
 
   Future<bool> submit(String account, String password) async {
-    ApiResult result = await API.usersLogin(account, password);
-    if (result.isSuccess()) {
-      print("DEBUG=> result.getData() ${result.getData()['info']}");
-      // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
-      UserCentre.saveUserInfo(jsonEncode(result.getData()));
-      MessageCentre.init();
-      Routers.navigateAndRemoveUntil('/');
+    if (!isClickLoginBtn) {
+      isClickLoginBtn = true;
+      ApiResult result = await API.usersLogin(account, password);
+      if (result.isSuccess()) {
+        print("DEBUG=> result.getData() ${result.getData()['info']}");
+        // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
+        UserCentre.saveUserInfo(jsonEncode(result.getData()));
+        MessageCentre.init();
+        Routers.navigateAndRemoveUntil('/');
+      } else {
+        showToast('账号或密码错误');
+      }
+      isClickLoginBtn = false;
+      return result.isSuccess();
     } else {
-      showToast('账号或密码错误');
+      return false;
     }
-    return result.isSuccess();
   }
 
   Future<bool> sendOTP(String userPhone, String areaCode, int sendType) async {

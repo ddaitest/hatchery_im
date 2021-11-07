@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
@@ -75,7 +76,8 @@ class _ChatPageState extends State<ChatPage> {
                   builder: (context, Box<Session> box, _) {
                     if (box.values.isEmpty) {
                       return Center(
-                        child: Text("No contacts"),
+                        child: IndicatorView(
+                            tipsText: "没有聊天记录", showLoadingIcon: false),
                       );
                     }
                     return ListView.builder(

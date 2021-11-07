@@ -94,6 +94,7 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = "";
     currentGroupName = "";
     currentGroupIcon = "";
+    Log.yellow("ChatDetailManager dispose");
     super.dispose();
   }
 
