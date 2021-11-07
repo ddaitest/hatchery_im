@@ -67,4 +67,8 @@ class LocalStore {
   static ValueListenable<Box<Message>> listenMessage() {
     return Hive.box<Message>('messageBox').listenable();
   }
+
+  static Box<Session> listenSessions() {
+    return Hive.box<Session>('sessionBox');
+  }
 }

@@ -3,6 +3,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import 'common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -32,6 +33,7 @@ import 'manager/emojiModel_manager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  LocalStore.init();
   runApp(
     MultiProvider(
       providers: [

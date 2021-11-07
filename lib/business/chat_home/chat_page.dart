@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -53,6 +57,8 @@ class _ChatPageState extends State<ChatPage> {
         time: "一年前"),
   ];
 
+  var sessionBox = LocalStore.listenSessions();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,20 +70,43 @@ class _ChatPageState extends State<ChatPage> {
             SearchBarView(),
             Container(
               padding: const EdgeInsets.only(bottom: 16.0),
-              child: ListView.builder(
-                itemCount: chatUsers.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return ChatUsersListItem(
-                    text: chatUsers[index].text,
-                    secondaryText: chatUsers[index].secondaryText,
-                    image: chatUsers[index].image,
-                    time: chatUsers[index].time,
-                    isMessageRead: (index == 0 || index == 3) ? true : false,
-                  );
-                },
-              ),
+              child: ValueListenableBuilder(
+                  valueListenable: sessionBox.listenable(),
+                  builder: (context, Box<Session> box, _) {
+                    if (box.values.isEmpty) {
+                      return Center(
+                        child: Text("No contacts"),
+                      );
+                    }
+                    return ListView.builder(
+                      itemCount: box.values.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        Session? session = box.getAt(index);
+                        //TODO 渲染 Session
+                        var content = "";
+                        if (session != null) {
+                          if (0 == session.type) {
+                            //会话类型，0表示单聊，1表示群聊
+                            content = session.lastChatMessage.content;
+                          } else {
+                            content = session.lastGroupChatMessage.content;
+                          }
+                          return ChatUsersListItem(
+                            text: session.title,
+                            secondaryText: content,
+                            image: session.icon,
+                            time: session.updateTime,
+                            isMessageRead:
+                                (index == 0 || index == 3) ? true : false,
+                          );
+                        } else {
+                          return Container();
+                        }
+                      },
+                    );
+                  }),
             ),
           ],
         ),

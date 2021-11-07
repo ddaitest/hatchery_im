@@ -61,7 +61,7 @@ class MessageCentre {
     } catch (e) {}
     var centre = MessageCentre();
     centre._initSessions();
-    LocalStore.init();
+
     //连接 Engine
     engine = Engine.getInstance();
     _userInfo = UserCentre.getInfo();
@@ -139,6 +139,7 @@ class MessageCentre {
 
   ///同步 session 的 message
   _syncSession(Session? before, Session latest) {
+    Log.yellow("_syncSession before = $before; latest=$latest");
     if (latest.type == CHAT_TYPE_ONE) {
       //单聊
       if (before == null) {
@@ -164,7 +165,7 @@ class MessageCentre {
   }
 
   _loadFriendHistory(String friendID, int from, int to) async {
-    Log.yellow("更新消息, 单聊, $from to $to");
+    Log.yellow("更新消息 friendID=$friendID, 单聊, $from to $to");
     int currentFrom = from;
     bool found = false;
     bool end = false;
@@ -182,10 +183,10 @@ class MessageCentre {
           temp.add(msg);
         }
       }
-      if (temp.length > 0) {
-        //Notify all
-        _notifyMessageChanged(friendID);
-      }
+      // if (temp.length > 0) {
+      //Notify all
+      // _notifyMessageChanged(friendID);
+      // }
     }
   }
 
@@ -208,7 +209,7 @@ class MessageCentre {
     return news;
   }
 
-  _notifyMessageChanged(String friendID) {}
+  // _notifyMessageChanged(String friendID) {}
 
   static sendAuth() async {
     Log.yellow("sendAuth");

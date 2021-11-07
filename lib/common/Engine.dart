@@ -6,6 +6,8 @@ import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:crypto/crypto.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class EngineCallback {
@@ -52,6 +54,7 @@ class Engine {
   Timer? heartBeat;
   int _life = 0;
   bool forceStop = false; // 标示 是否手动 断开连接
+  int retryInterval = 1;
 
   ///初始化，设置服务器地址
   init(String server, String userId,
@@ -82,6 +85,7 @@ class Engine {
         .listen(_handleData, onError: _handleError, onDone: _handleDone);
     Log.log("Engine.connect() finish");
     // _startHeartBeat();
+    MessageCentre.sendAuth();
   }
 
   _startHeartBeat() {
@@ -109,8 +113,13 @@ class Engine {
 
   _handleDone() {
     Log.yellow("_handleDone() !!!");
+    _stopHeartBeat();
     if (!forceStop) {
-      _reconnect();
+      retryInterval = retryInterval + 10;
+      Log.yellow("delay $retryInterval reconnect");
+      Future.delayed(Duration(seconds: retryInterval), () {
+        _reconnect();
+      });
     }
   }
 
