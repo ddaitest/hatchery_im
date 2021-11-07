@@ -22,7 +22,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 class GroupProfilePage extends StatefulWidget {
   final String? groupID;
   final String? groupName;
-  GroupProfilePage({this.groupID, this.groupName});
+  final String? groupIcon;
+  GroupProfilePage({this.groupID, this.groupName, this.groupIcon});
   @override
   _GroupProfilePageState createState() => _GroupProfilePageState();
 }
@@ -239,7 +240,8 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
         onPressed: () => Routers.navigateTo('/chat_detail', arg: {
           "chatType": "GROUP",
           "groupId": widget.groupID,
-          "groupName": widget.groupName
+          "groupName": widget.groupName,
+          "groupIcon": widget.groupIcon
         }),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,

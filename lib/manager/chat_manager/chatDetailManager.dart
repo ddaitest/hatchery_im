@@ -54,6 +54,7 @@ class ChatDetailManager extends ChangeNotifier {
   String? currentChatType;
   String currentGroupId = "";
   String currentGroupName = "";
+  String currentGroupIcon = "";
 
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
@@ -61,13 +62,17 @@ class ChatDetailManager extends ChangeNotifier {
   // ValueListenable<Box<Message>> messages = LocalStore.listenMessage();
   /// 初始化
   init(String chatType,
-      {String friendId = "", String groupId = "", String groupName = ""}) {
+      {String friendId = "",
+      String groupId = "",
+      String groupName = "",
+      String groupIcon = ""}) {
     // _inputTextListen();
     myProfileData = UserCentre.getInfo();
     currentChatType = chatType;
     currentFriendId = friendId;
     currentGroupId = groupId;
     currentGroupName = groupName;
+    currentGroupIcon = groupIcon;
     // _loadLatest(currentFriendId);
     //添加监听
     // MessageCentre().listenMessage((news) {}, friendId);U202120615013800001
@@ -78,28 +83,34 @@ class ChatDetailManager extends ChangeNotifier {
     var x = DateTime.now().toString();
   }
 
+  @override
+  void dispose() {
+    messagesList.clear();
+    isVoiceModel = false;
+    cancelTimer();
+    emojiShowing = false;
+    textEditingController.clear();
+    currentFriendId = "";
+    currentGroupId = "";
+    currentGroupName = "";
+    currentGroupIcon = "";
+    super.dispose();
+  }
+
   void _readMessages(bool notify) {
-    String myId = UserCentre.getUserID();
+    var temp;
     Log.red(currentFriendId != ""
         ? "listenMessage >> friendId =$currentFriendId"
         : "listenMessage >> groupId =$currentGroupId");
     LocalStore.messageBox!.values.forEach((element) {
-      Log.red("messages >> ${element.content} ${element.groupID}");
-      // if (currentFriendId != "") {
-      //   Log.red("messages >> ${element.toJson()}");
-      // } else {
-      //   if (element.groupID == currentGroupId) {
-      //     Log.red("messages >> ${element.toJson()}");
-      //   }
-      // }
+      temp = LocalStore.messageBox!.values
+          .where((element) => element.groupID == ""
+              ? element.receiver == currentFriendId ||
+                  element.sender == currentFriendId
+              : element.groupID == currentGroupId)
+          .toList();
     });
-    var temp = LocalStore.messageBox!.values
-        .where((element) => currentFriendId != ""
-            ? element.receiver == currentFriendId ||
-                element.sender == currentFriendId
-            : element.groupID == currentGroupId)
-        .toList();
-    if (temp.length != messagesList.length) {
+    if (temp != null && temp.length != messagesList.length) {
       messagesList = temp;
       messagesList.sort((a, b) =>
           DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime)));
@@ -290,7 +301,7 @@ class ChatDetailManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  startVoiceRecord(String friendId) async {
+  startVoiceRecord() async {
     bool result = await Record().hasPermission();
     PermissionStatus status = await Permission.storage.status;
     DateTime _timeNow = DateTime.now();
@@ -298,9 +309,7 @@ class ChatDetailManager extends ChangeNotifier {
     String tempPath = tempDir.path;
     String voiceTempPath = '$tempPath/voiceFiles/';
     folderCreate(voiceTempPath);
-    voicePath =
-        '$voiceTempPath${friendId}_${_timeNow.millisecondsSinceEpoch}.mp3';
-
+    voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
     print("DEBUG=> $result / ${status.isDenied}");
     if (result && status.isDenied) {
       await Record().start(
@@ -366,43 +375,50 @@ class ChatDetailManager extends ChangeNotifier {
         MessageCentre.sendTextMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "IMAGE":
         MessageCentre.sendImageMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "VIDEO":
         MessageCentre.sendVideoMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "VOICE":
         MessageCentre.sendVoiceMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "GEO":
         MessageCentre.sendGeoMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       case "FILE":
         MessageCentre.sendFileMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
       default:
         MessageCentre.sendTextMessage(currentChatType!, term,
             friendId: currentFriendId,
             groupId: currentGroupId,
-            groupName: currentGroupName);
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon);
         break;
     }
   }

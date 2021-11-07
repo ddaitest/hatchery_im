@@ -165,6 +165,7 @@ class Engine {
           break;
         case Types.SERVER_ACK: //收到 Server ack。 表示发消息成功。
           var scAck = SCAck.fromJson(json);
+          Log.yellow("_handleData() SERVER_ACK is $json");
           _callback?.onMessageSent(scAck.ackMsgLocalId, scAck.ackMsgServerId);
           break;
         case Types.CHAT_ACK: //收到 Message ack。 表示已读。

@@ -25,13 +25,11 @@ import '../../../config.dart';
 
 class ChatBubble extends StatelessWidget {
   final String userID;
-  final String avatarPicUrl;
   final MessageBelongType messageBelongType;
   final Message contentMessages;
 
   ChatBubble(
       {required this.userID,
-      required this.avatarPicUrl,
       required this.messageBelongType,
       required this.contentMessages});
 
@@ -45,15 +43,10 @@ class ChatBubble extends StatelessWidget {
   }
 
   String _getAvatarPicUrl() {
-    if (avatarPicUrl == "") {
-      if (contentMessages.sender == manager.myProfileData!.userID) {
-        return manager.myProfileData!.icon!;
-      } else {
-        return contentMessages.icon;
-      }
-    }
-    {
-      return avatarPicUrl;
+    if (contentMessages.sender == manager.myProfileData!.userID) {
+      return manager.myProfileData!.icon!;
+    } else {
+      return contentMessages.icon;
     }
   }
 
@@ -76,7 +69,8 @@ class ChatBubble extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () => messageBelongType == MessageBelongType.Receiver
-                  ? Routers.navigateTo('/friend_profile', arg: userID)
+                  ? Routers.navigateTo('/friend_profile',
+                      arg: contentMessages.sender)
                   : null,
               child: Container(
                   padding: const EdgeInsets.only(top: 5.0),
@@ -100,12 +94,22 @@ class ChatBubble extends StatelessWidget {
                       })),
             ),
             SizedBox(width: 15.0.w),
-            switchMessageTypeView(
-                contentMessages.contentType, messageBelongType),
-            // SizedBox(width: 15.0.w),
-            // contentMessages.contentType == "VIDEO"
-            //     ? _videoLoadView()
-            //     : Container()
+            contentMessages.type == "GROUP" &&
+                    messageBelongType == MessageBelongType.Receiver
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        contentMessages.nick,
+                        style: TextStyle(fontSize: 11.0),
+                      ),
+                      Container(height: 2.0),
+                      switchMessageTypeView(
+                          contentMessages.contentType, messageBelongType),
+                    ],
+                  )
+                : switchMessageTypeView(
+                    contentMessages.contentType, messageBelongType),
           ],
         ),
       ],

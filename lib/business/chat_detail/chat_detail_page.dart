@@ -26,9 +26,15 @@ class ChatDetailPage extends StatefulWidget {
   final UsersInfo? usersInfo;
   final String? groupId;
   final String? groupName;
+  final String? groupIcon;
   final String? chatType;
 
-  ChatDetailPage({this.usersInfo, this.chatType, this.groupId, this.groupName});
+  ChatDetailPage(
+      {this.usersInfo,
+      this.chatType,
+      this.groupId,
+      this.groupName,
+      this.groupIcon});
 
   @override
   _ChatDetailPageState createState() => _ChatDetailPageState();
@@ -77,18 +83,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     manager.init(widget.chatType!,
         friendId: widget.usersInfo != null ? widget.usersInfo!.userID : '',
         groupId: widget.groupId!,
-        groupName: widget.groupName!);
+        groupName: widget.groupName!,
+        groupIcon: widget.groupIcon!);
     // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
   }
 
   @override
   void dispose() {
-    manager.messagesList.clear();
-    manager.isVoiceModel = false;
-    manager.cancelTimer();
-    manager.emojiShowing = false;
-    manager.textEditingController.clear();
+    // manager.dispose();
     super.dispose();
   }
 
@@ -133,7 +136,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             itemBuilder: (context, index) {
               return ChatBubble(
                 userID: widget.usersInfo?.userID ?? '',
-                avatarPicUrl: _getAvatarPicUrl(value[index].sender)!,
                 messageBelongType: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0
@@ -335,7 +337,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
         manager.timingStartMethod();
-        manager.startVoiceRecord(widget.usersInfo!.userID);
+        manager.startVoiceRecord();
       },
       onLongPressEnd: (LongPressEndDetails details) {
         Vibration.vibrate(duration: 100);

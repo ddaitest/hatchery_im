@@ -90,6 +90,7 @@ class Routers {
                   usersInfo: map['usersInfo'] ?? null,
                   groupId: map['groupId'] ?? '',
                   groupName: map['groupName'] ?? '',
+                  groupIcon: map['groupIcon'] ?? '',
                 ));
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());
@@ -111,6 +112,7 @@ class Routers {
             builder: (_) => GroupProfilePage(
                   groupID: map['groupId'],
                   groupName: map['groupName'],
+                  groupIcon: map['groupIcon'],
                 ));
       case '/profile_edit_detail':
         Map map = settings.arguments as Map<String, dynamic>;
