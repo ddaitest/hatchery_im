@@ -112,8 +112,8 @@ class MessageCentre {
     // Step2. 从Server获取最新数据。
     API.querySession().then((value) {
       if (value.isSuccess()) {
-        var news = value.getDataList((m) => Session.fromJson(m));
-        Log.yellow("_initSessions Step1. 从Server获取最新数据。 $news");
+        List<Session> news = value.getDataList((m) => Session.fromJson(m));
+        Log.yellow("_initSessions Step1. 从Server获取最新数据。 ${news[0].title}");
         // Step3. 刷新本地数据。
         _localStore.saveSessions(news);
         _syncNewSessions(news);
