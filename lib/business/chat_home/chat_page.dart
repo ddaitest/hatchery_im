@@ -83,12 +83,13 @@ class _ChatPageState extends State<ChatPage> {
                     return ListView.builder(
                       itemCount: box.values.length,
                       shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         Session? session = box.getAt(index);
                         //TODO 渲染 Session
                         var content = "";
                         if (session != null) {
+                          print("DEBUG=> session session $session");
                           if (0 == session.type) {
                             //会话类型，0表示单聊，1表示群聊
                             if (session.lastChatMessage != null) {

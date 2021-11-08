@@ -5,6 +5,8 @@ import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../aboutAvatar.dart';
+
 class ChatUsersListItem extends StatefulWidget {
   final String? text;
   final String? secondaryText;
@@ -49,9 +51,9 @@ class _ChatUsersListState extends State<ChatUsersListItem> {
                 Expanded(
                   child: Row(
                     children: <Widget>[
-                      CircleAvatar(
-                        backgroundImage: AssetImage(widget.image!),
-                        maxRadius: 30,
+                      netWorkAvatar(
+                        widget.image!,
+                        30,
                       ),
                       SizedBox(
                         width: 16,

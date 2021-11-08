@@ -26,7 +26,7 @@ class MessageAdapter extends TypeAdapter<Message> {
       reader.read() as String,
       reader.read() as String,
       reader.read() as String,
-      reader.read() as String,
+      reader.read() ?? "",
     );
     // )..progress = fields[12];
   }
@@ -78,8 +78,8 @@ class SessionAdapter extends TypeAdapter<Session> {
       fields[2] as String,
       fields[3] as String,
       fields[4] as String,
-      fields[6] as Message,
-      fields[7] as Message,
+      fields[6] != null ? fields[6] as Message : null,
+      fields[7] != null ? fields[7] as Message : null,
       fields[8] as String,
       fields[9] as String,
     );
