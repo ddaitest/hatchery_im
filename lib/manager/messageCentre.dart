@@ -141,25 +141,30 @@ class MessageCentre {
   _syncSession(Session? before, Session latest) {
     Log.yellow("_syncSession before = $before; latest=$latest");
     if (latest.type == CHAT_TYPE_ONE) {
-      //单聊
-      if (before == null) {
-        //更新消息,一直到没有
-        _loadFriendHistory(latest.otherID, latest.lastChatMessage.id, -1);
-      } else if (before.lastChatMessage.id != latest.lastChatMessage.id) {
-        //更新消息,一直到before
-        _loadFriendHistory(latest.otherID, latest.lastChatMessage.id,
-            before.lastChatMessage.id);
+      if (latest.lastChatMessage != null) {
+        //单聊
+        if (before == null) {
+          //更新消息,一直到没有
+          _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id, -1);
+        } else if (before.lastChatMessage!.id != latest.lastChatMessage!.id) {
+          //更新消息,一直到before
+          _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id,
+              before.lastChatMessage!.id);
+        }
       }
     } else {
-      //群聊
-      if (before == null) {
-        //更新消息,一直到没有
-        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage.id, -1);
-      } else if (before.lastGroupChatMessage.id !=
-          latest.lastGroupChatMessage.id) {
-        //更新消息,一直到before
-        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage.id,
-            before.lastGroupChatMessage.id);
+      if (latest.lastGroupChatMessage != null) {
+        //群聊
+        if (before == null) {
+          //更新消息,一直到没有
+          _loadGroupHistory(
+              latest.otherID, latest.lastGroupChatMessage!.id, -1);
+        } else if (before.lastGroupChatMessage!.id !=
+            latest.lastGroupChatMessage!.id) {
+          //更新消息,一直到before
+          _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id,
+              before.lastGroupChatMessage!.id);
+        }
       }
     }
   }

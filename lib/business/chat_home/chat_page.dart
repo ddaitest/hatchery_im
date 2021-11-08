@@ -91,18 +91,30 @@ class _ChatPageState extends State<ChatPage> {
                         if (session != null) {
                           if (0 == session.type) {
                             //会话类型，0表示单聊，1表示群聊
-                            content = session.lastChatMessage.content;
+                            if (session.lastChatMessage != null) {
+                              content = session.lastChatMessage!.content;
+                            } else {
+                              content = "";
+                            }
                           } else {
-                            content = session.lastGroupChatMessage.content;
+                            if (session.lastGroupChatMessage != null) {
+                              content = session.lastGroupChatMessage!.content;
+                            } else {
+                              content = "";
+                            }
                           }
-                          return ChatUsersListItem(
-                            text: session.title,
-                            secondaryText: content,
-                            image: session.icon,
-                            time: session.updateTime,
-                            isMessageRead:
-                                (index == 0 || index == 3) ? true : false,
-                          );
+                          if (content != "") {
+                            return ChatUsersListItem(
+                              text: session.title,
+                              secondaryText: content,
+                              image: session.icon,
+                              time: session.updateTime,
+                              isMessageRead:
+                                  (index == 0 || index == 3) ? true : false,
+                            );
+                          } else {
+                            return Container();
+                          }
                         } else {
                           return Container();
                         }

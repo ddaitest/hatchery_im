@@ -323,8 +323,13 @@ Session _$SessionFromJson(Map<String, dynamic> json) {
     json['icon'] as String,
     json['ownerID'] as String,
     json['otherID'] as String,
-    Message.fromJson(json['lastChatMessage'] as Map<String, dynamic>),
-    Message.fromJson(json['lastGroupChatMessage'] as Map<String, dynamic>),
+    json['lastChatMessage'] == null
+        ? null
+        : Message.fromJson(json['lastChatMessage'] as Map<String, dynamic>),
+    json['lastGroupChatMessage'] == null
+        ? null
+        : Message.fromJson(
+            json['lastGroupChatMessage'] as Map<String, dynamic>),
     json['updateTime'] as String,
     json['createTime'] as String,
   );
@@ -337,8 +342,8 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
       'ownerID': instance.ownerID,
       'otherID': instance.otherID,
       'type': instance.type,
-      'lastChatMessage': instance.lastChatMessage.toJson(),
-      'lastGroupChatMessage': instance.lastGroupChatMessage.toJson(),
+      'lastChatMessage': instance.lastChatMessage?.toJson(),
+      'lastGroupChatMessage': instance.lastGroupChatMessage?.toJson(),
       'updateTime': instance.updateTime,
       'createTime': instance.createTime,
     };
