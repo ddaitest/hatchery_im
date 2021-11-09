@@ -79,7 +79,7 @@ class MessageCentre {
     engine?.connect();
     engine?.setCallback(MyEngineHandler(centre));
     Log.yellow("MessageCentre.init() - finish");
-    sendAuth();
+    // sendAuth();
   }
 
   static Future<List<Message>> getMessages(String friendId) async {
@@ -113,7 +113,7 @@ class MessageCentre {
     API.querySession().then((value) {
       if (value.isSuccess()) {
         var news = value.getDataList((m) => Session.fromJson(m));
-        Log.yellow("_initSessions Step1. 从Server获取最新数据。 $news");
+        Log.yellow("_initSessions Step2. 从Server获取最新数据。 $news");
         // Step3. 刷新本地数据。
         _localStore.saveSessions(news);
         _syncNewSessions(news);
@@ -144,22 +144,22 @@ class MessageCentre {
       //单聊
       if (before == null) {
         //更新消息,一直到没有
-        _loadFriendHistory(latest.otherID, latest.lastChatMessage.id, -1);
-      } else if (before.lastChatMessage.id != latest.lastChatMessage.id) {
+        _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id, -1);
+      } else if (before.lastChatMessage!.id != latest.lastChatMessage!.id) {
         //更新消息,一直到before
-        _loadFriendHistory(latest.otherID, latest.lastChatMessage.id,
-            before.lastChatMessage.id);
+        _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id,
+            before.lastChatMessage!.id);
       }
     } else {
       //群聊
       if (before == null) {
         //更新消息,一直到没有
-        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage.id, -1);
-      } else if (before.lastGroupChatMessage.id !=
-          latest.lastGroupChatMessage.id) {
+        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id, -1);
+      } else if (before.lastGroupChatMessage!.id !=
+          latest.lastGroupChatMessage!.id) {
         //更新消息,一直到before
-        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage.id,
-            before.lastGroupChatMessage.id);
+        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id,
+            before.lastGroupChatMessage!.id);
       }
     }
   }

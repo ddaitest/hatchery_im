@@ -94,6 +94,15 @@ class TestState extends State<TestPage> {
                 });
                 return Text(content);
               }),
+          ValueListenableBuilder(
+              valueListenable: LocalStore.listenSessions().listenable(),
+              builder: (context, Box<Session> box, _) {
+                String content = "<${box.values.length}>";
+                box.values.forEach((element) {
+                  content += "(${element.toJson().toString()})";
+                });
+                return Text(content);
+              }),
           // ElevatedButton(
           //     onPressed: () => sendMessageModel("TEXT"),
           //     child: Text("SEND_TEXT")),

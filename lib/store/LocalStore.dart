@@ -20,6 +20,10 @@ class LocalStore {
       Hive.registerAdapter(MessageAdapter());
       sessionBox = await Hive.openBox<Session>('sessionBox');
       messageBox = await Hive.openBox<Message>('messageBox');
+      sessionBox!.watch().listen((event) {
+        Log.red(
+            "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
+      });
     }
   }
 
@@ -29,8 +33,8 @@ class LocalStore {
 
   void saveSessions(List<Session>? sessions) {
     if (sessions != null) {
-      sessionBox?.clear();
-      sessionBox?.addAll(sessions);
+      Log.yellow("saveSessions. ${sessions.length} ");
+      sessionBox!.clear().then((_) => {sessionBox!.addAll(sessions)});
     }
   }
 

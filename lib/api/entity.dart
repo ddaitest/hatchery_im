@@ -346,8 +346,8 @@ class Session extends HiveObject {
   String ownerID; //会话拥有者ID
   String otherID; //对方ID，单聊回话的时候是对方ID，群聊的时候是群ID
   int type; //会话类型，0表示单聊，1表示群聊
-  Message lastChatMessage; //最后一条消息，当是单聊时此处有值
-  Message lastGroupChatMessage; //最后一条消息，当是群聊时此处有值
+  Message? lastChatMessage; //最后一条消息，当是单聊时此处有值
+  Message? lastGroupChatMessage; //最后一条消息，当是群聊时此处有值
   String updateTime; //更新时间
   String createTime;
 

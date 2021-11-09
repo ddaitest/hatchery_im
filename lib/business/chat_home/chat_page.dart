@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/business/models/chat_users.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
@@ -73,6 +74,7 @@ class _ChatPageState extends State<ChatPage> {
               child: ValueListenableBuilder(
                   valueListenable: sessionBox.listenable(),
                   builder: (context, Box<Session> box, _) {
+                    Log.red("sessionBox.listen >> ${box.values.toString()}");
                     if (box.values.isEmpty) {
                       return Center(
                         child: Text("No contacts"),
@@ -89,9 +91,9 @@ class _ChatPageState extends State<ChatPage> {
                         if (session != null) {
                           if (0 == session.type) {
                             //会话类型，0表示单聊，1表示群聊
-                            content = session.lastChatMessage.content;
+                            content = session.lastChatMessage?.content??"";
                           } else {
-                            content = session.lastGroupChatMessage.content;
+                            content = session.lastGroupChatMessage?.content??"";
                           }
                           return ChatUsersListItem(
                             text: session.title,
