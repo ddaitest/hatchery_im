@@ -25,6 +25,7 @@ class RegisterManager extends ChangeNotifier {
   TextEditingController addressController = TextEditingController();
   String uploadUrl = "";
   double uploadProgress = 0.0;
+  bool isClickRegisterBtn = false;
 
   Future<bool> uploadImage(String filePath) async {
     ApiResult result = await compressionImage(filePath)
@@ -55,16 +56,22 @@ class RegisterManager extends ChangeNotifier {
     String email,
     String address,
   ) async {
-    ApiResult result = await API.usersRegister(
-        loginName, nickName, avatar, password, notes, phone, email, address);
-    if (result.isSuccess()) {
-      print("DEBUG=> result.getData() ${result.getData()}");
-      Routers.navigateAndRemoveUntil('/login');
-      showToast('注册成功');
+    if (!isClickRegisterBtn) {
+      isClickRegisterBtn = true;
+      ApiResult result = await API.usersRegister(
+          loginName, nickName, avatar, password, notes, phone, email, address);
+      if (result.isSuccess()) {
+        print("DEBUG=> result.getData() ${result.getData()}");
+        Routers.navigateAndRemoveUntil('/login');
+        showToast('注册成功');
+      } else {
+        showToast('账号已注册,请更换账号后重试');
+      }
+      isClickRegisterBtn = false;
+      return result.isSuccess();
     } else {
-      showToast('账号已注册,请更换账号后重试');
+      return false;
     }
-    return result.isSuccess();
   }
 
   @override

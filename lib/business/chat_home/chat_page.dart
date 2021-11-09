@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
+import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
+import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -15,53 +17,18 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<ChatUsers> chatUsers = [
-    ChatUsers(
-        text: "加勒比海带",
-        secondaryText: "开黑吗？",
-        image: "images/userImage1.jpeg",
-        time: "现在"),
-    ChatUsers(
-        text: "Glady's Murphy",
-        secondaryText: "That's Great",
-        image: "images/userImage2.jpeg",
-        time: "昨天"),
-    ChatUsers(
-        text: "Jorge Henry",
-        secondaryText: "Hey where are you?",
-        image: "images/userImage3.jpeg",
-        time: "5月31日"),
-    ChatUsers(
-        text: "Philip Fox",
-        secondaryText: "Busy! Call me in 20 mins",
-        image: "images/userImage4.jpeg",
-        time: "5月19日"),
-    ChatUsers(
-        text: "Debra Hawkins",
-        secondaryText: "Thankyou, It's awesome",
-        image: "images/userImage5.jpeg",
-        time: "4月11日"),
-    ChatUsers(
-        text: "Jacob Pena",
-        secondaryText: "will update you in evening",
-        image: "images/userImage6.jpeg",
-        time: "5月17日"),
-    ChatUsers(
-        text: "Andrey Jones",
-        secondaryText: "Can you please share the file?",
-        image: "images/userImage7.jpeg",
-        time: "今天"),
-    ChatUsers(
-        text: "John Wick",
-        secondaryText: "How are you?",
-        image: "images/userImage8.jpeg",
-        time: "一年前"),
-  ];
-
+  final manager = App.manager<ChatHomeManager>();
   var sessionBox = LocalStore.listenSessions();
 
   @override
+  void initState() {
+    manager.init();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("DEBUG=> sessionBox.length ${sessionBox.length}");
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -76,14 +43,12 @@ class _ChatPageState extends State<ChatPage> {
                   builder: (context, Box<Session> box, _) {
                     Log.red("sessionBox.listen >> ${box.values.toString()}");
                     if (box.values.isEmpty) {
-                      return Center(
-                        child: Text("No contacts"),
-                      );
+                      return IndicatorView(tipsText: "没有聊天记录", showLoadingIcon: false);
                     }
                     return ListView.builder(
                       itemCount: box.values.length,
                       shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: const BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
                         Session? session = box.getAt(index);
                         //TODO 渲染 Session
@@ -96,12 +61,13 @@ class _ChatPageState extends State<ChatPage> {
                             content = session.lastGroupChatMessage?.content??"";
                           }
                           return ChatUsersListItem(
-                            text: session.title,
-                            secondaryText: content,
-                            image: session.icon,
-                            time: session.updateTime,
-                            isMessageRead:
-                                (index == 0 || index == 3) ? true : false,
+                            chatSession: session,
+                            // text: session.title,
+                            // secondaryText: finalContent,
+                            // image: session.icon,
+                            // time: session.updateTime,
+                            // isMessageRead: (index == 0 || index == 2) ? true : false,
+                            // chatId: session.otherID,
                           );
                         } else {
                           return Container();

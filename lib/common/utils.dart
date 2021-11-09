@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'dart:convert' as convert;
 import 'dart:io';
 import 'dart:ui' as ui;
@@ -292,6 +293,40 @@ weekDay(int weekNumbers) {
       break;
   }
   return weekCN;
+}
+
+chatHomeSubtitleSet(Message contentMessage) {
+  String finalContent = '';
+  switch (contentMessage.type) {
+    case "TEXT":
+      finalContent = convert.jsonDecode(contentMessage.content)["text"];
+      break;
+    case "IMAGE":
+      finalContent = "[图片]";
+      break;
+    case "VIDEO":
+      finalContent = "[视频]";
+      break;
+    case "VOICE":
+      finalContent = "[语音]";
+      break;
+    case "GEO":
+      finalContent = "[地理位置]";
+      break;
+    case "FILE":
+      finalContent = "[文件]";
+      break;
+    case "URL":
+      finalContent = convert.jsonDecode(contentMessage.content)["url"];
+      break;
+    case "CARD":
+      finalContent = "[名片]";
+      break;
+    default:
+      finalContent = "[消息]";
+      break;
+  }
+  return finalContent;
 }
 
 //时间转换 将秒转换为小时分钟

@@ -27,14 +27,15 @@ class ChatHomeManager extends ChangeNotifier {
     SlideActionInfo('删除', Icons.delete, Colors.red),
   ];
 
-  List<Session>? sessions;
+  List<Session> sessions = [];
 
   /// 初始化
   init() {
     //设置监听
     MessageCentre().listenSessions((news) {
       sessions = news;
-      notifyListeners();
+      print("DEBUG=> ChatHomeManager sessions $sessions");
+      // notifyListeners();
     });
   }
 

@@ -110,10 +110,10 @@ class MessageCentre {
     Log.yellow("_initSessions Step1. 返回本地存储的数据 $sessions");
     sessionListener?.call(sessions ?? []);
     // Step2. 从Server获取最新数据。
-    API.querySession().then((value) {
+    API.querySession().then((value) async {
       if (value.isSuccess()) {
-        var news = value.getDataList((m) => Session.fromJson(m));
-        Log.yellow("_initSessions Step2. 从Server获取最新数据。 $news");
+        List<Session> news = value.getDataList((m) => Session.fromJson(m));
+        Log.yellow("_initSessions Step2. 从Server获取最新数据。 ${news[0].id}");
         // Step3. 刷新本地数据。
         _localStore.saveSessions(news);
         _syncNewSessions(news);
@@ -141,25 +141,30 @@ class MessageCentre {
   _syncSession(Session? before, Session latest) {
     Log.yellow("_syncSession before = $before; latest=$latest");
     if (latest.type == CHAT_TYPE_ONE) {
-      //单聊
-      if (before == null) {
-        //更新消息,一直到没有
-        _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id, -1);
-      } else if (before.lastChatMessage!.id != latest.lastChatMessage!.id) {
-        //更新消息,一直到before
-        _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id,
-            before.lastChatMessage!.id);
+      if (latest.lastChatMessage != null) {
+        //单聊
+        if (before == null) {
+          //更新消息,一直到没有
+          _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id, -1);
+        } else if (before.lastChatMessage!.id != latest.lastChatMessage!.id) {
+          //更新消息,一直到before
+          _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id,
+              before.lastChatMessage!.id);
+        }
       }
     } else {
-      //群聊
-      if (before == null) {
-        //更新消息,一直到没有
-        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id, -1);
-      } else if (before.lastGroupChatMessage!.id !=
-          latest.lastGroupChatMessage!.id) {
-        //更新消息,一直到before
-        _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id,
-            before.lastGroupChatMessage!.id);
+      if (latest.lastGroupChatMessage != null) {
+        //群聊
+        if (before == null) {
+          //更新消息,一直到没有
+          _loadGroupHistory(
+              latest.otherID, latest.lastGroupChatMessage!.id, -1);
+        } else if (before.lastGroupChatMessage!.id !=
+            latest.lastGroupChatMessage!.id) {
+          //更新消息,一直到before
+          _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id,
+              before.lastGroupChatMessage!.id);
+        }
       }
     }
   }

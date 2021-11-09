@@ -1,8 +1,4 @@
-import 'dart:convert';
-
-import 'package:hatchery_im/api/engine/entity.dart';
 import 'dart:convert' as convert;
-import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
