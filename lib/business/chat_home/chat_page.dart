@@ -43,37 +43,26 @@ class _ChatPageState extends State<ChatPage> {
                   builder: (context, Box<Session> box, _) {
                     Log.red("sessionBox.listen >> ${box.values.toString()}");
                     if (box.values.isEmpty) {
-                      return IndicatorView(tipsText: "没有聊天记录", showLoadingIcon: false);
-                    }
-                    return ListView.builder(
-                      itemCount: box.values.length,
-                      shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        Session? session = box.getAt(index);
-                        //TODO 渲染 Session
-                        var content = "";
-                        if (session != null) {
-                          if (0 == session.type) {
-                            //会话类型，0表示单聊，1表示群聊
-                            content = session.lastChatMessage?.content??"";
+                      return IndicatorView(
+                          tipsText: "没有聊天记录", showLoadingIcon: false);
+                    } else {
+                      return ListView.builder(
+                        itemCount: box.values.length,
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          Session? session = box.getAt(index);
+                          //TODO 渲染 Session
+                          if (session != null) {
+                            return ChatUsersListItem(
+                              chatSession: session,
+                            );
                           } else {
-                            content = session.lastGroupChatMessage?.content??"";
+                            return Container();
                           }
-                          return ChatUsersListItem(
-                            chatSession: session,
-                            // text: session.title,
-                            // secondaryText: finalContent,
-                            // image: session.icon,
-                            // time: session.updateTime,
-                            // isMessageRead: (index == 0 || index == 2) ? true : false,
-                            // chatId: session.otherID,
-                          );
-                        } else {
-                          return Container();
-                        }
-                      },
-                    );
+                        },
+                      );
+                    }
                   }),
             ),
           ],

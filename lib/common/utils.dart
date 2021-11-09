@@ -295,38 +295,42 @@ weekDay(int weekNumbers) {
   return weekCN;
 }
 
-chatHomeSubtitleSet(Message contentMessage) {
-  String finalContent = '';
-  switch (contentMessage.type) {
-    case "TEXT":
-      finalContent = convert.jsonDecode(contentMessage.content)["text"];
-      break;
-    case "IMAGE":
-      finalContent = "[图片]";
-      break;
-    case "VIDEO":
-      finalContent = "[视频]";
-      break;
-    case "VOICE":
-      finalContent = "[语音]";
-      break;
-    case "GEO":
-      finalContent = "[地理位置]";
-      break;
-    case "FILE":
-      finalContent = "[文件]";
-      break;
-    case "URL":
-      finalContent = convert.jsonDecode(contentMessage.content)["url"];
-      break;
-    case "CARD":
-      finalContent = "[名片]";
-      break;
-    default:
-      finalContent = "[消息]";
-      break;
+chatHomeSubtitleSet(Message? contentMessage) {
+  if (contentMessage != null) {
+    String finalContent = '';
+    switch (contentMessage.contentType) {
+      case "TEXT":
+        finalContent = convert.jsonDecode(contentMessage.content)["text"];
+        break;
+      case "IMAGE":
+        finalContent = "[图片]";
+        break;
+      case "VIDEO":
+        finalContent = "[视频]";
+        break;
+      case "VOICE":
+        finalContent = "[语音]";
+        break;
+      case "GEO":
+        finalContent = "[地理位置]";
+        break;
+      case "FILE":
+        finalContent = "[文件]";
+        break;
+      case "URL":
+        finalContent = convert.jsonDecode(contentMessage.content)["url"];
+        break;
+      case "CARD":
+        finalContent = "[名片]";
+        break;
+      default:
+        finalContent = "[消息]";
+        break;
+    }
+    return finalContent;
+  } else {
+    return "";
   }
-  return finalContent;
 }
 
 //时间转换 将秒转换为小时分钟

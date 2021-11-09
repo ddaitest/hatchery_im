@@ -154,18 +154,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  String? _getAvatarPicUrl(String senderId) {
-    if (widget.usersInfo != null) {
-      if (manager.myProfileData!.userID!.compareTo(senderId) == 0) {
-        return manager.myProfileData!.icon;
-      } else {
-        return widget.usersInfo!.icon;
-      }
-    } else {
-      return "";
-    }
-  }
-
   Widget _inputMainView() {
     return Selector<ChatDetailManager, bool>(
       builder: (BuildContext context, bool value, Widget? child) {
