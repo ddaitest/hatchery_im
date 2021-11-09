@@ -110,16 +110,16 @@ class MessageCentre {
     Log.yellow("_initSessions Step1. 返回本地存储的数据 $sessions");
     sessionListener?.call(sessions ?? []);
     // Step2. 从Server获取最新数据。
-    API.querySession().then((value) {
+    API.querySession().then((value) async {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
-        Log.yellow("_initSessions Step1. 从Server获取最新数据。 ${news[0].title}");
+        Log.yellow("_initSessions Step1. 从Server获取最新数据。 ${news[0].id}");
         // Step3. 刷新本地数据。
         _localStore.saveSessions(news);
         _syncNewSessions(news);
-        sessions = news;
-        sessionListener?.call(sessions ?? []);
-        Log.yellow("_initSessions 从Server获取最新数据");
+        sessionListener?.call(news);
+        sessions = await _localStore.getSessions();
+        Log.yellow("_initSessions 从Server获取最新数据 ${sessions?[0].id}");
       }
     });
   }

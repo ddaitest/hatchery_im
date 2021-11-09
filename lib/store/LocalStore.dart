@@ -29,6 +29,7 @@ class LocalStore {
 
   void saveSessions(List<Session>? sessions) {
     if (sessions != null) {
+      Log.yellow("saveSessions。 saveSessions");
       sessionBox?.clear();
       sessionBox?.addAll(sessions);
     }
