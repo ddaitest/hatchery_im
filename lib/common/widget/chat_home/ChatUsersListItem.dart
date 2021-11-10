@@ -18,12 +18,15 @@ class ChatUsersListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? finalContent;
+    String? _content;
+    String? _time;
     if (chatSession.type == 0) {
       //会话类型，0表示单聊，1表示群聊
-      finalContent = chatHomeSubtitleSet(chatSession.lastChatMessage!);
+      _content = chatHomeSubtitleSet(chatSession.lastChatMessage!);
+      _time = chatSession.lastChatMessage!.createTime;
     } else {
-      finalContent = chatHomeSubtitleSet(chatSession.lastGroupChatMessage!);
+      _content = chatHomeSubtitleSet(chatSession.lastGroupChatMessage!);
+      _time = chatSession.lastGroupChatMessage!.createTime;
     }
     return Slidable(
       actionPane: SlidableScrollActionPane(),
@@ -57,14 +60,14 @@ class ChatUsersListItem extends StatelessWidget {
           subtitle: Container(
             padding: const EdgeInsets.only(top: 5.0),
             child: Text(
-              finalContent!,
+              _content!,
               style: Flavors.textStyles.groupMembersNumberText,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           trailing: Text(
-            checkMessageTime(chatSession.updateTime),
+            "${checkMessageTime(_time)}",
             style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
             maxLines: 1,
           ),

@@ -318,7 +318,8 @@ chatHomeSubtitleSet(Message? contentMessage) {
         finalContent = "[地理位置]";
         break;
       case "FILE":
-        finalContent = "[文件]";
+        finalContent =
+            "[文件] ${convert.jsonDecode(contentMessage.content)["name"]}";
         break;
       case "URL":
         finalContent = convert.jsonDecode(contentMessage.content)["url"];

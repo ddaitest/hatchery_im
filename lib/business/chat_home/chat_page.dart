@@ -41,8 +41,8 @@ class _ChatPageState extends State<ChatPage> {
               child: ValueListenableBuilder(
                   valueListenable: sessionBox.listenable(),
                   builder: (context, Box<Session> box, _) {
-                    Log.red(
-                        "sessionBox.listen >> ${box.getAt(0)!.lastChatMessage!.createTime}");
+                    // Log.red(
+                    //     "sessionBox.listen >> ${box.getAt(0)!.lastChatMessage!.createTime}");
                     if (box.values.isEmpty) {
                       return IndicatorView(
                           tipsText: "没有聊天记录", showLoadingIcon: false);

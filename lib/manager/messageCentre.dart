@@ -196,9 +196,32 @@ class MessageCentre {
     }
   }
 
-  _loadGroupHistory(String friendID, int from, int to) async {
+  _loadGroupHistory(String groupID, int from, int to) async {
     Log.yellow("更新消息, 群聊, $from to $to");
-    //TODO
+    int currentFrom = from;
+    bool found = false;
+    bool end = false;
+    while (!found && !end) {
+      var result = await _queryHistoryGroup(groupID, currentFrom);
+      end = result.length < 1;
+      var temp = <Message>[];
+
+      /// Todo 群聊和单聊不同
+      for (var msg in result) {
+        if (msg.id == to) {
+          found = true;
+          break;
+        } else {
+          currentFrom = msg.id;
+          LocalStore.addMessage(msg);
+          temp.add(msg);
+        }
+      }
+      // if (temp.length > 0) {
+      //Notify all
+      // _notifyMessageChanged(friendID);
+      // }
+    }
   }
 
   Future<List<Message>> _queryHistoryFriend(String friendID, int from) async {
