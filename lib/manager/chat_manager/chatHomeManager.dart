@@ -22,7 +22,7 @@ import '../app_manager/app_handler.dart';
 
 class ChatHomeManager extends ChangeNotifier {
   List<SlideActionInfo> slideAction = [
-    SlideActionInfo('置顶', Icons.upload_rounded, Flavors.colorInfo.mainColor),
+    SlideActionInfo('置顶', Icons.upload_sharp, Flavors.colorInfo.mainColor),
     SlideActionInfo('不提醒', Icons.notifications_off, Flavors.colorInfo.blueGrey),
     SlideActionInfo('删除', Icons.delete, Colors.red),
   ];

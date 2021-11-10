@@ -19,8 +19,6 @@ class ChatUsersListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? finalContent;
-    print(
-        "DEBUG=> chatSession chatSession ${chatSession.lastChatMessage!.type}");
     if (chatSession.type == 0) {
       //会话类型，0表示单聊，1表示群聊
       finalContent = chatHomeSubtitleSet(chatSession.lastChatMessage!);
@@ -34,11 +32,21 @@ class ChatUsersListItem extends StatelessWidget {
           manager.slideAction.map((e) => slideActionModel(e)).toList(),
       child: Container(
         color: Colors.white,
-        padding: EdgeInsets.only(top: 15.0, bottom: 10.0),
+        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: ListTile(
-          // Todo 跳转chat detail 页面； routers中friendId需要改造
           onTap: () => Routers.navigateTo("/chat_detail",
-              arg: chatSession.type == 0 ? {"chatType": ""} : {"chatType": ""}),
+              arg: chatSession.type == 0
+                  ? {
+                      "chatType": "CHAT",
+                      "nickName": chatSession.title,
+                      "friendId": chatSession.otherID
+                    }
+                  : {
+                      "chatType": "GROUP",
+                      "groupId": chatSession.otherID,
+                      "groupName": chatSession.title,
+                      "groupIcon": chatSession.icon
+                    }),
           dense: false,
           visualDensity: VisualDensity.comfortable,
           leading: netWorkAvatar(
@@ -73,6 +81,7 @@ class ChatUsersListItem extends StatelessWidget {
               style: Flavors.textStyles.chatHomeSlideText)),
       color: slideActionInfo.iconColor,
       icon: slideActionInfo.icon,
+      foregroundColor: Colors.white,
       onTap: () => slideActionInfo.onTap,
     );
   }

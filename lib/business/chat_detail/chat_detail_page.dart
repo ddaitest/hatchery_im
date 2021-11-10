@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
@@ -23,14 +24,16 @@ import 'package:hatchery_im/common/widget/emojiModel.dart';
 import '../../routers.dart';
 
 class ChatDetailPage extends StatefulWidget {
-  final UsersInfo? usersInfo;
+  final String? nickName;
+  final String? friendId;
   final String? groupId;
   final String? groupName;
   final String? groupIcon;
   final String? chatType;
 
   ChatDetailPage(
-      {this.usersInfo,
+      {this.nickName,
+      this.friendId,
       this.chatType,
       this.groupId,
       this.groupName,
@@ -48,8 +51,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    if (widget.usersInfo != null) {
-      appTitleName = widget.usersInfo!.nickName;
+    if (widget.nickName != null) {
+      appTitleName = widget.nickName!;
     } else if (widget.groupName != null) {
       appTitleName = widget.groupName!;
     }
@@ -81,7 +84,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
     ];
     manager.init(widget.chatType!,
-        friendId: widget.usersInfo != null ? widget.usersInfo!.userID : '',
+        friendId: widget.friendId ?? "",
         groupId: widget.groupId!,
         groupName: widget.groupName!,
         groupIcon: widget.groupIcon!);
@@ -91,7 +94,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
-    // manager.dispose();
+    manager.messagesList.clear();
+    manager.isVoiceModel = false;
+    manager.cancelTimer();
+    manager.emojiShowing = false;
+    manager.textEditingController.clear();
+    manager.currentFriendId = "";
+    manager.currentGroupId = "";
+    manager.currentGroupName = "";
+    manager.currentGroupIcon = "";
     super.dispose();
   }
 
@@ -110,18 +121,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  // Widget _messageInfoView2() {
-  //   return ValueListenableBuilder(
-  //       valueListenable: LocalStore.listenMessage(),
-  //       builder: (context, Box<Message> box, _) {
-  //         String content = "<${box.values.length}>";
-  //         box.values.forEach((element) {
-  //           content += "(${element.content})";
-  //         });
-  //         return Text(content);
-  //       });
-  // }
-
   Widget _messageInfoView() {
     return Selector<ChatDetailManager, List<Message>>(
       builder: (BuildContext context, List<Message> value, Widget? child) {
@@ -135,7 +134,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
               return ChatBubble(
-                userID: widget.usersInfo?.userID ?? '',
+                userID: widget.friendId ?? "",
                 messageBelongType: manager.myProfileData!.userID!
                             .compareTo(value[index].sender) ==
                         0

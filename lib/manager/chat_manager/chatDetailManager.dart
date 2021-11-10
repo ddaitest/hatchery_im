@@ -83,21 +83,6 @@ class ChatDetailManager extends ChangeNotifier {
     var x = DateTime.now().toString();
   }
 
-  @override
-  void dispose() {
-    messagesList.clear();
-    isVoiceModel = false;
-    cancelTimer();
-    emojiShowing = false;
-    textEditingController.clear();
-    currentFriendId = "";
-    currentGroupId = "";
-    currentGroupName = "";
-    currentGroupIcon = "";
-    Log.yellow("ChatDetailManager dispose");
-    super.dispose();
-  }
-
   void _readMessages(bool notify) {
     var temp;
     Log.red(currentFriendId != ""

@@ -254,9 +254,12 @@ checkMessageTime(String createTime) {
   } else if (differenceTime == 1) {
     _finalShowTime =
         '昨天 ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
-  } else if (differenceTime > 1 && differenceTime <= 7) {
+  } else if (differenceTime > 1 && differenceTime < 7) {
     _finalShowTime =
         '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
+  } else if (differenceTime >= 7) {
+    _finalShowTime =
+        '${_responseCreateTime.year}-${_responseCreateTime.month.toString().padLeft(2, '0')}-${_responseCreateTime.day.toString().padLeft(2, '0')}';
   } else {
     _finalShowTime =
         '${_responseCreateTime.year}-${_responseCreateTime.month.toString().padLeft(2, '0')}-${_responseCreateTime.day.toString().padLeft(2, '0')} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
