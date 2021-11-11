@@ -18,16 +18,12 @@ class ChatUsersListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("DEBUG=> session.icon ${chatSession.icon}");
     String? _content;
-    int? _time;
     if (chatSession.type == 0) {
       //会话类型，0表示单聊，1表示群聊
       _content = chatHomeSubtitleSet(chatSession.lastChatMessage!);
-      _time = chatSession.lastChatMessage!.createTime;
     } else {
       _content = chatHomeSubtitleSet(chatSession.lastGroupChatMessage!);
-      _time = chatSession.lastGroupChatMessage!.createTime;
     }
     return Slidable(
       actionPane: SlidableScrollActionPane(),
@@ -66,7 +62,7 @@ class ChatUsersListItem extends StatelessWidget {
             ),
           ),
           trailing: Text(
-            "${checkMessageTime(_time).toString().contains("-") ? checkMessageTime(_time).toString().split(" ")[0] : checkMessageTime(_time)}",
+            "${checkMessageTime(chatSession.updateTime).toString().contains("-") ? checkMessageTime(chatSession.updateTime).toString().split(" ")[0] : checkMessageTime(chatSession.updateTime)}",
             style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
             maxLines: 1,
           ),

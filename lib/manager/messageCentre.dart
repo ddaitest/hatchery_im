@@ -114,7 +114,7 @@ class MessageCentre {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
         news.forEach((element) => Log.yellow(
-            "querySession element ${element.lastGroupChatMessage?.content ?? "null"}"));
+            "querySession element ${element.lastChatMessage?.content ?? "null"}"));
 
         // Step3. 刷新本地数据。
         sessions = news;
