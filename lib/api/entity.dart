@@ -35,8 +35,8 @@ class UsersInfo {
   final String? email;
   final String? address;
   final int? status;
-  final String? updateTime;
-  final String? createTime;
+  final int? updateTime;
+  final int? createTime;
   final bool isFriends;
 
   UsersInfo(
@@ -157,8 +157,8 @@ class GroupInfo {
   String? groupDescription = '';
   String? notes = '';
   int status;
-  String? updateTime = '';
-  String? createTime = '';
+  int? updateTime;
+  int? createTime;
 
   GroupInfo(
       this.id,
@@ -231,8 +231,8 @@ class MyProfile {
   String password = '';
   String? address = '';
   int status;
-  String updateTime = '';
-  String createTime = '';
+  int updateTime;
+  int createTime;
 
   MyProfile(
       this.id,
@@ -295,7 +295,7 @@ class Message extends HiveObject {
   String source;
   String content;
   String contentType;
-  String createTime;
+  int createTime;
   String? groupID;
   // int progress = 0; // 0默认; 1发送中; 2发送完成; 3已读; 4收到的消息。
 
@@ -348,8 +348,8 @@ class Session extends HiveObject {
   int type; //会话类型，0表示单聊，1表示群聊
   Message? lastChatMessage; //最后一条消息，当是单聊时此处有值
   Message? lastGroupChatMessage; //最后一条消息，当是群聊时此处有值
-  String updateTime; //更新时间
-  String createTime;
+  int updateTime; //更新时间
+  int createTime;
 
   Session(
       this.id,

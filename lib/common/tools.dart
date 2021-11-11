@@ -241,7 +241,7 @@ class ModelHelper {
         msg.source,
         msg.content,
         msg.contentType,
-        DateTime.now().toString(),
+        DateTime.now().millisecondsSinceEpoch,
         "");
     return message;
   }
@@ -264,7 +264,7 @@ class ModelHelper {
         msg.source,
         msg.content,
         msg.contentType,
-        DateTime.now().toString(),
+        DateTime.now().millisecondsSinceEpoch,
         msg.to);
     return message;
   }

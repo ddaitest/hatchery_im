@@ -18,8 +18,9 @@ class ChatUsersListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("DEBUG=> session.icon ${chatSession.icon}");
     String? _content;
-    String? _time;
+    int? _time;
     if (chatSession.type == 0) {
       //会话类型，0表示单聊，1表示群聊
       _content = chatHomeSubtitleSet(chatSession.lastChatMessage!);
@@ -52,10 +53,8 @@ class ChatUsersListItem extends StatelessWidget {
                     }),
           dense: false,
           visualDensity: VisualDensity.comfortable,
-          leading: netWorkAvatar(
-            chatSession.icon,
-            25.0,
-          ),
+          leading: netWorkAvatar(chatSession.icon, 25.0,
+              avatarType: chatSession.type != 0 ? "groupAvatar" : "avatar"),
           title: Text(chatSession.title),
           subtitle: Container(
             padding: const EdgeInsets.only(top: 5.0),
@@ -67,7 +66,7 @@ class ChatUsersListItem extends StatelessWidget {
             ),
           ),
           trailing: Text(
-            "${checkMessageTime(_time)}",
+            "${checkMessageTime(_time).toString().contains("-") ? checkMessageTime(_time).toString().split(" ")[0] : checkMessageTime(_time)}",
             style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
             maxLines: 1,
           ),

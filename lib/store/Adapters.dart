@@ -31,7 +31,7 @@ class MessageAdapter extends TypeAdapter<Message> {
       fields[8] as String,
       fields[9] as String,
       fields[10] as String,
-      fields[11] as String,
+      fields[11] as int,
       fields[6] as String?,
     );
   }
@@ -72,9 +72,9 @@ class MessageAdapter extends TypeAdapter<Message> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MessageAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is MessageAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
 class SessionAdapter extends TypeAdapter<Session> {
@@ -96,8 +96,8 @@ class SessionAdapter extends TypeAdapter<Session> {
       fields[5] as String,
       fields[7] as Message?,
       fields[8] as Message?,
-      fields[9] as String,
-      fields[10] as String,
+      fields[9] as int,
+      fields[10] as int,
     );
   }
 
@@ -133,7 +133,7 @@ class SessionAdapter extends TypeAdapter<Session> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is SessionAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is SessionAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

@@ -240,26 +240,24 @@ closeLoadingDialog(BuildContext context) {
   Navigator.pop(context, DialogDemoAction.cancel);
 }
 
-checkMessageTime(String createTime) {
-  DateTime _responseCreateTime = DateTime.parse(createTime);
+checkMessageTime(int createTime) {
+  DateTime _responseCreateTime =
+      DateTime.fromMillisecondsSinceEpoch(createTime);
   DateTime _timeNow = DateTime.now();
   String _finalShowTime = '';
-  int differenceTime = int.parse(
-          '${_timeNow.year}${_timeNow.month}${_timeNow.day}') -
-      int.parse(
-          '${_responseCreateTime.year}${_responseCreateTime.month}${_responseCreateTime.day}');
-  if (differenceTime == 0) {
+  Duration differenceTime = _timeNow.difference(_responseCreateTime);
+  if (differenceTime.inDays == 0) {
     _finalShowTime =
         '${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
-  } else if (differenceTime == 1) {
+  } else if (differenceTime.inDays == 1) {
     _finalShowTime =
         '昨天 ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
-  } else if (differenceTime > 1 && differenceTime < 7) {
+  } else if (differenceTime.inDays > 1 && differenceTime.inDays < 7) {
     _finalShowTime =
         '${weekDay(_responseCreateTime.weekday)} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
-  } else if (differenceTime >= 7) {
+  } else if (differenceTime.inDays >= 7) {
     _finalShowTime =
-        '${_responseCreateTime.year}-${_responseCreateTime.month.toString().padLeft(2, '0')}-${_responseCreateTime.day.toString().padLeft(2, '0')}';
+        '${_responseCreateTime.year}-${_responseCreateTime.month.toString().padLeft(2, '0')}-${_responseCreateTime.day.toString().padLeft(2, '0')} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';
   } else {
     _finalShowTime =
         '${_responseCreateTime.year}-${_responseCreateTime.month.toString().padLeft(2, '0')}-${_responseCreateTime.day.toString().padLeft(2, '0')} ${_responseCreateTime.hour.toString().padLeft(2, '0')}:${_responseCreateTime.minute.toString().padLeft(2, '0')}';

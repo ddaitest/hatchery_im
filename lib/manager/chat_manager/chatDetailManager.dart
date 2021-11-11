@@ -99,7 +99,8 @@ class ChatDetailManager extends ChangeNotifier {
     if (temp != null && temp.length != messagesList.length) {
       messagesList = temp;
       messagesList.sort((a, b) =>
-          DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime)));
+          DateTime.fromMillisecondsSinceEpoch(b.createTime)
+              .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
       if (notify) {
         notifyListeners();
       }

@@ -116,7 +116,6 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
   }
 
   Widget _groupInfoView() {
-    print("DEBUG=> _groupInfoView");
     return Selector<GroupProfileManager, GroupInfo?>(
         builder: (BuildContext context, GroupInfo? value, Widget? child) {
           return Container(

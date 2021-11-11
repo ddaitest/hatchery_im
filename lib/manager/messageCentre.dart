@@ -113,8 +113,9 @@ class MessageCentre {
     API.querySession().then((value) async {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
-        Log.yellow(
-            "_initSessions Step2. 从Server获取最新数据。 ${news[0].lastChatMessage!.content}");
+        news.forEach((element) => Log.yellow(
+            "querySession element ${element.lastGroupChatMessage?.content ?? "null"}"));
+
         // Step3. 刷新本地数据。
         sessions = news;
         _localStore.saveSessions(sessions);

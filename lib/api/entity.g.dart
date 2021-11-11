@@ -33,8 +33,8 @@ UsersInfo _$UsersInfoFromJson(Map<String, dynamic> json) {
     email: json['email'] as String?,
     address: json['address'] as String?,
     status: json['status'] as int?,
-    updateTime: json['updateTime'] as String?,
-    createTime: json['createTime'] as String?,
+    updateTime: json['updateTime'] as int?,
+    createTime: json['createTime'] as int?,
     isFriends: json['isFriends'] as bool,
   );
 }
@@ -145,8 +145,8 @@ GroupInfo _$GroupInfoFromJson(Map<String, dynamic> json) {
     json['groupDescription'] as String?,
     json['notes'] as String?,
     json['status'] as int,
-    json['updateTime'] as String?,
-    json['createTime'] as String?,
+    json['updateTime'] as int?,
+    json['createTime'] as int?,
   );
 }
 
@@ -214,8 +214,8 @@ MyProfile _$MyProfileFromJson(Map<String, dynamic> json) {
     json['password'] as String,
     json['address'] as String?,
     json['status'] as int,
-    json['updateTime'] as String,
-    json['createTime'] as String,
+    json['updateTime'] as int,
+    json['createTime'] as int,
   );
 }
 
@@ -272,7 +272,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     json['source'] as String,
     json['content'] as String,
     json['contentType'] as String,
-    json['createTime'] as String,
+    json['createTime'] as int,
     json['receiver'] as String?,
   );
 }
@@ -330,8 +330,8 @@ Session _$SessionFromJson(Map<String, dynamic> json) {
         ? null
         : Message.fromJson(
             json['lastGroupChatMessage'] as Map<String, dynamic>),
-    json['updateTime'] as String,
-    json['createTime'] as String,
+    json['updateTime'] as int,
+    json['createTime'] as int,
   );
 }
 
