@@ -166,9 +166,9 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void sendLocalMessage(AssetEntity? assetEntity) {
+  void sendLocalMessage(AssetEntity? assetEntity) async {
     DateTime _timeNow = DateTime.now();
-    assetEntity!.file.then((fileValue) {
+    await assetEntity!.file.then((fileValue) {
       if (assetEntity.type == AssetType.image) {
         print("DEBUG=> fileValue!.path ${fileValue!.path}");
         // messagesList.insert(
