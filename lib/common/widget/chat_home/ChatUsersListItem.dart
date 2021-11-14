@@ -6,6 +6,7 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import 'dart:convert' as convert;
 import '../../../routers.dart';
 import '../../utils.dart';
@@ -18,7 +19,15 @@ class ChatUsersListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<SlideActionInfo> slideAction = [
+      SlideActionInfo('置顶', Icons.upload_sharp, Flavors.colorInfo.mainColor),
+      SlideActionInfo(
+          '不提醒', Icons.notifications_off, Flavors.colorInfo.blueGrey),
+      SlideActionInfo('删除', Icons.delete, Colors.red,
+          onTap: () => LocalStore.deleteSession(chatSession.otherID)),
+    ];
     String? _content;
+    int _time = chatSession.updateTime;
     if (chatSession.type == 0) {
       //会话类型，0表示单聊，1表示群聊
       _content = chatHomeSubtitleSet(chatSession.lastChatMessage!);
@@ -28,8 +37,7 @@ class ChatUsersListItem extends StatelessWidget {
     return Slidable(
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
-      secondaryActions:
-          manager.slideAction.map((e) => slideActionModel(e)).toList(),
+      secondaryActions: slideAction.map((e) => slideActionModel(e)).toList(),
       child: Container(
         color: Colors.white,
         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -62,7 +70,7 @@ class ChatUsersListItem extends StatelessWidget {
             ),
           ),
           trailing: Text(
-            "${checkMessageTime(chatSession.updateTime).toString().contains("-") ? checkMessageTime(chatSession.updateTime).toString().split(" ")[0] : checkMessageTime(chatSession.updateTime)}",
+            "${checkMessageTime(_time).toString().contains("-") ? checkMessageTime(_time).toString().split(" ")[0] : checkMessageTime(_time)}",
             style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
             maxLines: 1,
           ),

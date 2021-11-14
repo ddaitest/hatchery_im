@@ -91,8 +91,12 @@ class ChatDetailManager extends ChangeNotifier {
     LocalStore.messageBox!.values.forEach((element) {
       temp = LocalStore.messageBox!.values
           .where((element) => element.groupID == ""
-              ? element.receiver == currentFriendId ||
-                  element.sender == currentFriendId
+
+              /// 防止换号后消息对不上
+              ? (element.receiver == currentFriendId &&
+                      element.sender == myProfileData!.userID) ||
+                  (element.sender == currentFriendId &&
+                      element.receiver == myProfileData!.userID)
               : element.groupID == currentGroupId)
           .toList();
     });
