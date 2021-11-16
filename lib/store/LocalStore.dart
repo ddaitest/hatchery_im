@@ -56,12 +56,12 @@ class LocalStore {
     if (msg.isGroup()) {
       findSession(msg.getOtherId() ?? "")
         ?..lastGroupChatMessage = msg
-        ..updateTime = DateTime.now().toString()
+        ..updateTime = DateTime.now().microsecond
         ..save();
     } else {
       findSession(msg.getOtherId() ?? "")
         ?..lastChatMessage = msg
-        ..updateTime = DateTime.now().toString()
+        ..updateTime = DateTime.now().microsecond
         ..save();
     }
   }
