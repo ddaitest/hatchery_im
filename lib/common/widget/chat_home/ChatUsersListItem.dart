@@ -27,13 +27,11 @@ class ChatUsersListItem extends StatelessWidget {
           onTap: () => LocalStore.deleteSession(chatSession.otherID)),
     ];
     String? _content;
-    int _time = chatSession.updateTime;
-    if (chatSession.type == 0) {
-      //会话类型，0表示单聊，1表示群聊
-      _content = chatHomeSubtitleSet(chatSession.lastChatMessage!);
-    } else {
-      _content = chatHomeSubtitleSet(chatSession.lastGroupChatMessage!);
-    }
+    int? _time = chatSession.updateTime;
+    //会话类型，0表示单聊，1表示群聊
+    _content = chatHomeSubtitleSet(chatSession.type == 0
+        ? chatSession.lastChatMessage!
+        : chatSession.lastGroupChatMessage!);
     return Slidable(
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
