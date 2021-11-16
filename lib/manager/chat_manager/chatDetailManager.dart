@@ -90,7 +90,7 @@ class ChatDetailManager extends ChangeNotifier {
         : "listenMessage >> groupId =$currentGroupId");
     LocalStore.messageBox!.values.forEach((element) {
       temp = LocalStore.messageBox!.values
-          .where((element) => element.groupID == ""
+          .where((element) => element.type == "CHAT"
 
               /// 防止换号后消息对不上
               ? (element.receiver == currentFriendId &&

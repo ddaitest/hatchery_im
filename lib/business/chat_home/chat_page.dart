@@ -3,6 +3,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
@@ -28,7 +29,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("DEBUG=> sessionBox.length ${sessionBox.length}");
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -53,9 +53,18 @@ class _ChatPageState extends State<ChatPage> {
                           Session? session = box.getAt(index);
                           //TODO 渲染 Session
                           if (session != null) {
+                            print(
+                                "DEBUG=> session.lastGroupChatMessage ${session.lastGroupChatMessage?.content ?? " GGGG"}");
                             return ChatUsersListItem(
-                              chatSession: session,
-                            );
+                                title: session.title,
+                                icon: session.icon,
+                                //会话类型，0表示单聊，1表示群聊
+                                chatType: session.type,
+                                chatId: session.otherID,
+                                updateTime: session.updateTime,
+                                content: chatHomeSubtitleSet(session.type == 0
+                                    ? session.lastChatMessage
+                                    : session.lastGroupChatMessage));
                           } else {
                             return Container();
                           }

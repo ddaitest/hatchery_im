@@ -13,8 +13,19 @@ import '../../utils.dart';
 import '../aboutAvatar.dart';
 
 class ChatUsersListItem extends StatelessWidget {
-  final Session chatSession;
-  ChatUsersListItem({required this.chatSession});
+  final String title;
+  final String icon;
+  final int chatType;
+  final String chatId;
+  final int updateTime;
+  final String content;
+  ChatUsersListItem(
+      {required this.title,
+      required this.icon,
+      required this.chatType,
+      required this.chatId,
+      required this.updateTime,
+      required this.content});
   final manager = App.manager<ChatHomeManager>();
 
   @override
@@ -24,14 +35,8 @@ class ChatUsersListItem extends StatelessWidget {
       SlideActionInfo(
           '不提醒', Icons.notifications_off, Flavors.colorInfo.blueGrey),
       SlideActionInfo('删除', Icons.delete, Colors.red,
-          onTap: () => LocalStore.deleteSession(chatSession.otherID)),
+          onTap: () => LocalStore.deleteSession(chatId)),
     ];
-    String? _content;
-    int? _time = chatSession.updateTime;
-    //会话类型，0表示单聊，1表示群聊
-    _content = chatHomeSubtitleSet(chatSession.type == 0
-        ? chatSession.lastChatMessage!
-        : chatSession.lastGroupChatMessage!);
     return Slidable(
       actionPane: SlidableScrollActionPane(),
       actionExtentRatio: 0.25,
@@ -41,34 +46,30 @@ class ChatUsersListItem extends StatelessWidget {
         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: ListTile(
           onTap: () => Routers.navigateTo("/chat_detail",
-              arg: chatSession.type == 0
-                  ? {
-                      "chatType": "CHAT",
-                      "nickName": chatSession.title,
-                      "friendId": chatSession.otherID
-                    }
+              arg: chatType == 0
+                  ? {"chatType": "CHAT", "nickName": title, "friendId": chatId}
                   : {
                       "chatType": "GROUP",
-                      "groupId": chatSession.otherID,
-                      "groupName": chatSession.title,
-                      "groupIcon": chatSession.icon
+                      "groupId": chatId,
+                      "groupName": title,
+                      "groupIcon": icon
                     }),
           dense: false,
           visualDensity: VisualDensity.comfortable,
-          leading: netWorkAvatar(chatSession.icon, 25.0,
-              avatarType: chatSession.type != 0 ? "groupAvatar" : "avatar"),
-          title: Text(chatSession.title),
+          leading: netWorkAvatar(icon, 25.0,
+              avatarType: chatType != 0 ? "groupAvatar" : "avatar"),
+          title: Text(title),
           subtitle: Container(
             padding: const EdgeInsets.only(top: 5.0),
             child: Text(
-              _content!,
+              content,
               style: Flavors.textStyles.groupMembersNumberText,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           trailing: Text(
-            "${checkMessageTime(_time).toString().contains("-") ? checkMessageTime(_time).toString().split(" ")[0] : checkMessageTime(_time)}",
+            "${checkMessageTime(updateTime).toString().contains("-") ? checkMessageTime(updateTime).toString().split(" ")[0] : checkMessageTime(updateTime)}",
             style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
             maxLines: 1,
           ),

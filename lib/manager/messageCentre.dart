@@ -113,8 +113,8 @@ class MessageCentre {
     API.querySession().then((value) async {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
-        news.forEach((element) => Log.yellow(
-            "querySession element ${element.lastChatMessage?.content ?? "null"}"));
+        news.forEach(
+            (element) => Log.yellow("querySession element ${element.type}"));
 
         // Step3. 刷新本地数据。
         sessions = news;

@@ -54,15 +54,15 @@ class LocalStore {
     messageBox?.add(msg);
     //update session
     if (msg.isGroup()) {
+      print("DEBUG=> isGroup isGroup ${msg.toJson()}");
       findSession(msg.getOtherId() ?? "")
         ?..lastGroupChatMessage = msg
-        ..type = 1
         ..updateTime = msg.createTime
         ..save();
     } else {
+      print("DEBUG=> isChat isChat ${msg.toJson()}");
       findSession(msg.getOtherId() ?? "")
         ?..lastChatMessage = msg
-        ..type = 0
         ..updateTime = msg.createTime
         ..save();
     }

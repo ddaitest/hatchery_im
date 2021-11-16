@@ -24,32 +24,31 @@ import '../app_manager/app_handler.dart';
 
 class ChatHomeManager extends ChangeNotifier {
   List<Session> sessions = [];
+  Map<String, String>? homeMessagesMap;
 
   /// 初始化
   init() {
     //设置监听
-    // MessageCentre().listenSessions((news) {
-    //   sessions = news;
-    //   print("DEBUG=> ChatHomeManager sessions $sessions");
-    //   notifyListeners();
+    // LocalStore.listenMessage().addListener(() {
+    //   _readMessages();
     // });
   }
 
-  // void _readMessages(bool notify) {
+  // void _readMessages(List<String> otherIds) {
   //   var temp;
-  //   Log.red(currentFriendId != ""
-  //       ? "listenMessage >> friendId =$currentFriendId"
-  //       : "listenMessage >> groupId =$currentGroupId");
+  //   // Log.red(currentFriendId != ""
+  //   //     ? "listenMessage >> friendId =$currentFriendId"
+  //   //     : "listenMessage >> groupId =$currentGroupId");
   //   LocalStore.messageBox!.values.forEach((element) {
   //     temp = LocalStore.messageBox!.values
   //         .where((element) => element.groupID == ""
   //
-  //     /// 防止换号后消息对不上
-  //         ? (element.receiver == currentFriendId &&
-  //         element.sender == myProfileData!.userID) ||
-  //         (element.sender == currentFriendId &&
-  //             element.receiver == myProfileData!.userID)
-  //         : element.groupID == currentGroupId)
+  //             /// 防止换号后消息对不上
+  //             ? (element.receiver == currentFriendId &&
+  //                     element.sender == myProfileData!.userID) ||
+  //                 (element.sender == currentFriendId &&
+  //                     element.receiver == myProfileData!.userID)
+  //             : element.groupID == currentGroupId)
   //         .toList();
   //   });
   //   if (temp != null && temp.length != messagesList.length) {
@@ -57,9 +56,7 @@ class ChatHomeManager extends ChangeNotifier {
   //     messagesList.sort((a, b) =>
   //         DateTime.fromMillisecondsSinceEpoch(b.createTime)
   //             .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-  //     if (notify) {
-  //       notifyListeners();
-  //     }
+  //     notifyListeners();
   //   }
   // }
 
