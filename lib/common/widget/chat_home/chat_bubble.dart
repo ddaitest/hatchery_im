@@ -18,6 +18,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:provider/provider.dart';
 
 import '../../../config.dart';
+import '../aboutAvatar.dart';
 
 class ChatBubble extends StatelessWidget {
   final String userID;
@@ -34,7 +35,8 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
+        padding:
+            const EdgeInsets.only(left: 16, right: 16, top: 10, bottom: 10),
         child: _chatBubbleView('${_getAvatarPicUrl()}'));
   }
 
@@ -68,26 +70,7 @@ class ChatBubble extends StatelessWidget {
                   ? Routers.navigateTo('/friend_profile',
                       arg: contentMessages.sender)
                   : null,
-              child: Container(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: CachedNetworkImage(
-                      imageUrl: avatarUrl!,
-                      placeholder: (context, url) => CircleAvatar(
-                            backgroundImage:
-                                AssetImage('images/default_avatar.png'),
-                            maxRadius: 20,
-                          ),
-                      errorWidget: (context, url, error) => CircleAvatar(
-                            backgroundImage:
-                                AssetImage('images/default_avatar.png'),
-                            maxRadius: 20,
-                          ),
-                      imageBuilder: (context, imageProvider) {
-                        return CircleAvatar(
-                          backgroundImage: imageProvider,
-                          maxRadius: 20,
-                        );
-                      })),
+              child: netWorkAvatar(avatarUrl, 20.0),
             ),
             SizedBox(width: 15.0.w),
             contentMessages.type == "GROUP" &&
@@ -120,16 +103,6 @@ class ChatBubble extends StatelessWidget {
       case "TEXT":
         {
           finalView = _textMessageView(content['text'], belongType);
-          // Map<String, dynamic> temp = {
-          //   "name": "北京市门头沟体育馆",
-          //   "icon": "",
-          //   "latitude": "39.941325",
-          //   "longitude": "116.101292"
-          // };
-          // finalView =
-          //     LocationMessageWidget(belongType, temp, MapOriginType.Share);
-          // finalView = VoiceMessageWidget(exampleAudioFilePath, belongType);
-          // finalView = VideoMessageWidget(videoTestUrl, belongType);
         }
         break;
       case "IMAGE":

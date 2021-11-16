@@ -54,15 +54,14 @@ class FileMessageWidget extends StatelessWidget {
   }
 
   String setFileSize(var fileSize) {
-    return fileSize.toString();
-    // if (fileSize != null) {
-    //   if (fileSize >= 1000) {
-    //     return "${(content['content_length'] / 1000).toStringAsFixed(2)} MB";
-    //   } else {
-    //     return "${content['content_length'].toStringAsFixed(0)} KB";
-    //   }
-    // } else {
-    //   return '';
-    // }
+    if (fileSize != null) {
+      if (fileSize >= 1000) {
+        return "${(content['content_length'] / 1000).toStringAsFixed(2)} MB";
+      } else {
+        return "${content['content_length'].toStringAsFixed(0)} KB";
+      }
+    } else {
+      return '大小未知';
+    }
   }
 }

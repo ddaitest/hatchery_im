@@ -21,34 +21,20 @@ import 'package:hatchery_im/common/tools.dart';
 import '../../config.dart';
 
 class SplashManager extends ChangeNotifier {
-  String _token = '';
+  // String _token = '';
 
   /// 初始化
-  init() async {
-    await Future.delayed(Duration(seconds: 1), () {
-      _checkToken();
-    });
-  }
+  // init() {
+  // }
 
   goto() {
-    Future.delayed(Duration.zero,
-        () => Routers.navigateAndRemoveUntil(_token == '' ? '/login' : '/'));
+    Future.delayed(
+        Duration.zero,
+        () => Routers.navigateAndRemoveUntil(
+            !UserCentre.isLogin() ? '/login' : '/'));
   }
 
-  void _checkToken() {
-    _token = UserCentre.getToken();
-    if (_token != "") {
-      _configToSP();
-    }
-  }
-
-  Future<bool> _configToSP() async {
-    ApiResult result = await API.getConfig();
-    if (result.isSuccess()) {
-      SP.set(SPKey.config, jsonEncode(result.getData()));
-      return result.isSuccess();
-    } else {
-      return false;
-    }
-  }
+  // void _checkToken() {
+  //   _token = UserCentre.getToken();
+  // }
 }

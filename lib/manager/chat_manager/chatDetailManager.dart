@@ -83,21 +83,6 @@ class ChatDetailManager extends ChangeNotifier {
     var x = DateTime.now().toString();
   }
 
-  @override
-  void dispose() {
-    messagesList.clear();
-    isVoiceModel = false;
-    cancelTimer();
-    emojiShowing = false;
-    textEditingController.clear();
-    currentFriendId = "";
-    currentGroupId = "";
-    currentGroupName = "";
-    currentGroupIcon = "";
-    Log.yellow("ChatDetailManager dispose");
-    super.dispose();
-  }
-
   void _readMessages(bool notify) {
     var temp;
     Log.red(currentFriendId != ""
@@ -106,15 +91,20 @@ class ChatDetailManager extends ChangeNotifier {
     LocalStore.messageBox!.values.forEach((element) {
       temp = LocalStore.messageBox!.values
           .where((element) => element.groupID == ""
-              ? element.receiver == currentFriendId ||
-                  element.sender == currentFriendId
+
+              /// 防止换号后消息对不上
+              ? (element.receiver == currentFriendId &&
+                      element.sender == myProfileData!.userID) ||
+                  (element.sender == currentFriendId &&
+                      element.receiver == myProfileData!.userID)
               : element.groupID == currentGroupId)
           .toList();
     });
     if (temp != null && temp.length != messagesList.length) {
       messagesList = temp;
       messagesList.sort((a, b) =>
-          DateTime.parse(b.createTime).compareTo(DateTime.parse(a.createTime)));
+          DateTime.fromMillisecondsSinceEpoch(b.createTime)
+              .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
       if (notify) {
         notifyListeners();
       }
@@ -180,9 +170,9 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void sendLocalMessage(AssetEntity? assetEntity) {
+  void sendLocalMessage(AssetEntity? assetEntity) async {
     DateTime _timeNow = DateTime.now();
-    assetEntity!.file.then((fileValue) {
+    await assetEntity!.file.then((fileValue) {
       if (assetEntity.type == AssetType.image) {
         print("DEBUG=> fileValue!.path ${fileValue!.path}");
         // messagesList.insert(

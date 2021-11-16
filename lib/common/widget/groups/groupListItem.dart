@@ -35,9 +35,9 @@ class GroupListItem extends StatelessWidget {
 
                     /// 群头像，没有头像则返回默认头像
                     leading: Container(
-                      child: groupsLists![index].group.icon != null
-                          ? netWorkAvatar(groupsLists![index].group.icon!, 20.0)
-                          : _noGroupAvatar(),
+                      child: netWorkAvatar(
+                          groupsLists![index].group.icon ?? "", 20.0,
+                          avatarType: "groupAvatar"),
                     ),
 
                     /// 群名称
@@ -99,18 +99,5 @@ class GroupListItem extends StatelessWidget {
       ));
     }
     return _avatarList;
-  }
-
-  Widget _noGroupAvatar() {
-    return CircleAvatar(
-      backgroundColor: Flavors.colorInfo.blueGrey,
-      maxRadius: 20,
-      child: Center(
-        child: Icon(
-          Icons.group,
-          color: Colors.white,
-        ),
-      ),
-    );
   }
 }

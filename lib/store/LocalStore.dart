@@ -77,4 +77,11 @@ class LocalStore {
   static Box<Session> listenSessions() {
     return Hive.box<Session>('sessionBox');
   }
+
+  static void deleteSession(String friendId) {
+    Log.yellow("deleteSession. deleteSession ");
+    findSession(friendId)
+      ?..otherID = friendId
+      ..delete();
+  }
 }

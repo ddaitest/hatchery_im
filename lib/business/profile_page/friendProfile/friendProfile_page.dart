@@ -215,12 +215,15 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     );
   }
 
-  Widget _sendBtnView(usersInfo) {
+  Widget _sendBtnView(UsersInfo usersInfo) {
     return Container(
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () => Routers.navigateTo('/chat_detail',
-            arg: {'chatType': "CHAT", 'usersInfo': usersInfo}),
+        onPressed: () => Routers.navigateTo('/chat_detail', arg: {
+          'chatType': "CHAT",
+          'nickName': usersInfo.nickName,
+          'friendId': usersInfo.userID
+        }),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
           primary: Flavors.colorInfo.mainBackGroundColor,
