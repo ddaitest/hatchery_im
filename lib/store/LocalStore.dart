@@ -55,7 +55,7 @@ class LocalStore {
     //update session
     if (msg.isGroup()) {
       print("DEBUG=> isGroup isGroup ${msg.toJson()}");
-      findSession(msg.getOtherId() ?? "")
+      findSession(msg.groupID ?? "")
         ?..lastGroupChatMessage = msg
         ..updateTime = msg.createTime
         ..save();

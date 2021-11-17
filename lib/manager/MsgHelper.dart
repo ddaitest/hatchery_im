@@ -14,9 +14,8 @@ extension MessageExt on Message {
 
   String? getOtherId() {
     String myId = UserCentre.getInfo()?.userID ?? "";
-    bool isGroup = this.type == "GROUP";
     if (this.sender == myId) {
-      if (isGroup) {
+      if (isGroup()) {
         return this.groupID;
       } else {
         return this.receiver;

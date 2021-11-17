@@ -51,12 +51,13 @@ class _ChatPageState extends State<ChatPage> {
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           Session? session = box.getAt(index);
-                          //TODO 渲染 Session
+                          // Log.yellow("chat page ${box.get(key)}");
                           if (session != null) {
-                            print(
-                                "DEBUG=> session.lastGroupChatMessage ${session.lastGroupChatMessage?.content ?? " GGGG"}");
                             return ChatUsersListItem(
                                 title: session.title,
+                                senderName: session.type == 1
+                                    ? session.lastGroupChatMessage!.nick
+                                    : "",
                                 icon: session.icon,
                                 //会话类型，0表示单聊，1表示群聊
                                 chatType: session.type,

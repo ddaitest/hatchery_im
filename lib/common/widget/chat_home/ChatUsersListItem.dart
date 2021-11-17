@@ -14,6 +14,7 @@ import '../aboutAvatar.dart';
 
 class ChatUsersListItem extends StatelessWidget {
   final String title;
+  final String senderName;
   final String icon;
   final int chatType;
   final String chatId;
@@ -21,6 +22,7 @@ class ChatUsersListItem extends StatelessWidget {
   final String content;
   ChatUsersListItem(
       {required this.title,
+      required this.senderName,
       required this.icon,
       required this.chatType,
       required this.chatId,
@@ -62,7 +64,7 @@ class ChatUsersListItem extends StatelessWidget {
           subtitle: Container(
             padding: const EdgeInsets.only(top: 5.0),
             child: Text(
-              content,
+              chatType == 0 ? content : "$senderName: $content",
               style: Flavors.textStyles.groupMembersNumberText,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
