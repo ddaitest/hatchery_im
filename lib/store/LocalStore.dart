@@ -20,10 +20,10 @@ class LocalStore {
       Hive.registerAdapter(MessageAdapter());
       sessionBox = await Hive.openBox<Session>('sessionBox');
       messageBox = await Hive.openBox<Message>('messageBox');
-      sessionBox!.watch().listen((event) {
-        Log.red(
-            "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
-      });
+      // sessionBox!.watch().listen((event) {
+      //   Log.red(
+      //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
+      // });
     }
   }
 
@@ -52,6 +52,7 @@ class LocalStore {
   static void addMessage(Message msg) {
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
+    // sessionBox?.add(msg);
     //update session
     if (msg.isGroup()) {
       print("DEBUG=> isGroup isGroup ${msg.toJson()}");

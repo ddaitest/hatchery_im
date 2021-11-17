@@ -60,7 +60,7 @@ class ChatUsersListItem extends StatelessWidget {
           visualDensity: VisualDensity.comfortable,
           leading: netWorkAvatar(icon, 25.0,
               avatarType: chatType != 0 ? "groupAvatar" : "avatar"),
-          title: Text(title),
+          title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Container(
             padding: const EdgeInsets.only(top: 5.0),
             child: Text(

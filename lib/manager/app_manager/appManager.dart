@@ -8,6 +8,7 @@ import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
@@ -53,6 +54,7 @@ class AppManager extends ChangeNotifier {
       DeviceInfo.init();
       UserId.init();
       UserCentre.getInfo();
+      BackgroundListen().init();
       if (UserCentre.isLogin()) {
         MessageCentre.init();
         _configToSP();
