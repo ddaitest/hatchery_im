@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'Adapters.dart';
@@ -56,16 +57,24 @@ class LocalStore {
     //update session
     if (msg.isGroup()) {
       print("DEBUG=> isGroup isGroup ${msg.toJson()}");
-      findSession(msg.groupID ?? "")
-        ?..lastGroupChatMessage = msg
-        ..updateTime = msg.createTime
-        ..save();
+      if (findSession(msg.groupID ?? "") != null) {
+        findSession(msg.groupID ?? "")
+          ?..lastGroupChatMessage = msg
+          ..updateTime = msg.createTime
+          ..save();
+      } else {
+        MessageCentre().initSessions();
+      }
     } else {
       print("DEBUG=> isChat isChat ${msg.toJson()}");
-      findSession(msg.getOtherId() ?? "")
-        ?..lastChatMessage = msg
-        ..updateTime = msg.createTime
-        ..save();
+      if (findSession(msg.getOtherId() ?? "") != null) {
+        findSession(msg.getOtherId() ?? "")
+          ?..lastChatMessage = msg
+          ..updateTime = msg.createTime
+          ..save();
+      } else {
+        MessageCentre().initSessions();
+      }
     }
   }
 

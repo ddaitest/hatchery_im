@@ -60,7 +60,7 @@ class MessageCentre {
       Ipify.ipv4().then((value) => {ipV4 = value});
     } catch (e) {}
     var centre = MessageCentre();
-    centre._initSessions();
+    centre.initSessions();
 
     //连接 Engine
     engine = Engine.getInstance();
@@ -103,7 +103,7 @@ class MessageCentre {
   }
 
   ///获取 session 信息. 然后同步每个session 最新的消息。
-  _initSessions() async {
+  initSessions() async {
     Log.yellow("_initSessions 开始");
     // Step1. 返回本地存储的数据。
     sessions = await _localStore.getSessions();
