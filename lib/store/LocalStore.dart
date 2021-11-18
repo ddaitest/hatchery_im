@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
@@ -76,6 +77,35 @@ class LocalStore {
         MessageCentre().initSessions();
       }
     }
+  }
+
+  static makeSession(
+      {CSSendMessage? csSendMessage, CSSendGroupMessage? csSendGroupMessage}) {
+    Map<String, dynamic> sessionMap = {
+      "title": csSendMessage != null
+          ? csSendMessage.nick
+          : csSendGroupMessage!.groupName,
+      "otherID": csSendMessage != null
+          ? csSendMessage.to
+          : csSendGroupMessage!.groupId,
+      "type": csSendMessage != null ? 0 : 1,
+      "lastChatMessage": null,
+      "lastGroupChatMessage": null
+    };
+
+    /// todo
+    if (csSendMessage != null) {
+      sessionMap["lastChatMessage"] = {
+        "nick": csSendMessage.nick,
+      };
+    }
+    if (csSendGroupMessage != null) {
+      sessionMap["lastGroupChatMessage"] = {
+        "nick": csSendGroupMessage.nick,
+      };
+    }
+    Session session = Session.fromJson(sessionMap);
+    sessionBox!.add(session);
   }
 
   static Message? findCache(String localId) {
