@@ -58,54 +58,73 @@ class LocalStore {
     //update session
     if (msg.isGroup()) {
       print("DEBUG=> isGroup isGroup ${msg.toJson()}");
-      if (findSession(msg.groupID ?? "") != null) {
-        findSession(msg.groupID ?? "")
-          ?..lastGroupChatMessage = msg
-          ..updateTime = msg.createTime
-          ..save();
-      } else {
-        MessageCentre().initSessions();
-      }
+      findSession(msg.groupID ?? "")
+        ?..lastGroupChatMessage = msg
+        ..updateTime = msg.createTime
+        ..save();
     } else {
       print("DEBUG=> isChat isChat ${msg.toJson()}");
-      if (findSession(msg.getOtherId() ?? "") != null) {
-        findSession(msg.getOtherId() ?? "")
-          ?..lastChatMessage = msg
-          ..updateTime = msg.createTime
-          ..save();
-      } else {
-        MessageCentre().initSessions();
-      }
+      findSession(msg.getOtherId() ?? "")
+        ?..lastChatMessage = msg
+        ..updateTime = msg.createTime
+        ..save();
     }
   }
 
-  static makeSession(
+  static createSession(
       {CSSendMessage? csSendMessage, CSSendGroupMessage? csSendGroupMessage}) {
     Map<String, dynamic> sessionMap = {
+      "id": 0,
       "title": csSendMessage != null
           ? csSendMessage.nick
           : csSendGroupMessage!.groupName,
+      "icon": csSendMessage != null
+          ? csSendMessage.icon
+          : csSendGroupMessage!.groupIcon,
+      "ownerID":
+          csSendMessage != null ? csSendMessage.from : csSendGroupMessage!.from,
       "otherID": csSendMessage != null
           ? csSendMessage.to
           : csSendGroupMessage!.groupId,
       "type": csSendMessage != null ? 0 : 1,
+      "updateTime": DateTime.now().millisecondsSinceEpoch,
       "lastChatMessage": null,
-      "lastGroupChatMessage": null
+      "lastGroupChatMessage": null,
+      "createTime": 0
     };
 
     /// todo
     if (csSendMessage != null) {
       sessionMap["lastChatMessage"] = {
+        "id": 0,
+        "userMsgID": csSendMessage.msgId,
+        "sender": csSendMessage.from,
+        "icon": csSendMessage.icon,
         "nick": csSendMessage.nick,
+        "type": csSendMessage.type,
+        "source": csSendMessage.source,
+        "content": csSendMessage.content,
+        "contentType": csSendMessage.contentType,
+        "createTime": 0
       };
     }
     if (csSendGroupMessage != null) {
       sessionMap["lastGroupChatMessage"] = {
+        "id": 0,
+        "userMsgID": csSendGroupMessage.msgId,
+        "sender": csSendGroupMessage.from,
+        "icon": csSendGroupMessage.icon,
         "nick": csSendGroupMessage.nick,
+        "type": csSendGroupMessage.type,
+        "source": csSendGroupMessage.source,
+        "content": csSendGroupMessage.content,
+        "contentType": csSendGroupMessage.contentType,
+        "createTime": 0
       };
     }
     Session session = Session.fromJson(sessionMap);
     sessionBox!.add(session);
+    Log.yellow("makeSession. ${sessionBox?.length} ");
   }
 
   static Message? findCache(String localId) {
