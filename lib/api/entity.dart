@@ -258,6 +258,7 @@ class MyProfile {
 @JsonSerializable()
 class FriendProfile {
   String friendId = '';
+  String loginName = '';
   String? remarks = '';
   String? icon = '';
   String? nickName = '';
@@ -265,17 +266,21 @@ class FriendProfile {
   String? phone = '';
   String? email = '';
   String? address = '';
+  int status;
+  int createTime;
 
   FriendProfile(
-    this.friendId,
-    this.remarks,
-    this.icon,
-    this.nickName,
-    this.notes,
-    this.phone,
-    this.email,
-    this.address,
-  );
+      this.friendId,
+      this.loginName,
+      this.remarks,
+      this.icon,
+      this.nickName,
+      this.notes,
+      this.phone,
+      this.email,
+      this.address,
+      this.status,
+      this.createTime);
 
   factory FriendProfile.fromJson(Map<String, dynamic> json) =>
       _$FriendProfileFromJson(json);

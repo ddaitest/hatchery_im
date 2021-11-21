@@ -104,18 +104,17 @@ class MessageCentre {
 
   ///获取 session 信息. 然后同步每个session 最新的消息。
   initSessions() async {
+    if (sessions == null) {
+      // Step1. 返回本地存储的数据。
+      sessions = await _localStore.getSessions();
+    }
     Log.yellow("_initSessions 开始");
-    // Step1. 返回本地存储的数据。
-    sessions = await _localStore.getSessions();
-    Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions?.length}");
+    Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions}");
     sessionListener?.call(sessions ?? []);
     // Step2. 从Server获取最新数据。
     API.querySession().then((value) async {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
-        news.forEach((element) =>
-            Log.yellow("querySession element ${element.toJson()}"));
-
         // Step3. 刷新本地数据。
         sessions = news;
         _localStore.saveSessions(sessions);
@@ -264,7 +263,7 @@ class MessageCentre {
         contentType);
     Log.yellow("sendMessage ${msg.toJson()}");
     engine?.sendProtocol(msg.toJson());
-    LocalStore.createSession(csSendMessage: msg);
+    _localStore.createNewSession(csSendMessage: msg);
     Message message = ModelHelper.convertMessage(msg);
     // message.progress = MSG_SENDING;
     LocalStore.addMessage(message);
@@ -283,7 +282,7 @@ class MessageCentre {
         content,
         contentType);
     engine?.sendProtocol(msg.toJson());
-    LocalStore.createSession(csSendGroupMessage: msg);
+    _localStore.createNewSession(csSendGroupMessage: msg);
     Message message = ModelHelper.convertGroupMessage(msg);
     // message.progress = MSG_SENDING;
     LocalStore.addMessage(message);

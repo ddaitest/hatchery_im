@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 bool debugMode = kDebugMode;
 
@@ -50,10 +51,11 @@ class TabInfo {
 class SlideActionInfo {
   final String? label;
   final IconData icon;
-  final Color iconColor;
-  final Function? onTap;
+  final Color backgroundColor;
+  final SlidableActionCallback? onPressed;
 
-  const SlideActionInfo(this.label, this.icon, this.iconColor, {this.onTap});
+  const SlideActionInfo(this.label, this.icon, this.backgroundColor,
+      {this.onPressed});
 }
 
 // enum ChatType {

@@ -20,6 +20,7 @@ class ChatUsersListItem extends StatelessWidget {
   final String chatId;
   final int updateTime;
   final String content;
+  final int sessionKey;
   ChatUsersListItem(
       {required this.title,
       required this.senderName,
@@ -27,7 +28,8 @@ class ChatUsersListItem extends StatelessWidget {
       required this.chatType,
       required this.chatId,
       required this.updateTime,
-      required this.content});
+      required this.content,
+      required this.sessionKey});
   final manager = App.manager<ChatHomeManager>();
 
   @override
@@ -37,12 +39,16 @@ class ChatUsersListItem extends StatelessWidget {
       SlideActionInfo(
           '不提醒', Icons.notifications_off, Flavors.colorInfo.blueGrey),
       SlideActionInfo('删除', Icons.delete, Colors.red,
-          onTap: () => LocalStore.deleteSession(chatId)),
+          onPressed: (_) => LocalStore.deleteSession(sessionKey)),
     ];
     return Slidable(
-      actionPane: SlidableScrollActionPane(),
-      actionExtentRatio: 0.25,
-      secondaryActions: slideAction.map((e) => slideActionModel(e)).toList(),
+      endActionPane: ActionPane(
+        // A motion is a widget used to control how the pane animates.
+        motion: const DrawerMotion(),
+        // All actions are defined in the children parameter.
+        children: slideAction.map((e) => slideActionModel(e)).toList(),
+        extentRatio: 0.8,
+      ),
       child: Container(
         color: Colors.white,
         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -81,15 +87,12 @@ class ChatUsersListItem extends StatelessWidget {
   }
 
   Widget slideActionModel(SlideActionInfo slideActionInfo) {
-    return IconSlideAction(
-      iconWidget: Container(
-          padding: const EdgeInsets.only(top: 5.0),
-          child: Text('${slideActionInfo.label}',
-              style: Flavors.textStyles.chatHomeSlideText)),
-      color: slideActionInfo.iconColor,
+    return SlidableAction(
+      label: slideActionInfo.label,
+      backgroundColor: slideActionInfo.backgroundColor,
       icon: slideActionInfo.icon,
       foregroundColor: Colors.white,
-      onTap: () => slideActionInfo.onTap,
+      onPressed: slideActionInfo.onPressed,
     );
   }
 }

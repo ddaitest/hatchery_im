@@ -52,21 +52,23 @@ class _ChatPageState extends State<ChatPage> {
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           Session? session = box.getAt(index);
-                          // Log.yellow("chat page ${box.get(key)}");
+                          // Log.yellow("box.keyAt(index) ${box.keys}");
                           if (session != null) {
                             return ChatUsersListItem(
-                                title: session.title,
-                                senderName: session.type == 1
-                                    ? session.lastGroupChatMessage!.nick
-                                    : "",
-                                icon: session.icon,
-                                //会话类型，0表示单聊，1表示群聊
-                                chatType: session.type,
-                                chatId: session.otherID,
-                                updateTime: session.updateTime,
-                                content: chatHomeSubtitleSet(session.type == 0
-                                    ? session.lastChatMessage
-                                    : session.lastGroupChatMessage));
+                              title: session.title,
+                              senderName: session.type == 1
+                                  ? session.lastGroupChatMessage!.nick
+                                  : "",
+                              icon: session.icon,
+                              //会话类型，0表示单聊，1表示群聊
+                              chatType: session.type,
+                              chatId: session.otherID,
+                              updateTime: session.updateTime,
+                              content: chatHomeSubtitleSet(session.type == 0
+                                  ? session.lastChatMessage
+                                  : session.lastGroupChatMessage),
+                              sessionKey: box.keyAt(index),
+                            );
                           } else {
                             return Container();
                           }

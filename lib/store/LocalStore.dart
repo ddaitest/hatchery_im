@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
@@ -17,11 +20,15 @@ class LocalStore {
     if (!initDone) {
       Log.log("LocalStore. init ");
       initDone = true;
-      await Hive.initFlutter();
-      Hive.registerAdapter(SessionAdapter());
-      Hive.registerAdapter(MessageAdapter());
-      sessionBox = await Hive.openBox<Session>('sessionBox');
-      messageBox = await Hive.openBox<Message>('messageBox');
+
+      /// 需要给一个名称，否则不能保存数据
+      Hive.initFlutter('hive_db').then((_) async {
+        Hive.registerAdapter(SessionAdapter());
+        Hive.registerAdapter(MessageAdapter());
+        sessionBox = await Hive.openBox<Session>('sessionBox');
+        messageBox = await Hive.openBox<Message>('messageBox');
+        Log.log("sessionBox.path ${sessionBox?.values.length} ");
+      });
       // sessionBox!.watch().listen((event) {
       //   Log.red(
       //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
@@ -29,8 +36,8 @@ class LocalStore {
     }
   }
 
-  Future<List<Session>> getSessions() async {
-    return sessionBox?.values.toList() ?? [];
+  Future getSessions() async {
+    return sessionBox?.values;
   }
 
   void saveSessions(List<Session>? sessions) {
@@ -71,59 +78,69 @@ class LocalStore {
     }
   }
 
-  static createSession(
+  void createNewSession(
       {CSSendMessage? csSendMessage, CSSendGroupMessage? csSendGroupMessage}) {
+    Log.yellow("createSession createSession. ${csSendMessage?.to} ");
+    if (csSendMessage != null) {
+      if (findSession(csSendMessage.to) != null) {
+        return;
+      }
+    }
+    if (csSendGroupMessage != null) {
+      if (findSession(csSendGroupMessage.groupId) != null) {
+        return;
+      }
+    }
+    String? receiverNickName;
+    String? receiverIcon;
     Map<String, dynamic> sessionMap = {
-      "id": 0,
+      "id": DateTime.now().millisecondsSinceEpoch,
       "title": csSendMessage != null
-          ? csSendMessage.nick
+          ? receiverNickName ?? csSendMessage.to
           : csSendGroupMessage!.groupName,
       "icon": csSendMessage != null
-          ? csSendMessage.icon
+          ? receiverIcon ?? ""
           : csSendGroupMessage!.groupIcon,
-      "ownerID":
-          csSendMessage != null ? csSendMessage.from : csSendGroupMessage!.from,
-      "otherID": csSendMessage != null
-          ? csSendMessage.to
-          : csSendGroupMessage!.groupId,
+      "ownerID": csSendMessage?.from ?? csSendGroupMessage!.from,
+      "otherID": csSendMessage?.to ?? csSendGroupMessage!.groupId,
       "type": csSendMessage != null ? 0 : 1,
       "updateTime": DateTime.now().millisecondsSinceEpoch,
       "lastChatMessage": null,
       "lastGroupChatMessage": null,
-      "createTime": 0
+      "createTime": DateTime.now().millisecondsSinceEpoch
     };
-
-    /// todo
-    if (csSendMessage != null) {
-      sessionMap["lastChatMessage"] = {
-        "id": 0,
-        "userMsgID": csSendMessage.msgId,
-        "sender": csSendMessage.from,
-        "icon": csSendMessage.icon,
-        "nick": csSendMessage.nick,
-        "type": csSendMessage.type,
-        "source": csSendMessage.source,
-        "content": csSendMessage.content,
-        "contentType": csSendMessage.contentType,
-        "createTime": 0
-      };
-    }
-    if (csSendGroupMessage != null) {
-      sessionMap["lastGroupChatMessage"] = {
-        "id": 0,
-        "userMsgID": csSendGroupMessage.msgId,
-        "sender": csSendGroupMessage.from,
-        "icon": csSendGroupMessage.icon,
-        "nick": csSendGroupMessage.nick,
-        "type": csSendGroupMessage.type,
-        "source": csSendGroupMessage.source,
-        "content": csSendGroupMessage.content,
-        "contentType": csSendGroupMessage.contentType,
-        "createTime": 0
-      };
-    }
+    sessionMap[
+        csSendMessage != null ? "lastChatMessage" : "lastGroupChatMessage"] = {
+      "id": DateTime.now().millisecondsSinceEpoch,
+      "userMsgID": csSendMessage?.msgId ?? csSendGroupMessage!.msgId,
+      "sender": csSendMessage?.from ?? csSendGroupMessage!.from,
+      "icon": csSendMessage?.icon ?? csSendGroupMessage!.icon,
+      "nick": csSendMessage?.nick ?? csSendGroupMessage!.nick,
+      "type": csSendMessage?.type ?? csSendGroupMessage!.type,
+      "source": csSendMessage?.source ?? csSendGroupMessage!.source,
+      "content": csSendMessage?.content ?? csSendGroupMessage!.content,
+      "contentType":
+          csSendMessage?.contentType ?? csSendGroupMessage!.contentType,
+      "createTime": DateTime.now().millisecondsSinceEpoch
+    };
     Session session = Session.fromJson(sessionMap);
-    sessionBox!.add(session);
+    // sessionBox?.add(session);
+    List<Session> allSession = sessionBox?.values.toList() ?? [];
+    allSession.insert(0, session);
+    saveSessions(allSession);
+    if (csSendMessage != null) {
+      API.getFriendInfo(csSendMessage.to).then((value) {
+        if (value.isSuccess()) {
+          FriendProfile friendProfile = FriendProfile.fromJson(value.getData());
+          receiverNickName = friendProfile.nickName;
+          receiverIcon = friendProfile.icon;
+          findSession(friendProfile.friendId)
+            ?..title = receiverNickName ?? ""
+            ..icon = receiverIcon ?? ""
+            ..save();
+        }
+      });
+    }
     Log.yellow("makeSession. ${sessionBox?.length} ");
   }
 
@@ -139,10 +156,8 @@ class LocalStore {
     return Hive.box<Session>('sessionBox');
   }
 
-  static void deleteSession(String friendId) {
+  static Future<void>? deleteSession(int sessionKey) {
     Log.yellow("deleteSession. deleteSession ");
-    findSession(friendId)
-      ?..otherID = friendId
-      ..delete();
+    return sessionBox?.delete(sessionKey);
   }
 }

@@ -238,6 +238,7 @@ Map<String, dynamic> _$MyProfileToJson(MyProfile instance) => <String, dynamic>{
 FriendProfile _$FriendProfileFromJson(Map<String, dynamic> json) {
   return FriendProfile(
     json['friendId'] as String,
+    json['loginName'] as String,
     json['remarks'] as String?,
     json['icon'] as String?,
     json['nickName'] as String?,
@@ -245,12 +246,15 @@ FriendProfile _$FriendProfileFromJson(Map<String, dynamic> json) {
     json['phone'] as String?,
     json['email'] as String?,
     json['address'] as String?,
+    json['status'] as int,
+    json['createTime'] as int,
   );
 }
 
 Map<String, dynamic> _$FriendProfileToJson(FriendProfile instance) =>
     <String, dynamic>{
       'friendId': instance.friendId,
+      'loginName': instance.loginName,
       'remarks': instance.remarks,
       'icon': instance.icon,
       'nickName': instance.nickName,
@@ -258,6 +262,8 @@ Map<String, dynamic> _$FriendProfileToJson(FriendProfile instance) =>
       'phone': instance.phone,
       'email': instance.email,
       'address': instance.address,
+      'status': instance.status,
+      'createTime': instance.createTime,
     };
 
 Message _$MessageFromJson(Map<String, dynamic> json) {

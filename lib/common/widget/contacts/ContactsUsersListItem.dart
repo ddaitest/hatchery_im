@@ -180,21 +180,24 @@ class ReceiveContactsUsersList extends StatelessWidget {
                       builder:
                           (BuildContext context, int? value, Widget? child) {
                         return Slidable(
-                            actionPane: SlidableScrollActionPane(),
-                            actionExtentRatio: 0.25,
-                            secondaryActions: value == 0
-                                ? <Widget>[
-                                    IconSlideAction(
-                                      caption: '拒绝',
-                                      color: Colors.redAccent,
-                                      icon: Icons.no_accounts,
-                                      onTap: () =>
-                                          manager.replyNewContactsResTap(
-                                              contactsApplicationList![index]
-                                                  .friendId,
-                                              -1),
-                                    ),
-                                  ]
+                            endActionPane: value == 0
+                                ? ActionPane(
+                                    // A motion is a widget used to control how the pane animates.
+                                    motion: const DrawerMotion(),
+                                    // All actions are defined in the children parameter.
+                                    children: <Widget>[
+                                      SlidableAction(
+                                        label: '拒绝',
+                                        backgroundColor: Colors.redAccent,
+                                        icon: Icons.no_accounts,
+                                        onPressed: (_) =>
+                                            manager.replyNewContactsResTap(
+                                                contactsApplicationList![index]
+                                                    .friendId,
+                                                -1),
+                                      ),
+                                    ],
+                                  )
                                 : null,
                             child: Container(
                               color: Colors.white,
