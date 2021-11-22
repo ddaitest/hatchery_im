@@ -7,22 +7,21 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'Adapters.dart';
 import '../manager/MsgHelper.dart';
 
 class LocalStore {
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
-  static bool initDone = false;
 
   static init() async {
-    if (!initDone) {
-      Log.log("LocalStore. init ");
-      initDone = true;
+    String dbName = 'hive_db_' + UserCentre.getUserID();
+    if (!Hive.isBoxOpen(dbName)) {
+      Log.log("LocalStore. init $dbName");
 
       /// 需要给一个名称，否则不能保存数据
-      Hive.initFlutter('hive_db').then((_) async {
+      Hive.initFlutter(dbName).then((_) async {
         Hive.registerAdapter(SessionAdapter());
         Hive.registerAdapter(MessageAdapter());
         sessionBox = await Hive.openBox<Session>('sessionBox');
@@ -154,6 +153,12 @@ class LocalStore {
 
   static Box<Session> listenSessions() {
     return Hive.box<Session>('sessionBox');
+  }
+
+  static Future<void> closeHiveDB() {
+    sessionBox?.close();
+    messageBox?.close();
+    return Hive.close();
   }
 
   static Future<void>? deleteSession(int sessionKey) {

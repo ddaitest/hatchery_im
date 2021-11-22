@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import '../config.dart';
 import '../routers.dart';
 
@@ -57,6 +58,7 @@ class UserCentre {
 
   static void logout() {
     SP.delete(SPKey.userInfo);
+    LocalStore.closeHiveDB();
     _info = null;
     _token = null;
   }

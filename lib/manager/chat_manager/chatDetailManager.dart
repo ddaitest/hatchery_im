@@ -73,14 +73,10 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
-    // _loadLatest(currentFriendId);
-    //添加监听
-    // MessageCentre().listenMessage((news) {}, friendId);U202120615013800001
     _readMessages(false);
     LocalStore.listenMessage().addListener(() {
       _readMessages(true);
     });
-    var x = DateTime.now().toString();
   }
 
   void _readMessages(bool notify) {

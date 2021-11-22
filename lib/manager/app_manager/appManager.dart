@@ -21,6 +21,7 @@ import 'package:hatchery_im/business/profile_page/my_profile.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import '../../config.dart';
 import '../messageCentre.dart';
 
@@ -47,7 +48,6 @@ class AppManager extends ChangeNotifier {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     /// 后台监听初始化
-    // BackgroundListen().init();
     Log.log("app manager. init ");
     SP.init().then((sp) {
       _getConfigFromSP();
@@ -56,6 +56,7 @@ class AppManager extends ChangeNotifier {
       UserCentre.getInfo();
       BackgroundListen().init();
       if (UserCentre.isLogin()) {
+        LocalStore.init();
         MessageCentre.init();
         _configToSP();
       }

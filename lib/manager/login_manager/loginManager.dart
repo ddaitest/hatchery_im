@@ -16,6 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import '../../config.dart';
 
 class LoginManager extends ChangeNotifier {
@@ -49,6 +50,7 @@ class LoginManager extends ChangeNotifier {
         print("DEBUG=> result.getData() ${result.getData()['info']}");
         // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
         UserCentre.saveUserInfo(jsonEncode(result.getData()));
+        LocalStore.init();
         MessageCentre.init();
         Routers.navigateAndRemoveUntil('/');
       } else {
@@ -80,6 +82,7 @@ class LoginManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()}");
       // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       UserCentre.saveUserInfo(jsonEncode(result.getData()));
+      LocalStore.init();
       MessageCentre.init();
       Routers.navigateAndRemoveUntil('/');
     } else {

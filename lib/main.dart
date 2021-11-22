@@ -33,7 +33,6 @@ import 'manager/emojiModel_manager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  LocalStore.init();
   runApp(
     MultiProvider(
       providers: [
@@ -89,5 +88,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
 }
