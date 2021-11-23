@@ -14,20 +14,21 @@ import '../manager/MsgHelper.dart';
 class LocalStore {
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
+  static bool _initDone = false;
 
   static init() async {
     String dbName = 'hive_db_' + UserCentre.getUserID();
-    if (!Hive.isBoxOpen(dbName)) {
+    if (!_initDone) {
+      _initDone = true;
       Log.log("LocalStore. init $dbName");
 
       /// 需要给一个名称，否则不能保存数据
-      Hive.initFlutter(dbName).then((_) async {
-        Hive.registerAdapter(SessionAdapter());
-        Hive.registerAdapter(MessageAdapter());
-        sessionBox = await Hive.openBox<Session>('sessionBox');
-        messageBox = await Hive.openBox<Message>('messageBox');
-        Log.log("sessionBox.path ${sessionBox?.values.length} ");
-      });
+      await Hive.initFlutter(dbName);
+      Hive.registerAdapter(SessionAdapter());
+      Hive.registerAdapter(MessageAdapter());
+      sessionBox = await Hive.openBox<Session>('sessionBox');
+      messageBox = await Hive.openBox<Message>('messageBox');
+      Log.log("sessionBox.path ${sessionBox?.values.length} ");
       // sessionBox!.watch().listen((event) {
       //   Log.red(
       //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
@@ -155,13 +156,13 @@ class LocalStore {
     return Hive.box<Session>('sessionBox');
   }
 
-  static Future<void> closeHiveDB() {
-    sessionBox?.close();
-    messageBox?.close();
+  static closeHiveDB() {
+    sessionBox!.close();
+    messageBox!.close();
     return Hive.close();
   }
 
-  static Future<void>? deleteSession(int sessionKey) {
+  static deleteSession(int sessionKey) {
     Log.yellow("deleteSession. deleteSession ");
     return sessionBox?.delete(sessionKey);
   }

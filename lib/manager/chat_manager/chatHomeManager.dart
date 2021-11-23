@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +18,12 @@ import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
+import 'package:hive/hive.dart';
 import '../../config.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../app_manager/app_handler.dart';
+import '../userCentre.dart';
 
 class ChatHomeManager extends ChangeNotifier {
   List<Session> sessions = [];
@@ -28,10 +31,24 @@ class ChatHomeManager extends ChangeNotifier {
 
   /// 初始化
   init() {
-    //设置监听
-    // LocalStore.listenMessage().addListener(() {
-    //   _readMessages();
+    // if (!LocalStore.sessionBox!.isOpen && !LocalStore.messageBox!.isOpen) {
+    //   String dbName = 'hive_db_' + UserCentre.getUserID();
+    //   EasyLoading.show(status: 'loading...');
+    // Future.doWhile(() {
+    //   print("DEBUG=> Future.doWhile");
+    //   Future.delayed(Duration(milliseconds: 500), () {
+    //     if (Hive.isBoxOpen(dbName)) {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   });
+    //   return true;
     // });
+    // print("DEBUG=> MessageCentre.init ${LocalStore.sessionBox}");
+    // MessageCentre.init();
+    // print("DEBUG=> EasyLoading dismiss");
+    // }
   }
 
   // void _readMessages(List<String> otherIds) {

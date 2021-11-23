@@ -37,6 +37,16 @@ class LoginManager extends ChangeNotifier {
     countDown = TimeConfig.OTP_CODE_RESEND;
   }
 
+  static hiveDBInit() async {
+    LocalStore.init();
+    MessageCentre.init();
+    print("DEBUG=> EasyLoading dismiss");
+    Future.delayed(Duration(milliseconds: 500), () {
+      Routers.navigateAndRemoveUntil('/');
+      print("DEBUG=> MessageCentre.init ${LocalStore.sessionBox}");
+    });
+  }
+
   void setOTPLogin() {
     isOTPLogin = !isOTPLogin;
     notifyListeners();
@@ -50,9 +60,7 @@ class LoginManager extends ChangeNotifier {
         print("DEBUG=> result.getData() ${result.getData()['info']}");
         // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
         UserCentre.saveUserInfo(jsonEncode(result.getData()));
-        LocalStore.init();
-        MessageCentre.init();
-        Routers.navigateAndRemoveUntil('/');
+        hiveDBInit();
       } else {
         showToast('账号或密码错误');
       }
@@ -82,9 +90,7 @@ class LoginManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()}");
       // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       UserCentre.saveUserInfo(jsonEncode(result.getData()));
-      LocalStore.init();
-      MessageCentre.init();
-      Routers.navigateAndRemoveUntil('/');
+      hiveDBInit();
     } else {
       showToast('${result.info}');
     }

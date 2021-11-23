@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/tools.dart';
@@ -45,15 +46,23 @@ class MyProfileManager extends ChangeNotifier {
     } else {
       showToast('请重新登录');
       UserCentre.logout();
-      Future.delayed(
-          Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
+      Future.delayed(Duration(milliseconds: 1500),
+          () => Routers.navigateAndRemoveUntil('/login'));
     }
   }
 
   logOutMethod() {
     UserCentre.logout();
-    Future.delayed(
-        Duration.zero, () => Routers.navigateAndRemoveUntil('/login'));
+    EasyLoading.instance
+      ..displayDuration = const Duration(milliseconds: 1500)
+      ..dismissOnTap = false
+      ..userInteractions = false
+      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+      ..loadingStyle = EasyLoadingStyle.light
+      ..maskType = EasyLoadingMaskType.none;
+    EasyLoading.show(status: '退出中...');
+    Routers.navigateAndRemoveUntil('/login');
+    EasyLoading.dismiss();
   }
 
   @override

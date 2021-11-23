@@ -3,7 +3,7 @@ import 'package:hatchery_im/routers.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'dart:io';
 import 'package:flutter/services.dart';
-import 'package:hatchery_im/store/LocalStore.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'common/AppContext.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -85,6 +85,7 @@ class MyApp extends StatelessWidget {
           const Locale('zh', 'CN'),
           const Locale('en', 'US'),
         ],
+        builder: EasyLoading.init(),
       ),
     );
   }

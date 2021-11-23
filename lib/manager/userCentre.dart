@@ -5,6 +5,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import '../config.dart';
 import '../routers.dart';
+import 'messageCentre.dart';
 
 class UserCentre {
   static MyProfile? _info;
@@ -59,6 +60,7 @@ class UserCentre {
   static void logout() {
     SP.delete(SPKey.userInfo);
     LocalStore.closeHiveDB();
+    MessageCentre.engine?.disconnect();
     _info = null;
     _token = null;
   }
