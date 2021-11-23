@@ -39,7 +39,7 @@ class _ChatPageState extends State<ChatPage> {
             Container(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ValueListenableBuilder(
-                  valueListenable: sessionBox.listenable(),
+                  valueListenable: sessionBox,
                   builder: (context, Box<Session> box, _) {
                     Log.yellow("ValueListenableBuilder ${box.values.length}");
                     if (box.values.isEmpty) {

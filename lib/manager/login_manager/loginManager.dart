@@ -5,12 +5,15 @@ import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 // import 'package:hatchery_im/api/entity.dart';
 import 'dart:collection';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
@@ -38,10 +41,11 @@ class LoginManager extends ChangeNotifier {
   }
 
   static hiveDBInit() async {
+    FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
+    Log.red("sessionBox.path ${LocalStore.sessionBox!.isOpen} ");
     LocalStore.init();
     MessageCentre.init();
-    print("DEBUG=> EasyLoading dismiss");
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(Duration(milliseconds: 1000), () {
       Routers.navigateAndRemoveUntil('/');
       print("DEBUG=> MessageCentre.init ${LocalStore.sessionBox}");
     });

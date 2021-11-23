@@ -14,25 +14,27 @@ import '../manager/MsgHelper.dart';
 class LocalStore {
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
-  static bool _initDone = false;
+  static bool initDone = false;
 
-  static init() async {
+  static init() {
     String dbName = 'hive_db_' + UserCentre.getUserID();
-    if (!_initDone) {
-      _initDone = true;
+    if (!initDone) {
       Log.log("LocalStore. init $dbName");
+      initDone = true;
 
       /// 需要给一个名称，否则不能保存数据
-      await Hive.initFlutter(dbName);
-      Hive.registerAdapter(SessionAdapter());
-      Hive.registerAdapter(MessageAdapter());
-      sessionBox = await Hive.openBox<Session>('sessionBox');
-      messageBox = await Hive.openBox<Message>('messageBox');
-      Log.log("sessionBox.path ${sessionBox?.values.length} ");
+      Hive.initFlutter(dbName).then((_) async {
+        Hive.registerAdapter(SessionAdapter());
+        Hive.registerAdapter(MessageAdapter());
+        Hive.openBox<Session>('sessionBox').then((value) => sessionBox = value);
+        Hive.openBox<Message>('messageBox').then((value) => messageBox = value);
+        Log.log("sessionBox.path ${sessionBox} ");
+      });
       // sessionBox!.watch().listen((event) {
       //   Log.red(
       //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
       // });
+
     }
   }
 
@@ -152,8 +154,8 @@ class LocalStore {
     return Hive.box<Message>('messageBox').listenable();
   }
 
-  static Box<Session> listenSessions() {
-    return Hive.box<Session>('sessionBox');
+  static ValueListenable<Box<Session>> listenSessions() {
+    return sessionBox!.listenable();
   }
 
   static closeHiveDB() {

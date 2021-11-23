@@ -95,7 +95,7 @@ class TestState extends State<TestPage> {
                 return Text(content);
               }),
           ValueListenableBuilder(
-              valueListenable: LocalStore.listenSessions().listenable(),
+              valueListenable: LocalStore.listenSessions(),
               builder: (context, Box<Session> box, _) {
                 String content = "<${box.values.length}>";
                 box.values.forEach((element) {
