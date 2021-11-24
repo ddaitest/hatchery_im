@@ -320,6 +320,7 @@ class LoginPageState extends State<LoginPage> {
     String password = loginManager.codeController.text;
     if (account != '' && password != '') {
       print("$account $password");
+      FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
       loginManager.submit(account, password);
     } else {
       showToast('账号或密码不能为空');
@@ -337,6 +338,7 @@ class LoginPageState extends State<LoginPage> {
     } else if (phoneCode == '') {
       showToast('验证码不能为空');
     } else {
+      FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
       loginManager.phoneSubmit(phoneNum, phoneNumberAreaCode, phoneCode);
     }
   }

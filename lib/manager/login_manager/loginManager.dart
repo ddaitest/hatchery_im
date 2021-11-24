@@ -40,14 +40,12 @@ class LoginManager extends ChangeNotifier {
     countDown = TimeConfig.OTP_CODE_RESEND;
   }
 
-  static hiveDBInit() async {
-    FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
-    Log.red("sessionBox.path ${LocalStore.sessionBox!.isOpen} ");
-    LocalStore.init();
-    MessageCentre.init();
-    Future.delayed(Duration(milliseconds: 1000), () {
-      Routers.navigateAndRemoveUntil('/');
-      print("DEBUG=> MessageCentre.init ${LocalStore.sessionBox}");
+  static hiveDBInit() {
+    LocalStore.init().then((_) {
+      MessageCentre.init();
+      Future.delayed(Duration(milliseconds: 500), () {
+        Routers.navigateAndRemoveUntil('/');
+      });
     });
   }
 

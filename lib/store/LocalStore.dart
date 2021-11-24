@@ -12,24 +12,33 @@ import 'Adapters.dart';
 import '../manager/MsgHelper.dart';
 
 class LocalStore {
+  static HiveInterface? hiveModel;
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
-  static bool initDone = false;
 
-  static init() {
-    String dbName = 'hive_db_' + UserCentre.getUserID();
-    if (!initDone) {
-      Log.log("LocalStore. init $dbName");
-      initDone = true;
+  static Future<void> init() async {
+    /// 多账号多db区分开
+    String dbName = "hive_db_" + UserCentre.getUserID();
+    if (hiveModel == null) {
+      hiveModel = Hive;
 
       /// 需要给一个名称，否则不能保存数据
-      Hive.initFlutter(dbName).then((_) async {
-        Hive.registerAdapter(SessionAdapter());
-        Hive.registerAdapter(MessageAdapter());
-        Hive.openBox<Session>('sessionBox').then((value) => sessionBox = value);
-        Hive.openBox<Message>('messageBox').then((value) => messageBox = value);
-        Log.log("sessionBox.path ${sessionBox} ");
+      hiveModel?.initFlutter(dbName).then((_) async {
+        Log.yellow("Hive initFlutter");
+
+        /// 防止重复注册，即便Hive.close() 也不能取消注册，如果覆盖注册hive会有提示说可能有未知问题
+        if (!hiveModel!.isAdapterRegistered(ADAPTER_SESSION))
+          hiveModel?.registerAdapter(SessionAdapter());
+        if (!hiveModel!.isAdapterRegistered(ADAPTER_MESSAGE))
+          hiveModel?.registerAdapter(MessageAdapter());
+        hiveModel
+            ?.openBox<Session>('sessionBox')
+            .then((value) => sessionBox = value);
+        hiveModel
+            ?.openBox<Message>('messageBox')
+            .then((value) => messageBox = value);
       });
+
       // sessionBox!.watch().listen((event) {
       //   Log.red(
       //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
@@ -151,7 +160,7 @@ class LocalStore {
   }
 
   static ValueListenable<Box<Message>> listenMessage() {
-    return Hive.box<Message>('messageBox').listenable();
+    return messageBox!.listenable();
   }
 
   static ValueListenable<Box<Session>> listenSessions() {
@@ -161,7 +170,9 @@ class LocalStore {
   static closeHiveDB() {
     sessionBox!.close();
     messageBox!.close();
-    return Hive.close();
+    hiveModel?.close();
+    hiveModel = null;
+    Log.yellow("closeHiveDB done ");
   }
 
   static deleteSession(int sessionKey) {
