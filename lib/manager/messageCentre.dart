@@ -262,7 +262,7 @@ class MessageCentre {
         contentType);
     Log.yellow("sendMessage ${msg.toJson()}");
     engine?.sendProtocol(msg.toJson());
-    _localStore.createNewSession(csSendMessage: msg);
+    LocalStore.createNewSession(csSendMessage: msg);
     Message message = ModelHelper.convertMessage(msg);
     // message.progress = MSG_SENDING;
     LocalStore.addMessage(message);
@@ -281,7 +281,7 @@ class MessageCentre {
         content,
         contentType);
     engine?.sendProtocol(msg.toJson());
-    _localStore.createNewSession(csSendGroupMessage: msg);
+    LocalStore.createNewSession(csSendGroupMessage: msg);
     Message message = ModelHelper.convertGroupMessage(msg);
     // message.progress = MSG_SENDING;
     LocalStore.addMessage(message);

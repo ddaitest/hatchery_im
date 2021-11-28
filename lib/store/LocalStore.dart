@@ -95,7 +95,7 @@ class LocalStore {
     sessionBox!.clear().then((_) => {sessionBox!.addAll(allSession)});
   }
 
-  void createNewSession(
+  static void createNewSession(
       {CSSendMessage? csSendMessage, CSSendGroupMessage? csSendGroupMessage}) {
     Log.yellow("createSession createSession. ${csSendMessage?.to} ");
     if (csSendMessage != null) {
