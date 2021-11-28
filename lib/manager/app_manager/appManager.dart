@@ -56,14 +56,11 @@ class AppManager extends ChangeNotifier {
       UserCentre.getInfo();
       BackgroundListen().init();
       if (UserCentre.isLogin()) {
-        hiveDBInit();
+        LocalStore.init();
+        MessageCentre.init();
         _configToSP();
       }
     });
-  }
-
-  static hiveDBInit() {
-    LocalStore.init().then((_) => MessageCentre.init());
   }
 
   Future<bool> _configToSP() async {

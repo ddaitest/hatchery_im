@@ -16,14 +16,14 @@ class LocalStore {
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
 
-  static Future<void> init() async {
+  static init() {
     /// 多账号多db区分开
     String dbName = "hive_db_" + UserCentre.getUserID();
     if (hiveModel == null) {
       hiveModel = Hive;
 
       /// 需要给一个名称，否则不能保存数据
-      hiveModel?.initFlutter(dbName).then((_) async {
+      hiveModel?.initFlutter(dbName).then((_) {
         Log.yellow("Hive initFlutter");
 
         /// 防止重复注册，即便Hive.close() 也不能取消注册，如果覆盖注册hive会有提示说可能有未知问题
@@ -38,6 +38,7 @@ class LocalStore {
             ?.openBox<Message>('messageBox')
             .then((value) => messageBox = value);
       });
+      return;
 
       // sessionBox!.watch().listen((event) {
       //   Log.red(
@@ -45,10 +46,11 @@ class LocalStore {
       // });
 
     }
+    return;
   }
 
-  Future getSessions() async {
-    return sessionBox?.values;
+  Future<List<Session>> getSessions() async {
+    return sessionBox?.values.toList() ?? [];
   }
 
   void saveSessions(List<Session>? sessions) {
@@ -72,7 +74,6 @@ class LocalStore {
   static void addMessage(Message msg) {
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
-    // sessionBox?.add(msg);
     //update session
     if (msg.isGroup()) {
       print("DEBUG=> isGroup isGroup ${msg.toJson()}");
@@ -87,6 +88,11 @@ class LocalStore {
         ..updateTime = msg.createTime
         ..save();
     }
+
+    /// 按消息更新时间排序，可能有简便的写法
+    List<Session> allSession = sessionBox?.values.toList() ?? [];
+    allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
+    sessionBox!.clear().then((_) => {sessionBox!.addAll(allSession)});
   }
 
   void createNewSession(
@@ -135,10 +141,7 @@ class LocalStore {
       "createTime": DateTime.now().millisecondsSinceEpoch
     };
     Session session = Session.fromJson(sessionMap);
-    // sessionBox?.add(session);
-    List<Session> allSession = sessionBox?.values.toList() ?? [];
-    allSession.insert(0, session);
-    saveSessions(allSession);
+    sessionBox?.add(session);
     if (csSendMessage != null) {
       API.getFriendInfo(csSendMessage.to).then((value) {
         if (value.isSuccess()) {

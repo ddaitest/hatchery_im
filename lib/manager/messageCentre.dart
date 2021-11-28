@@ -48,7 +48,6 @@ class MessageCentre {
   String currentListenId = "";
 
   static Engine? engine;
-
   static MyProfile? _userInfo;
   static String _token = "";
   static String ipV4 = "0.0.0.0";

@@ -107,6 +107,15 @@ class Engine {
     _life = 0;
   }
 
+  /// 连接是否断开
+  bool connectStatus() {
+    if (_channel == null || heartBeat == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   _handleError(Object error, StackTrace trace) {
     Log.yellow("_handleError() error is $error");
   }

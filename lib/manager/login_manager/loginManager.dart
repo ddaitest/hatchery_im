@@ -41,11 +41,10 @@ class LoginManager extends ChangeNotifier {
   }
 
   static hiveDBInit() {
-    LocalStore.init().then((_) {
-      MessageCentre.init();
-      Future.delayed(Duration(milliseconds: 500), () {
-        Routers.navigateAndRemoveUntil('/');
-      });
+    LocalStore.init();
+    MessageCentre.init();
+    Future.delayed(Duration(milliseconds: 300), () {
+      Routers.navigateAndRemoveUntil('/');
     });
   }
 

@@ -27,7 +27,14 @@ class BackgroundListen with WidgetsBindingObserver {
       case AppLifecycleState.resumed: // 应用程序可见，前台
         Log.red("resumed #################");
         if (UserCentre.isLogin()) {
-          MessageCentre.init();
+          if (MessageCentre.engine != null) {
+            Log.log(
+                "MessageCentre.engine!.connectStatus() ${MessageCentre.engine!.connectStatus()}");
+            if (!MessageCentre.engine!.connectStatus()) MessageCentre.init();
+          } else {
+            Log.log("MessageCentre.engine = null");
+            MessageCentre.init();
+          }
         }
         break;
       case AppLifecycleState.paused: // 应用程序不可见，后台

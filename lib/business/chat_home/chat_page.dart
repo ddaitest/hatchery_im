@@ -49,6 +49,7 @@ class _ChatPageState extends State<ChatPage> {
                       return ListView.builder(
                         itemCount: box.values.length,
                         shrinkWrap: true,
+                        reverse: true,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           Session? session = box.getAt(index);
