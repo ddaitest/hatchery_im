@@ -5,6 +5,7 @@ import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
@@ -156,6 +157,17 @@ class LocalStore {
       });
     }
     Log.yellow("makeSession. ${sessionBox?.length} ");
+  }
+
+  static void setChatTop({String? otherId, int chatTopType = 0}) {
+    if (otherId != null) {
+      Log.red("DEBUG=> setChatTop $otherId chatTopType $chatTopType");
+      findSession(otherId)
+        ?..top = chatTopType
+        ..save();
+    } else {
+      showToast("设置失败，请重试");
+    }
   }
 
   static Message? findCache(String localId) {

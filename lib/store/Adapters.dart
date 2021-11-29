@@ -98,6 +98,7 @@ class SessionAdapter extends TypeAdapter<Session> {
       fields[8] as Message?,
       fields[9] as int,
       fields[10] as int,
+      fields[11] as int?,
     );
   }
 
@@ -124,7 +125,9 @@ class SessionAdapter extends TypeAdapter<Session> {
       ..writeByte(9)
       ..write(obj.updateTime)
       ..writeByte(10)
-      ..write(obj.createTime);
+      ..write(obj.createTime)
+      ..writeByte(11)
+      ..write(obj.top);
   }
 
   @override

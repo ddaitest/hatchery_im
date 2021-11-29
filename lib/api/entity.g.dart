@@ -338,6 +338,7 @@ Session _$SessionFromJson(Map<String, dynamic> json) {
             json['lastGroupChatMessage'] as Map<String, dynamic>),
     json['updateTime'] as int,
     json['createTime'] as int,
+    json['top'] as int?,
   );
 }
 
@@ -352,4 +353,5 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
       'lastGroupChatMessage': instance.lastGroupChatMessage?.toJson(),
       'updateTime': instance.updateTime,
       'createTime': instance.createTime,
+      'top': instance.top,
     };

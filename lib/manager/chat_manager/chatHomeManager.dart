@@ -26,11 +26,14 @@ import '../app_manager/app_handler.dart';
 import '../userCentre.dart';
 
 class ChatHomeManager extends ChangeNotifier {
-  List<Session> sessions = [];
+  ValueListenable<Box<Session>>? sessionBox;
   Map<String, String>? homeMessagesMap;
 
   /// 初始化
-  init() {}
+  init() {
+    sessionBox = LocalStore.listenSessions();
+    // sessionBox!.value.values.
+  }
 
   @override
   void dispose() {

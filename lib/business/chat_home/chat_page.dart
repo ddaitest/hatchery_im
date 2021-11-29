@@ -19,7 +19,6 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final manager = App.manager<ChatHomeManager>();
-  var sessionBox = LocalStore.listenSessions();
 
   @override
   void initState() {
@@ -39,8 +38,14 @@ class _ChatPageState extends State<ChatPage> {
             Container(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ValueListenableBuilder(
-                  valueListenable: sessionBox,
+                  valueListenable: manager.sessionBox!,
                   builder: (context, Box<Session> box, _) {
+                    Box<Session>? finalBox;
+                    box.values.forEach((Session session) {
+                      if (session.top == 1) {
+                        box.values.iterator.moveNext();
+                      }
+                    });
                     Log.yellow("ValueListenableBuilder ${box.values.length}");
                     if (box.values.isEmpty) {
                       return IndicatorView(
@@ -56,6 +61,7 @@ class _ChatPageState extends State<ChatPage> {
                           // Log.yellow("box.keyAt(index) ${box.keys}");
                           if (session != null) {
                             return ChatUsersListItem(
+                              chatTopType: session.top,
                               title: session.title,
                               senderName: session.type == 1
                                   ? session.lastGroupChatMessage!.nick

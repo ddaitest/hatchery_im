@@ -14,6 +14,7 @@ import '../../utils.dart';
 import '../aboutAvatar.dart';
 
 class ChatUsersListItem extends StatelessWidget {
+  final int? chatTopType;
   final String title;
   final String senderName;
   final String icon;
@@ -23,7 +24,8 @@ class ChatUsersListItem extends StatelessWidget {
   final String content;
   final int sessionKey;
   ChatUsersListItem(
-      {required this.title,
+      {required this.chatTopType,
+      required this.title,
       required this.senderName,
       required this.icon,
       required this.chatType,
