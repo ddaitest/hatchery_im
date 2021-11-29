@@ -165,6 +165,7 @@ class LocalStore {
       findSession(otherId)
         ?..top = chatTopType
         ..save();
+      showToast("设置成功");
     } else {
       showToast("设置失败，请重试");
     }
