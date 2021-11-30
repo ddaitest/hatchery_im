@@ -32,6 +32,7 @@ class ChatHomeManager extends ChangeNotifier {
 
   /// 初始化
   init() {
+    MessageCentre.init();
     sessionBox = LocalStore.listenSessions();
   }
 

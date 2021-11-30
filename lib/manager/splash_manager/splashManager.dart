@@ -19,13 +19,11 @@ import 'package:hatchery_im/config.dart';
 // import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import '../../config.dart';
+import '../messageCentre.dart';
 
 class SplashManager extends ChangeNotifier {
-  // String _token = '';
-
   /// 初始化
-  // init() {
-  // }
+  init() {}
 
   goto() {
     Future.delayed(

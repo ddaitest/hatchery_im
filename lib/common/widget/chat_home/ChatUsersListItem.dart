@@ -38,7 +38,12 @@ class ChatUsersListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<SlideActionInfo> slideAction = [
-      SlideActionInfo('置顶', Icons.upload_sharp, Flavors.colorInfo.mainColor),
+      SlideActionInfo(
+          chatTopType == 1 ? '取消置顶' : '置顶',
+          chatTopType == 1 ? Icons.download_rounded : Icons.upload_sharp,
+          Flavors.colorInfo.mainColor,
+          onPressed: (_) => LocalStore.setChatTop(
+              otherId: chatId, chatTopType: chatTopType == 1 ? 0 : 1)),
       SlideActionInfo(
           '不提醒', Icons.notifications_off, Flavors.colorInfo.blueGrey),
       SlideActionInfo('删除', Icons.delete, Colors.red,
@@ -53,7 +58,7 @@ class ChatUsersListItem extends StatelessWidget {
         extentRatio: 0.8,
       ),
       child: Container(
-        color: Colors.white,
+        color: chatTopType == 1 ? Colors.grey[200] : Colors.white,
         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: ListTile(
           onTap: () => Routers.navigateTo("/chat_detail",
