@@ -43,40 +43,19 @@ class _ChatPageState extends State<ChatPage>
               child: ValueListenableBuilder(
                   valueListenable: manager.sessionBox!,
                   builder: (context, Box<Session> box, _) {
-                    Box<Session>? newBox;
-                    List<Session>? topChatSession = [];
-                    List<Session>? unTopChatSession = [];
-                    box.values.forEach((Session session) {
-                      if (session.top == 1) {
-                        topChatSession.add(session);
-                      } else {
-                        unTopChatSession.add(session);
-                      }
-                    });
-                    Log.yellow("topChatSession ${topChatSession.length}");
-                    Log.yellow("unTopChatSession ${unTopChatSession.length}");
-                    if (topChatSession.isNotEmpty) {
-                      Log.yellow("topChatSession.isNotEmpty");
-                      newBox
-                          ?.addAll(unTopChatSession)
-                          .then((_) => newBox.addAll(topChatSession));
-                      Log.yellow("newBox ${newBox?.length}");
-                    }
-                    Box<Session> finalBox = box;
-                    Log.yellow(
-                        "ValueListenableBuilder ${finalBox.values.length}");
-                    if (finalBox.values.isEmpty) {
+                    Log.yellow("ValueListenableBuilder ${box.values.length}");
+                    if (box.values.isEmpty) {
                       return IndicatorView(
                           tipsText: "没有聊天记录", showLoadingIcon: false);
                     } else {
                       return ListView.builder(
-                        itemCount: finalBox.values.length,
+                        itemCount: box.values.length,
                         shrinkWrap: true,
                         reverse: true,
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          Session? session = finalBox.getAt(index);
-                          Log.red("finalBox.getAt(index) top ${session?.top}");
+                          Session? session = box.getAt(index);
+                          Log.red("box.getAt(index) top ${session?.top}");
                           if (session != null) {
                             return ChatUsersListItem(
                               chatTopType: session.top,
@@ -92,7 +71,7 @@ class _ChatPageState extends State<ChatPage>
                               content: chatHomeSubtitleSet(session.type == 0
                                   ? session.lastChatMessage
                                   : session.lastGroupChatMessage),
-                              sessionKey: finalBox.keyAt(index),
+                              sessionKey: box.keyAt(index),
                             );
                           } else {
                             return Container();

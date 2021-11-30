@@ -91,9 +91,11 @@ class LocalStore {
     }
 
     /// 按消息更新时间排序，可能有简便的写法
+    /// todo 置顶和普通分开按时间排序
     List<Session> allSession = sessionBox?.values.toList() ?? [];
     allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
     sessionBox!.clear().then((_) => {sessionBox!.addAll(allSession)});
+    sortSessionForTopChat();
   }
 
   static void createNewSession(
@@ -168,6 +170,28 @@ class LocalStore {
       showToast("设置成功");
     } else {
       showToast("设置失败，请重试");
+    }
+    sortSessionForTopChat();
+  }
+
+  /// 置顶消息重新排序
+  static void sortSessionForTopChat() {
+    List<Session>? topChatSession = [];
+    List<Session>? unTopChatSession = [];
+    sessionBox?.values.forEach((Session session) {
+      if (session.top == 1) {
+        topChatSession.insert(0, session);
+      } else {
+        unTopChatSession.add(session);
+      }
+    });
+    Log.yellow("topChatSession ${topChatSession.length}");
+    Log.yellow("unTopChatSession ${unTopChatSession.length}");
+    if (topChatSession.isNotEmpty) {
+      Log.yellow("topChatSession.isNotEmpty");
+      unTopChatSession.addAll(topChatSession);
+      sessionBox!.clear().then((_) => {sessionBox!.addAll(unTopChatSession)});
+      Log.yellow("sessionBox ${sessionBox?.length}");
     }
   }
 

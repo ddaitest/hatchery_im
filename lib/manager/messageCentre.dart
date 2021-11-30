@@ -126,7 +126,7 @@ class MessageCentre {
 
   ///找出需要同步的session
   _syncNewSessions(List<Session> news) {
-    List<Session> before = new List.from(sessions ?? []);
+    List<Session> before = sessions ?? [];
     news.forEach((newOne) {
       int index = before.indexWhere((oldOne) => oldOne.id == newOne.id);
       if (index < 0) {
