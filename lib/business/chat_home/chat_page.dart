@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -21,16 +22,17 @@ class _ChatPageState extends State<ChatPage>
     with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  final manager = App.manager<ChatHomeManager>();
-
+  // final manager = App.manager<ChatHomeManager>();
+  ValueListenable<Box<Session>> sessionBox = LocalStore.listenSessions();
   @override
   void initState() {
-    manager.init();
+    // manager.init();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -41,7 +43,7 @@ class _ChatPageState extends State<ChatPage>
             Container(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ValueListenableBuilder(
-                  valueListenable: manager.sessionBox!,
+                  valueListenable: sessionBox,
                   builder: (context, Box<Session> box, _) {
                     Log.yellow("ValueListenableBuilder ${box.values.length}");
                     if (box.values.isEmpty) {
@@ -55,7 +57,6 @@ class _ChatPageState extends State<ChatPage>
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           Session? session = box.getAt(index);
-                          Log.red("box.getAt(index) top ${session?.top}");
                           if (session != null) {
                             return ChatUsersListItem(
                               chatTopType: session.top,

@@ -109,13 +109,12 @@ class MessageCentre {
     }
     Log.yellow("_initSessions 开始");
     Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions}");
-    sessionListener?.call(sessions ?? []);
     // Step2. 从Server获取最新数据。
     API.querySession().then((value) async {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
         // Step3. 刷新本地数据。
-        _localStore.saveSessions(sessions);
+        // _localStore.saveSessions(sessions);
         _syncNewSessions(news);
         sessionListener?.call(sessions ?? []);
         Log.yellow("_initSessions 从Server获取最新数据 ${sessions?.length}");
@@ -127,7 +126,8 @@ class MessageCentre {
   _syncNewSessions(List<Session> news) {
     List<Session> before = sessions ?? [];
     news.forEach((newOne) {
-      int index = before.indexWhere((oldOne) => oldOne.id == newOne.id);
+      int index =
+          before.indexWhere((oldOne) => oldOne.otherID == newOne.otherID);
       Log.yellow("_initSessions 从Server获取最新数据 $index");
       if (index < 0) {
         _syncSession(null, newOne);
@@ -176,7 +176,6 @@ class MessageCentre {
     bool end = false;
     while (!found && !end) {
       var result = await _queryHistoryFriend(friendID, currentFrom);
-      Log.red("_loadFriendHistory ${result[0].nick} ${result[0].content}");
       end = result.length < 1;
       var temp = <Message>[];
       for (var msg in result) {
