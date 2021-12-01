@@ -23,7 +23,7 @@ import '../messageCentre.dart';
 
 class SplashManager extends ChangeNotifier {
   /// 初始化
-  init() {}
+  // init() {}
 
   goto() {
     Future.delayed(

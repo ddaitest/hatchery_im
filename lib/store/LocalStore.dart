@@ -89,13 +89,7 @@ class LocalStore {
         ..updateTime = msg.createTime
         ..save();
     }
-
-    /// 按消息更新时间排序，可能有简便的写法
-    /// todo 置顶和普通分开按时间排序
-    List<Session> allSession = sessionBox?.values.toList() ?? [];
-    allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
-    sessionBox!.clear().then((_) => {sessionBox!.addAll(allSession)});
-    sortSessionForTopChat();
+    sortSession();
   }
 
   static void createNewSession(
@@ -171,11 +165,12 @@ class LocalStore {
     } else {
       showToast("设置失败，请重试");
     }
-    sortSessionForTopChat();
+    sortSession();
   }
 
   /// 置顶消息重新排序
-  static void sortSessionForTopChat() {
+  static void sortSession() {
+    /// 把置顶的session分离开
     List<Session>? topChatSession = [];
     List<Session>? unTopChatSession = [];
     sessionBox?.values.forEach((Session session) {
@@ -185,13 +180,19 @@ class LocalStore {
         unTopChatSession.add(session);
       }
     });
-    Log.yellow("topChatSession ${topChatSession.length}");
-    Log.yellow("unTopChatSession ${unTopChatSession.length}");
     if (topChatSession.isNotEmpty) {
-      Log.yellow("topChatSession.isNotEmpty");
+      /// 按消息更新时间排序，置顶和普通分别排序，可能有简便的写法
+      topChatSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
+      unTopChatSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
+
+      /// 合并置顶和普通消息
       unTopChatSession.addAll(topChatSession);
       sessionBox!.clear().then((_) => {sessionBox!.addAll(unTopChatSession)});
       Log.yellow("sessionBox ${sessionBox?.length}");
+    } else {
+      List<Session> allSession = sessionBox?.values.toList() ?? [];
+      allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
+      sessionBox!.clear().then((_) => {sessionBox!.addAll(allSession)});
     }
   }
 

@@ -115,9 +115,8 @@ class MessageCentre {
       if (value.isSuccess()) {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
         // Step3. 刷新本地数据。
-        sessions = news;
         _localStore.saveSessions(sessions);
-        _syncNewSessions(sessions!);
+        _syncNewSessions(news);
         sessionListener?.call(sessions ?? []);
         Log.yellow("_initSessions 从Server获取最新数据 ${sessions?.length}");
       }
@@ -129,6 +128,7 @@ class MessageCentre {
     List<Session> before = sessions ?? [];
     news.forEach((newOne) {
       int index = before.indexWhere((oldOne) => oldOne.id == newOne.id);
+      Log.yellow("_initSessions 从Server获取最新数据 $index");
       if (index < 0) {
         _syncSession(null, newOne);
       } else {
@@ -176,6 +176,7 @@ class MessageCentre {
     bool end = false;
     while (!found && !end) {
       var result = await _queryHistoryFriend(friendID, currentFrom);
+      Log.red("_loadFriendHistory ${result[0].nick} ${result[0].content}");
       end = result.length < 1;
       var temp = <Message>[];
       for (var msg in result) {
