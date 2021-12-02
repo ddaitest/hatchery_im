@@ -39,7 +39,6 @@ class LocalStore {
             ?.openBox<Message>('messageBox')
             .then((value) => messageBox = value);
       });
-      return;
 
       // sessionBox!.watch().listen((event) {
       //   Log.red(
@@ -93,7 +92,65 @@ class LocalStore {
   }
 
   static void createNewSession(
-      {CSSendMessage? csSendMessage, CSSendGroupMessage? csSendGroupMessage}) {
+      {CSSendMessage? csSendMessage,
+      CSSendGroupMessage? csSendGroupMessage,
+      Message? message}) {
+    String? receiverNickName;
+    String? receiverIcon;
+    if (message != null) {
+      if (!message.isGroup()) {
+        if (findSession(message.receiver!) != null) {
+          return;
+        } else {}
+      } else {
+        if (findSession(message.groupID!) != null) {
+          return;
+        }
+      }
+      Map<String, dynamic> sessionMap = {
+        "id": message.id,
+        "title": "群组",
+        "icon": "",
+        "ownerID": message.sender,
+        "otherID": message.groupID ?? message.receiver,
+        "type": !message.isGroup() ? 0 : 1,
+        "updateTime": message.createTime,
+        "lastChatMessage": null,
+        "lastGroupChatMessage": null,
+        "createTime": DateTime.now().millisecondsSinceEpoch
+      };
+      sessionMap[message.receiver != null
+          ? "lastChatMessage"
+          : "lastGroupChatMessage"] = {
+        "id": message.id,
+        "userMsgID": message.userMsgID,
+        "sender": message.sender,
+        "icon": message.icon,
+        "nick": message.nick,
+        "type": message.type,
+        "source": message.source,
+        "content": message.content,
+        "contentType": message.contentType,
+        "createTime": message.createTime
+      };
+      Session session = Session.fromJson(sessionMap);
+      sessionBox?.add(session);
+      if (!message.isGroup()) {
+        API.getFriendInfo(message.sender).then((value) {
+          if (value.isSuccess()) {
+            FriendProfile friendProfile =
+                FriendProfile.fromJson(value.getData());
+            receiverNickName = friendProfile.nickName;
+            receiverIcon = friendProfile.icon;
+            findSession(friendProfile.friendId)
+              ?..title = receiverNickName ?? ""
+              ..icon = receiverIcon ?? ""
+              ..save();
+          }
+        });
+      }
+      return;
+    }
     Log.yellow("createSession createSession. ${csSendMessage?.to} ");
     if (csSendMessage != null) {
       if (findSession(csSendMessage.to) != null) {
@@ -105,8 +162,6 @@ class LocalStore {
         return;
       }
     }
-    String? receiverNickName;
-    String? receiverIcon;
     Map<String, dynamic> sessionMap = {
       "id": DateTime.now().millisecondsSinceEpoch,
       "title": csSendMessage != null

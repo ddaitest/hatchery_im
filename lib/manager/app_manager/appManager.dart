@@ -58,6 +58,9 @@ class AppManager extends ChangeNotifier {
       if (UserCentre.isLogin()) {
         LocalStore.init();
         _configToSP();
+        Future.delayed(Duration(seconds: 1), () {
+          MessageCentre.init();
+        });
       }
     });
   }
@@ -77,7 +80,7 @@ class AppManager extends ChangeNotifier {
     if (_configData != null) {
       customMenuInfo =
           CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);
-      print("DEBUG=> customMenuInfo $customMenuInfo");
+      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
     }
   }
 

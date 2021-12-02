@@ -27,9 +27,7 @@ import '../userCentre.dart';
 
 class ChatHomeManager extends ChangeNotifier {
   /// 初始化
-  init() {
-    MessageCentre.init();
-  }
+  init() {}
 
   @override
   void dispose() {

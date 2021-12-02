@@ -254,9 +254,9 @@ class MessageCentre {
   sendMessage(String to, String content, String contentType) {
     CSSendMessage msg = Protocols.sendMessage(
         _userInfo?.userID ?? "",
-        _userInfo!.nickName!,
+        _userInfo?.nickName ?? "",
         to,
-        _userInfo!.icon!,
+        _userInfo?.icon ?? "",
         TARGET_PLATFORM,
         content,
         contentType);
@@ -425,6 +425,7 @@ class MyEngineHandler implements EngineCallback {
   @override
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
+    Log.red("onNewMessage onNewMessage");
     LocalStore.addMessage(msg);
   }
 }

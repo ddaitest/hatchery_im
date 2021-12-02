@@ -26,7 +26,6 @@ class _ChatPageState extends State<ChatPage>
   ValueListenable<Box<Session>> sessionBox = LocalStore.listenSessions();
   @override
   void initState() {
-    // manager.init();
     super.initState();
   }
 

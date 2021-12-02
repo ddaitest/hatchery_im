@@ -272,6 +272,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         maxLength: 140,
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
+          Log.yellow("textInputAction $term");
           manager.sendMessage(term, "TEXT");
           manager.textEditingController.clear();
         },
