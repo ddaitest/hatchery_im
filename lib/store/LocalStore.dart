@@ -75,58 +75,45 @@ class LocalStore {
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
     //update session
-    if (msg.isGroup()) {
-      print("DEBUG=> isGroup isGroup ${msg.toJson()}");
-      findSession(msg.groupID ?? "")
-        ?..lastGroupChatMessage = msg
+    print("DEBUG=> addMessage ${msg.toJson()}");
+    Session? result =
+        findSession(msg.isGroup() ? msg.groupID ?? "" : msg.receiver ?? "");
+    if (result != null) {
+      msg.isGroup()
+          ? result.lastGroupChatMessage = msg
+          : result.lastChatMessage = msg;
+      result
         ..updateTime = msg.createTime
         ..save();
     } else {
-      print("DEBUG=> isChat isChat ${msg.toJson()}");
-      findSession(msg.getOtherId() ?? "")
-        ?..lastChatMessage = msg
-        ..updateTime = msg.createTime
-        ..save();
+      createNewSession(
+          chatType: msg.isGroup() ? "GROUP" : "CHAT", message: msg);
     }
-    sortSession();
   }
 
-  static void createNewSession(
-      {CSSendMessage? csSendMessage,
-      CSSendGroupMessage? csSendGroupMessage,
-      Message? message}) {
-    String? receiverNickName;
-    String? receiverIcon;
+  static void createNewSession({String? chatType, Message? message}) {
+    String? sessionNickName;
+    String? sessionIcon;
     if (message != null) {
-      if (!message.isGroup()) {
-        if (findSession(message.receiver!) != null) {
-          return;
-        } else {}
-      } else {
-        if (findSession(message.groupID!) != null) {
-          return;
-        }
-      }
       Map<String, dynamic> sessionMap = {
         "id": message.id,
-        "title": "群组",
+        "title": chatType == "CHAT" ? "用户" : "群组",
         "icon": "",
         "ownerID": message.sender,
-        "otherID": message.groupID ?? message.receiver,
-        "type": !message.isGroup() ? 0 : 1,
+        "otherID": chatType == "CHAT" ? message.receiver : message.groupID,
+        "type": chatType == "CHAT" ? 0 : 1,
         "updateTime": message.createTime,
         "lastChatMessage": null,
         "lastGroupChatMessage": null,
         "createTime": DateTime.now().millisecondsSinceEpoch
       };
-      sessionMap[message.receiver != null
-          ? "lastChatMessage"
-          : "lastGroupChatMessage"] = {
+      sessionMap[
+          chatType == "CHAT" ? "lastChatMessage" : "lastGroupChatMessage"] = {
         "id": message.id,
         "userMsgID": message.userMsgID,
         "sender": message.sender,
-        "icon": message.icon,
-        "nick": message.nick,
+        "icon": "",
+        "nick": "",
         "type": message.type,
         "source": message.source,
         "content": message.content,
@@ -135,79 +122,34 @@ class LocalStore {
       };
       Session session = Session.fromJson(sessionMap);
       sessionBox?.add(session);
-      if (!message.isGroup()) {
-        API.getFriendInfo(message.sender).then((value) {
+      sortSession();
+      if (chatType == "CHAT") {
+        API.getUsersInfo(message.receiver ?? "").then((value) {
           if (value.isSuccess()) {
-            FriendProfile friendProfile =
-                FriendProfile.fromJson(value.getData());
-            receiverNickName = friendProfile.nickName;
-            receiverIcon = friendProfile.icon;
-            findSession(friendProfile.friendId)
-              ?..title = receiverNickName ?? ""
-              ..icon = receiverIcon ?? ""
+            UsersInfo usersInfo = UsersInfo.fromJson(value.getData());
+            sessionNickName = usersInfo.nickName;
+            sessionIcon = usersInfo.icon;
+            findSession(message.receiver ?? "")
+              ?..title = sessionNickName ?? ""
+              ..icon = sessionIcon ?? ""
+              ..save();
+          }
+          Log.yellow("getUsersInfo. $sessionNickName $sessionIcon ");
+        });
+      } else {
+        API.getGroupInfo(message.groupID ?? "").then((value) {
+          if (value.isSuccess()) {
+            GroupInfo groupInfo = GroupInfo.fromJson(value.getData());
+            sessionNickName = groupInfo.groupName;
+            sessionIcon = groupInfo.icon;
+            findSession(message.groupID ?? "")
+              ?..title = sessionNickName ?? ""
+              ..icon = sessionIcon ?? ""
               ..save();
           }
         });
       }
-      return;
     }
-    Log.yellow("createSession createSession. ${csSendMessage?.to} ");
-    if (csSendMessage != null) {
-      if (findSession(csSendMessage.to) != null) {
-        return;
-      }
-    }
-    if (csSendGroupMessage != null) {
-      if (findSession(csSendGroupMessage.groupId) != null) {
-        return;
-      }
-    }
-    Map<String, dynamic> sessionMap = {
-      "id": DateTime.now().millisecondsSinceEpoch,
-      "title": csSendMessage != null
-          ? receiverNickName ?? csSendMessage.to
-          : csSendGroupMessage!.groupName,
-      "icon": csSendMessage != null
-          ? receiverIcon ?? ""
-          : csSendGroupMessage!.groupIcon,
-      "ownerID": csSendMessage?.from ?? csSendGroupMessage!.from,
-      "otherID": csSendMessage?.to ?? csSendGroupMessage!.groupId,
-      "type": csSendMessage != null ? 0 : 1,
-      "updateTime": DateTime.now().millisecondsSinceEpoch,
-      "lastChatMessage": null,
-      "lastGroupChatMessage": null,
-      "createTime": DateTime.now().millisecondsSinceEpoch
-    };
-    sessionMap[
-        csSendMessage != null ? "lastChatMessage" : "lastGroupChatMessage"] = {
-      "id": DateTime.now().millisecondsSinceEpoch,
-      "userMsgID": csSendMessage?.msgId ?? csSendGroupMessage!.msgId,
-      "sender": csSendMessage?.from ?? csSendGroupMessage!.from,
-      "icon": csSendMessage?.icon ?? csSendGroupMessage!.icon,
-      "nick": csSendMessage?.nick ?? csSendGroupMessage!.nick,
-      "type": csSendMessage?.type ?? csSendGroupMessage!.type,
-      "source": csSendMessage?.source ?? csSendGroupMessage!.source,
-      "content": csSendMessage?.content ?? csSendGroupMessage!.content,
-      "contentType":
-          csSendMessage?.contentType ?? csSendGroupMessage!.contentType,
-      "createTime": DateTime.now().millisecondsSinceEpoch
-    };
-    Session session = Session.fromJson(sessionMap);
-    sessionBox?.add(session);
-    if (csSendMessage != null) {
-      API.getFriendInfo(csSendMessage.to).then((value) {
-        if (value.isSuccess()) {
-          FriendProfile friendProfile = FriendProfile.fromJson(value.getData());
-          receiverNickName = friendProfile.nickName;
-          receiverIcon = friendProfile.icon;
-          findSession(friendProfile.friendId)
-            ?..title = receiverNickName ?? ""
-            ..icon = receiverIcon ?? ""
-            ..save();
-        }
-      });
-    }
-    Log.yellow("makeSession. ${sessionBox?.length} ");
   }
 
   static void setChatTop({String? otherId, int chatTopType = 0}) {
