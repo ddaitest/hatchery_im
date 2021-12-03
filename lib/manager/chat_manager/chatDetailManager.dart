@@ -52,6 +52,8 @@ class ChatDetailManager extends ChangeNotifier {
   int? videoWidth;
   AssetEntity? _entity;
   String? currentChatType;
+  String? otherName;
+  String? otherIcon;
   String currentGroupId = "";
   String currentGroupName = "";
   String currentGroupIcon = "";
@@ -61,14 +63,19 @@ class ChatDetailManager extends ChangeNotifier {
 
   // ValueListenable<Box<Message>> messages = LocalStore.listenMessage();
   /// 初始化
-  init(String chatType,
-      {String friendId = "",
+  init(
+      {String? chatType,
+      String friendName = "",
+      String friendIcon = "",
+      String friendId = "",
       String groupId = "",
       String groupName = "",
       String groupIcon = ""}) {
     // _inputTextListen();
     myProfileData = UserCentre.getInfo();
     currentChatType = chatType;
+    otherName = friendName;
+    otherIcon = friendIcon;
     currentFriendId = friendId;
     currentGroupId = groupId;
     currentGroupName = groupName;
@@ -360,6 +367,8 @@ class ChatDetailManager extends ChangeNotifier {
     switch (messageType) {
       case "TEXT":
         MessageCentre.sendTextMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,
@@ -367,6 +376,8 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       case "IMAGE":
         MessageCentre.sendImageMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,
@@ -374,6 +385,8 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       case "VIDEO":
         MessageCentre.sendVideoMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,
@@ -381,6 +394,8 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       case "VOICE":
         MessageCentre.sendVoiceMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,
@@ -388,6 +403,8 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       case "GEO":
         MessageCentre.sendGeoMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,
@@ -395,6 +412,8 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       case "FILE":
         MessageCentre.sendFileMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,
@@ -402,6 +421,8 @@ class ChatDetailManager extends ChangeNotifier {
         break;
       default:
         MessageCentre.sendTextMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
             friendId: currentFriendId,
             groupId: currentGroupId,
             groupName: currentGroupName,

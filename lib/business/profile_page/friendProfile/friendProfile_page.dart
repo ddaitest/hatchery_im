@@ -1,22 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:hatchery_im/config.dart';
-import 'package:provider/provider.dart';
-import 'package:hatchery_im/api/entity.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:hatchery_im/common/widget/app_bar.dart';
-import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/manager/profile_manager/friendsProfile_manager/friendProfileManager.dart';
-import 'package:hatchery_im/common/widget/aboutAvatar.dart';
-import 'package:hatchery_im/common/widget/profile/profile_menu_item.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/common/widget/imageDetail.dart';
-import 'package:hatchery_im/common/widget/loading_view.dart';
-import 'package:hatchery_im/common/widget/loading_Indicator.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import '../../../common/widget/profile/edit_detail.dart';
+import "package:flutter/material.dart";
+import "package:hatchery_im/config.dart";
+import "package:provider/provider.dart";
+import "package:hatchery_im/api/entity.dart";
+import "package:flutter/cupertino.dart";
+import "package:hatchery_im/common/widget/app_bar.dart";
+import "package:hatchery_im/common/AppContext.dart";
+import "package:hatchery_im/manager/profile_manager/friendsProfile_manager/friendProfileManager.dart";
+import "package:hatchery_im/common/widget/aboutAvatar.dart";
+import "package:hatchery_im/common/widget/profile/profile_menu_item.dart";
+import "package:hatchery_im/flavors/Flavors.dart";
+import "package:hatchery_im/common/utils.dart";
+import "package:hatchery_im/routers.dart";
+import "package:hatchery_im/common/widget/imageDetail.dart";
+import "package:hatchery_im/common/widget/loading_view.dart";
+import "package:hatchery_im/common/widget/loading_Indicator.dart";
+import "package:flutter_screenutil/flutter_screenutil.dart";
+import "package:cached_network_image/cached_network_image.dart";
+import "../../../common/widget/profile/edit_detail.dart";
 
 class FriendProfilePage extends StatefulWidget {
   final String? userID;
@@ -45,7 +45,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return WillPopScope(
         onWillPop: _onWillPop,
         child: Scaffold(
-            appBar: AppBarFactory.backButton(''), body: _mainContainer()));
+            appBar: AppBarFactory.backButton(""), body: _mainContainer()));
   }
 
   Future<bool> _onWillPop() async {
@@ -82,12 +82,12 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         children: [
           usersInfo != null
               ? GestureDetector(
-                  onTap: () => Routers.navigateTo('/imageDetail',
+                  onTap: () => Routers.navigateTo("/imageDetail",
                       arg: {"imageUrl": usersInfo.icon}),
                   child: netWorkAvatar(usersInfo.icon, 40.0),
                 )
               : CircleAvatar(
-                  backgroundImage: AssetImage('images/default_avatar.png'),
+                  backgroundImage: AssetImage("images/default_avatar.png"),
                   maxRadius: 40.0,
                 ),
           Container(
@@ -97,13 +97,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 usersInfo != null
-                    ? Text('昵称：${usersInfo.nickName}',
+                    ? Text("昵称：${usersInfo.nickName}",
                         style: Flavors.textStyles.friendProfileMainText)
                     : LoadingView(viewHeight: 20.0, viewWidth: 100.0.w),
                 SizedBox(height: 10.0.h),
                 usersInfo != null
                     ? usersInfo.status == 1
-                        ? Text('备注：${usersInfo.remarks ?? '无'}',
+                        ? Text("备注：${usersInfo.remarks ?? "无"}",
                             style: Flavors.textStyles.friendProfileSubtitleText)
                         : Container()
                     : LoadingView(viewWidth: 70.0.w),
@@ -137,26 +137,26 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
               MaterialPageRoute(
                   builder: (_) => FriendsProfileEditDetailPage(
                         widget.userID!,
-                        '设置备注',
-                        usersInfo!.remarks ?? '',
+                        "设置备注",
+                        usersInfo!.remarks ?? "",
                       ))).then((value) =>
               value ?? false ? manager.refreshData(widget.userID!) : null),
-          child: _dataCellView("设置备注", ''),
+          child: _dataCellView("设置备注", ""),
         ),
         GestureDetector(
-          onTap: () => Routers.navigateTo('/friend_info_more', arg: usersInfo),
+          onTap: () => Routers.navigateTo("/friend_info_more", arg: usersInfo),
           child: _dataCellView(
             "更多信息",
-            '',
+            "",
           ),
         ),
         GestureDetector(
             onTap: () =>
-                Routers.navigateTo('/friend_setting', arg: usersInfo!.userID)
+                Routers.navigateTo("/friend_setting", arg: usersInfo!.userID)
                     .then((value) => value ?? false
                         ? manager.refreshData(widget.userID!)
                         : null),
-            child: _dataCellView("其他设置", '', showDivider: false)),
+            child: _dataCellView("其他设置", "", showDivider: false)),
       ],
     );
   }
@@ -164,13 +164,13 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
   Widget _listInfoForStranger() {
     Map<String, dynamic> userMap = manager.usersInfoMap!;
     userMap.removeWhere((key, value) => (value == null ||
-        key == 'userID' ||
-        key == 'icon' ||
-        key == 'status' ||
-        key == 'updateTime' ||
-        key == 'createTime' ||
-        key == 'isFriends' ||
-        key == 'nickName'));
+        key == "userID" ||
+        key == "icon" ||
+        key == "status" ||
+        key == "updateTime" ||
+        key == "createTime" ||
+        key == "isFriends" ||
+        key == "nickName"));
     print("DEBUG=> usersInfoMap2 $userMap");
     return ListView.builder(
         itemCount: userMap.length,
@@ -209,7 +209,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return Center(
       child: Container(
         padding: const EdgeInsets.only(top: 30.0),
-        child: Text('已添加到黑名单，你将不再收到对方的消息',
+        child: Text("已添加到黑名单，你将不再收到对方的消息",
             style: Flavors.textStyles.friendProfileBlockWarnText),
       ),
     );
@@ -219,10 +219,11 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
     return Container(
       width: Flavors.sizesInfo.screenWidth,
       child: TextButton(
-        onPressed: () => Routers.navigateTo('/chat_detail', arg: {
-          'chatType': "CHAT",
-          'nickName': usersInfo.nickName,
-          'friendId': usersInfo.userID
+        onPressed: () => Routers.navigateTo("/chat_detail", arg: {
+          "chatType": "CHAT",
+          "otherName": usersInfo.nickName,
+          "otherIcon": usersInfo.icon,
+          "friendId": usersInfo.userID
         }),
         style: ElevatedButton.styleFrom(
           elevation: 0.0,
@@ -233,7 +234,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
           ),
         ),
         child: Text(
-          '发消息',
+          "发消息",
           textAlign: TextAlign.center,
           style: Flavors.textStyles.friendProfileBtnText,
         ),
@@ -247,9 +248,9 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
       child: TextButton(
         onPressed: () {
           if (widget.userID! != manager.myProfileData?.userID) {
-            Routers.navigateTo('/friend_apply', arg: widget.userID!);
+            Routers.navigateTo("/friend_apply", arg: widget.userID!);
           } else {
-            showToast('不能添加自己为好友');
+            showToast("不能添加自己为好友");
           }
         },
         style: ElevatedButton.styleFrom(
@@ -261,7 +262,7 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
           ),
         ),
         child: Text(
-          '添加好友',
+          "添加好友",
           textAlign: TextAlign.center,
           style: Flavors.textStyles.friendProfileBtnText,
         ),

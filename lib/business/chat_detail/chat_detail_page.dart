@@ -24,7 +24,8 @@ import 'package:hatchery_im/common/widget/emojiModel.dart';
 import '../../routers.dart';
 
 class ChatDetailPage extends StatefulWidget {
-  final String? nickName;
+  final String? otherName;
+  final String? otherIcon;
   final String? friendId;
   final String? groupId;
   final String? groupName;
@@ -32,7 +33,8 @@ class ChatDetailPage extends StatefulWidget {
   final String? chatType;
 
   ChatDetailPage(
-      {this.nickName,
+      {this.otherName,
+      this.otherIcon,
       this.friendId,
       this.chatType,
       this.groupId,
@@ -51,8 +53,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void initState() {
-    if (widget.nickName != null) {
-      appTitleName = widget.nickName!;
+    if (widget.otherName != null) {
+      appTitleName = widget.otherName!;
     } else if (widget.groupName != null) {
       appTitleName = widget.groupName!;
     }
@@ -83,7 +85,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           }),
       // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
     ];
-    manager.init(widget.chatType!,
+    manager.init(
+        chatType: widget.chatType!,
+        friendName: widget.otherName ?? "",
+        friendIcon: widget.otherIcon ?? "",
         friendId: widget.friendId ?? "",
         groupId: widget.groupId!,
         groupName: widget.groupName!,

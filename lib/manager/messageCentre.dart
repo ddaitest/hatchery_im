@@ -115,7 +115,7 @@ class MessageCentre {
         List<Session> news = value.getDataList((m) => Session.fromJson(m));
         // Step3. 刷新本地数据。
         // _localStore.saveSessions(sessions);
-        _syncNewSessions(news);
+        // _syncNewSessions(news);
         sessionListener?.call(sessions ?? []);
         Log.yellow("_initSessions 从Server获取最新数据 ${sessions?.length}");
       }
@@ -251,7 +251,8 @@ class MessageCentre {
   /// string type //聊天类型（CHAT表示单聊，GROUP表示群聊）
   /// string to //接受者(用户ID)
   /// string content_type
-  sendMessage(String to, String content, String contentType) {
+  sendMessage(String to, String content, String otherName, String otherIcon,
+      String contentType) {
     CSSendMessage msg = Protocols.sendMessage(
         _userInfo?.userID ?? "",
         _userInfo?.nickName ?? "",
@@ -264,7 +265,8 @@ class MessageCentre {
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
     // message.progress = MSG_SENDING;
-    LocalStore.addMessage(message);
+    LocalStore.addMessage(message,
+        sessionName: otherName, sessionImage: otherIcon);
   }
 
   sendGroupMessage(String groupId, String groupName, String groupIcon,
@@ -282,74 +284,90 @@ class MessageCentre {
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
     // message.progress = MSG_SENDING;
-    LocalStore.addMessage(message);
+    LocalStore.addMessage(message,
+        sessionName: groupName, sessionImage: groupIcon);
   }
 
   static sendTextMessage(String chatType, String text,
-      {String? groupId,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
       String? groupName,
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? _singleton.sendMessage(friendId!, jsonEncode({"text": text}), "TEXT")
+        ? _singleton.sendMessage(friendId!, jsonEncode({"text": text}),
+            otherName ?? "", otherIcon ?? "", "TEXT")
         : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"text": text}), "TEXT");
   }
 
   static sendImageMessage(String chatType, String imageUrl,
-      {String? groupId,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
       String? groupName,
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? _singleton.sendMessage(
-            friendId!, jsonEncode({"img_url": imageUrl}), "IMAGE")
+        ? _singleton.sendMessage(friendId!, jsonEncode({"img_url": imageUrl}),
+            otherName ?? "", otherIcon ?? "", "IMAGE")
         : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"img_url": imageUrl}), "IMAGE");
   }
 
   static sendVideoMessage(String chatType, String videoUrl,
-      {String? groupId,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
       String? groupName,
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? _singleton.sendMessage(
-            friendId!, jsonEncode({"video_url": videoUrl}), "VIDEO")
+        ? _singleton.sendMessage(friendId!, jsonEncode({"video_url": videoUrl}),
+            otherName ?? "", otherIcon ?? "", "VIDEO")
         : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"video_url": videoUrl}), "VIDEO");
   }
 
   static sendVoiceMessage(String chatType, String voiceUrl,
-      {String? groupId,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
       String? groupName,
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? _singleton.sendMessage(
-            friendId!, jsonEncode({"voice_url": voiceUrl}), "VOICE")
+        ? _singleton.sendMessage(friendId!, jsonEncode({"voice_url": voiceUrl}),
+            otherName ?? "", otherIcon ?? "", "VOICE")
         : _singleton.sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"voice_url": voiceUrl}), "VOICE");
   }
 
   static sendGeoMessage(String chatType, Map<String, dynamic> positionMap,
-      {String? groupId,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
       String? groupName,
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? _singleton.sendMessage(friendId!, jsonEncode(positionMap), "GEO")
+        ? _singleton.sendMessage(friendId!, jsonEncode(positionMap),
+            otherName ?? "", otherIcon ?? "", "GEO")
         : _singleton.sendGroupMessage(
             groupId!, groupName!, groupIcon!, jsonEncode(positionMap), "GEO");
   }
 
   static sendFileMessage(String chatType, Map<String, dynamic> fileMap,
-      {String? groupId,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
       String? groupName,
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? _singleton.sendMessage(friendId!, jsonEncode(fileMap), "FILE")
+        ? _singleton.sendMessage(friendId!, jsonEncode(fileMap),
+            otherName ?? "", otherIcon ?? "", "FILE")
         : _singleton.sendGroupMessage(
             groupId!, groupName!, groupIcon!, jsonEncode(fileMap), "FILE");
   }
@@ -424,6 +442,6 @@ class MyEngineHandler implements EngineCallback {
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
     Log.red("onNewMessage onNewMessage");
-    LocalStore.addMessage(msg);
+    LocalStore.addMessage(msg, sessionName: msg.nick, sessionImage: msg.icon);
   }
 }

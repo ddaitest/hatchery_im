@@ -71,84 +71,57 @@ class LocalStore {
 
   static Map<String, Message> cache = Map();
 
-  static void addMessage(Message msg) {
+  static void addMessage(Message msg,
+      {String? sessionName, String? sessionImage}) {
+    print("DEBUG=> addMessage addMessage");
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
     //update session
-    print("DEBUG=> addMessage ${msg.toJson()}");
+
     Session? result =
         findSession(msg.isGroup() ? msg.groupID ?? "" : msg.receiver ?? "");
     if (result != null) {
       msg.isGroup()
           ? result.lastGroupChatMessage = msg
           : result.lastChatMessage = msg;
+      if (sessionName != null || sessionName != "") {
+        result.title = sessionName!;
+      }
+      if (sessionImage != null || sessionImage != "") {
+        result.icon = sessionImage!;
+      }
       result
         ..updateTime = msg.createTime
         ..save();
     } else {
       createNewSession(
-          chatType: msg.isGroup() ? "GROUP" : "CHAT", message: msg);
+          chatType: msg.isGroup() ? "GROUP" : "CHAT",
+          message: msg,
+          sessionTitle: sessionName ?? "",
+          sessionIcon: sessionImage ?? "");
     }
+    sortSession();
   }
 
-  static void createNewSession({String? chatType, Message? message}) {
-    String? sessionNickName;
-    String? sessionIcon;
+  static void createNewSession(
+      {String? chatType,
+      Message? message,
+      String sessionTitle = "",
+      String sessionIcon = ""}) {
     if (message != null) {
-      Map<String, dynamic> sessionMap = {
-        "id": message.id,
-        "title": chatType == "CHAT" ? "用户" : "群组",
-        "icon": "",
-        "ownerID": message.sender,
-        "otherID": chatType == "CHAT" ? message.receiver : message.groupID,
-        "type": chatType == "CHAT" ? 0 : 1,
-        "updateTime": message.createTime,
-        "lastChatMessage": null,
-        "lastGroupChatMessage": null,
-        "createTime": DateTime.now().millisecondsSinceEpoch
-      };
-      sessionMap[
-          chatType == "CHAT" ? "lastChatMessage" : "lastGroupChatMessage"] = {
-        "id": message.id,
-        "userMsgID": message.userMsgID,
-        "sender": message.sender,
-        "icon": "",
-        "nick": "",
-        "type": message.type,
-        "source": message.source,
-        "content": message.content,
-        "contentType": message.contentType,
-        "createTime": message.createTime
-      };
-      Session session = Session.fromJson(sessionMap);
+      Session session = Session(
+          message.id,
+          sessionTitle,
+          chatType == "CHAT" ? 0 : 1,
+          sessionIcon,
+          message.sender,
+          chatType == "CHAT" ? message.receiver ?? "" : message.groupID ?? "",
+          chatType == "CHAT" ? message : null,
+          chatType == "GROUP" ? message : null,
+          message.createTime,
+          DateTime.now().millisecondsSinceEpoch,
+          0);
       sessionBox?.add(session);
-      sortSession();
-      if (chatType == "CHAT") {
-        API.getUsersInfo(message.receiver ?? "").then((value) {
-          if (value.isSuccess()) {
-            UsersInfo usersInfo = UsersInfo.fromJson(value.getData());
-            sessionNickName = usersInfo.nickName;
-            sessionIcon = usersInfo.icon;
-            findSession(message.receiver ?? "")
-              ?..title = sessionNickName ?? ""
-              ..icon = sessionIcon ?? ""
-              ..save();
-          }
-          Log.yellow("getUsersInfo. $sessionNickName $sessionIcon ");
-        });
-      } else {
-        API.getGroupInfo(message.groupID ?? "").then((value) {
-          if (value.isSuccess()) {
-            GroupInfo groupInfo = GroupInfo.fromJson(value.getData());
-            sessionNickName = groupInfo.groupName;
-            sessionIcon = groupInfo.icon;
-            findSession(message.groupID ?? "")
-              ?..title = sessionNickName ?? ""
-              ..icon = sessionIcon ?? ""
-              ..save();
-          }
-        });
-      }
     }
   }
 

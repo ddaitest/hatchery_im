@@ -87,7 +87,8 @@ class Routers {
         return MaterialPageRoute(
             builder: (_) => ChatDetailPage(
                   chatType: map['chatType'],
-                  nickName: map['nickName'] ?? null,
+                  otherName: map['otherName'] ?? null,
+                  otherIcon: map['otherIcon'] ?? null,
                   friendId: map['friendId'] ?? null,
                   groupId: map['groupId'] ?? '',
                   groupName: map['groupName'] ?? '',

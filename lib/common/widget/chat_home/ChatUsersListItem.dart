@@ -63,7 +63,12 @@ class ChatUsersListItem extends StatelessWidget {
         child: ListTile(
           onTap: () => Routers.navigateTo("/chat_detail",
               arg: chatType == 0
-                  ? {"chatType": "CHAT", "nickName": title, "friendId": chatId}
+                  ? {
+                      "chatType": "CHAT",
+                      "otherName": title,
+                      "otherIcon": icon,
+                      "friendId": chatId
+                    }
                   : {
                       "chatType": "GROUP",
                       "groupId": chatId,
