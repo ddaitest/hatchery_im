@@ -72,15 +72,17 @@ class LocalStore {
   static Map<String, Message> cache = Map();
 
   static void addMessage(Message msg,
-      {String? sessionName, String? sessionImage}) {
-    print("DEBUG=> addMessage addMessage");
+      {String? otherId,
+      String? ownerId,
+      String? sessionName,
+      String? sessionImage}) {
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
     //update session
 
-    Session? result =
-        findSession(msg.isGroup() ? msg.groupID ?? "" : msg.receiver ?? "");
+    Session? result = findSession(otherId ?? "");
     if (result != null) {
+      print("DEBUG=> addMessage addMessage $otherId");
       msg.isGroup()
           ? result.lastGroupChatMessage = msg
           : result.lastChatMessage = msg;
@@ -97,6 +99,8 @@ class LocalStore {
       createNewSession(
           chatType: msg.isGroup() ? "GROUP" : "CHAT",
           message: msg,
+          sessionOtherId: otherId ?? "",
+          sessionOwnerId: ownerId ?? "",
           sessionTitle: sessionName ?? "",
           sessionIcon: sessionImage ?? "");
     }
@@ -106,6 +110,8 @@ class LocalStore {
   static void createNewSession(
       {String? chatType,
       Message? message,
+      String sessionOtherId = "",
+      String sessionOwnerId = "",
       String sessionTitle = "",
       String sessionIcon = ""}) {
     if (message != null) {
@@ -114,8 +120,8 @@ class LocalStore {
           sessionTitle,
           chatType == "CHAT" ? 0 : 1,
           sessionIcon,
-          message.sender,
-          chatType == "CHAT" ? message.receiver ?? "" : message.groupID ?? "",
+          sessionOwnerId,
+          sessionOtherId,
           chatType == "CHAT" ? message : null,
           chatType == "GROUP" ? message : null,
           message.createTime,

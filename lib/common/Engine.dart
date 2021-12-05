@@ -151,7 +151,7 @@ class Engine {
   }
 
   sendProtocol(Map<String, dynamic> object) {
-    Log.yellow("sendProtocol is $object");
+    // Log.yellow("sendProtocol is $object");
     _send(object);
   }
 

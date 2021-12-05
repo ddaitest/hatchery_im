@@ -9,6 +9,7 @@ import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/app_manager/app_handler.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
+import 'package:hive/hive.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
@@ -61,7 +62,6 @@ class ChatDetailManager extends ChangeNotifier {
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
 
-  // ValueListenable<Box<Message>> messages = LocalStore.listenMessage();
   /// 初始化
   init(
       {String? chatType,
@@ -81,6 +81,8 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
     _readMessages(false);
+
+    /// todo 感觉有问题
     LocalStore.listenMessage().addListener(() {
       _readMessages(true);
     });
@@ -108,10 +110,8 @@ class ChatDetailManager extends ChangeNotifier {
       messagesList.sort((a, b) =>
           DateTime.fromMillisecondsSinceEpoch(b.createTime)
               .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-      if (notify) {
-        notifyListeners();
-      }
     }
+    // LocalStore.messageBox.values
   }
 
   Future<void> pickCamera(BuildContext context) async {
@@ -366,67 +366,88 @@ class ChatDetailManager extends ChangeNotifier {
   void sendMessage(var term, String messageType) {
     switch (messageType) {
       case "TEXT":
-        MessageCentre.sendTextMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendTextMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
       case "IMAGE":
-        MessageCentre.sendImageMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendImageMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
       case "VIDEO":
-        MessageCentre.sendVideoMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendVideoMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
       case "VOICE":
-        MessageCentre.sendVoiceMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendVoiceMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
       case "GEO":
-        MessageCentre.sendGeoMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendGeoMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
       case "FILE":
-        MessageCentre.sendFileMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendFileMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
       default:
-        MessageCentre.sendTextMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            friendId: currentFriendId,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon);
+        MessageCentre.sendTextMessage(
+          currentChatType!,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
         break;
     }
   }

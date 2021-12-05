@@ -266,7 +266,10 @@ class MessageCentre {
     Message message = ModelHelper.convertMessage(msg);
     // message.progress = MSG_SENDING;
     LocalStore.addMessage(message,
-        sessionName: otherName, sessionImage: otherIcon);
+        otherId: to,
+        ownerId: _userInfo?.userID ?? "",
+        sessionName: otherName,
+        sessionImage: otherIcon);
   }
 
   sendGroupMessage(String groupId, String groupName, String groupIcon,
@@ -285,7 +288,10 @@ class MessageCentre {
     Message message = ModelHelper.convertGroupMessage(msg);
     // message.progress = MSG_SENDING;
     LocalStore.addMessage(message,
-        sessionName: groupName, sessionImage: groupIcon);
+        otherId: groupId,
+        ownerId: _userInfo?.userID ?? "",
+        sessionName: groupName,
+        sessionImage: groupIcon);
   }
 
   static sendTextMessage(String chatType, String text,
@@ -442,6 +448,10 @@ class MyEngineHandler implements EngineCallback {
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
     Log.red("onNewMessage onNewMessage");
-    LocalStore.addMessage(msg, sessionName: msg.nick, sessionImage: msg.icon);
+    LocalStore.addMessage(msg,
+        otherId: msg.type == "CHAT" ? msg.sender : msg.groupID,
+        ownerId: msg.sender,
+        sessionName: msg.nick,
+        sessionImage: msg.icon);
   }
 }
