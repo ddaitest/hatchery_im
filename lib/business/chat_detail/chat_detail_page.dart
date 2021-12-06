@@ -47,7 +47,6 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  ValueListenable<Box<Message>> messageBox = LocalStore.listenMessage();
   final manager = App.manager<ChatDetailManager>();
   final emojiModelManager = App.manager<EmojiModelManager>();
   List<SendMenuItems> menuItems = [];
@@ -129,38 +128,45 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return ValueListenableBuilder(
-        valueListenable: messageBox,
-        builder: (context, Box<Message> box, _) {
-          Log.yellow(
-              "_messageInfoView ValueListenableBuilder ${box.values.length}");
-          if (box.values.isEmpty) {
-            return Container();
-          } else {
-            return Flexible(
-              child: ListView.builder(
-                itemCount: box.values.length,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                reverse: true,
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  Message? message = box.getAt(index);
+    return Selector<ChatDetailManager, ValueListenable<Box<Message>>>(
+      builder: (BuildContext context, ValueListenable<Box<Message>>? boxValue,
+          Widget? child) {
+        Box<Message> box = boxValue!.value;
+        if (box.values.isEmpty) {
+          return Container();
+        } else {
+          return Flexible(
+            child: ListView.builder(
+              itemCount: box.values.length,
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              reverse: true,
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                Message? message = box.getAt(index);
+                if (message != null) {
                   return ChatBubble(
                     userID: widget.friendId ?? "",
                     messageBelongType: manager.myProfileData!.userID!
-                                .compareTo(message!.sender) ==
+                                .compareTo(message.sender) ==
                             0
                         ? MessageBelongType.Sender
                         : MessageBelongType.Receiver,
                     contentMessages: message,
                   );
-                },
-              ),
-            );
-          }
-        });
+                } else {
+                  return Container();
+                }
+              },
+            ),
+          );
+        }
+      },
+      selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+        return chatDetailManager.messagesBox!;
+      },
+      shouldRebuild: (pre, next) => (pre != next),
+    );
   }
 
   Widget _inputMainView() {

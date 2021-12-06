@@ -58,7 +58,7 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupId = "";
   String currentGroupName = "";
   String currentGroupIcon = "";
-
+  ValueListenable<Box<Message>>? messagesBox;
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
 
@@ -72,6 +72,7 @@ class ChatDetailManager extends ChangeNotifier {
       String groupName = "",
       String groupIcon = ""}) {
     // _inputTextListen();
+    messagesBox = LocalStore.listenMessage();
     myProfileData = UserCentre.getInfo();
     currentChatType = chatType;
     otherName = friendName;
@@ -80,38 +81,48 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
-    _readMessages(false);
 
-    /// todo 感觉有问题
-    LocalStore.listenMessage().addListener(() {
-      _readMessages(true);
-    });
+    // _readMessages(false);
+    // LocalStore.listenMessage().addListener(() {
+    //   Box<Message>? messagesBox = LocalStore.messageBox;
+    //   Log.red("listenMessage listenMessage");
+    //   // _readMessages(true);
+    // });
   }
 
   void _readMessages(bool notify) {
-    var temp;
-    Log.red(currentFriendId != ""
-        ? "listenMessage >> friendId =$currentFriendId"
-        : "listenMessage >> groupId =$currentGroupId");
-    LocalStore.messageBox!.values.forEach((element) {
-      temp = LocalStore.messageBox!.values
-          .where((element) => element.type == "CHAT"
+    List<Message>? temp;
+    Box<Message>? messagesBox = LocalStore.messageBox;
+    notify
+        ? Log.red(currentFriendId != ""
+            ? "listenMessage >> friendId =$currentFriendId"
+            : "listenMessage >> groupId =$currentGroupId")
+        : null;
+    if (!notify) {
+      temp = messagesBox?.values
+              .where((element) => element.type == "CHAT"
+                  ? element.receiver == currentFriendId ||
+                      element.sender == currentFriendId
+                  : element.groupID == currentGroupId)
+              .toList() ??
+          [];
+      if (temp.isNotEmpty && temp.length != messagesList.length) {
+        messagesList = temp;
+        messagesList.sort((a, b) =>
+            DateTime.fromMillisecondsSinceEpoch(b.createTime)
+                .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+      }
+    } else {
+      if (messagesBox != null && messagesBox.values.toList().isNotEmpty) {
+        Message? lastMessage = messagesBox.values.last;
+        if (lastMessage.type == "CHAT"
+            ? lastMessage.receiver == currentFriendId ||
+                lastMessage.sender == currentFriendId
+            : lastMessage.groupID == currentGroupId) {}
+      } else {}
 
-              /// 防止换号后消息对不上
-              ? (element.receiver == currentFriendId &&
-                      element.sender == myProfileData!.userID) ||
-                  (element.sender == currentFriendId &&
-                      element.receiver == myProfileData!.userID)
-              : element.groupID == currentGroupId)
-          .toList();
-    });
-    if (temp != null && temp.length != messagesList.length) {
-      messagesList = temp;
-      messagesList.sort((a, b) =>
-          DateTime.fromMillisecondsSinceEpoch(b.createTime)
-              .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+      notifyListeners();
     }
-    // LocalStore.messageBox.values
   }
 
   Future<void> pickCamera(BuildContext context) async {
