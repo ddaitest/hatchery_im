@@ -100,6 +100,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
+    manager.messagesBox?.removeListener(() {
+      Log.red("removeListener removeListener");
+    });
     manager.messagesList.clear();
     manager.isVoiceModel = false;
     manager.cancelTimer();
@@ -128,42 +131,32 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return Selector<ChatDetailManager, ValueListenable<Box<Message>>>(
-      builder: (BuildContext context, ValueListenable<Box<Message>>? boxValue,
-          Widget? child) {
-        Box<Message> box = boxValue!.value;
-        if (box.values.isEmpty) {
-          return Container();
-        } else {
-          return Flexible(
-            child: ListView.builder(
-              itemCount: box.values.length,
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              reverse: true,
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                Message? message = box.getAt(index);
-                if (message != null) {
-                  return ChatBubble(
-                    userID: widget.friendId ?? "",
-                    messageBelongType: manager.myProfileData!.userID!
-                                .compareTo(message.sender) ==
-                            0
-                        ? MessageBelongType.Sender
-                        : MessageBelongType.Receiver,
-                    contentMessages: message,
-                  );
-                } else {
-                  return Container();
-                }
-              },
-            ),
-          );
-        }
+    return Selector<ChatDetailManager, List<Message>>(
+      builder: (BuildContext context, List<Message> value, Widget? child) {
+        print("DEBUG=> _messageInfoView _messageInfoView");
+        return Flexible(
+          child: ListView.builder(
+            itemCount: value.length,
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            reverse: true,
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return ChatBubble(
+                userID: widget.friendId ?? "",
+                messageBelongType: manager.myProfileData!.userID!
+                            .compareTo(value[index].sender) ==
+                        0
+                    ? MessageBelongType.Sender
+                    : MessageBelongType.Receiver,
+                contentMessages: value[index],
+              );
+            },
+          ),
+        );
       },
       selector: (BuildContext context, ChatDetailManager chatDetailManager) {
-        return chatDetailManager.messagesBox!;
+        return chatDetailManager.messagesList;
       },
       shouldRebuild: (pre, next) => (pre != next),
     );

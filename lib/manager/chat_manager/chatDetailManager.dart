@@ -83,8 +83,10 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupIcon = groupIcon;
 
     // _readMessages(false);
-    LocalStore.listenMessage().addListener(() {
-      Log.red("listenMessage listenMessage");
+    messagesBox?.addListener(() {
+      Log.red(
+          "listenMessage listenMessage  ${messagesBox?.value.values.length}");
+
       // _readMessages(true);
     });
   }
