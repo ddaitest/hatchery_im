@@ -156,7 +156,6 @@ class Engine {
   }
 
   _handleData(message) {
-    Log.yellow("_handleData() message is $message");
     // var data = DispatchProtocol.parser(message);
     try {
       var json = jsonDecode(message);
@@ -164,6 +163,7 @@ class Engine {
       Types t = Types.values.firstWhere((e) => e.stringValue() == type);
       switch (t) {
         case Types.CHAT: //收到消息。
+          Log.yellow("_handleData() CHAT is $json");
           _handleChat(CSSendMessage.fromJson(json));
           break;
         case Types.GROUP: //收到群聊消息。
@@ -228,6 +228,7 @@ class Engine {
 
   ///收到消息。
   void _handleChat(CSSendMessage msg) {
+    Log.red("收到消息:${msg.toJson()}");
     sendProtocol(Protocols.ackMessage(
             msg.msgId, msg.to, msg.from, msg.serverMsgId, msg.source)
         .toJson());

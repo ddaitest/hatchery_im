@@ -40,13 +40,13 @@ class ChatDetailManager extends ChangeNotifier {
   bool isVoiceModel = false;
   bool isRecording = false;
   bool emojiShowing = false;
-  List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
   Timer? timer;
   int recordTiming = 0;
   String currentFriendId = "";
   int currentMessageID = 0;
+  List<Message> messagesList = [];
   Map<String, dynamic> uploadProgressMaps = {};
   List<Map<String, dynamic>> uploadFailList = [];
   int? videoHeight;
@@ -58,7 +58,7 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupId = "";
   String currentGroupName = "";
   String currentGroupIcon = "";
-  ValueListenable<Box<Message>>? messagesBox;
+
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
 
@@ -72,7 +72,6 @@ class ChatDetailManager extends ChangeNotifier {
       String groupName = "",
       String groupIcon = ""}) {
     // _inputTextListen();
-    messagesBox = LocalStore.listenMessage();
     myProfileData = UserCentre.getInfo();
     currentChatType = chatType;
     otherName = friendName;
@@ -81,49 +80,53 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
-
-    // _readMessages(false);
-    messagesBox?.addListener(() {
-      Log.red(
-          "listenMessage listenMessage  ${messagesBox?.value.values.length}");
-
-      // _readMessages(true);
-    });
   }
 
-  void _readMessages(bool notify) {
-    List<Message>? temp;
-    Box<Message>? messagesBox = LocalStore.messageBox;
-    notify
-        ? Log.red(currentFriendId != ""
-            ? "listenMessage >> friendId =$currentFriendId"
-            : "listenMessage >> groupId =$currentGroupId")
-        : null;
-    if (!notify) {
-      temp = messagesBox?.values
-              .where((element) => element.type == "CHAT"
-                  ? element.receiver == currentFriendId ||
-                      element.sender == currentFriendId
-                  : element.groupID == currentGroupId)
-              .toList() ??
-          [];
-      if (temp.isNotEmpty && temp.length != messagesList.length) {
-        messagesList = temp;
-        messagesList.sort((a, b) =>
-            DateTime.fromMillisecondsSinceEpoch(b.createTime)
-                .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-      }
-    } else {
-      if (messagesBox != null && messagesBox.values.toList().isNotEmpty) {
+  void loadMessagesBoxValue(Box<Message>? messagesBox,
+      {bool firstLoad = false}) {
+    if (messagesBox != null && messagesBox.values.toList().isNotEmpty) {
+      List<Message>? tempList;
+      Log.red(currentFriendId != ""
+          ? "listenMessage >> friendId =$currentFriendId"
+          : "listenMessage >> groupId =$currentGroupId");
+      if (firstLoad) {
+        tempList = messagesBox.values
+            .where((element) => element.type == "CHAT"
+                ? element.receiver == currentFriendId ||
+                    element.sender == currentFriendId
+                : element.groupID == currentGroupId)
+            .toList();
+        if (tempList.isNotEmpty && tempList.length != messagesList.length) {
+          tempList.sort((a, b) =>
+              DateTime.fromMillisecondsSinceEpoch(b.createTime).compareTo(
+                  DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+        }
+        messagesList = tempList;
+      } else {
         Message? lastMessage = messagesBox.values.last;
-        if (lastMessage.type == "CHAT"
-            ? lastMessage.receiver == currentFriendId ||
-                lastMessage.sender == currentFriendId
-            : lastMessage.groupID == currentGroupId) {}
-      } else {}
-
-      notifyListeners();
+        if (lastMessage.receiver == currentFriendId ||
+            lastMessage.sender == currentFriendId ||
+            lastMessage.groupID == currentGroupId) {
+          Log.red("lastMessage lastMessage");
+          messagesList.insert(0, lastMessage);
+        }
+      }
     }
+  }
+
+  /// 加载最新的消息，数据来源 本地。
+  _loadLatest(String otherId) {
+    // 读本地
+    MessageCentre.getMessages(otherId).then((value) {
+      if (value.length > 0) {
+        // messagesList = value;
+        notifyListeners();
+      }
+      if (value.length < 10) {
+        //TODO 本地数据少 读一次历史
+        loadMore();
+      }
+    });
   }
 
   Future<void> pickCamera(BuildContext context) async {
@@ -251,21 +254,6 @@ class ChatDetailManager extends ChangeNotifier {
           }, "FILE");
       });
     }
-  }
-
-  /// 加载最新的消息，数据来源 本地。
-  _loadLatest(String friendId) {
-    // 读本地
-    MessageCentre.getMessages(friendId).then((value) {
-      if (value.length > 0) {
-        messagesList = value;
-        notifyListeners();
-      }
-      if (value.length < 10) {
-        //TODO 本地数据少 读一次历史
-        loadMore();
-      }
-    });
   }
 
   void setEmojiShowStatus({bool? showStatus}) {

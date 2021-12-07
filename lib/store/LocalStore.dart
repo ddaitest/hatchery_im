@@ -38,13 +38,11 @@ class LocalStore {
         hiveModel
             ?.openBox<Message>('messageBox')
             .then((value) => messageBox = value);
+        // messageBox!.watch().listen((event) {
+        //   Log.red(
+        //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
+        // });
       });
-
-      // sessionBox!.watch().listen((event) {
-      //   Log.red(
-      //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
-      // });
-
     }
     return;
   }
