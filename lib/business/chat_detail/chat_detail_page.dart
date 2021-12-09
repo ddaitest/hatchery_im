@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
@@ -127,35 +128,36 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return Selector<ChatDetailManager, List<Message>>(
-      builder: (BuildContext context, List<Message> value, Widget? child) {
-        print("DEBUG=> _messageInfoView _messageInfoView");
-        return Flexible(
-          child: ListView.builder(
-            itemCount: value.length,
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            reverse: true,
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return ChatBubble(
-                userID: widget.friendId ?? "",
-                messageBelongType: manager.myProfileData!.userID!
-                            .compareTo(value[index].sender) ==
-                        0
-                    ? MessageBelongType.Sender
-                    : MessageBelongType.Receiver,
-                contentMessages: value[index],
-              );
-            },
-          ),
-        );
-      },
-      selector: (BuildContext context, ChatDetailManager chatDetailManager) {
-        return chatDetailManager.messagesList;
-      },
-      shouldRebuild: (pre, next) => (pre != next),
-    );
+    return ValueListenableBuilder(
+        valueListenable: manager.messageList,
+        builder: (context, List<Message> value, _) {
+          Log.yellow("_messageInfoView ValueListenableBuilder ${value.length}");
+          if (value.isEmpty) {
+            return Container();
+          } else {
+            return Flexible(
+              child: ListView.builder(
+                itemCount: value.length,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                reverse: true,
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return ChatBubble(
+                    userID: widget.friendId ?? "",
+                    messageBelongType: manager.myProfileData!.userID!
+                                .compareTo(value[index].sender) ==
+                            0
+                        ? MessageBelongType.Sender
+                        : MessageBelongType.Receiver,
+                    contentMessages: value[index],
+                  );
+                },
+              ),
+            );
+          }
+        });
   }
 
   Widget _inputMainView() {
