@@ -40,13 +40,13 @@ class ChatDetailManager extends ChangeNotifier {
   bool isVoiceModel = false;
   bool isRecording = false;
   bool emojiShowing = false;
+  List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
   Timer? timer;
   int recordTiming = 0;
   String currentFriendId = "";
   int currentMessageID = 0;
-  List<Message> messagesList = [];
   Map<String, dynamic> uploadProgressMaps = {};
   List<Map<String, dynamic>> uploadFailList = [];
   int? videoHeight;
@@ -80,36 +80,37 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
+    loadMessagesBoxValue(firstLoad: true);
+    LocalStore.listenMessage().addListener(() {
+      loadMessagesBoxValue(firstLoad: false);
+    });
   }
 
-  void loadMessagesBoxValue(Box<Message>? messagesBox,
-      {bool firstLoad = false}) {
-    if (messagesBox != null && messagesBox.values.toList().isNotEmpty) {
-      List<Message>? tempList;
-      Log.red(currentFriendId != ""
-          ? "listenMessage >> friendId =$currentFriendId"
-          : "listenMessage >> groupId =$currentGroupId");
-      if (firstLoad) {
-        tempList = messagesBox.values
-            .where((element) => element.type == "CHAT"
-                ? element.receiver == currentFriendId ||
-                    element.sender == currentFriendId
-                : element.groupID == currentGroupId)
-            .toList();
-        if (tempList.isNotEmpty && tempList.length != messagesList.length) {
-          tempList.sort((a, b) =>
-              DateTime.fromMillisecondsSinceEpoch(b.createTime).compareTo(
-                  DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-        }
-        messagesList = tempList;
-      } else {
-        Message? lastMessage = messagesBox.values.last;
-        if (lastMessage.receiver == currentFriendId ||
-            lastMessage.sender == currentFriendId ||
-            lastMessage.groupID == currentGroupId) {
-          Log.red("lastMessage lastMessage");
-          messagesList.insert(0, lastMessage);
-        }
+  void loadMessagesBoxValue({bool firstLoad = false}) {
+    List<Message>? tempList;
+    Log.red(currentFriendId != ""
+        ? "listenMessage >> friendId =$currentFriendId"
+        : "listenMessage >> groupId =$currentGroupId");
+    if (firstLoad) {
+      tempList = messagesBox.values
+          .where((element) => element.type == "CHAT"
+              ? element.receiver == currentFriendId ||
+                  element.sender == currentFriendId
+              : element.groupID == currentGroupId)
+          .toList();
+      if (tempList.isNotEmpty && tempList.length != messagesList.length) {
+        tempList.sort((a, b) =>
+            DateTime.fromMillisecondsSinceEpoch(b.createTime)
+                .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+      }
+      messagesList = tempList;
+    } else {
+      Message? lastMessage = messagesBox.values.last;
+      if (lastMessage.receiver == currentFriendId ||
+          lastMessage.sender == currentFriendId ||
+          lastMessage.groupID == currentGroupId) {
+        Log.red("lastMessage lastMessage");
+        messagesList.insert(0, lastMessage);
       }
     }
   }
@@ -127,6 +128,13 @@ class ChatDetailManager extends ChangeNotifier {
         loadMore();
       }
     });
+    if (temp != null && temp?.length != messagesList.length) {
+      messagesList = temp!;
+      messagesList.sort((a, b) =>
+          DateTime.fromMillisecondsSinceEpoch(b.createTime)
+              .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+    }
+    if (notify) notifyListeners();
   }
 
   Future<void> pickCamera(BuildContext context) async {
@@ -254,6 +262,21 @@ class ChatDetailManager extends ChangeNotifier {
           }, "FILE");
       });
     }
+  }
+
+  /// 加载最新的消息，数据来源 本地。
+  _loadLatest(String friendId) {
+    // 读本地
+    MessageCentre.getMessages(friendId).then((value) {
+      if (value.length > 0) {
+        messagesList = value;
+        notifyListeners();
+      }
+      if (value.length < 10) {
+        //TODO 本地数据少 读一次历史
+        loadMore();
+      }
+    });
   }
 
   void setEmojiShowStatus({bool? showStatus}) {
