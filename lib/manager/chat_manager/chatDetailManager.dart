@@ -88,13 +88,13 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void loadMessages({firstLoad = false}) {
-    Box<Message>? localMessageBox = LocalStore.messageBox;
-    if (localMessageBox != null) {
+    // Box<Message>? localMessageBox = LocalStore.messageBox;
+    if (LocalStore.messageBox != null) {
       List<Message> tempList = [];
       Log.red(currentFriendId != ""
           ? "listenMessage >> friendId =$currentFriendId"
           : "listenMessage >> groupId =$currentGroupId");
-      tempList = localMessageBox.values
+      tempList = LocalStore.messageBox!.values
           .where((element) => element.type == "CHAT"
               ? element.receiver == currentFriendId ||
                   element.sender == currentFriendId

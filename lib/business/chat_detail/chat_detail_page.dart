@@ -133,7 +133,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         builder: (context, List<Message> value, _) {
           Log.yellow("_messageInfoView ValueListenableBuilder ${value.length}");
           if (value.isEmpty) {
-            return Container();
+            return Flexible(child: Container());
           } else {
             return Flexible(
               child: ListView.builder(
