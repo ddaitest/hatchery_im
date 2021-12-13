@@ -58,7 +58,6 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupId = "";
   String currentGroupName = "";
   String currentGroupIcon = "";
-
   ValueNotifier<List<Message>> messageList = ValueNotifier<List<Message>>([]);
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
@@ -88,13 +87,13 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void loadMessages({firstLoad = false}) {
-    // Box<Message>? localMessageBox = LocalStore.messageBox;
-    if (LocalStore.messageBox != null) {
+    Box<Message>? localMessageBox = LocalStore.messageBox;
+    if (localMessageBox != null) {
       List<Message> tempList = [];
       Log.red(currentFriendId != ""
           ? "listenMessage >> friendId =$currentFriendId"
           : "listenMessage >> groupId =$currentGroupId");
-      tempList = LocalStore.messageBox!.values
+      tempList = localMessageBox.values
           .where((element) => element.type == "CHAT"
               ? element.receiver == currentFriendId ||
                   element.sender == currentFriendId

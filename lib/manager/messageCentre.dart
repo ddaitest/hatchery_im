@@ -103,38 +103,69 @@ class MessageCentre {
 
   ///获取 session 信息. 然后同步每个session 最新的消息。
   initSessions() async {
-    if (sessions == null) {
-      // Step1. 返回本地存储的数据。
-      sessions = await _localStore.getSessions();
-    }
-    Log.yellow("_initSessions 开始");
-    Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions}");
-    // Step2. 从Server获取最新数据。
-    API.querySession().then((value) async {
-      if (value.isSuccess()) {
-        List<Session> news = value.getDataList((m) => Session.fromJson(m));
-        // Step3. 刷新本地数据。
-        // _localStore.saveSessions(sessions);
-        // _syncNewSessions(news);
-        sessionListener?.call(sessions ?? []);
-        Log.yellow("_initSessions 从Server获取最新数据 ${sessions?.length}");
-      }
+    // Step1. 返回本地存储的数据。
+    _localStore.getSessions().then((List<Session>? value) {
+      sessions = value ?? [];
+      Log.yellow("_initSessions 开始");
+      Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions?.length}");
+
+      // Step2. 从Server获取最新数据。
+      API.querySession().then((value) async {
+        if (value.isSuccess()) {
+          List<Session> news = value.getDataList((m) => Session.fromJson(m));
+          // Step3. 刷新本地数据。
+          // _localStore.saveSessions(sessions);
+          _syncNewSessions(news);
+          sessionListener?.call(sessions ?? []);
+          // news.forEach((element) {
+          //   Log.yellow("_initSessions 从Server获取最新数据 ${element.toJson()}");
+          // });
+        }
+      });
+      // LocalStore.sortSession();
     });
   }
 
   ///找出需要同步的session
-  _syncNewSessions(List<Session> news) {
-    List<Session> before = sessions ?? [];
-    news.forEach((newOne) {
-      int index =
-          before.indexWhere((oldOne) => oldOne.otherID == newOne.otherID);
-      Log.yellow("_initSessions 从Server获取最新数据 $index");
-      if (index < 0) {
-        _syncSession(null, newOne);
-      } else {
-        _syncSession(before[index], newOne);
-      }
-    });
+  _syncNewSessions(List<Session> serverSessionList) {
+    List<Session> localSessionList = sessions ?? [];
+    if (sessions!.isNotEmpty) {
+      serverSessionList.forEach((serverSession) {
+        localSessionList.forEach((localSession) {
+          if (serverSession.otherID != localSession.otherID) {
+            LocalStore.createNewSession(
+                chatType: serverSession.type == 0 ? "CHAT" : "GROUP",
+                message: serverSession.lastChatMessage ??
+                    serverSession.lastGroupChatMessage,
+                sessionOtherId: serverSession.otherID,
+                sessionOwnerId: serverSession.ownerID,
+                sessionTitle: serverSession.title,
+                sessionIcon: serverSession.icon);
+          }
+        });
+        // Log.red("_syncNewSessions ${difSession}");
+
+        // int index =
+        //     before.indexWhere((oldOne) => oldOne.otherID == newOne.otherID);
+        // Log.yellow("_initSessions 从Server获取最新数据 $index");
+        // if (index < 0) {
+        //   _syncSession(null, newOne);
+        // } else {
+        //   _syncSession(before[index], newOne);
+        // }
+      });
+    } else {
+      serverSessionList.forEach((serverSession) {
+        LocalStore.createNewSession(
+            chatType: serverSession.type == 0 ? "CHAT" : "GROUP",
+            message: serverSession.lastChatMessage ??
+                serverSession.lastGroupChatMessage,
+            sessionOtherId: serverSession.otherID,
+            sessionOwnerId: serverSession.ownerID,
+            sessionTitle: serverSession.title,
+            sessionIcon: serverSession.icon);
+      });
+    }
   }
 
   ///同步 session 的 message
