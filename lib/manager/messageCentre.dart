@@ -121,9 +121,9 @@ class MessageCentre {
             Log.yellow("_initSessions 从Server获取最新数据 ${element.toJson()}");
           });
 
-          sessions?.forEach((element) {
-            Log.red("本地sessions ${element.toJson()}");
-          });
+          // sessions?.forEach((element) {
+          //   Log.red("本地sessions ${element.toJson()}");
+          // });
         }
       });
       // LocalStore.sortSession();
@@ -133,138 +133,89 @@ class MessageCentre {
   ///找出需要同步的session
   _syncNewSessions(List<Session> serverSessionList) {
     List<Session> localSessionList = sessions ?? [];
-    if (localSessionList.isNotEmpty) {
-      serverSessionList.forEach((serverSession) {
-        int index = localSessionList.indexWhere(
-            (localSession) => localSession.otherID == serverSession.otherID);
-        Log.yellow("_initSessions 从Server获取最新数据 $index");
-        if (index < 0) {
-          _syncSession(null, serverSession);
-        } else {
-          _syncSession(localSessionList[index], serverSession);
-        }
-      });
-    } else {
-      serverSessionList.forEach((serverSession) {
+    serverSessionList.forEach((serverSession) {
+      int index = localSessionList.indexWhere(
+          (localSession) => localSession.otherID == serverSession.otherID);
+      Log.yellow("_initSessions 从Server获取最新数据 $index");
+      if (index < 0 || localSessionList.isEmpty) {
         _syncSession(null, serverSession);
-      });
-    }
+      } else {
+        _syncSession(localSessionList[index], serverSession);
+      }
+    });
   }
 
   ///同步 session 的 message
   _syncSession(Session? before, Session latest) {
-    Log.yellow("_syncSession before = $before; latest=$latest");
     if (latest.type == CHAT_TYPE_ONE) {
       if (latest.lastChatMessage != null) {
         //单聊
         if (before == null) {
-          // LocalStore.createNewSession(
-          //     chatType: "CHAT",
-          //     message: latest.lastChatMessage,
-          //     sessionOtherId: latest.otherID,
-          //     sessionOwnerId: latest.ownerID,
-          //     sessionTitle: latest.title == "" ? "teeeeeeee" : latest.title,
-          //     sessionIcon: latest.icon);
+          Log.yellow("_syncSession before = $before; latest=$latest");
+          LocalStore.createNewSession(
+              chatType: "CHAT",
+              message: latest.lastChatMessage,
+              sessionOtherId: latest.otherID,
+              sessionOwnerId: latest.ownerID,
+              sessionTitle: latest.title,
+              sessionIcon: latest.icon);
           //更新消息,一直到没有
-          _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id, -1);
+          _loadFriendHistory(latest.otherID);
         } else if (before.lastChatMessage!.id != latest.lastChatMessage!.id) {
           //更新消息,一直到before
-          _loadFriendHistory(latest.otherID, latest.lastChatMessage!.id,
-              before.lastChatMessage!.id);
+          _loadFriendHistory(latest.otherID);
         }
       }
     } else {
       if (latest.lastGroupChatMessage != null) {
         //群聊
         if (before == null) {
-          // LocalStore.createNewSession(
-          //     chatType: "GROUP",
-          //     message: latest.lastGroupChatMessage,
-          //     sessionOtherId: latest.otherID,
-          //     sessionOwnerId: latest.ownerID,
-          //     sessionTitle: latest.title,
-          //     sessionIcon: latest.icon);
+          LocalStore.createNewSession(
+              chatType: "GROUP",
+              message: latest.lastGroupChatMessage,
+              sessionOtherId: latest.otherID,
+              sessionOwnerId: latest.ownerID,
+              sessionTitle: latest.title,
+              sessionIcon: latest.icon);
           //更新消息,一直到没有
-          _loadGroupHistory(
-              latest.otherID, latest.lastGroupChatMessage!.id, -1);
+          // _loadGroupHistory(
+          //     latest.otherID, latest.lastGroupChatMessage!.id, -1);
         } else if (before.lastGroupChatMessage!.id !=
             latest.lastGroupChatMessage!.id) {
           //更新消息,一直到before
-          _loadGroupHistory(latest.otherID, latest.lastGroupChatMessage!.id,
-              before.lastGroupChatMessage!.id);
+          _loadGroupHistory(latest.otherID);
         }
       }
     }
   }
 
-  _loadFriendHistory(String friendID, int from, int to) async {
+  _loadFriendHistory(String friendID) async {
     if (friendID != "") {
-      Log.yellow("更新消息 friendID=$friendID, 单聊, $from to $to");
-      int currentFrom = from;
-      bool found = false;
-      bool end = false;
-      while (!found && !end) {
-        var result = await _queryHistoryFriend(friendID, currentFrom);
-        end = result.length < 1;
-        var temp = <Message>[];
-        for (var msg in result) {
-          if (msg.id == to) {
-            found = true;
-            break;
-          } else {
-            currentFrom = msg.id;
-            LocalStore.addMessage(msg);
-            temp.add(msg);
-          }
-        }
-        // if (temp.length > 0) {
-        //Notify all
-        // _notifyMessageChanged(friendID);
-        // }
-      }
+      _queryHistoryFriend(friendID).then((value) {
+        value.forEach((element) => LocalStore.addMessage(element));
+      });
     }
   }
 
-  _loadGroupHistory(String groupID, int from, int to) async {
+  _loadGroupHistory(String groupID) async {
     if (groupID != "") {
-      Log.yellow("更新消息, 群聊, $from to $to");
-      int currentFrom = from;
-      bool found = false;
-      bool end = false;
-      while (!found && !end) {
-        var result = await _queryHistoryGroup(groupID, currentFrom);
-        end = result.length < 1;
-        var temp = <Message>[];
-
-        /// Todo 群聊和单聊不同
-        for (var msg in result) {
-          if (msg.id == to) {
-            found = true;
-            break;
-          } else {
-            currentFrom = msg.id;
-            LocalStore.addMessage(msg);
-            temp.add(msg);
-          }
-        }
-        // if (temp.length > 0) {
-        //Notify all
-        // _notifyMessageChanged(friendID);
-        // }
-      }
+      Log.yellow("更新消息, 群聊groupID: $groupID");
+      _queryHistoryGroup(groupID).then((value) {
+        value.forEach((element) => LocalStore.addMessage(element));
+      });
     }
   }
 
-  Future<List<Message>> _queryHistoryFriend(String friendID, int from) async {
+  Future<List<Message>> _queryHistoryFriend(String friendID) async {
     var values = await API.messageHistoryWithFriend(
-        friendID: friendID, currentMsgID: from, page: 0, size: LOAD_SIZE);
+        friendID: friendID, page: 0, size: LOAD_SIZE);
     var news = values.getDataList((m) => Message.fromJson(m));
     return news;
   }
 
-  Future<List<Message>> _queryHistoryGroup(String groupID, int from) async {
-    var values = await API.getGroupHistory(
-        groupID: groupID, currentMsgID: from, page: 0, size: LOAD_SIZE);
+  Future<List<Message>> _queryHistoryGroup(String groupID) async {
+    var values =
+        await API.getGroupHistory(groupID: groupID, page: 0, size: LOAD_SIZE);
     var news = values.getDataList((m) => Message.fromJson(m));
     return news;
   }
