@@ -355,7 +355,7 @@ class Session extends HiveObject {
   Message? lastGroupChatMessage; //最后一条消息，当是群聊时此处有值
   int updateTime; //更新时间
   int createTime;
-  int? top; //是否置顶，0=不置顶，1=置顶
+  int? top = 0; //是否置顶，0=不置顶，1=置顶
 
   Session(
       this.id,

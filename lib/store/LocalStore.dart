@@ -84,13 +84,9 @@ class LocalStore {
       msg.isGroup()
           ? result.lastGroupChatMessage = msg
           : result.lastChatMessage = msg;
-      if (sessionName != null || sessionName != "") {
-        result.title = sessionName!;
-      }
-      if (sessionImage != null || sessionImage != "") {
-        result.icon = sessionImage!;
-      }
       result
+        ..title = sessionName ?? ""
+        ..icon = sessionImage ?? ""
         ..updateTime = msg.createTime
         ..save();
     } else {
