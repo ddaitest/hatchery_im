@@ -189,13 +189,10 @@ class MessageCentre {
     if (serverSessionList != null && serverSessionList.isNotEmpty) {
       serverSessionList.forEach((Session serverSession) {
         if (serverSession.otherID != "") {
-          if (serverSession.type == 0) {
-            _queryHistoryFriend(serverSession.otherID)
-                .then((List<Message>? friendMsg) => _syncMessage(friendMsg));
-          } else {
-            _queryHistoryGroup(serverSession.otherID)
-                .then((List<Message> groupMsg) => _syncMessage(groupMsg));
-          }
+          serverSession.type == 0
+              ? _queryHistoryFriend(serverSession.otherID)
+              : _queryHistoryGroup(serverSession.otherID)
+                  .then((List<Message>? msgList) => _syncMessage(msgList));
         }
       });
     }
@@ -204,7 +201,7 @@ class MessageCentre {
   _syncMessage(List<Message>? messagesList) async {
     if (messagesList != null) {
       if (messagesList.isNotEmpty) {
-        messagesList.forEach((element) {});
+        saveMessage(messagesList);
       }
     }
   }
@@ -221,6 +218,24 @@ class MessageCentre {
         await API.getGroupHistory(groupID: groupID, page: 0, size: LOAD_SIZE);
     List<Message> news = values.getDataList((m) => Message.fromJson(m));
     return news;
+  }
+
+  /// 保存信息，先插入messageBox然后去重后再保存
+  static void saveMessage(List<Message> messagesList) {
+    if (messagesList.isNotEmpty) {
+      Iterable<Message>? messageBoxList = LocalStore.messageBox?.values;
+      if (messageBoxList != null) {
+        List<Message> temp = [];
+        messagesList.forEach((item) {
+          temp.add(item);
+        });
+        List<Message> newList =
+            messageBoxList.where((value) => !temp.contains(value.id)).toList();
+        LocalStore.messageBox
+            ?.clear()
+            .then((_) => LocalStore.messageBox?.addAll(newList));
+      }
+    }
   }
 
   // _notifyMessageChanged(String friendID) {}

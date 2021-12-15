@@ -94,12 +94,12 @@ class _QRScanPageState extends State<QRScanPage> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) {
       result = scanData;
-      if (result!.code.isNotEmpty) {
+      if (result?.code == "") {
         controller.stopCamera();
         print("DEBUG=> qr code result ${result!.code}");
         // _checkResult(result!.code);
-        Future.delayed(
-            Duration(milliseconds: 500), () => _checkResult(result!.code));
+        Future.delayed(Duration(milliseconds: 500),
+            () => _checkResult(result!.code ?? ""));
       }
     });
   }
