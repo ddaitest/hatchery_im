@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/api/API.dart';
+import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -112,14 +113,17 @@ class MessageCentre {
       // Step2. 从Server获取最新数据。
       API.querySession().then((value) async {
         if (value.isSuccess()) {
-          List<Session> news = value.getDataList((m) => Session.fromJson(m));
+          List<Session> serverSessionList =
+              value.getDataList((m) => Session.fromJson(m));
           // Step3. 刷新本地数据。
-          // _localStore.saveSessions(sessions);
-          _syncNewSessions(news);
+          Log.yellow("_syncNewSessions 同步session");
+          _syncNewSessions(serverSessionList);
           sessionListener?.call(sessions ?? []);
-          news.forEach((element) {
+          serverSessionList.forEach((element) {
             Log.yellow("_initSessions 从Server获取最新数据 ${element.toJson()}");
           });
+          Log.yellow("_syncMessage 同步message");
+          _syncNewMessage(serverSessionList);
 
           // sessions?.forEach((element) {
           //   Log.red("本地sessions ${element.toJson()}");
@@ -136,87 +140,86 @@ class MessageCentre {
     serverSessionList.forEach((serverSession) {
       int index = localSessionList.indexWhere(
           (localSession) => localSession.otherID == serverSession.otherID);
-      Log.yellow("_initSessions 从Server获取最新数据 $index");
       if (index < 0 || localSessionList.isEmpty) {
-        _syncSession(null, serverSession);
+        _syncSession(null, serverSession, null);
       } else {
-        _syncSession(localSessionList[index], serverSession);
+        _syncSession(localSessionList[index], serverSession,
+            localSessionList[index].otherID);
       }
     });
   }
 
-  ///同步 session 的 message
-  _syncSession(Session? before, Session latest) {
-    if (latest.type == CHAT_TYPE_ONE) {
-      if (latest.lastChatMessage != null) {
-        //单聊
-        if (before == null) {
-          Log.yellow("_syncSession before = $before; latest=$latest");
-          LocalStore.createNewSession(
-              chatType: "CHAT",
-              message: latest.lastChatMessage,
-              sessionOtherId: latest.otherID,
-              sessionOwnerId: latest.ownerID,
-              sessionTitle: latest.title,
-              sessionIcon: latest.icon);
-          //更新消息,一直到没有
-          _loadFriendHistory(latest.otherID);
-        } else if (before.lastChatMessage!.id != latest.lastChatMessage!.id) {
-          //更新消息,一直到before
-          _loadFriendHistory(latest.otherID);
-        }
-      }
+  ///同步 session 并更新
+  _syncSession(Session? before, Session latest, String? otherId) {
+    if (before == null) {
+      Log.yellow("本地没有session，先创建并填充接口数据");
+      // 本地没有session，先创建并填充接口数据
+      LocalStore.createNewSession(
+          chatType: latest.type == CHAT_TYPE_ONE ? "CHAT" : "GROUP",
+          message: latest.type == CHAT_TYPE_ONE
+              ? latest.lastChatMessage
+              : latest.lastGroupChatMessage,
+          sessionOtherId: latest.otherID,
+          sessionOwnerId: latest.ownerID,
+          sessionTitle: latest.title,
+          sessionIcon: latest.icon,
+          sessionTime: latest.updateTime);
     } else {
-      if (latest.lastGroupChatMessage != null) {
-        //群聊
-        if (before == null) {
-          LocalStore.createNewSession(
-              chatType: "GROUP",
-              message: latest.lastGroupChatMessage,
-              sessionOtherId: latest.otherID,
-              sessionOwnerId: latest.ownerID,
-              sessionTitle: latest.title,
-              sessionIcon: latest.icon);
-          //更新消息,一直到没有
-          // _loadGroupHistory(
-          //     latest.otherID, latest.lastGroupChatMessage!.id, -1);
-        } else if (before.lastGroupChatMessage!.id !=
-            latest.lastGroupChatMessage!.id) {
-          //更新消息,一直到before
-          _loadGroupHistory(latest.otherID);
+      // 本地有session，更新数据
+      if (otherId != null) {
+        Session? result = LocalStore.findSession(otherId);
+        if (result != null) {
+          Log.yellow("本地有session，更新数据");
+          latest.type == CHAT_TYPE_ONE
+              ? result.lastChatMessage = latest.lastChatMessage
+              : result.lastGroupChatMessage = latest.lastGroupChatMessage;
+          result
+            ..title = latest.title
+            ..icon = latest.icon
+            ..updateTime = latest.updateTime
+            ..save();
         }
       }
     }
+    LocalStore.sortSession();
   }
 
-  _loadFriendHistory(String friendID) async {
-    if (friendID != "") {
-      _queryHistoryFriend(friendID).then((value) {
-        value.forEach((element) => LocalStore.addMessage(element));
+  ///同步message 本地有的忽略，本地没有的加入，最多50条
+  _syncNewMessage(List<Session>? serverSessionList) {
+    if (serverSessionList != null && serverSessionList.isNotEmpty) {
+      serverSessionList.forEach((Session serverSession) {
+        if (serverSession.otherID != "") {
+          if (serverSession.type == 0) {
+            _queryHistoryFriend(serverSession.otherID)
+                .then((List<Message>? friendMsg) => _syncMessage(friendMsg));
+          } else {
+            _queryHistoryGroup(serverSession.otherID)
+                .then((List<Message> groupMsg) => _syncMessage(groupMsg));
+          }
+        }
       });
     }
   }
 
-  _loadGroupHistory(String groupID) async {
-    if (groupID != "") {
-      Log.yellow("更新消息, 群聊groupID: $groupID");
-      _queryHistoryGroup(groupID).then((value) {
-        value.forEach((element) => LocalStore.addMessage(element));
-      });
+  _syncMessage(List<Message>? messagesList) async {
+    if (messagesList != null) {
+      if (messagesList.isNotEmpty) {
+        messagesList.forEach((element) {});
+      }
     }
   }
 
   Future<List<Message>> _queryHistoryFriend(String friendID) async {
-    var values = await API.messageHistoryWithFriend(
+    ApiResult values = await API.messageHistoryWithFriend(
         friendID: friendID, page: 0, size: LOAD_SIZE);
-    var news = values.getDataList((m) => Message.fromJson(m));
+    List<Message> news = values.getDataList((m) => Message.fromJson(m));
     return news;
   }
 
   Future<List<Message>> _queryHistoryGroup(String groupID) async {
-    var values =
+    ApiResult values =
         await API.getGroupHistory(groupID: groupID, page: 0, size: LOAD_SIZE);
-    var news = values.getDataList((m) => Message.fromJson(m));
+    List<Message> news = values.getDataList((m) => Message.fromJson(m));
     return news;
   }
 

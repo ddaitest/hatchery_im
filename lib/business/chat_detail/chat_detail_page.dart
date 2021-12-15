@@ -100,7 +100,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
-    manager.messagesList.clear();
+    manager.messageList?.dispose();
     manager.isVoiceModel = false;
     manager.cancelTimer();
     manager.emojiShowing = false;
@@ -129,7 +129,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _messageInfoView() {
     return ValueListenableBuilder(
-        valueListenable: manager.messageList,
+        valueListenable:
+            manager.messageList ?? ValueNotifier<List<Message>>([]),
         builder: (context, List<Message> value, _) {
           Log.yellow("_messageInfoView ValueListenableBuilder ${value.length}");
           if (value.isEmpty) {

@@ -44,6 +44,9 @@ class LocalStore {
         // });
       });
     }
+    Future.delayed(Duration(seconds: 1), () {
+      MessageCentre.init();
+    });
     return;
   }
 
@@ -58,11 +61,11 @@ class LocalStore {
     }
   }
 
-  static Session? findSession(String friendId) {
+  static Session? findSession(String otherId) {
     Session? result;
     try {
       result = sessionBox?.values
-          .firstWhere((element) => element.otherID == friendId);
+          .firstWhere((element) => element.otherID == otherId);
     } catch (e) {}
     return result;
   }
@@ -77,28 +80,43 @@ class LocalStore {
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
     //update session
-
-    Session? result = findSession(otherId ?? "");
-    if (result != null) {
-      print("DEBUG=> addMessage addMessage $otherId");
-      msg.isGroup()
-          ? result.lastGroupChatMessage = msg
-          : result.lastChatMessage = msg;
-      result
-        ..title = sessionName ?? ""
-        ..icon = sessionImage ?? ""
-        ..updateTime = msg.createTime
-        ..save();
-    } else {
-      createNewSession(
-          chatType: msg.isGroup() ? "GROUP" : "CHAT",
-          message: msg,
-          sessionOtherId: otherId ?? "",
-          sessionOwnerId: ownerId ?? "",
-          sessionTitle: sessionName ?? "",
-          sessionIcon: sessionImage ?? "");
-    }
+    updateSession(msg,
+        otherId: otherId,
+        ownerId: ownerId,
+        sessionName: sessionName,
+        sessionImage: sessionImage);
     sortSession();
+  }
+
+  static void updateSession(Message message,
+      {String? otherId,
+      String? ownerId,
+      String? sessionName,
+      String? sessionImage,
+      int? sessionTime}) {
+    if (otherId != null) {
+      Session? result = findSession(otherId);
+      if (result != null) {
+        print("DEBUG=> addMessage addMessage $otherId");
+        message.isGroup()
+            ? result.lastGroupChatMessage = message
+            : result.lastChatMessage = message;
+        result
+          ..title = sessionName ?? ""
+          ..icon = sessionImage ?? ""
+          ..updateTime = message.createTime
+          ..save();
+      } else {
+        createNewSession(
+            chatType: message.isGroup() ? "GROUP" : "CHAT",
+            message: message,
+            sessionOtherId: otherId,
+            sessionOwnerId: ownerId ?? "",
+            sessionTitle: sessionName ?? "",
+            sessionIcon: sessionImage ?? "",
+            sessionTime: sessionTime);
+      }
+    }
   }
 
   static void createNewSession(
@@ -107,7 +125,8 @@ class LocalStore {
       String sessionOtherId = "",
       String sessionOwnerId = "",
       String sessionTitle = "",
-      String sessionIcon = ""}) {
+      String sessionIcon = "",
+      int? sessionTime}) {
     if (message != null) {
       Session session = Session(
           message.id,
@@ -119,7 +138,7 @@ class LocalStore {
           chatType == "CHAT" ? message : null,
           chatType == "GROUP" ? message : null,
           message.createTime,
-          DateTime.now().millisecondsSinceEpoch,
+          sessionTime ?? DateTime.now().millisecondsSinceEpoch,
           0);
       sessionBox?.add(session);
     }
@@ -158,9 +177,9 @@ class LocalStore {
       /// 合并置顶和普通消息
       unTopChatSession.addAll(topChatSession);
       sessionBox!.clear().then((_) => {sessionBox!.addAll(unTopChatSession)});
-      sessionBox?.values.forEach((element) {
-        Log.yellow("sessionBox ${element.top} ${element.title}");
-      });
+      // sessionBox?.values.forEach((element) {
+      //   Log.yellow("sessionBox ${element.top} ${element.title}");
+      // });
     } else {
       List<Session> allSession = sessionBox?.values.toList() ?? [];
       allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));

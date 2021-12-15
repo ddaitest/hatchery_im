@@ -40,7 +40,6 @@ class ChatDetailManager extends ChangeNotifier {
   bool isVoiceModel = false;
   bool isRecording = false;
   bool emojiShowing = false;
-  List<Message> messagesList = [];
   String? voicePath;
   String? voiceUrl;
   Timer? timer;
@@ -58,7 +57,7 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupId = "";
   String currentGroupName = "";
   String currentGroupIcon = "";
-  ValueNotifier<List<Message>> messageList = ValueNotifier<List<Message>>([]);
+  ValueNotifier<List<Message>>? messageList;
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
 
@@ -72,6 +71,7 @@ class ChatDetailManager extends ChangeNotifier {
       String groupName = "",
       String groupIcon = ""}) {
     // _inputTextListen();
+    messageList = ValueNotifier<List<Message>>([]);
     myProfileData = UserCentre.getInfo();
     currentChatType = chatType;
     otherName = friendName;
@@ -87,13 +87,12 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void loadMessages({firstLoad = false}) {
-    Box<Message>? localMessageBox = LocalStore.messageBox;
-    if (localMessageBox != null) {
+    if (LocalStore.messageBox != null) {
       List<Message> tempList = [];
       Log.red(currentFriendId != ""
           ? "listenMessage >> friendId =$currentFriendId"
           : "listenMessage >> groupId =$currentGroupId");
-      tempList = localMessageBox.values
+      tempList = LocalStore.messageBox!.values
           .where((element) => element.type == "CHAT"
               ? element.receiver == currentFriendId ||
                   element.sender == currentFriendId
@@ -103,7 +102,8 @@ class ChatDetailManager extends ChangeNotifier {
         tempList.sort((a, b) =>
             DateTime.fromMillisecondsSinceEpoch(b.createTime)
                 .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-        messageList.value = tempList;
+        Log.yellow("tempList ${tempList[0].content}");
+        messageList?.value = tempList;
       }
     }
   }

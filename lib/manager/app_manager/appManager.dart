@@ -58,9 +58,6 @@ class AppManager extends ChangeNotifier {
       if (UserCentre.isLogin()) {
         LocalStore.init();
         _configToSP();
-        Future.delayed(Duration(seconds: 1), () {
-          MessageCentre.init();
-        });
       }
     });
   }
