@@ -237,11 +237,6 @@ class MessageCentre {
       tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
           .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
       LocalStore.messageBox?.addAll(tempList);
-    } else {
-      serverMessagesList.sort((a, b) =>
-          DateTime.fromMillisecondsSinceEpoch(b.createTime)
-              .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-      LocalStore.messageBox?.addAll(serverMessagesList);
     }
   }
 

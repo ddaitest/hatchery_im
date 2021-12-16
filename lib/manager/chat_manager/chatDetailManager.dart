@@ -91,8 +91,8 @@ class ChatDetailManager extends ChangeNotifier {
   void loadMessages() {
     List<Message> tempList = [];
     Log.red(currentFriendId != ""
-        ? "listenMessage >> friendId =$currentFriendId"
-        : "listenMessage >> groupId =$currentGroupId");
+        ? "listenMessage >> friendId= $currentFriendId"
+        : "listenMessage >> groupId= $currentGroupId");
     tempList = LocalStore.messageBox?.values
             .where((element) => element.type == "CHAT"
                 ? (element.receiver == currentFriendId &&
@@ -102,6 +102,7 @@ class ChatDetailManager extends ChangeNotifier {
                 : element.groupID == currentGroupId)
             .toList() ??
         [];
+    Log.red("tempList tempList ${tempList.length}");
     if (tempList.isNotEmpty) {
       tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
           .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
