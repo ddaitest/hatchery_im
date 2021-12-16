@@ -53,7 +53,8 @@ class ChatBubble extends StatelessWidget {
       children: [
         Container(
           padding: const EdgeInsets.only(bottom: 10.0),
-          child: Text('${checkMessageTime(contentMessages.createTime)}',
+          child: Text(
+              "${checkMessageTime(contentMessages.createTime).toString().contains("-") ? checkMessageTime(contentMessages.createTime).toString().split(" ")[0] : checkMessageTime(contentMessages.createTime)}",
               maxLines: 1,
               softWrap: true,
               style: Flavors.textStyles.chatBubbleTimeText),

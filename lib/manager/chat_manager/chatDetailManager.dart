@@ -57,7 +57,8 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupId = "";
   String currentGroupName = "";
   String currentGroupIcon = "";
-  ValueNotifier<List<Message>>? messageList;
+  String? myUserId;
+  ValueNotifier<List<Message>> messageList = ValueNotifier<List<Message>>([]);
   VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
 
@@ -71,8 +72,9 @@ class ChatDetailManager extends ChangeNotifier {
       String groupName = "",
       String groupIcon = ""}) {
     // _inputTextListen();
-    messageList = ValueNotifier<List<Message>>([]);
+    // messageList = ValueNotifier<List<Message>>([]);
     myProfileData = UserCentre.getInfo();
+    myUserId = myProfileData?.userID ?? "";
     currentChatType = chatType;
     otherName = friendName;
     otherIcon = friendIcon;
@@ -80,31 +82,30 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
-    loadMessages(firstLoad: true);
+    loadMessages();
     LocalStore.listenMessage().addListener(() {
       loadMessages();
     });
   }
 
-  void loadMessages({firstLoad = false}) {
-    if (LocalStore.messageBox != null) {
-      List<Message> tempList = [];
-      Log.red(currentFriendId != ""
-          ? "listenMessage >> friendId =$currentFriendId"
-          : "listenMessage >> groupId =$currentGroupId");
-      tempList = LocalStore.messageBox!.values
-          .where((element) => element.type == "CHAT"
-              ? element.receiver == currentFriendId ||
-                  element.sender == currentFriendId
-              : element.groupID == currentGroupId)
-          .toList();
-      if (tempList.isNotEmpty) {
-        tempList.sort((a, b) =>
-            DateTime.fromMillisecondsSinceEpoch(b.createTime)
-                .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-        Log.yellow("tempList ${tempList[0].content}");
-        messageList?.value = tempList;
-      }
+  void loadMessages() {
+    List<Message> tempList = [];
+    Log.red(currentFriendId != ""
+        ? "listenMessage >> friendId =$currentFriendId"
+        : "listenMessage >> groupId =$currentGroupId");
+    tempList = LocalStore.messageBox?.values
+            .where((element) => element.type == "CHAT"
+                ? (element.receiver == currentFriendId &&
+                        element.sender == myUserId) ||
+                    (element.sender == currentFriendId &&
+                        element.receiver == myUserId)
+                : element.groupID == currentGroupId)
+            .toList() ??
+        [];
+    if (tempList.isNotEmpty) {
+      tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
+          .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+      messageList.value = tempList;
     }
   }
 

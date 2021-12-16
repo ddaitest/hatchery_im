@@ -163,7 +163,8 @@ class MessageCentre {
           sessionOwnerId: latest.ownerID,
           sessionTitle: latest.title,
           sessionIcon: latest.icon,
-          sessionTime: latest.updateTime);
+          sessionTime: latest.lastChatMessage?.createTime ??
+              latest.lastGroupChatMessage!.createTime);
     } else {
       // 本地有session，更新数据
       if (otherId != null) {
@@ -191,6 +192,7 @@ class MessageCentre {
         if (serverSession.otherID != "") {
           serverSession.type == 0
               ? _queryHistoryFriend(serverSession.otherID)
+                  .then((List<Message>? msgList) => _syncMessage(msgList))
               : _queryHistoryGroup(serverSession.otherID)
                   .then((List<Message>? msgList) => _syncMessage(msgList));
         }
@@ -201,6 +203,7 @@ class MessageCentre {
   _syncMessage(List<Message>? messagesList) async {
     if (messagesList != null) {
       if (messagesList.isNotEmpty) {
+        Log.yellow("_syncMessage");
         saveMessage(messagesList);
       }
     }
@@ -220,25 +223,27 @@ class MessageCentre {
     return news;
   }
 
-  /// 保存信息，先插入messageBox然后去重后再保存
-  static void saveMessage(List<Message> messagesList) {
-    if (messagesList.isNotEmpty) {
-      Iterable<Message>? messageBoxList = LocalStore.messageBox?.values;
-      if (messageBoxList != null) {
-        List<Message> temp = [];
-        messagesList.forEach((item) {
-          temp.add(item);
-        });
-        List<Message> newList =
-            messageBoxList.where((value) => !temp.contains(value.id)).toList();
-        LocalStore.messageBox
-            ?.clear()
-            .then((_) => LocalStore.messageBox?.addAll(newList));
-      }
+  /// 保存信息：根据id找到messageBox没有的数据并addALL进messageBox
+  static void saveMessage(List<Message> serverMessagesList) {
+    List<Message> tempList = [];
+    serverMessagesList.forEach((serverMessage) {
+      tempList = LocalStore.messageBox?.values
+              .where(
+                  (Message localMessage) => serverMessage.id == localMessage.id)
+              .toList() ??
+          [];
+    });
+    if (tempList.isNotEmpty) {
+      tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
+          .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+      LocalStore.messageBox?.addAll(tempList);
+    } else {
+      serverMessagesList.sort((a, b) =>
+          DateTime.fromMillisecondsSinceEpoch(b.createTime)
+              .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+      LocalStore.messageBox?.addAll(serverMessagesList);
     }
   }
-
-  // _notifyMessageChanged(String friendID) {}
 
   static sendAuth() async {
     Log.yellow("sendAuth");
