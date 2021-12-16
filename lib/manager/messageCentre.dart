@@ -23,7 +23,7 @@ typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);
 typedef NewMessageListener = void Function(Message news);
 
-const LOAD_SIZE = 50;
+const LOAD_SIZE = 20;
 
 class MessageCentre {
   static final MessageCentre _singleton = MessageCentre._internal();
@@ -226,18 +226,16 @@ class MessageCentre {
   /// 保存信息：根据id找到messageBox没有的数据并addALL进messageBox
   static void saveMessage(List<Message> serverMessagesList) {
     List<Message> tempList = [];
-    serverMessagesList.forEach((serverMessage) {
-      tempList = LocalStore.messageBox?.values
-              .where(
-                  (Message localMessage) => serverMessage.id == localMessage.id)
-              .toList() ??
-          [];
+    LocalStore.messageBox?.values.forEach((localMessage) {
+      tempList = serverMessagesList
+          .where((Message serverMessage) => serverMessage.id != localMessage.id)
+          .toList();
     });
-    if (tempList.isNotEmpty) {
-      tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
-          .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-      LocalStore.messageBox?.addAll(tempList);
-    }
+    Log.yellow("saveMessage tempList ${tempList.length}");
+    tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
+        .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+    LocalStore.messageBox
+        ?.addAll(tempList.isNotEmpty ? tempList : serverMessagesList);
   }
 
   static sendAuth() async {
