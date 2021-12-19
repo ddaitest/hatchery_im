@@ -21,25 +21,25 @@ class MessageAdapter extends TypeAdapter<Message> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Message(
-      fields[1] as int,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as String,
-      fields[5] as String,
-      fields[12] as String?,
-      fields[7] as String,
-      fields[8] as String,
-      fields[9] as String,
-      fields[10] as String,
-      fields[11] as int,
-      fields[6] as String?,
-    );
+        fields[1] as int,
+        fields[2] as String,
+        fields[3] as String,
+        fields[4] as String,
+        fields[5] as String,
+        fields[12] as String?,
+        fields[7] as String,
+        fields[8] as String,
+        fields[9] as String,
+        fields[10] as String,
+        fields[11] as int,
+        fields[6] as String?,
+        fields[13] as int?);
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -63,7 +63,9 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..writeByte(11)
       ..write(obj.createTime)
       ..writeByte(12)
-      ..write(obj.groupID);
+      ..write(obj.groupID)
+      ..writeByte(13)
+      ..write(obj.progress);
   }
 
   @override

@@ -38,7 +38,6 @@ class ChatUsersListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Log.yellow("$title updateTime updateTime ${updateTime}");
     List<SlideActionInfo> slideAction = [
       SlideActionInfo(
           chatTopType == 1 ? '取消置顶' : '置顶',

@@ -26,6 +26,8 @@ import '../app_manager/app_handler.dart';
 import '../userCentre.dart';
 
 class ChatHomeManager extends ChangeNotifier {
+  ValueListenable<Box<Session>> sessionBox = LocalStore.listenSessions();
+
   /// 初始化
   init() {}
 

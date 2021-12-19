@@ -302,22 +302,23 @@ class Message extends HiveObject {
   String contentType;
   int createTime;
   String? groupID;
+  int? progress;
   // int progress = 0; // 0默认; 1发送中; 2发送完成; 3已读; 4收到的消息。
 
   Message(
-    this.id,
-    this.type,
-    this.userMsgID,
-    this.sender,
-    this.nick,
-    this.groupID,
-    this.icon,
-    this.source,
-    this.content,
-    this.contentType,
-    this.createTime,
-    this.receiver,
-  );
+      this.id,
+      this.type,
+      this.userMsgID,
+      this.sender,
+      this.nick,
+      this.groupID,
+      this.icon,
+      this.source,
+      this.content,
+      this.contentType,
+      this.createTime,
+      this.receiver,
+      this.progress);
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);

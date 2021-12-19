@@ -6,17 +6,16 @@ part of 'entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-CSAuthMessage _$CSAuthMessageFromJson(Map<String, dynamic> json) {
-  return CSAuthMessage(
-    json['msg_id'] as String,
-    json['user_id'] as String,
-    json['type'] as String,
-    json['token'] as String,
-    json['source'] as String,
-    json['device_id'] as String,
-    json['login_ip'] as String,
-  );
-}
+CSAuthMessage _$CSAuthMessageFromJson(Map<String, dynamic> json) =>
+    CSAuthMessage(
+      json['msg_id'] as String,
+      json['user_id'] as String,
+      json['type'] as String,
+      json['token'] as String,
+      json['source'] as String,
+      json['device_id'] as String,
+      json['login_ip'] as String,
+    );
 
 Map<String, dynamic> _$CSAuthMessageToJson(CSAuthMessage instance) =>
     <String, dynamic>{
@@ -29,16 +28,15 @@ Map<String, dynamic> _$CSAuthMessageToJson(CSAuthMessage instance) =>
       'login_ip': instance.loginIp,
     };
 
-SCAuthMessage _$SCAuthMessageFromJson(Map<String, dynamic> json) {
-  return SCAuthMessage(
-    json['msg_id'] as String,
-    json['user_id'] as String,
-    json['type'] as String,
-    json['code'] as String,
-    json['message'] as String,
-    json['ack_msg_id'] as String,
-  );
-}
+SCAuthMessage _$SCAuthMessageFromJson(Map<String, dynamic> json) =>
+    SCAuthMessage(
+      json['msg_id'] as String,
+      json['user_id'] as String,
+      json['type'] as String,
+      json['code'] as String,
+      json['message'] as String,
+      json['ack_msg_id'] as String,
+    );
 
 Map<String, dynamic> _$SCAuthMessageToJson(SCAuthMessage instance) =>
     <String, dynamic>{
@@ -50,20 +48,19 @@ Map<String, dynamic> _$SCAuthMessageToJson(SCAuthMessage instance) =>
       'ack_msg_id': instance.ackMsgId,
     };
 
-CSSendMessage _$CSSendMessageFromJson(Map<String, dynamic> json) {
-  return CSSendMessage(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['s_msg_id'] as String,
-    json['from'] as String,
-    json['nick'] as String,
-    json['to'] as String,
-    json['icon'] as String,
-    json['source'] as String,
-    json['content'] as String,
-    json['content_type'] as String,
-  );
-}
+CSSendMessage _$CSSendMessageFromJson(Map<String, dynamic> json) =>
+    CSSendMessage(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['s_msg_id'] as String,
+      json['from'] as String,
+      json['nick'] as String,
+      json['to'] as String,
+      json['icon'] as String,
+      json['source'] as String,
+      json['content'] as String,
+      json['content_type'] as String,
+    );
 
 Map<String, dynamic> _$CSSendMessageToJson(CSSendMessage instance) =>
     <String, dynamic>{
@@ -79,17 +76,15 @@ Map<String, dynamic> _$CSSendMessageToJson(CSSendMessage instance) =>
       'content_type': instance.contentType,
     };
 
-CSAckMessage _$CSAckMessageFromJson(Map<String, dynamic> json) {
-  return CSAckMessage(
-    json['msg_id'] as String,
-    json['ack_msg_id'] as String,
-    json['type'] as String,
-    json['from'] as String,
-    json['to'] as String,
-    json['s_msg_id'] as String,
-    json['source'] as String,
-  );
-}
+CSAckMessage _$CSAckMessageFromJson(Map<String, dynamic> json) => CSAckMessage(
+      json['msg_id'] as String,
+      json['ack_msg_id'] as String,
+      json['type'] as String,
+      json['from'] as String,
+      json['to'] as String,
+      json['s_msg_id'] as String,
+      json['source'] as String,
+    );
 
 Map<String, dynamic> _$CSAckMessageToJson(CSAckMessage instance) =>
     <String, dynamic>{
@@ -102,22 +97,21 @@ Map<String, dynamic> _$CSAckMessageToJson(CSAckMessage instance) =>
       'source': instance.source,
     };
 
-CSSendGroupMessage _$CSSendGroupMessageFromJson(Map<String, dynamic> json) {
-  return CSSendGroupMessage(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['s_msg_id'] as String,
-    json['from'] as String,
-    json['nick'] as String,
-    json['icon'] as String,
-    json['group_id'] as String,
-    json['group_name'] as String,
-    json['group_icon'] as String,
-    json['source'] as String,
-    json['content'] as String,
-    json['content_type'] as String,
-  );
-}
+CSSendGroupMessage _$CSSendGroupMessageFromJson(Map<String, dynamic> json) =>
+    CSSendGroupMessage(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['s_msg_id'] as String,
+      json['from'] as String,
+      json['nick'] as String,
+      json['icon'] as String,
+      json['group_id'] as String,
+      json['group_name'] as String,
+      json['group_icon'] as String,
+      json['source'] as String,
+      json['content'] as String,
+      json['content_type'] as String,
+    );
 
 Map<String, dynamic> _$CSSendGroupMessageToJson(CSSendGroupMessage instance) =>
     <String, dynamic>{
@@ -135,18 +129,17 @@ Map<String, dynamic> _$CSSendGroupMessageToJson(CSSendGroupMessage instance) =>
       'content_type': instance.contentType,
     };
 
-SCGroupCreate _$SCGroupCreateFromJson(Map<String, dynamic> json) {
-  return SCGroupCreate(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['group_title'] as String,
-    json['group_id'] as String,
-    json['group_icon'] as String,
-    json['group_owner_id'] as String,
-    json['group_owner_nick'] as String,
-    json['group_owner_icon'] as String,
-  );
-}
+SCGroupCreate _$SCGroupCreateFromJson(Map<String, dynamic> json) =>
+    SCGroupCreate(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['group_title'] as String,
+      json['group_id'] as String,
+      json['group_icon'] as String,
+      json['group_owner_id'] as String,
+      json['group_owner_nick'] as String,
+      json['group_owner_icon'] as String,
+    );
 
 Map<String, dynamic> _$SCGroupCreateToJson(SCGroupCreate instance) =>
     <String, dynamic>{
@@ -160,15 +153,15 @@ Map<String, dynamic> _$SCGroupCreateToJson(SCGroupCreate instance) =>
       'group_owner_icon': instance.groupOwnerIcon,
     };
 
-SCGroupInviteContent _$SCGroupInviteContentFromJson(Map<String, dynamic> json) {
-  return SCGroupInviteContent(
-    json['group_title'] as String,
-    json['group_id'] as String,
-    json['group_icon'] as String,
-    json['url'] as String,
-    json['note'] as String,
-  );
-}
+SCGroupInviteContent _$SCGroupInviteContentFromJson(
+        Map<String, dynamic> json) =>
+    SCGroupInviteContent(
+      json['group_title'] as String,
+      json['group_id'] as String,
+      json['group_icon'] as String,
+      json['url'] as String,
+      json['note'] as String,
+    );
 
 Map<String, dynamic> _$SCGroupInviteContentToJson(
         SCGroupInviteContent instance) =>
@@ -180,17 +173,15 @@ Map<String, dynamic> _$SCGroupInviteContentToJson(
       'note': instance.note,
     };
 
-SCGroupKick _$SCGroupKickFromJson(Map<String, dynamic> json) {
-  return SCGroupKick(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['group_id'] as String,
-    json['kick_id'] as String,
-    json['kick_nick'] as String,
-    json['operator_id'] as String,
-    json['operator_nick'] as String,
-  );
-}
+SCGroupKick _$SCGroupKickFromJson(Map<String, dynamic> json) => SCGroupKick(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['group_id'] as String,
+      json['kick_id'] as String,
+      json['kick_nick'] as String,
+      json['operator_id'] as String,
+      json['operator_nick'] as String,
+    );
 
 Map<String, dynamic> _$SCGroupKickToJson(SCGroupKick instance) =>
     <String, dynamic>{
@@ -203,18 +194,16 @@ Map<String, dynamic> _$SCGroupKickToJson(SCGroupKick instance) =>
       'operator_nick': instance.operatorNick,
     };
 
-SCGroupJoin _$SCGroupJoinFromJson(Map<String, dynamic> json) {
-  return SCGroupJoin(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['group_title'] as String,
-    json['group_id'] as String,
-    json['inviter_id'] as String,
-    json['inviter_nick'] as String,
-    json['receiver_id'] as String,
-    json['receiver_nick'] as String,
-  );
-}
+SCGroupJoin _$SCGroupJoinFromJson(Map<String, dynamic> json) => SCGroupJoin(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['group_title'] as String,
+      json['group_id'] as String,
+      json['inviter_id'] as String,
+      json['inviter_nick'] as String,
+      json['receiver_id'] as String,
+      json['receiver_nick'] as String,
+    );
 
 Map<String, dynamic> _$SCGroupJoinToJson(SCGroupJoin instance) =>
     <String, dynamic>{
@@ -228,13 +217,12 @@ Map<String, dynamic> _$SCGroupJoinToJson(SCGroupJoin instance) =>
       'receiver_nick': instance.receiverNick,
     };
 
-SCGroupUpdate _$SCGroupUpdateFromJson(Map<String, dynamic> json) {
-  return SCGroupUpdate(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['group_id'] as String,
-  );
-}
+SCGroupUpdate _$SCGroupUpdateFromJson(Map<String, dynamic> json) =>
+    SCGroupUpdate(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['group_id'] as String,
+    );
 
 Map<String, dynamic> _$SCGroupUpdateToJson(SCGroupUpdate instance) =>
     <String, dynamic>{
@@ -243,15 +231,14 @@ Map<String, dynamic> _$SCGroupUpdateToJson(SCGroupUpdate instance) =>
       'group_id': instance.groupId,
     };
 
-SCGroupRemove _$SCGroupRemoveFromJson(Map<String, dynamic> json) {
-  return SCGroupRemove(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['group_id'] as String,
-    json['operator_id'] as String,
-    json['operator_nick'] as String,
-  );
-}
+SCGroupRemove _$SCGroupRemoveFromJson(Map<String, dynamic> json) =>
+    SCGroupRemove(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['group_id'] as String,
+      json['operator_id'] as String,
+      json['operator_nick'] as String,
+    );
 
 Map<String, dynamic> _$SCGroupRemoveToJson(SCGroupRemove instance) =>
     <String, dynamic>{
@@ -262,15 +249,13 @@ Map<String, dynamic> _$SCGroupRemoveToJson(SCGroupRemove instance) =>
       'operator_nick': instance.operatorNick,
     };
 
-SCAck _$SCAckFromJson(Map<String, dynamic> json) {
-  return SCAck(
-    json['msg_id'] as String,
-    json['ack_msg_id'] as String,
-    json['s_msg_id'] as String,
-    json['type'] as String,
-    json['from'] as String,
-  );
-}
+SCAck _$SCAckFromJson(Map<String, dynamic> json) => SCAck(
+      json['msg_id'] as String,
+      json['ack_msg_id'] as String,
+      json['s_msg_id'] as String,
+      json['type'] as String,
+      json['from'] as String,
+    );
 
 Map<String, dynamic> _$SCAckToJson(SCAck instance) => <String, dynamic>{
       'msg_id': instance.msgId,
@@ -280,17 +265,16 @@ Map<String, dynamic> _$SCAckToJson(SCAck instance) => <String, dynamic>{
       'from': instance.from,
     };
 
-SCFriendApply _$SCFriendApplyFromJson(Map<String, dynamic> json) {
-  return SCFriendApply(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['from'] as String,
-    json['inviter_nick'] as String,
-    json['inviter_icon'] as String,
-    json['to'] as String,
-    json['note'] as String,
-  );
-}
+SCFriendApply _$SCFriendApplyFromJson(Map<String, dynamic> json) =>
+    SCFriendApply(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['from'] as String,
+      json['inviter_nick'] as String,
+      json['inviter_icon'] as String,
+      json['to'] as String,
+      json['note'] as String,
+    );
 
 Map<String, dynamic> _$SCFriendApplyToJson(SCFriendApply instance) =>
     <String, dynamic>{
@@ -303,18 +287,17 @@ Map<String, dynamic> _$SCFriendApplyToJson(SCFriendApply instance) =>
       'note': instance.note,
     };
 
-SCFriendResult _$SCFriendResultFromJson(Map<String, dynamic> json) {
-  return SCFriendResult(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['from'] as String,
-    json['from_nick'] as String,
-    json['from_icon'] as String,
-    json['to'] as String,
-    json['status'] as String,
-    json['note'] as String,
-  );
-}
+SCFriendResult _$SCFriendResultFromJson(Map<String, dynamic> json) =>
+    SCFriendResult(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['from'] as String,
+      json['from_nick'] as String,
+      json['from_icon'] as String,
+      json['to'] as String,
+      json['status'] as String,
+      json['note'] as String,
+    );
 
 Map<String, dynamic> _$SCFriendResultToJson(SCFriendResult instance) =>
     <String, dynamic>{
@@ -328,15 +311,13 @@ Map<String, dynamic> _$SCFriendResultToJson(SCFriendResult instance) =>
       'note': instance.note,
     };
 
-SCKickOut _$SCKickOutFromJson(Map<String, dynamic> json) {
-  return SCKickOut(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['source'] as String,
-    json['device_id'] as String,
-    json['to'] as String,
-  );
-}
+SCKickOut _$SCKickOutFromJson(Map<String, dynamic> json) => SCKickOut(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['source'] as String,
+      json['device_id'] as String,
+      json['to'] as String,
+    );
 
 Map<String, dynamic> _$SCKickOutToJson(SCKickOut instance) => <String, dynamic>{
       'msg_id': instance.msgId,
@@ -346,14 +327,12 @@ Map<String, dynamic> _$SCKickOutToJson(SCKickOut instance) => <String, dynamic>{
       'to': instance.to,
     };
 
-CSPing _$CSPingFromJson(Map<String, dynamic> json) {
-  return CSPing(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['source'] as String,
-    json['user_id'] as String,
-  );
-}
+CSPing _$CSPingFromJson(Map<String, dynamic> json) => CSPing(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['source'] as String,
+      json['user_id'] as String,
+    );
 
 Map<String, dynamic> _$CSPingToJson(CSPing instance) => <String, dynamic>{
       'msg_id': instance.msgId,
@@ -362,14 +341,12 @@ Map<String, dynamic> _$CSPingToJson(CSPing instance) => <String, dynamic>{
       'user_id': instance.userId,
     };
 
-SCPong _$SCPongFromJson(Map<String, dynamic> json) {
-  return SCPong(
-    json['msg_id'] as String,
-    json['type'] as String,
-    json['source'] as String,
-    json['user_id'] as String,
-  );
-}
+SCPong _$SCPongFromJson(Map<String, dynamic> json) => SCPong(
+      json['msg_id'] as String,
+      json['type'] as String,
+      json['source'] as String,
+      json['user_id'] as String,
+    );
 
 Map<String, dynamic> _$SCPongToJson(SCPong instance) => <String, dynamic>{
       'msg_id': instance.msgId,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dart_ipify/dart_ipify.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:collection/collection.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
@@ -105,8 +106,8 @@ class MessageCentre {
   ///获取 session 信息. 然后同步每个session 最新的消息。
   initSessions() async {
     // Step1. 返回本地存储的数据。
-    _localStore.getSessions().then((List<Session>? value) {
-      sessions = value ?? [];
+    _localStore.getSessions().then((List<Session>? localSessionList) {
+      sessions = localSessionList ?? [];
       Log.yellow("_initSessions 开始");
       Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions?.length}");
 
@@ -117,13 +118,12 @@ class MessageCentre {
               value.getDataList((m) => Session.fromJson(m));
           // Step3. 刷新本地数据。
           Log.yellow("_syncNewSessions 同步session");
-          _syncNewSessions(serverSessionList);
+          _syncNewSessions(serverSessionList, localSessionList ?? []);
           sessionListener?.call(sessions ?? []);
           serverSessionList.forEach((element) {
             Log.yellow("_initSessions 从Server获取最新数据 ${element.toJson()}");
           });
           Log.yellow("_syncMessage 同步message");
-          _syncNewMessage(serverSessionList);
 
           // sessions?.forEach((element) {
           //   Log.red("本地sessions ${element.toJson()}");
@@ -135,18 +135,29 @@ class MessageCentre {
   }
 
   ///找出需要同步的session
-  _syncNewSessions(List<Session> serverSessionList) {
-    List<Session> localSessionList = sessions ?? [];
-    serverSessionList.forEach((serverSession) {
-      int index = localSessionList.indexWhere(
-          (localSession) => localSession.otherID == serverSession.otherID);
-      if (index < 0 || localSessionList.isEmpty) {
-        _syncSession(null, serverSession, null);
+  _syncNewSessions(
+      List<Session> serverSessionList, List<Session> localSessionList) {
+    if (serverSessionList.isNotEmpty) {
+      if (localSessionList.isEmpty) {
+        Log.yellow("_syncNewSessions localSessionList.isEmpty");
+        serverSessionList.forEach((serverSession) => {
+              _syncSession(null, serverSession, null),
+              _syncNewMessage(serverSession)
+            });
       } else {
-        _syncSession(localSessionList[index], serverSession,
-            localSessionList[index].otherID);
+        Log.yellow("_syncNewSessions localSessionList.isNotEmpty");
+        serverSessionList.forEach((serverSession) {
+          Session? session = localSessionList.firstWhereOrNull(
+              (localSession) => serverSession.otherID == localSession.otherID);
+          if (session != null) {
+            _syncSession(session, serverSession, serverSession.otherID);
+          } else {
+            _syncSession(null, serverSession, null);
+          }
+          _syncNewMessage(serverSession);
+        });
       }
-    });
+    }
   }
 
   ///同步 session 并更新
@@ -186,17 +197,13 @@ class MessageCentre {
   }
 
   ///同步message 本地有的忽略，本地没有的加入，最多50条
-  _syncNewMessage(List<Session>? serverSessionList) {
-    if (serverSessionList != null && serverSessionList.isNotEmpty) {
-      serverSessionList.forEach((Session serverSession) {
-        if (serverSession.otherID != "") {
-          serverSession.type == 0
-              ? _queryHistoryFriend(serverSession.otherID)
-                  .then((List<Message>? msgList) => _syncMessage(msgList))
-              : _queryHistoryGroup(serverSession.otherID)
-                  .then((List<Message>? msgList) => _syncMessage(msgList));
-        }
-      });
+  _syncNewMessage(Session? serverSession) {
+    if (serverSession != null && serverSession.otherID != "") {
+      serverSession.type == 0
+          ? _queryHistoryFriend(serverSession.otherID)
+              .then((List<Message>? msgList) => _syncMessage(msgList))
+          : _queryHistoryGroup(serverSession.otherID)
+              .then((List<Message>? msgList) => _syncMessage(msgList));
     }
   }
 
@@ -204,7 +211,7 @@ class MessageCentre {
     if (messagesList != null) {
       if (messagesList.isNotEmpty) {
         Log.yellow("_syncMessage");
-        saveMessage(messagesList);
+        messagesList.forEach((element) => saveMessage(element));
       }
     }
   }
@@ -223,19 +230,13 @@ class MessageCentre {
     return news;
   }
 
-  /// 保存信息：根据id找到messageBox没有的数据并addALL进messageBox
-  static void saveMessage(List<Message> serverMessagesList) {
-    List<Message> tempList = [];
-    LocalStore.messageBox?.values.forEach((localMessage) {
-      tempList = serverMessagesList
-          .where((Message serverMessage) => serverMessage.id != localMessage.id)
-          .toList();
-    });
-    Log.yellow("saveMessage tempList ${tempList.length}");
-    tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
-        .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-    LocalStore.messageBox
-        ?.addAll(tempList.isNotEmpty ? tempList : serverMessagesList);
+  /// 保存信息：根据id找到messageBox没有的数据并add进messageBox
+  static void saveMessage(Message serverMessage) {
+    Message? msg = LocalStore.messageBox?.values.firstWhereOrNull(
+        (localMessage) => localMessage.id == serverMessage.id);
+    if (msg == null) {
+      LocalStore.messageBox?.add(serverMessage);
+    }
   }
 
   static sendAuth() async {
@@ -263,7 +264,9 @@ class MessageCentre {
     Log.yellow("sendMessage ${msg.toJson()}");
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
-    // message.progress = MSG_SENDING;
+    // message
+    //   ..progress = MSG_SENDING
+    //   ..save();
     LocalStore.addMessage(message,
         otherId: to,
         ownerId: _userInfo?.userID ?? "",
@@ -285,7 +288,9 @@ class MessageCentre {
         contentType);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
-    // message.progress = MSG_SENDING;
+    message
+      ..progress = MSG_SENDING
+      ..save();
     LocalStore.addMessage(message,
         otherId: groupId,
         ownerId: _userInfo?.userID ?? "",
@@ -389,8 +394,10 @@ class MyEngineHandler implements EngineCallback {
   void onMessageRead(String localId, String serverId) {
     Message? msg = LocalStore.findCache(localId);
     if (msg != null) {
-      // msg.progress = MSG_READ;
-      msg.save();
+      msg
+        ..id = int.parse(serverId)
+        ..progress = MSG_READ
+        ..save();
     }
   }
 
@@ -398,9 +405,12 @@ class MyEngineHandler implements EngineCallback {
   void onMessageSent(String localId, String serverId) {
     Message? msg = LocalStore.findCache(localId);
     if (msg != null) {
-      // msg.progress = MSG_SENT;
-      msg.save();
+      msg
+        ..id = int.parse(serverId)
+        ..progress = MSG_SENT
+        ..save();
     }
+    Log.red("onMessageSent ${msg?.id}");
   }
 
   @override
@@ -447,6 +457,9 @@ class MyEngineHandler implements EngineCallback {
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
     Log.red("onNewMessage onNewMessage");
+    msg
+      ..progress = MSG_RECEIVED
+      ..save();
     LocalStore.addMessage(msg,
         otherId: msg.type == "CHAT" ? msg.sender : msg.groupID,
         ownerId: msg.sender,

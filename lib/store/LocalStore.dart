@@ -44,9 +44,6 @@ class LocalStore {
         // });
       });
     }
-    Future.delayed(Duration(seconds: 1), () {
-      MessageCentre.init();
-    });
     return;
   }
 
@@ -85,7 +82,6 @@ class LocalStore {
         ownerId: ownerId,
         sessionName: sessionName,
         sessionImage: sessionImage);
-    sortSession();
   }
 
   static void updateSession(Message message,
@@ -116,6 +112,7 @@ class LocalStore {
             sessionIcon: sessionImage ?? "",
             sessionTime: sessionTime);
       }
+      sortSession();
     }
   }
 
@@ -176,14 +173,14 @@ class LocalStore {
 
       /// 合并置顶和普通消息
       unTopChatSession.addAll(topChatSession);
-      sessionBox!.clear().then((_) => {sessionBox!.addAll(unTopChatSession)});
+      sessionBox?.clear().then((_) => {sessionBox?.addAll(unTopChatSession)});
       // sessionBox?.values.forEach((element) {
       //   Log.yellow("sessionBox ${element.top} ${element.title}");
       // });
     } else {
       List<Session> allSession = sessionBox?.values.toList() ?? [];
       allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
-      sessionBox!.clear().then((_) => {sessionBox!.addAll(allSession)});
+      sessionBox?.clear().then((_) => {sessionBox?.addAll(allSession)});
     }
   }
 

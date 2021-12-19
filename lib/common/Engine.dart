@@ -8,12 +8,14 @@ import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:crypto/crypto.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class EngineCallback {
   void onNewMessage(Message msg) {}
 
-  void onMessageSent(String localId, String serverId) {}
+  // void onMessageSent(String localId, String serverId) {
+  // }
 
   void onMessageRead(String localId, String serverId) {}
 
@@ -66,9 +68,9 @@ class Engine {
     _ipAddress = ipAddress ?? "";
   }
 
-  EngineCallback? _callback;
+  MyEngineHandler? _callback;
 
-  setCallback(EngineCallback callback) {
+  setCallback(MyEngineHandler callback) {
     _callback = callback;
   }
 
@@ -179,6 +181,7 @@ class Engine {
           break;
         case Types.CHAT_ACK: //收到 Message ack。 表示已读。
           var ack = CSAckMessage.fromJson(json);
+          Log.yellow("_handleData() CHAT_ACK is $json");
           _callback?.onMessageRead(ack.ackMsgId, ack.serverMsgId);
           break;
         case Types.GROUP_INIT:
