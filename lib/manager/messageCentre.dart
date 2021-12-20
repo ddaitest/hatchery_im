@@ -264,22 +264,23 @@ class MessageCentre {
     Log.yellow("sendMessage ${msg.toJson()}");
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
-    // message
-    //   ..progress = MSG_SENDING
-    //   ..save();
-    LocalStore.addMessage(message,
+    LocalStore.addMessage(message);
+    LocalStore.refreshSession(message,
         otherId: to,
         ownerId: _userInfo?.userID ?? "",
         sessionName: otherName,
         sessionImage: otherIcon);
+    LocalStore.findCache(msg.msgId)
+      ?..progress = MSG_SENDING
+      ..save();
   }
 
   sendGroupMessage(String groupId, String groupName, String groupIcon,
       String content, String contentType) {
     CSSendGroupMessage msg = Protocols.sendGroupMessage(
         _userInfo?.userID ?? "",
-        _userInfo!.nickName!,
-        _userInfo!.icon!,
+        _userInfo?.nickName ?? "",
+        _userInfo?.icon ?? "",
         groupId,
         groupName,
         groupIcon,
@@ -288,10 +289,11 @@ class MessageCentre {
         contentType);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
-    message
-      ..progress = MSG_SENDING
+    LocalStore.addMessage(message);
+    LocalStore.findCache(msg.msgId)
+      ?..progress = MSG_SENDING
       ..save();
-    LocalStore.addMessage(message,
+    LocalStore.refreshSession(message,
         otherId: groupId,
         ownerId: _userInfo?.userID ?? "",
         sessionName: groupName,
@@ -457,10 +459,11 @@ class MyEngineHandler implements EngineCallback {
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
     Log.red("onNewMessage onNewMessage");
+    LocalStore.addMessage(msg);
     msg
       ..progress = MSG_RECEIVED
       ..save();
-    LocalStore.addMessage(msg,
+    LocalStore.refreshSession(msg,
         otherId: msg.type == "CHAT" ? msg.sender : msg.groupID,
         ownerId: msg.sender,
         sessionName: msg.nick,

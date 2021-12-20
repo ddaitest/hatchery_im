@@ -14,8 +14,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class EngineCallback {
   void onNewMessage(Message msg) {}
 
-  // void onMessageSent(String localId, String serverId) {
-  // }
+  void onMessageSent(String localId, String serverId) {}
 
   void onMessageRead(String localId, String serverId) {}
 

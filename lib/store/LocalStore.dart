@@ -51,6 +51,10 @@ class LocalStore {
     return sessionBox?.values.toList() ?? [];
   }
 
+  Future<List<Message>> getMessages() async {
+    return messageBox?.values.toList() ?? [];
+  }
+
   void saveSessions(List<Session>? sessions) {
     if (sessions != null) {
       Log.yellow("saveSessions. ${sessions.length} ");
@@ -69,22 +73,12 @@ class LocalStore {
 
   static Map<String, Message> cache = Map();
 
-  static void addMessage(Message msg,
-      {String? otherId,
-      String? ownerId,
-      String? sessionName,
-      String? sessionImage}) {
+  static void addMessage(Message msg) {
     cache[msg.userMsgID] = msg;
     messageBox?.add(msg);
-    //update session
-    updateSession(msg,
-        otherId: otherId,
-        ownerId: ownerId,
-        sessionName: sessionName,
-        sessionImage: sessionImage);
   }
 
-  static void updateSession(Message message,
+  static void refreshSession(Message message,
       {String? otherId,
       String? ownerId,
       String? sessionName,
@@ -93,7 +87,7 @@ class LocalStore {
     if (otherId != null) {
       Session? result = findSession(otherId);
       if (result != null) {
-        print("DEBUG=> addMessage addMessage $otherId");
+        Log.yellow("updateSession updateSession $otherId");
         message.isGroup()
             ? result.lastGroupChatMessage = message
             : result.lastChatMessage = message;
@@ -182,6 +176,19 @@ class LocalStore {
       allSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
       sessionBox?.clear().then((_) => {sessionBox?.addAll(allSession)});
     }
+  }
+
+  static int getUnReadMessageCount(Box<Message> msgBox, {String? otherId}) {
+    List<Message> messageList = msgBox.values.toList();
+    int count = 0;
+    if (otherId == null) {
+      count =
+          messageList.indexWhere((element) => element.progress == MSG_RECEIVED);
+    } else {
+      count = messageList.indexWhere((element) =>
+          element.getOtherId() == otherId && element.progress == MSG_RECEIVED);
+    }
+    return count >= 0 ? count : 0;
   }
 
   static Message? findCache(String localId) {

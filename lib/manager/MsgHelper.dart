@@ -12,6 +12,15 @@ extension MessageExt on Message {
     return this.type == "GROUP";
   }
 
+  int? getMsgStatus() {
+    if (this.progress != null) {
+      this.progress = 4;
+      return this.progress;
+    } else {
+      return this.progress;
+    }
+  }
+
   String? getOtherId() {
     String myId = UserCentre.getInfo()?.userID ?? "";
     if (this.sender == myId) {

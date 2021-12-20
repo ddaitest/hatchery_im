@@ -13,6 +13,10 @@ import 'package:badges/badges.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/app_manager/appManager.dart';
+import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
+import 'package:hive/hive.dart';
+import '../api/entity.dart';
 import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +38,7 @@ class MainTab2 extends StatefulWidget {
 
 class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   final manager = App.manager<AppManager>();
+  final chatHomeManager = App.manager<ChatHomeManager>();
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
   List<Widget> _bottomBarIcon = [];
@@ -248,22 +253,29 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   }
 
   Widget _navBarItem(TabInfo info) {
-    return Badge(
-      position: BadgePosition.topEnd(top: -12, end: -12),
-      showBadge: info.index == 0 ? true : false,
-      elevation: 0.5,
-      badgeContent: Text('99', style: Flavors.textStyles.homeTabBubbleText),
-      animationType: BadgeAnimationType.scale,
-      child: IconButton(
-          onPressed: () => _switchTab(info.index),
-          icon: Icon(
-            _tabIndex != info.index ? info.icon : info.activeIcon,
-            size: 35,
-            color: _tabIndex == info.index
-                ? Colors.blue
-                : Flavors.colorInfo.normalGreyColor,
-          )),
-    );
+    return ValueListenableBuilder(
+        valueListenable: chatHomeManager.messageBox,
+        builder: (context, Box<Message> box, _) {
+          int totalCount = LocalStore.getUnReadMessageCount(box);
+          return Badge(
+            position: BadgePosition.topEnd(top: -5, end: -5),
+            toAnimate: false,
+            showBadge: info.index == 0 && totalCount > 0 ? true : false,
+            elevation: 0.5,
+            badgeContent: Text('${totalCount.toString()}',
+                style: Flavors.textStyles.homeTabBubbleText),
+            animationType: BadgeAnimationType.scale,
+            child: IconButton(
+                onPressed: () => _switchTab(info.index),
+                icon: Icon(
+                  _tabIndex != info.index ? info.icon : info.activeIcon,
+                  size: 35,
+                  color: _tabIndex == info.index
+                      ? Colors.blue
+                      : Flavors.colorInfo.normalGreyColor,
+                )),
+          );
+        });
   }
 
   Future<bool> _onWillPop() async {
