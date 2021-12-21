@@ -458,14 +458,14 @@ class MyEngineHandler implements EngineCallback {
   @override
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
-    Log.red("onNewMessage onNewMessage");
+    Log.red("onNewMessage onNewMessage ${msg.toJson()}");
     LocalStore.addMessage(msg);
     msg
       ..progress = MSG_RECEIVED
       ..save();
     LocalStore.refreshSession(msg,
         otherId: msg.type == "CHAT" ? msg.sender : msg.groupID,
-        ownerId: msg.sender,
+        ownerId: msg.receiver,
         sessionName: msg.nick,
         sessionImage: msg.icon);
   }

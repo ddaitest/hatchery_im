@@ -71,6 +71,7 @@ class LocalStore {
     messageBox?.add(msg);
   }
 
+  /// todo 需要重构，接收消息时只传otherId,然后查询最新的群/好友 头像和名称
   static void refreshSession(Message message,
       {String? otherId,
       String? ownerId,
@@ -175,11 +176,15 @@ class LocalStore {
       {String? otherId}) {
     int count = 0;
     if (otherId == null) {
-      count =
-          messageList.indexWhere((element) => element.progress == MSG_RECEIVED);
+      count = messageList
+          .where((element) => element.progress == MSG_RECEIVED)
+          .length;
     } else {
-      count = messageList.indexWhere((element) =>
-          element.getOtherId() == otherId && element.progress == MSG_RECEIVED);
+      count = messageList
+          .where((element) =>
+              element.getOtherId() == otherId &&
+              element.progress == MSG_RECEIVED)
+          .length;
     }
     return count >= 0 ? count : 0;
   }

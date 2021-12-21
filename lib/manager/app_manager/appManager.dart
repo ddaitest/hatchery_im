@@ -27,18 +27,6 @@ import '../messageCentre.dart';
 
 class AppManager extends ChangeNotifier {
   CustomMenuInfo? customMenuInfo;
-  var bottomTabs = mainTabs;
-  List<Widget> bottomBarIcon = [];
-  List<Widget> tabBodies = [
-    ChatPage(),
-    ContactsPage(),
-    GroupPage(),
-    MyProfilePage()
-  ];
-
-  PageController pageController = PageController();
-  int tabIndex = 0;
-  String title = '消息列表';
 
   /// 初始化
   init() {
@@ -57,6 +45,7 @@ class AppManager extends ChangeNotifier {
       BackgroundListen().init();
       if (UserCentre.isLogin()) {
         LocalStore.init();
+        MessageCentre.init();
         _configToSP();
       }
     });
