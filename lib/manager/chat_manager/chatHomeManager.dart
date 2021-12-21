@@ -26,11 +26,29 @@ import '../app_manager/app_handler.dart';
 import '../userCentre.dart';
 
 class ChatHomeManager extends ChangeNotifier {
-  ValueListenable<Box<Session>> sessionBox = LocalStore.listenSessions();
-  ValueListenable<Box<Message>> messageBox = LocalStore.listenMessage();
+  int totalUnReadMessageCount = 0;
 
   /// 初始化
-  init() {}
+  init() {
+    LocalStore.listenMessage().addListener(() {
+      Log.yellow("ChatHomeManager listenMessage");
+      getUnReadCount();
+    });
+  }
+
+  int getUnReadCount({String? otherId}) {
+    int count = 0;
+    count = LocalStore.getUnReadMessageCount(
+        LocalStore.messageBox?.values.toList() ?? [],
+        otherId: otherId);
+    if (otherId == null) {
+      totalUnReadMessageCount = count;
+      notifyListeners();
+      return totalUnReadMessageCount;
+    } else {
+      return count;
+    }
+  }
 
   @override
   void dispose() {

@@ -13,38 +13,31 @@ import 'Adapters.dart';
 import '../manager/MsgHelper.dart';
 
 class LocalStore {
-  static HiveInterface? hiveModel;
   static Box<Session>? sessionBox;
   static Box<Message>? messageBox;
 
   static init() {
     /// 多账号多db区分开
     String dbName = "hive_db_" + UserCentre.getUserID();
-    if (hiveModel == null) {
-      hiveModel = Hive;
 
-      /// 需要给一个名称，否则不能保存数据
-      hiveModel?.initFlutter(dbName).then((_) {
-        Log.yellow("Hive initFlutter");
-
-        /// 防止重复注册，即便Hive.close() 也不能取消注册，如果覆盖注册hive会有提示说可能有未知问题
-        if (!hiveModel!.isAdapterRegistered(ADAPTER_SESSION))
-          hiveModel?.registerAdapter(SessionAdapter());
-        if (!hiveModel!.isAdapterRegistered(ADAPTER_MESSAGE))
-          hiveModel?.registerAdapter(MessageAdapter());
-        hiveModel
-            ?.openBox<Session>('sessionBox')
-            .then((value) => sessionBox = value);
-        hiveModel
-            ?.openBox<Message>('messageBox')
-            .then((value) => messageBox = value);
-        // messageBox!.watch().listen((event) {
-        //   Log.red(
-        //       "DDAI Watcher.  key=${event.key} ; value=${event.value} ; deleted=${event.deleted}");
-        // });
+    /// 需要给一个名称，否则不能保存数据
+    Log.yellow("Hive initFlutter");
+    Hive.initFlutter(dbName).whenComplete(() async {
+      /// 防止重复注册，即便Hive.close() 也不能取消注册，如果覆盖注册hive会有提示说可能有未知问题
+      if (!Hive.isAdapterRegistered(ADAPTER_SESSION))
+        Hive.registerAdapter(SessionAdapter());
+      if (!Hive.isAdapterRegistered(ADAPTER_MESSAGE))
+        Hive.registerAdapter(MessageAdapter());
+      Log.yellow("openBox messageBox");
+      Hive.openBox<Message>('messageBox').then((msgBox) {
+        messageBox = msgBox;
+        Log.yellow("openBox sessionBox");
+        Hive.openBox<Session>('sessionBox').then((sessionValue) {
+          sessionBox = sessionValue;
+          MessageCentre.init();
+        });
       });
-    }
-    return;
+    });
   }
 
   Future<List<Session>> getSessions() async {
@@ -178,8 +171,8 @@ class LocalStore {
     }
   }
 
-  static int getUnReadMessageCount(Box<Message> msgBox, {String? otherId}) {
-    List<Message> messageList = msgBox.values.toList();
+  static int getUnReadMessageCount(List<Message> messageList,
+      {String? otherId}) {
     int count = 0;
     if (otherId == null) {
       count =
@@ -206,8 +199,7 @@ class LocalStore {
   static closeHiveDB() {
     sessionBox!.close();
     messageBox!.close();
-    hiveModel?.close();
-    hiveModel = null;
+    Hive.close();
     Log.yellow("closeHiveDB done ");
   }
 

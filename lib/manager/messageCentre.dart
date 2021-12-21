@@ -109,7 +109,7 @@ class MessageCentre {
     _localStore.getSessions().then((List<Session>? localSessionList) {
       sessions = localSessionList ?? [];
       Log.yellow("_initSessions 开始");
-      Log.yellow("_initSessions Step1. 返回本地存储的数据 ${sessions?.length}");
+      Log.yellow("_initSessions Step1. 返回本地存储的数据 ${localSessionList?.length}");
 
       // Step2. 从Server获取最新数据。
       API.querySession().then((value) async {

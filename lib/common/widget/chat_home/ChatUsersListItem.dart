@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +25,7 @@ class ChatUsersListItem extends StatelessWidget {
   final int updateTime;
   final String content;
   final int sessionKey;
+  final int unReadNum;
   ChatUsersListItem(
       {required this.chatTopType,
       required this.title,
@@ -33,7 +35,8 @@ class ChatUsersListItem extends StatelessWidget {
       required this.chatId,
       required this.updateTime,
       required this.content,
-      required this.sessionKey});
+      required this.sessionKey,
+      required this.unReadNum});
   final manager = App.manager<ChatHomeManager>();
 
   @override
@@ -78,8 +81,16 @@ class ChatUsersListItem extends StatelessWidget {
                     }),
           dense: false,
           visualDensity: VisualDensity.comfortable,
-          leading: netWorkAvatar(icon, 25.0,
-              avatarType: chatType != 0 ? "groupAvatar" : "avatar"),
+          leading: Badge(
+              position: BadgePosition.topEnd(top: -5, end: -5),
+              toAnimate: false,
+              showBadge: unReadNum == 0 ? false : true,
+              elevation: 0.5,
+              badgeContent: Text('$unReadNum',
+                  style: Flavors.textStyles.homeTabBubbleText),
+              animationType: BadgeAnimationType.scale,
+              child: netWorkAvatar(icon, 25.0,
+                  avatarType: chatType != 0 ? "groupAvatar" : "avatar")),
           title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Container(
             padding: const EdgeInsets.only(top: 5.0),

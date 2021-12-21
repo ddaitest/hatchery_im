@@ -23,6 +23,7 @@ class _ChatPageState extends State<ChatPage>
   @override
   bool get wantKeepAlive => true;
   final manager = App.manager<ChatHomeManager>();
+  ValueListenable<Box<Session>> sessionBox = LocalStore.listenSessions();
 
   @override
   void initState() {
@@ -43,7 +44,7 @@ class _ChatPageState extends State<ChatPage>
             Container(
               padding: const EdgeInsets.only(bottom: 16.0),
               child: ValueListenableBuilder(
-                  valueListenable: manager.sessionBox,
+                  valueListenable: sessionBox,
                   builder: (context, Box<Session> box, _) {
                     Log.yellow("ValueListenableBuilder ${box.values.length}");
                     if (box.values.isEmpty) {
@@ -57,23 +58,26 @@ class _ChatPageState extends State<ChatPage>
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           Session? session = box.getAt(index);
+                          int unReadCount = manager.getUnReadCount(
+                              otherId: session?.otherID ?? "");
+                          Log.yellow("unReadCount $unReadCount");
                           if (session != null) {
                             return ChatUsersListItem(
-                              chatTopType: session.top,
-                              title: session.title,
-                              senderName: session.type == 1
-                                  ? session.lastGroupChatMessage!.nick
-                                  : "",
-                              icon: session.icon,
-                              //会话类型，0表示单聊，1表示群聊
-                              chatType: session.type,
-                              chatId: session.otherID,
-                              updateTime: session.updateTime,
-                              content: chatHomeSubtitleSet(session.type == 0
-                                  ? session.lastChatMessage
-                                  : session.lastGroupChatMessage),
-                              sessionKey: box.keyAt(index),
-                            );
+                                chatTopType: session.top,
+                                title: session.title,
+                                senderName: session.type == 1
+                                    ? session.lastGroupChatMessage!.nick
+                                    : "",
+                                icon: session.icon,
+                                //会话类型，0表示单聊，1表示群聊
+                                chatType: session.type,
+                                chatId: session.otherID,
+                                updateTime: session.updateTime,
+                                content: chatHomeSubtitleSet(session.type == 0
+                                    ? session.lastChatMessage
+                                    : session.lastGroupChatMessage),
+                                sessionKey: box.keyAt(index),
+                                unReadNum: unReadCount);
                           } else {
                             return Container();
                           }
