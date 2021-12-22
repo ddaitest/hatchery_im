@@ -45,7 +45,6 @@ class AppManager extends ChangeNotifier {
       BackgroundListen().init();
       if (UserCentre.isLogin()) {
         LocalStore.init();
-        MessageCentre.init();
         _configToSP();
       }
     });

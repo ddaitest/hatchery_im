@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/API.dart';
+import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
@@ -72,13 +73,18 @@ class LocalStore {
   }
 
   /// todo 需要重构，接收消息时只传otherId,然后查询最新的群/好友 头像和名称
-  static void refreshSession(Message message,
-      {String? otherId,
-      String? ownerId,
-      String? sessionName,
-      String? sessionImage,
-      int? sessionTime}) {
+  static Future<void> refreshSession(Message message, String? otherId) async {
     if (otherId != null) {
+      var info;
+
+      ApiResult values = message.type == "CHAT"
+          ? await API.getUsersInfo(otherId)
+          : await API.getGroupInfo(otherId);
+      if (values.isSuccess()) {
+        info = message.type == "CHAT"
+            ? UsersInfo.fromJson(values.getData())
+            : GroupInfo.fromJson(values.getData()['group']);
+      }
       Session? result = findSession(otherId);
       if (result != null) {
         Log.yellow("updateSession updateSession $otherId");
@@ -86,8 +92,8 @@ class LocalStore {
             ? result.lastGroupChatMessage = message
             : result.lastChatMessage = message;
         result
-          ..title = sessionName ?? ""
-          ..icon = sessionImage ?? ""
+          ..title = message.type == "CHAT" ? info.nickName : info.groupName
+          ..icon = info.icon ?? ""
           ..updateTime = message.createTime
           ..save();
       } else {
@@ -95,10 +101,11 @@ class LocalStore {
             chatType: message.isGroup() ? "GROUP" : "CHAT",
             message: message,
             sessionOtherId: otherId,
-            sessionOwnerId: ownerId ?? "",
-            sessionTitle: sessionName ?? "",
-            sessionIcon: sessionImage ?? "",
-            sessionTime: sessionTime);
+            sessionOwnerId: UserCentre.getUserID(),
+            sessionTitle:
+                message.type == "CHAT" ? info.nickName : info.groupName,
+            sessionIcon: info.icon ?? "",
+            sessionTime: message.createTime);
       }
       sortSession();
     }

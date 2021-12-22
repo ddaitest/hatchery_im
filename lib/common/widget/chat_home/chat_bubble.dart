@@ -108,7 +108,6 @@ class ChatBubble extends StatelessWidget {
         break;
       case "IMAGE":
         {
-          //TODO
           finalView = ImageMessageWidget(content['img_url'], belongType);
         }
         break;

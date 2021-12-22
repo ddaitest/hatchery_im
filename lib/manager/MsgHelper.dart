@@ -22,7 +22,7 @@ extension MessageExt on Message {
   }
 
   String? getOtherId() {
-    String myId = UserCentre.getInfo()?.userID ?? "";
+    String myId = UserCentre.getUserID();
     if (this.sender == myId) {
       if (isGroup()) {
         return this.groupID;

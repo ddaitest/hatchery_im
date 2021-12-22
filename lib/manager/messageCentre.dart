@@ -265,11 +265,7 @@ class MessageCentre {
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
     LocalStore.addMessage(message);
-    LocalStore.refreshSession(message,
-        otherId: to,
-        ownerId: _userInfo?.userID ?? "",
-        sessionName: otherName,
-        sessionImage: otherIcon);
+    LocalStore.refreshSession(message, to);
     LocalStore.findCache(msg.msgId)
       ?..progress = MSG_SENDING
       ..save();
@@ -293,11 +289,7 @@ class MessageCentre {
     LocalStore.findCache(msg.msgId)
       ?..progress = MSG_SENDING
       ..save();
-    LocalStore.refreshSession(message,
-        otherId: groupId,
-        ownerId: _userInfo?.userID ?? "",
-        sessionName: groupName,
-        sessionImage: groupIcon);
+    LocalStore.refreshSession(message, groupId);
   }
 
   static sendTextMessage(String chatType, String text,
@@ -463,10 +455,7 @@ class MyEngineHandler implements EngineCallback {
     msg
       ..progress = MSG_RECEIVED
       ..save();
-    LocalStore.refreshSession(msg,
-        otherId: msg.type == "CHAT" ? msg.sender : msg.groupID,
-        ownerId: msg.receiver,
-        sessionName: msg.nick,
-        sessionImage: msg.icon);
+    LocalStore.refreshSession(
+        msg, msg.type == "CHAT" ? msg.sender : msg.groupID);
   }
 }

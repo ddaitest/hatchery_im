@@ -161,7 +161,6 @@ class GroupProfileEditDetailPage extends StatelessWidget {
               padding: const EdgeInsets.all(6.0),
               child: TextButton(
                 onPressed: () {
-                  /// todo 区分提交的项目
                   /// sendType: 1、群组名称；2、群简介；3、群公告；4、群昵称
                   if (textEditingController.text != '') {
                     if (sendType == 1)
