@@ -250,11 +250,12 @@ class MessageCentre {
 
   /// 保存信息：根据id找到messageBox没有的数据并add进messageBox
   static void saveMessage(Message serverMessage) {
-    Message? msg = LocalStore.messageBox?.values.firstWhereOrNull(
-        (localMessage) => localMessage.id == serverMessage.id);
-    Log.red("saveMessage ${msg?.id} ${serverMessage.id}");
-    if (msg == null) {
-      Log.red("saveMessage ${msg?.id} ${serverMessage.id}");
+    List<Message> msgList = LocalStore.messageBox?.values
+            .where((element) => element.id == serverMessage.id)
+            .toList() ??
+        [];
+    if (msgList.isEmpty) {
+      Log.red("saveMessage ${serverMessage.id}");
       LocalStore.addMessage(serverMessage);
     }
   }
