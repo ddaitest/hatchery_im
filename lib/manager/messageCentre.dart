@@ -228,7 +228,6 @@ class MessageCentre {
   _syncMessage(List<Message>? messagesList) async {
     if (messagesList != null) {
       if (messagesList.isNotEmpty) {
-        Log.yellow("_syncMessage");
         messagesList.forEach((element) => saveMessage(element));
       }
     }
@@ -250,12 +249,10 @@ class MessageCentre {
 
   /// 保存信息：根据id找到messageBox没有的数据并add进messageBox
   static void saveMessage(Message serverMessage) {
-    List<Message> msgList = LocalStore.messageBox?.values
-            .where((element) => element.id == serverMessage.id)
-            .toList() ??
-        [];
-    if (msgList.isEmpty) {
-      Log.red("saveMessage ${serverMessage.id}");
+    Message? msg = LocalStore.messageBox?.values
+        .firstWhereOrNull((element) => element.id == serverMessage.id);
+    if (msg != null) {
+      Log.red("saveMessage ${msg.id} ${serverMessage.id}");
       LocalStore.addMessage(serverMessage);
     }
   }

@@ -67,7 +67,6 @@ class LocalStore {
     messageBox?.add(msg);
   }
 
-  /// todo 需要重构，接收消息时只传otherId,然后查询最新的群/好友 头像和名称
   static Future<void> refreshSession(Message message, String? otherId) async {
     if (otherId != null) {
       var info;
@@ -183,9 +182,9 @@ class LocalStore {
           .length;
     } else {
       count = messageList
-          .where((element) =>
-              element.getOtherId() == otherId &&
-              element.progress == MSG_RECEIVED)
+          .where((element) => element.type == "CHAT"
+              ? element.sender == otherId
+              : element.groupID == otherId && element.progress == MSG_RECEIVED)
           .length;
     }
     return count >= 0 ? count : 0;

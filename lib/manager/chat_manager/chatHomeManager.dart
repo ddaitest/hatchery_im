@@ -30,9 +30,7 @@ class ChatHomeManager extends ChangeNotifier {
 
   /// 初始化
   init() {
-    EasyLoading.show(status: '加载中...', dismissOnTap: false);
-    waitBoxLoad().then((_) {
-      EasyLoading.dismiss();
+    waitBoxLoad().whenComplete(() {
       MessageCentre.init();
       LocalStore.listenMessage().addListener(() {
         Log.yellow("ChatHomeManager listenMessage");

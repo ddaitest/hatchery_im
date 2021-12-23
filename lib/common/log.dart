@@ -18,6 +18,10 @@ class Log {
     log(msg, color: LColor.RED);
   }
 
+  static green(String msg) {
+    log(msg, color: LColor.GREEN);
+  }
+
   static log(String msg, {LColor color = LColor.WHITE}) {
     switch (color) {
       case LColor.WHITE:
