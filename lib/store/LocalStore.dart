@@ -30,14 +30,9 @@ class LocalStore {
       if (!Hive.isAdapterRegistered(ADAPTER_MESSAGE))
         Hive.registerAdapter(MessageAdapter());
       Log.yellow("openBox messageBox");
-      Hive.openBox<Message>('messageBox').then((msgBox) {
-        messageBox = msgBox;
-        Log.yellow("openBox sessionBox");
-        Hive.openBox<Session>('sessionBox').then((sessionValue) {
-          sessionBox = sessionValue;
-          MessageCentre.init();
-        });
-      });
+      messageBox = await Hive.openBox<Message>('messageBox');
+      Log.yellow("openBox sessionBox");
+      sessionBox = await Hive.openBox<Session>('sessionBox');
     });
   }
 
@@ -212,6 +207,7 @@ class LocalStore {
     sessionBox!.close();
     messageBox!.close();
     Hive.close();
+    MessageCentre.engine?.disconnect();
     Log.yellow("closeHiveDB done ");
   }
 

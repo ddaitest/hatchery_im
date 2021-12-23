@@ -30,10 +30,20 @@ class ChatHomeManager extends ChangeNotifier {
 
   /// 初始化
   init() {
-    LocalStore.listenMessage().addListener(() {
-      Log.yellow("ChatHomeManager listenMessage");
-      getUnReadCount();
+    EasyLoading.show(status: '加载中...', dismissOnTap: false);
+    waitBoxLoad().then((_) {
+      EasyLoading.dismiss();
+      MessageCentre.init();
+      LocalStore.listenMessage().addListener(() {
+        Log.yellow("ChatHomeManager listenMessage");
+        getUnReadCount();
+      });
     });
+  }
+
+  Future<void> waitBoxLoad() async {
+    await Future.doWhile(
+        () => LocalStore.messageBox == null && LocalStore.sessionBox == null);
   }
 
   int getUnReadCount({String? otherId}) {

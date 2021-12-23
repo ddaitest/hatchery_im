@@ -199,11 +199,29 @@ class MessageCentre {
   ///同步message 本地有的忽略，本地没有的加入，最多50条
   _syncNewMessage(Session? serverSession) {
     if (serverSession != null && serverSession.otherID != "") {
+      List<Message> localMessageList =
+          LocalStore.messageBox?.values.toList() ?? [];
       serverSession.type == 0
           ? _queryHistoryFriend(serverSession.otherID)
-              .then((List<Message>? msgList) => _syncMessage(msgList))
+              .then((List<Message>? msgList) {
+              if (msgList != null && msgList.isNotEmpty) {
+                if (localMessageList.isEmpty) {
+                  LocalStore.messageBox?.addAll(msgList);
+                } else {
+                  _syncMessage(msgList);
+                }
+              }
+            })
           : _queryHistoryGroup(serverSession.otherID)
-              .then((List<Message>? msgList) => _syncMessage(msgList));
+              .then((List<Message>? msgList) {
+              if (msgList != null && msgList.isNotEmpty) {
+                if (localMessageList.isEmpty) {
+                  LocalStore.messageBox?.addAll(msgList);
+                } else {
+                  _syncMessage(msgList);
+                }
+              }
+            });
     }
   }
 
@@ -234,8 +252,10 @@ class MessageCentre {
   static void saveMessage(Message serverMessage) {
     Message? msg = LocalStore.messageBox?.values.firstWhereOrNull(
         (localMessage) => localMessage.id == serverMessage.id);
+    Log.red("saveMessage ${msg?.id} ${serverMessage.id}");
     if (msg == null) {
-      LocalStore.messageBox?.add(serverMessage);
+      Log.red("saveMessage ${msg?.id} ${serverMessage.id}");
+      LocalStore.addMessage(serverMessage);
     }
   }
 

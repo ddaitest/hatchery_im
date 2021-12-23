@@ -60,7 +60,6 @@ class UserCentre {
   static void logout() {
     SP.delete(SPKey.userInfo);
     LocalStore.closeHiveDB();
-    MessageCentre.engine?.disconnect();
     _info = null;
     _token = null;
   }
