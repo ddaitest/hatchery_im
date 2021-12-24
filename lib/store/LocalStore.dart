@@ -76,7 +76,9 @@ class LocalStore {
     messageBox?.add(msg);
   }
 
-  static Future<void> refreshSession(Message message, String? otherId) async {
+  /// 刷新session，尽量传sessionTime
+  static Future<void> refreshSession(Message message, String? otherId,
+      {int? sessionTime}) async {
     if (otherId != null) {
       var info;
 
@@ -93,7 +95,6 @@ class LocalStore {
           LocalStore.messageBox?.values.toList() ?? [],
           otherId: otherId);
       if (result != null) {
-        Log.yellow("updateSession updateSession $otherId");
         message.isGroup()
             ? result.lastGroupChatMessage = message
             : result.lastChatMessage = message;
@@ -101,7 +102,7 @@ class LocalStore {
         result
           ..title = message.type == "CHAT" ? info.nickName : info.groupName
           ..icon = info.icon ?? ""
-          ..updateTime = message.createTime
+          ..updateTime = sessionTime ?? DateTime.now().millisecondsSinceEpoch
           ..save();
       } else {
         createNewSession(
@@ -112,13 +113,14 @@ class LocalStore {
             sessionTitle:
                 message.type == "CHAT" ? info.nickName : info.groupName,
             sessionIcon: info.icon ?? "",
-            sessionTime: message.createTime,
+            sessionTime: sessionTime,
             unRead: unReadCount > 0 ? unReadCount : 0);
       }
       sortSession();
     }
   }
 
+  /// 创建session
   static void createNewSession(
       {String? chatType,
       Message? message,
@@ -146,9 +148,9 @@ class LocalStore {
     }
   }
 
+  /// 设置首页session置顶，设置成功后重新排序session
   static void setChatTop({String? otherId, int chatTopType = 0}) {
     if (otherId != null) {
-      Log.red("DEBUG=> setChatTop $otherId chatTopType $chatTopType");
       findSession(otherId)
         ?..top = chatTopType
         ..save();
@@ -172,7 +174,7 @@ class LocalStore {
       }
     });
     if (topChatSession.isNotEmpty) {
-      /// 按消息更新时间排序，置顶和普通分别排序，可能有简便的写法
+      /// 按消息更新时间排序，置顶和普通分别排序，可能有简单的写法
       topChatSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
       unTopChatSession.sort((a, b) => a.updateTime.compareTo(b.updateTime));
 
@@ -189,17 +191,16 @@ class LocalStore {
     }
   }
 
+  /// 获取消息未读数，来源：Message.progress = MSG_RECEIVED
   static int getUnReadMessageCount(List<Message> messageList,
       {String? otherId}) {
     int count = 0;
-    if (otherId == null) {
-      count = messageList
-          .where((element) => element.progress == MSG_RECEIVED)
-          .length;
-    } else {
+    if (otherId != null) {
       count = messageList
           .where((element) => element.type == "CHAT"
-              ? element.sender == otherId && element.progress == MSG_RECEIVED
+              ? element.sender == otherId &&
+                  element.receiver == UserCentre.getUserID() &&
+                  element.progress == MSG_RECEIVED
               : element.groupID == otherId && element.progress == MSG_RECEIVED)
           .length;
     }

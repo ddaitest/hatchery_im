@@ -30,27 +30,32 @@ class ChatHomeManager extends ChangeNotifier {
 
   /// 初始化
   init() {
+    /// 等待hive和messageBox & sessionBox初始化完成后再加载 MessageCentre.init()
     waitBoxLoad().whenComplete(() {
       MessageCentre.init();
-      LocalStore.listenMessage().addListener(() {
-        Log.yellow("ChatHomeManager listenMessage");
+      LocalStore.listenSessions().addListener(() {
+        Log.yellow("ChatHomeManager listenSessions");
         getUnReadTotalCount();
       });
     });
   }
 
+  /// 等待hive和messageBox & sessionBox初始化完成
   Future<void> waitBoxLoad() async {
     await Future.doWhile(
         () => LocalStore.messageBox == null && LocalStore.sessionBox == null);
   }
 
+  /// 获取总的未读消息数。来源：其他session的未读数的总和，大于等于0条时才会刷新UI
   int getUnReadTotalCount() {
     int count = 0;
-    count = LocalStore.getUnReadMessageCount(
-        LocalStore.messageBox?.values.toList() ?? []);
-    Log.green("getUnReadTotalCount $count");
+    LocalStore.sessionBox?.values.forEach((Session session) {
+      if (session.unReadCount != null) {
+        count = count + session.unReadCount!;
+      }
+    });
     totalUnReadMessageCount = count;
-    if (count > 0) notifyListeners();
+    if (count >= 0) notifyListeners();
     return totalUnReadMessageCount;
   }
 

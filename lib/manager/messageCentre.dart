@@ -165,11 +165,15 @@ class MessageCentre {
     if (before == null) {
       Log.yellow("本地没有session，先创建并填充接口数据");
       // 本地没有session，先创建并填充接口数据
-      LocalStore.refreshSession(
-          latest.type == CHAT_TYPE_ONE
-              ? latest.lastChatMessage!
-              : latest.lastGroupChatMessage!,
-          latest.otherID);
+      Session? result = LocalStore.findSession(latest.otherID);
+      if (result == null) {
+        LocalStore.refreshSession(
+            latest.type == CHAT_TYPE_ONE
+                ? latest.lastChatMessage!
+                : latest.lastGroupChatMessage!,
+            latest.otherID,
+            sessionTime: latest.updateTime);
+      }
     } else {
       // 本地有session，更新数据
       if (otherId != null) {
@@ -277,7 +281,7 @@ class MessageCentre {
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
     LocalStore.addMessage(message);
-    LocalStore.refreshSession(message, to);
+    LocalStore.refreshSession(message, to, sessionTime: message.createTime);
     LocalStore.findCache(msg.msgId)
       ?..progress = MSG_SENDING
       ..save();
@@ -301,7 +305,8 @@ class MessageCentre {
     LocalStore.findCache(msg.msgId)
       ?..progress = MSG_SENDING
       ..save();
-    LocalStore.refreshSession(message, groupId);
+    LocalStore.refreshSession(message, groupId,
+        sessionTime: message.createTime);
   }
 
   static sendTextMessage(String chatType, String text,
@@ -468,6 +473,7 @@ class MyEngineHandler implements EngineCallback {
       ..progress = MSG_RECEIVED
       ..save();
     LocalStore.refreshSession(
-        msg, msg.type == "CHAT" ? msg.sender : msg.groupID);
+        msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
+        sessionTime: msg.createTime);
   }
 }

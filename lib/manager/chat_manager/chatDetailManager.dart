@@ -86,6 +86,7 @@ class ChatDetailManager extends ChangeNotifier {
     loadMessages();
     LocalStore.listenMessage().addListener(() {
       loadMessages();
+      clearUnReadStatus(); // 如果停留在当前消息详情页则会自动清除未读状态
     });
     clearUnReadStatus();
   }
@@ -111,12 +112,15 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
+  /// 清除消息未读状态，会影响首页session的未读和mainTab上的总未读数
+  /// messageBox和sessionBox都会刷新数据
   void clearUnReadStatus() {
     Iterable<Message>? messageList = currentFriendId == ""
         ? LocalStore.messageBox?.values
             .where((element) => element.groupID == currentGroupId)
         : LocalStore.messageBox?.values.where((element) =>
-            element.sender == currentFriendId && element.groupID == null);
+            element.sender == currentFriendId &&
+            element.receiver == UserCentre.getUserID());
     Session? session = LocalStore.findSession(
         currentFriendId == "" ? currentGroupId : currentFriendId);
     if (session != null) {
@@ -127,7 +131,6 @@ class ChatDetailManager extends ChangeNotifier {
     if (messageList != null && messageList.isNotEmpty) {
       messageList.forEach((element) {
         if (element.progress == MSG_RECEIVED) {
-          Log.red("clearUnReadStatus ${element.groupID}");
           element
             ..progress = MSG_READ
             ..save();
