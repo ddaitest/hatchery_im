@@ -165,17 +165,11 @@ class MessageCentre {
     if (before == null) {
       Log.yellow("本地没有session，先创建并填充接口数据");
       // 本地没有session，先创建并填充接口数据
-      LocalStore.createNewSession(
-          chatType: latest.type == CHAT_TYPE_ONE ? "CHAT" : "GROUP",
-          message: latest.type == CHAT_TYPE_ONE
-              ? latest.lastChatMessage
-              : latest.lastGroupChatMessage,
-          sessionOtherId: latest.otherID,
-          sessionOwnerId: latest.ownerID,
-          sessionTitle: latest.title,
-          sessionIcon: latest.icon,
-          sessionTime: latest.lastChatMessage?.createTime ??
-              latest.lastGroupChatMessage!.createTime);
+      LocalStore.refreshSession(
+          latest.type == CHAT_TYPE_ONE
+              ? latest.lastChatMessage!
+              : latest.lastGroupChatMessage!,
+          latest.otherID);
     } else {
       // 本地有session，更新数据
       if (otherId != null) {

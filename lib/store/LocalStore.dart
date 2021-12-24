@@ -60,6 +60,15 @@ class LocalStore {
     return result;
   }
 
+  static Iterable<Message>? findMessage(String otherId) {
+    Iterable<Message>? result;
+    try {
+      result = messageBox?.values
+          .where((element) => element.getOtherId() == otherId);
+    } catch (e) {}
+    return result;
+  }
+
   static Map<String, Message> cache = Map();
 
   static void addMessage(Message msg) {
@@ -80,11 +89,15 @@ class LocalStore {
             : GroupInfo.fromJson(values.getData()['group']);
       }
       Session? result = findSession(otherId);
+      int unReadCount = getUnReadMessageCount(
+          LocalStore.messageBox?.values.toList() ?? [],
+          otherId: otherId);
       if (result != null) {
         Log.yellow("updateSession updateSession $otherId");
         message.isGroup()
             ? result.lastGroupChatMessage = message
             : result.lastChatMessage = message;
+        if (unReadCount > 0) result.unReadCount = unReadCount;
         result
           ..title = message.type == "CHAT" ? info.nickName : info.groupName
           ..icon = info.icon ?? ""
@@ -99,7 +112,8 @@ class LocalStore {
             sessionTitle:
                 message.type == "CHAT" ? info.nickName : info.groupName,
             sessionIcon: info.icon ?? "",
-            sessionTime: message.createTime);
+            sessionTime: message.createTime,
+            unRead: unReadCount > 0 ? unReadCount : 0);
       }
       sortSession();
     }
@@ -112,7 +126,8 @@ class LocalStore {
       String sessionOwnerId = "",
       String sessionTitle = "",
       String sessionIcon = "",
-      int? sessionTime}) {
+      int? sessionTime,
+      int unRead = 0}) {
     if (message != null) {
       Session session = Session(
           message.id,
@@ -125,7 +140,8 @@ class LocalStore {
           chatType == "GROUP" ? message : null,
           message.createTime,
           sessionTime ?? DateTime.now().millisecondsSinceEpoch,
-          0);
+          0,
+          unRead);
       sessionBox?.add(session);
     }
   }
@@ -183,7 +199,7 @@ class LocalStore {
     } else {
       count = messageList
           .where((element) => element.type == "CHAT"
-              ? element.sender == otherId
+              ? element.sender == otherId && element.progress == MSG_RECEIVED
               : element.groupID == otherId && element.progress == MSG_RECEIVED)
           .length;
     }

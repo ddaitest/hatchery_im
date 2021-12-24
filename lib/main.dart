@@ -27,7 +27,6 @@ import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupProfileManager.dart';
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
-import 'package:amap_flutter_map/amap_flutter_map.dart';
 
 import 'manager/emojiModel_manager.dart';
 

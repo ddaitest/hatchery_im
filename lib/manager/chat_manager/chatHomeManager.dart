@@ -34,7 +34,7 @@ class ChatHomeManager extends ChangeNotifier {
       MessageCentre.init();
       LocalStore.listenMessage().addListener(() {
         Log.yellow("ChatHomeManager listenMessage");
-        getUnReadCount();
+        getUnReadTotalCount();
       });
     });
   }
@@ -44,18 +44,14 @@ class ChatHomeManager extends ChangeNotifier {
         () => LocalStore.messageBox == null && LocalStore.sessionBox == null);
   }
 
-  int getUnReadCount({String? otherId}) {
+  int getUnReadTotalCount() {
     int count = 0;
     count = LocalStore.getUnReadMessageCount(
-        LocalStore.messageBox?.values.toList() ?? [],
-        otherId: otherId);
-    if (otherId == null) {
-      totalUnReadMessageCount = count;
-      notifyListeners();
-      return totalUnReadMessageCount;
-    } else {
-      return count;
-    }
+        LocalStore.messageBox?.values.toList() ?? []);
+    Log.green("getUnReadTotalCount $count");
+    totalUnReadMessageCount = count;
+    if (count > 0) notifyListeners();
+    return totalUnReadMessageCount;
   }
 
   @override

@@ -58,8 +58,7 @@ class _ChatPageState extends State<ChatPage>
                         physics: const BouncingScrollPhysics(),
                         itemBuilder: (context, index) {
                           Session? session = box.getAt(index);
-                          int unReadCount = manager.getUnReadCount(
-                              otherId: session?.otherID ?? "");
+                          int unReadCount = session?.unReadCount ?? 0;
                           Log.yellow("unReadCount $unReadCount");
                           if (session != null) {
                             return ChatUsersListItem(

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/app_manager/app_handler.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
@@ -86,6 +87,7 @@ class ChatDetailManager extends ChangeNotifier {
     LocalStore.listenMessage().addListener(() {
       loadMessages();
     });
+    clearUnReadStatus();
   }
 
   void loadMessages() {
@@ -106,6 +108,31 @@ class ChatDetailManager extends ChangeNotifier {
       tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
           .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
       messageList.value = tempList;
+    }
+  }
+
+  void clearUnReadStatus() {
+    Iterable<Message>? messageList = currentFriendId == ""
+        ? LocalStore.messageBox?.values
+            .where((element) => element.groupID == currentGroupId)
+        : LocalStore.messageBox?.values.where((element) =>
+            element.sender == currentFriendId && element.groupID == null);
+    Session? session = LocalStore.findSession(
+        currentFriendId == "" ? currentGroupId : currentFriendId);
+    if (session != null) {
+      session
+        ..unReadCount = 0
+        ..save();
+    }
+    if (messageList != null && messageList.isNotEmpty) {
+      messageList.forEach((element) {
+        if (element.progress == MSG_RECEIVED) {
+          Log.red("clearUnReadStatus ${element.groupID}");
+          element
+            ..progress = MSG_READ
+            ..save();
+        }
+      });
     }
   }
 
