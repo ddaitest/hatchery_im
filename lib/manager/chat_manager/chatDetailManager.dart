@@ -85,8 +85,8 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupIcon = groupIcon;
     loadMessages();
     LocalStore.listenMessage().addListener(() {
-      loadMessages();
       clearUnReadStatus(); // 如果停留在当前消息详情页则会自动清除未读状态
+      loadMessages();
     });
     clearUnReadStatus();
   }
@@ -115,12 +115,10 @@ class ChatDetailManager extends ChangeNotifier {
   /// 清除消息未读状态，会影响首页session的未读和mainTab上的总未读数
   /// messageBox和sessionBox都会刷新数据
   void clearUnReadStatus() {
-    Iterable<Message>? messageList = currentFriendId == ""
-        ? LocalStore.messageBox?.values
-            .where((element) => element.groupID == currentGroupId)
-        : LocalStore.messageBox?.values.where((element) =>
-            element.sender == currentFriendId &&
-            element.receiver == UserCentre.getUserID());
+    List<Message>? temp = [];
+    MessageCentre.getMessages(
+            otherId: currentFriendId == "" ? currentGroupId : currentFriendId)
+        .then((value) => temp = value);
     Session? session = LocalStore.findSession(
         currentFriendId == "" ? currentGroupId : currentFriendId);
     if (session != null) {
@@ -128,8 +126,8 @@ class ChatDetailManager extends ChangeNotifier {
         ..unReadCount = 0
         ..save();
     }
-    if (messageList != null && messageList.isNotEmpty) {
-      messageList.forEach((element) {
+    if (temp != null && temp!.isNotEmpty) {
+      temp!.forEach((element) {
         if (element.progress == MSG_RECEIVED) {
           element
             ..progress = MSG_READ
@@ -142,7 +140,7 @@ class ChatDetailManager extends ChangeNotifier {
   /// 加载最新的消息，数据来源 本地。
   _loadLatest(String otherId) {
     // 读本地
-    MessageCentre.getMessages(otherId).then((value) {
+    MessageCentre.getMessages(otherId: otherId).then((value) {
       if (value.length > 0) {
         // messagesList = value;
         notifyListeners();

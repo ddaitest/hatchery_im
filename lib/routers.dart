@@ -21,6 +21,7 @@ import 'package:hatchery_im/common/widget/profile/edit_detail.dart';
 import 'package:hatchery_im/business/group_page/group_profile/group_profile.dart';
 import 'package:hatchery_im/common/widget/webview_common.dart';
 import 'business/chat_detail/chat_detail_page.dart';
+import 'business/chat_detail/chat_setting.dart';
 import 'business/contacts/contactsApply/receiveContactsApply.dart';
 import 'business/contacts/contactsApply/sendContactsApply.dart';
 import 'business/main_tab.dart';
@@ -93,6 +94,13 @@ class Routers {
                   groupId: map['groupId'] ?? '',
                   groupName: map['groupName'] ?? '',
                   groupIcon: map['groupIcon'] ?? '',
+                ));
+      case '/chat_setting':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => ChatSettingPage(
+                  otherId: map['otherId'] ?? '',
+                  chatType: map['chatType'] ?? '',
                 ));
       case '/search_new_contacts':
         return MaterialPageRoute(builder: (_) => SearchNewContactsPage());

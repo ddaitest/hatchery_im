@@ -40,10 +40,6 @@ class LocalStore {
     return sessionBox?.values.toList() ?? [];
   }
 
-  Future<List<Message>> getMessages() async {
-    return messageBox?.values.toList() ?? [];
-  }
-
   void saveSessions(List<Session>? sessions) {
     if (sessions != null) {
       Log.yellow("saveSessions. ${sessions.length} ");
@@ -143,7 +139,8 @@ class LocalStore {
           message.createTime,
           sessionTime ?? DateTime.now().millisecondsSinceEpoch,
           0,
-          unRead);
+          unRead,
+          0);
       sessionBox?.add(session);
     }
   }

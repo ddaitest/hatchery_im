@@ -321,6 +321,7 @@ Session _$SessionFromJson(Map<String, dynamic> json) => Session(
       json['createTime'] as int,
       json['top'] as int?,
       json['unReadCount'] as int?,
+      json['mute'] as int?,
     );
 
 Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
@@ -336,4 +337,5 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
       'createTime': instance.createTime,
       'top': instance.top,
       'unReadCount': instance.unReadCount,
+      'mute': instance.mute,
     };

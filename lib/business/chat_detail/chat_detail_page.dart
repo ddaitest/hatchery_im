@@ -13,6 +13,7 @@ import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.da
 import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
+import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -115,7 +116,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar.chatDetailAppBar(appTitleName),
+      appBar: ChatDetailPageAppBar.chatDetailAppBar(appTitleName,
+          otherId: widget.chatType == "CHAT" ? widget.friendId : widget.groupId,
+          chatType: widget.chatType,
+          groupName: widget.groupName,
+          groupIcon: widget.groupIcon),
       backgroundColor: Colors.grey[100],
       body: Column(
         children: <Widget>[

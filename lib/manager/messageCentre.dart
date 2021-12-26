@@ -83,8 +83,19 @@ class MessageCentre {
     // sendAuth();
   }
 
-  static Future<List<Message>> getMessages(String friendId) async {
-    return [];
+  ///传otherId搜索对应message；不传otherId搜索全部message
+  static Future<List<Message>> getMessages({String? otherId}) async {
+    if (otherId != null) {
+      return LocalStore.messageBox?.values
+              .where((element) => element.type == "CHAT"
+                  ? element.sender == otherId &&
+                      element.receiver == UserCentre.getUserID()
+                  : element.groupID == otherId)
+              .toList() ??
+          [];
+    } else {
+      return LocalStore.messageBox?.values.toList() ?? [];
+    }
   }
 
   listenSessions(SessionListener listener) {

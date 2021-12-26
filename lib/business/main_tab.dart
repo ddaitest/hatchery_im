@@ -15,9 +15,9 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/manager/app_manager/appManager.dart';
 import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
-import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import '../api/entity.dart';
+import 'package:flutter/foundation.dart';
 import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';
@@ -48,6 +48,9 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     GroupPage(),
     MyProfilePage()
   ];
+  Set<String> popMenuTile = !kReleaseMode
+      ? {'添加好友', '创建群组', '扫一扫', 'TestPage', 'MapView'}
+      : {'添加好友', '创建群组', '扫一扫'};
 
   PageController _pageController = PageController();
   int _tabIndex = 0;
@@ -138,8 +141,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
                     icon: Icon(Icons.more_vert,
                         size: 25, color: Flavors.colorInfo.darkGreyColor),
                     itemBuilder: (BuildContext context) {
-                      return {'添加好友', '创建群组', '扫一扫', 'TestPage', 'MapView'}
-                          .map((String choice) {
+                      return popMenuTile.map((String choice) {
                         return PopupMenuItem<String>(
                           value: choice,
                           child: Text(

@@ -28,6 +28,7 @@ import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupPr
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 
+import 'manager/chat_manager/chatSettingManager.dart';
 import 'manager/emojiModel_manager.dart';
 
 void main() {
@@ -51,6 +52,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => FriendApplyManager()),
         ChangeNotifierProvider(create: (_) => BlockListManager()),
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
+        ChangeNotifierProvider(create: (_) => ChatSettingManager()),
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),
         ChangeNotifierProvider(create: (_) => SelectContactsModelManager()),
         ChangeNotifierProvider(create: (_) => ShowMapManager()),
