@@ -302,8 +302,7 @@ class Message extends HiveObject {
   String contentType;
   int createTime;
   String? groupID;
-  int? progress;
-  // int progress = 0; // 0默认; 1发送中; 2发送完成; 3已读; 4收到的消息。
+  int? progress; // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
 
   Message(
       this.id,

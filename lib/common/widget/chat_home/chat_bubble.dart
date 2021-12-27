@@ -14,6 +14,7 @@ import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/locationMessageView.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:provider/provider.dart';
 
@@ -60,7 +61,7 @@ class ChatBubble extends StatelessWidget {
               style: Flavors.textStyles.chatBubbleTimeText),
         ),
         Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           textDirection: messageBelongType == MessageBelongType.Receiver
               ? TextDirection.ltr
@@ -90,6 +91,8 @@ class ChatBubble extends StatelessWidget {
                   )
                 : switchMessageTypeView(
                     contentMessages.contentType, messageBelongType),
+            Container(width: 10.0.w),
+            _sentMessageStatusIcon(),
           ],
         ),
       ],
@@ -151,36 +154,62 @@ class ChatBubble extends StatelessWidget {
     return finalView;
   }
 
-  Widget _textMessageView(String content, MessageBelongType belongType,
-      {int showIconStatus = 0}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        belongType == MessageBelongType.Sender && showIconStatus == 1
-            ? Container(
-                child: CupertinoActivityIndicator(radius: 7.0),
-              )
-            : Container(),
-        Container(width: 7.0.w),
-        Container(
-          constraints: BoxConstraints(
-            maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: belongType == MessageBelongType.Receiver
-                ? Colors.white
-                : Flavors.colorInfo.mainColor,
-          ),
-          padding: const EdgeInsets.all(10),
-          child: Text('$content',
-              maxLines: 10,
-              softWrap: true,
-              style: messageBelongType == MessageBelongType.Receiver
-                  ? Flavors.textStyles.chatBubbleReceiverText
-                  : Flavors.textStyles.chatBubbleSenderText),
-        )
-      ],
+  // 发送状态Widget
+  // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
+  Widget _statusIcon({int progress = 0}) {
+    Widget finalView;
+    switch (progress) {
+      case 0:
+        {
+          finalView = Icon(Icons.error, size: 25.0, color: Colors.pink);
+        }
+        break;
+      case 1:
+        {
+          finalView = CupertinoActivityIndicator(radius: 7.0);
+        }
+        break;
+      case 2:
+        {
+          finalView = Container();
+        }
+        break;
+      default:
+        {
+          finalView = Container();
+        }
+        break;
+    }
+    return finalView;
+  }
+
+  // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
+  Widget _sentMessageStatusIcon() {
+    if (contentMessages.sender == UserCentre.getUserID()) {
+      return _statusIcon(progress: contentMessages.progress ?? 2);
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _textMessageView(String content, MessageBelongType belongType) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: belongType == MessageBelongType.Receiver
+            ? Colors.white
+            : Flavors.colorInfo.mainColor,
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Text('$content',
+          maxLines: 10,
+          softWrap: true,
+          style: messageBelongType == MessageBelongType.Receiver
+              ? Flavors.textStyles.chatBubbleReceiverText
+              : Flavors.textStyles.chatBubbleSenderText),
     );
   }
 

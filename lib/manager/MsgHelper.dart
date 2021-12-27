@@ -1,6 +1,7 @@
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 
+// 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
 const MSG_FAULT = 0;
 const MSG_SENDING = 1;
 const MSG_SENT = 2;
