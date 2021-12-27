@@ -117,7 +117,7 @@ class MessageCentre {
   ///获取 session 信息. 然后同步每个session 最新的消息。
   initSessions() async {
     // Step1. 返回本地存储的数据。
-    _localStore.getSessions().then((List<Session>? localSessionList) {
+    LocalStore.getSessions().then((List<Session>? localSessionList) {
       sessions = localSessionList ?? [];
       Log.yellow("_initSessions 开始");
       Log.yellow("_initSessions Step1. 返回本地存储的数据 ${localSessionList?.length}");

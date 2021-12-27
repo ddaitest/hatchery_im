@@ -37,7 +37,7 @@ class _ChatSettingPageState extends State<ChatSettingPage> {
     return Scaffold(
         appBar: AppBarFactory.backButton(''),
         body: Container(
-          padding: const EdgeInsets.only(left: 12, top: 12, right: 12),
+          padding: const EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
           child: _listInfo(),
         ));
   }
@@ -53,8 +53,8 @@ class _ChatSettingPageState extends State<ChatSettingPage> {
       children: [
         _messageTopSet(),
         _messageMuteSet(),
-        SizedBox(height: 40.0),
-        _deleteHistoryMessageBtnView()
+        // SizedBox(height: 40.0.h),
+        // _deleteHistoryMessageBtnView()
       ],
     );
   }
@@ -78,6 +78,7 @@ class _ChatSettingPageState extends State<ChatSettingPage> {
               value: isTop,
               onChanged: (bool value) {
                 print("DEBUG=> CupertinoSwitch $value");
+                manager.setTopMsgSwitch(widget.otherId ?? "", !isTop);
               });
         },
         selector:
@@ -106,6 +107,7 @@ class _ChatSettingPageState extends State<ChatSettingPage> {
               value: isMute,
               onChanged: (bool value) {
                 print("DEBUG=> CupertinoSwitch $value");
+                manager.setMuteMsgSwitch(widget.otherId ?? "", !isMute);
               });
         },
         selector:
@@ -115,38 +117,39 @@ class _ChatSettingPageState extends State<ChatSettingPage> {
         shouldRebuild: (pre, next) => (pre != next));
   }
 
-  Widget _deleteHistoryMessageBtnView() {
-    return TextButton(
-      onPressed: () => _deleteConfirmDialog(widget.otherId!),
-      style: ElevatedButton.styleFrom(
-        elevation: 0.0,
-        primary: Flavors.colorInfo.redColor,
-        padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4.0),
-        ),
-      ),
-      child: Text(
-        '删除本地消息记录',
-        textAlign: TextAlign.center,
-        style: Flavors.textStyles.deleteFriendBtnText,
-      ),
-    );
-  }
-
-  _deleteConfirmDialog(String friendId) {
-    return CoolAlert.show(
-      context: App.navState.currentContext!,
-      type: CoolAlertType.warning,
-      showCancelBtn: true,
-      cancelBtnText: '取消',
-      confirmBtnText: '删除',
-      confirmBtnColor: Flavors.colorInfo.mainColor,
-      onConfirmBtnTap: () {
-        Navigator.of(App.navState.currentContext!).pop(true);
-      },
-      title: '确认清空聊天记录?',
-      text: "删除后此好友/群组的本地聊天记录将被移除",
-    );
-  }
+  // Widget _deleteHistoryMessageBtnView() {
+  //   return TextButton(
+  //     onPressed: () => _deleteConfirmDialog(widget.otherId!),
+  //     style: ElevatedButton.styleFrom(
+  //       elevation: 0.0,
+  //       primary: Flavors.colorInfo.redColor,
+  //       padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(4.0),
+  //       ),
+  //     ),
+  //     child: Text(
+  //       '删除本地消息记录',
+  //       textAlign: TextAlign.center,
+  //       style: Flavors.textStyles.deleteFriendBtnText,
+  //     ),
+  //   );
+  // }
+  //
+  // _deleteConfirmDialog(String friendId) {
+  //   return CoolAlert.show(
+  //     context: App.navState.currentContext!,
+  //     type: CoolAlertType.warning,
+  //     showCancelBtn: true,
+  //     cancelBtnText: '取消',
+  //     confirmBtnText: '删除',
+  //     confirmBtnColor: Flavors.colorInfo.mainColor,
+  //     onConfirmBtnTap: () {
+  //       Navigator.of(App.navState.currentContext!).pop(true);
+  //       manager.deleteMsgHistory(widget.otherId);
+  //     },
+  //     title: '确认清空聊天记录?',
+  //     text: "删除后此好友/群组的本地聊天记录将被移除",
+  //   );
+  // }
 }

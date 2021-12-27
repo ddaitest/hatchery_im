@@ -151,24 +151,36 @@ class ChatBubble extends StatelessWidget {
     return finalView;
   }
 
-  Widget _textMessageView(String content, MessageBelongType belongType) {
-    return Container(
-      constraints: BoxConstraints(
-        maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: belongType == MessageBelongType.Receiver
-            ? Colors.white
-            : Flavors.colorInfo.mainColor,
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Text('$content',
-          maxLines: 10,
-          softWrap: true,
-          style: messageBelongType == MessageBelongType.Receiver
-              ? Flavors.textStyles.chatBubbleReceiverText
-              : Flavors.textStyles.chatBubbleSenderText),
+  Widget _textMessageView(String content, MessageBelongType belongType,
+      {int showIconStatus = 0}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        belongType == MessageBelongType.Sender && showIconStatus == 1
+            ? Container(
+                child: CupertinoActivityIndicator(radius: 7.0),
+              )
+            : Container(),
+        Container(width: 7.0.w),
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: belongType == MessageBelongType.Receiver
+                ? Colors.white
+                : Flavors.colorInfo.mainColor,
+          ),
+          padding: const EdgeInsets.all(10),
+          child: Text('$content',
+              maxLines: 10,
+              softWrap: true,
+              style: messageBelongType == MessageBelongType.Receiver
+                  ? Flavors.textStyles.chatBubbleReceiverText
+                  : Flavors.textStyles.chatBubbleSenderText),
+        )
+      ],
     );
   }
 

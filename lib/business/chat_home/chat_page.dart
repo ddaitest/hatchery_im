@@ -64,7 +64,8 @@ class _ChatPageState extends State<ChatPage>
                           Log.yellow("unReadCount $unReadCount");
                           if (session != null) {
                             return ChatUsersListItem(
-                                chatTopType: session.top,
+                                chatTopType: session.top, // 置顶状态
+                                chatMute: session.mute, // 静音状态
                                 title: session.title,
                                 senderName: session.type == 1
                                     ? session.lastGroupChatMessage!.nick

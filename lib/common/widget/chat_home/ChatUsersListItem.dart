@@ -17,6 +17,7 @@ import '../aboutAvatar.dart';
 
 class ChatUsersListItem extends StatelessWidget {
   final int? chatTopType;
+  final int? chatMute;
   final String title;
   final String senderName;
   final String icon;
@@ -28,6 +29,7 @@ class ChatUsersListItem extends StatelessWidget {
   final int unReadNum;
   ChatUsersListItem(
       {required this.chatTopType,
+      required this.chatMute,
       required this.title,
       required this.senderName,
       required this.icon,
@@ -49,8 +51,12 @@ class ChatUsersListItem extends StatelessWidget {
           onPressed: (_) => LocalStore.setChatTop(
               otherId: chatId, chatTopType: chatTopType == 1 ? 0 : 1)),
       SlideActionInfo(
-          '不提醒', Icons.notifications_off, Flavors.colorInfo.blueGrey),
-      SlideActionInfo('删除', Icons.delete, Colors.red,
+          chatMute == 0 ? '关闭提醒' : '打开提醒',
+          chatTopType == 0 ? Icons.notifications_off : Icons.notifications_on,
+          Flavors.colorInfo.blueGrey,
+          onPressed: (_) => LocalStore.setChatMute(
+              otherId: chatId, chatMuteType: chatMute == 1 ? 0 : 1)),
+      SlideActionInfo('删除', Icons.delete, Colors.pinkAccent,
           onPressed: (_) => LocalStore.deleteSession(sessionKey)),
     ];
     return Slidable(

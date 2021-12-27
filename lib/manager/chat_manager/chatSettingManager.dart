@@ -42,15 +42,39 @@ class ChatSettingManager extends ChangeNotifier {
     }
   }
 
-  /// 删除此otherId的本地聊天记录
-  Future<void> deleteMsgHistory(String? otherId) async {
-    if (otherId != null) {
-      List<Message> msgList = [];
-      MessageCentre.getMessages(otherId: otherId)
-          .then((value) => msgList = value);
-      if (msgList.isNotEmpty) {}
-    }
+  void setTopMsgSwitch(String otherId, bool switchValue) {
+    LocalStore.setChatTop(otherId: otherId, chatTopType: switchValue ? 1 : 0)
+        .then((bool value) {
+      if (value) {
+        isTop = switchValue;
+        notifyListeners();
+      }
+    });
   }
+
+  void setMuteMsgSwitch(String otherId, bool switchValue) {
+    LocalStore.setChatMute(otherId: otherId, chatMuteType: switchValue ? 1 : 0)
+        .then((bool value) {
+      if (value) {
+        isMute = switchValue;
+        notifyListeners();
+      }
+    });
+  }
+
+  // /// 删除此otherId的本地聊天记录
+  // Future<void> deleteMsgHistory(String? otherId) async {
+  //   if (otherId != null || otherId != "") {
+  //     List<Message> msgList = [];
+  //     MessageCentre.getMessages(otherId: otherId)
+  //         .then((value) => msgList = value);
+  //     if (msgList.isNotEmpty) {
+  //       msgList.forEach((element) {
+  //         element.delete();
+  //       });
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {

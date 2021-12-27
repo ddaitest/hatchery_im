@@ -36,7 +36,7 @@ class LocalStore {
     });
   }
 
-  Future<List<Session>> getSessions() async {
+  static Future<List<Session>> getSessions() async {
     return sessionBox?.values.toList() ?? [];
   }
 
@@ -146,16 +146,32 @@ class LocalStore {
   }
 
   /// 设置首页session置顶，设置成功后重新排序session
-  static void setChatTop({String? otherId, int chatTopType = 0}) {
-    if (otherId != null) {
+  static Future<bool> setChatTop({String? otherId, int chatTopType = 0}) async {
+    if (otherId != null && otherId != "") {
       findSession(otherId)
         ?..top = chatTopType
         ..save();
       showToast("设置成功");
+      sortSession();
+      return true;
     } else {
       showToast("设置失败，请重试");
+      return false;
     }
-    sortSession();
+  }
+
+  static Future<bool> setChatMute(
+      {String? otherId, int chatMuteType = 0}) async {
+    if (otherId != null && otherId != "") {
+      findSession(otherId)
+        ?..mute = chatMuteType
+        ..save();
+      showToast("设置成功");
+      return true;
+    } else {
+      showToast("设置失败，请重试");
+      return false;
+    }
   }
 
   /// 置顶消息重新排序
