@@ -98,6 +98,14 @@ class MessageCentre {
     }
   }
 
+  static deleteMessage(String? userMsgID) {
+    if (userMsgID != null) {
+      LocalStore.messageBox?.values
+          .firstWhereOrNull((element) => element.userMsgID == userMsgID)
+          ?.delete();
+    }
+  }
+
   listenSessions(SessionListener listener) {
     sessionListener = listener;
     if (sessions != null) {

@@ -19,6 +19,8 @@ import 'package:hatchery_im/routers.dart';
 import 'package:provider/provider.dart';
 
 import '../../../config.dart';
+import '../../../manager/messageCentre.dart';
+import '../../log.dart';
 import '../aboutAvatar.dart';
 
 class ChatBubble extends StatelessWidget {
@@ -154,6 +156,59 @@ class ChatBubble extends StatelessWidget {
     return finalView;
   }
 
+  String _checkContentType() {
+    String finalMessage;
+    Map<String, dynamic> content = convert.jsonDecode(contentMessages.content);
+    switch (contentMessages.contentType) {
+      case "TEXT":
+        {
+          finalMessage = content['text'];
+        }
+        break;
+      case "IMAGE":
+        {
+          finalMessage = content['img_url'];
+        }
+        break;
+      case "VIDEO":
+        {
+          finalMessage = content['video_url'];
+        }
+        break;
+      case "VOICE":
+        {
+          finalMessage = content['voice_url'];
+        }
+        break;
+      // case "FILE":
+      //   {
+      //     finalMessage = content['file_url'];
+      //   }
+      //   break;
+      case "URL":
+        {
+          finalMessage = content['text'];
+        }
+        break;
+      // case "CARD":
+      //   {
+      //     finalMessage = content;
+      //   }
+      //   break;
+      // case "GEO":
+      //   {
+      //     finalMessage = content;
+      //   }
+      //   break;
+      default:
+        {
+          finalMessage = content['text'];
+        }
+        break;
+    }
+    return finalMessage;
+  }
+
   // 发送状态Widget
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
   Widget _statusIcon({int progress = 0}) {
@@ -161,7 +216,20 @@ class ChatBubble extends StatelessWidget {
     switch (progress) {
       case 0:
         {
-          finalView = Icon(Icons.error, size: 25.0, color: Colors.pink);
+          finalView = IconButton(
+              onPressed: () {
+                if (contentMessages.contentType != "FILE" &&
+                    contentMessages.contentType != "GEO") {
+                  Log.yellow(
+                      "contentMessages.id.toString() ${contentMessages.id.toString()}");
+                  MessageCentre.deleteMessage(contentMessages.id.toString());
+                  manager.sendMessage(
+                      _checkContentType(), contentMessages.contentType);
+                } else {
+                  showToast("请重新发送");
+                }
+              },
+              icon: Icon(Icons.error, size: 25.0, color: Colors.pink));
         }
         break;
       case 1:
@@ -186,7 +254,7 @@ class ChatBubble extends StatelessWidget {
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
   Widget _sentMessageStatusIcon() {
     if (contentMessages.sender == UserCentre.getUserID()) {
-      return _statusIcon(progress: contentMessages.progress ?? 2);
+      return _statusIcon(progress: contentMessages.progress ?? 0);
     } else {
       return Container();
     }
