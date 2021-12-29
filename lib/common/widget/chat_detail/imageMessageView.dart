@@ -20,7 +20,7 @@ class ImageMessageWidget extends StatelessWidget {
   }
 
   Widget _imageMessageView() {
-    if (imageMessageUrl.contains("http://")) {
+    if (imageMessageUrl.contains("http")) {
       return GestureDetector(
           onTap: () => Routers.navigateTo('/imageDetail',
               arg: {"imageUrl": imageMessageUrl}),

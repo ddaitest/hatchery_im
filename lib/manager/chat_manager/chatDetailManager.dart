@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
+import 'package:hatchery_im/api/engine/Protocols.dart';
+import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/MsgHelper.dart';
@@ -189,7 +191,6 @@ class ChatDetailManager extends ChangeNotifier {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {
       var uploadProgress = count.toDouble() / total.toDouble();
-      // todo 思路1：根据list 的index set map
       // Map<String, dynamic> progressMap = {
       //   "id": id,
       //   "uploadProgress": uploadProgress
@@ -216,8 +217,8 @@ class ChatDetailManager extends ChangeNotifier {
     await assetEntity!.file.then((fileValue) {
       if (assetEntity.type == AssetType.image) {
         print("DEBUG=> fileValue!.path ${fileValue!.path}");
-        // messagesList.insert(
-        //     0, setMediaMessageMap(_timeNow, "IMAGE", fileValue.path));
+        String msgId = fakeMediaMessage(
+            fileValue.path, "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
         fileValue.length().then((lengthValue) {
           if (lengthValue > 2080000) {
             compressionImage(fileValue.path).then((compressionValue) {
@@ -276,6 +277,42 @@ class ChatDetailManager extends ChangeNotifier {
             "content_length": result.files[0].size / 1024
           }, "FILE");
       });
+    }
+  }
+
+  String fakeMediaMessage(String localMediaPath, String contentType) {
+    if (currentFriendId != "") {
+      CSSendMessage msg = Protocols.sendMessage(
+          myProfileData?.userID ?? "",
+          myProfileData?.nickName ?? "",
+          currentFriendId,
+          myProfileData?.icon ?? "",
+          TARGET_PLATFORM,
+          localMediaPath,
+          contentType);
+      Message message = ModelHelper.convertMessage(msg);
+      LocalStore.addMessage(message);
+      LocalStore.findCache(msg.msgId)
+        ?..progress = MSG_SENDING
+        ..save();
+      return msg.msgId;
+    } else {
+      CSSendGroupMessage msg = Protocols.sendGroupMessage(
+          myProfileData?.userID ?? "",
+          myProfileData?.nickName ?? "",
+          myProfileData?.icon ?? "",
+          currentGroupId,
+          currentGroupName,
+          currentGroupIcon,
+          TARGET_PLATFORM,
+          localMediaPath,
+          contentType);
+      Message message = ModelHelper.convertGroupMessage(msg);
+      LocalStore.addMessage(message);
+      LocalStore.findCache(msg.msgId)
+        ?..progress = MSG_SENDING
+        ..save();
+      return msg.msgId;
     }
   }
 

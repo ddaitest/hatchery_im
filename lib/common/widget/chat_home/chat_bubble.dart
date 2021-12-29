@@ -13,6 +13,7 @@ import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/locationMessageView.dart';
+import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
@@ -156,10 +157,10 @@ class ChatBubble extends StatelessWidget {
     return finalView;
   }
 
-  String _checkContentType() {
+  String _checkContentType(Message temp) {
     String finalMessage;
-    Map<String, dynamic> content = convert.jsonDecode(contentMessages.content);
-    switch (contentMessages.contentType) {
+    Map<String, dynamic> content = convert.jsonDecode(temp.content);
+    switch (temp.contentType) {
       case "TEXT":
         {
           finalMessage = content['text'];
@@ -218,18 +219,21 @@ class ChatBubble extends StatelessWidget {
         {
           finalView = IconButton(
               onPressed: () {
-                if (contentMessages.contentType != "FILE" &&
-                    contentMessages.contentType != "GEO") {
-                  Log.yellow(
-                      "contentMessages.id.toString() ${contentMessages.id.toString()}");
-                  MessageCentre.deleteMessage(contentMessages.id.toString());
-                  manager.sendMessage(
-                      _checkContentType(), contentMessages.contentType);
-                } else {
-                  showToast("请重新发送");
-                }
+                showToast("请重新发送");
+                // if (contentMessages.contentType != "FILE" &&
+                //     contentMessages.contentType != "GEO") {
+                //   contentMessages
+                //     ..progress = MSG_SENDING
+                //     ..createTime = DateTime.now().millisecondsSinceEpoch
+                //     ..save();
+                //   Message temp = contentMessages;
+                //   manager.sendMessage(
+                //       _checkContentType(temp), contentMessages.contentType);
+                // } else {
+                //   showToast("请重新发送");
+                // }
               },
-              icon: Icon(Icons.error, size: 25.0, color: Colors.pink));
+              icon: Icon(Icons.error, size: 25.0, color: Colors.red));
         }
         break;
       case 1:
