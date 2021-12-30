@@ -309,7 +309,7 @@ class MessageCentre {
     }
     if (msgId != null) {
       LocalStore.findCache(msgId)
-        ?..content = MSG_SENDING
+        ?..content = content
         ..save();
     }
     LocalStore.refreshSession(message, to, sessionTime: message.createTime);
@@ -337,6 +337,25 @@ class MessageCentre {
     LocalStore.refreshSession(message, groupId,
         sessionTime: message.createTime);
   }
+
+  // static checkMediaContent(String contentType, String mediaUrl) {
+  //   String? finalContent;
+  //   switch (contentType) {
+  //     case "IMAGE":
+  //       finalContent = jsonEncode({"image_url": mediaUrl});
+  //       break;
+  //     case "VIDEO":
+  //       finalContent = jsonEncode({"video_url": mediaUrl});
+  //       break;
+  //     case "VOICE":
+  //       finalContent = jsonEncode({"voice_url": mediaUrl});
+  //       break;
+  //     case "FILE":
+  //       finalContent = mediaUrl;
+  //       break;
+  //   }
+  //   return finalContent;
+  // }
 
   static sendTextMessage(String chatType, String text,
       {String? otherName,
