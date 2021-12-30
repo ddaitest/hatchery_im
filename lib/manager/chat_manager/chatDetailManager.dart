@@ -162,7 +162,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (_entity == null) {
       return null;
     } else {
-      sendLocalMessage(_entity);
+      sendLocalMediaMessage(_entity);
     }
   }
 
@@ -187,7 +187,7 @@ class ChatDetailManager extends ChangeNotifier {
   //   return Message.fromJson(map);
   // }
 
-  Future<String?> uploadMediaFile(int id, String filePath) async {
+  Future<String?> uploadMediaFile(String filePath) async {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {
       var uploadProgress = count.toDouble() / total.toDouble();
@@ -195,7 +195,6 @@ class ChatDetailManager extends ChangeNotifier {
       //   "id": id,
       //   "uploadProgress": uploadProgress
       // };
-      print("DEBUG=> uploadProgress = $id $uploadProgress");
     });
     if (result.isSuccess()) {
       final url = result.getData();
@@ -212,37 +211,44 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void sendLocalMessage(AssetEntity? assetEntity) async {
-    DateTime _timeNow = DateTime.now();
+  void sendLocalMediaMessage(AssetEntity? assetEntity) async {
     await assetEntity!.file.then((fileValue) {
+      String? finalMediaUrl;
+      String? msgId;
       if (assetEntity.type == AssetType.image) {
         print("DEBUG=> fileValue!.path ${fileValue!.path}");
-        String msgId = fakeMediaMessage(
+        msgId = fakeMediaMessage(
             fileValue.path, "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
         fileValue.length().then((lengthValue) {
           if (lengthValue > 2080000) {
             compressionImage(fileValue.path).then((compressionValue) {
-              uploadMediaFile(_timeNow.millisecondsSinceEpoch, compressionValue)
-                  .then((uploadMediaUrl) {
-                if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "IMAGE");
+              uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+                finalMediaUrl = uploadMediaUrl;
               });
             });
           } else {
-            uploadMediaFile(_timeNow.millisecondsSinceEpoch, fileValue.path)
-                .then((uploadMediaUrl) {
-              if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "IMAGE");
+            msgId = fakeMediaMessage(fileValue.path, "VIDEO");
+            uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
+              finalMediaUrl = uploadMediaUrl;
             });
           }
         });
       } else if (assetEntity.type == AssetType.video) {
-        // messagesList.insert(
-        //     0, setMediaMessageMap(_timeNow, "VIDEO", fileValue!.path));
         compressionVideo(fileValue!.path).then((compressionValue) {
-          uploadMediaFile(_timeNow.millisecondsSinceEpoch, compressionValue)
-              .then((uploadMediaUrl) {
-            if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "VIDEO");
+          uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+            finalMediaUrl = uploadMediaUrl;
           });
         });
+      }
+      if (finalMediaUrl != null) {
+        String? messageType;
+        if (assetEntity.type == AssetType.image) {
+          messageType = "IMAGE";
+        } else if (assetEntity.type == AssetType.video) {
+          messageType = "VIDEO";
+        }
+        if (messageType != null)
+          sendMessage(finalMediaUrl!, messageType, msgId: msgId);
       }
     });
   }
@@ -258,7 +264,7 @@ class ChatDetailManager extends ChangeNotifier {
       return null;
     } else {
       assets.forEach((element) {
-        sendLocalMessage(element);
+        sendLocalMediaMessage(element);
       });
     }
   }
@@ -268,8 +274,7 @@ class ChatDetailManager extends ChangeNotifier {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
       DateTime _timeNow = DateTime.now();
-      uploadMediaFile(_timeNow.millisecondsSinceEpoch, result.files[0].path!)
-          .then((uploadMediaUrl) {
+      uploadMediaFile(result.files[0].path!).then((uploadMediaUrl) {
         if (uploadMediaUrl != "")
           sendMessage({
             "name": "${result.files[0].name}",
@@ -385,9 +390,7 @@ class ChatDetailManager extends ChangeNotifier {
     print("DEBUG=> recordTiming $recordTiming");
     if (recordTiming >= 3) {
       Future.delayed(Duration(milliseconds: 500), () {
-        DateTime _timeNow = DateTime.now();
-        uploadMediaFile(_timeNow.millisecondsSinceEpoch, voicePath!)
-            .then((uploadMediaUrl) {
+        uploadMediaFile(voicePath!).then((uploadMediaUrl) {
           if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "VOICE");
         });
       });
@@ -423,7 +426,7 @@ class ChatDetailManager extends ChangeNotifier {
     isRecording = false;
   }
 
-  void sendMessage(var term, String messageType) {
+  void sendMessage(var term, String messageType, {String? msgId}) {
     switch (messageType) {
       case "TEXT":
         MessageCentre.sendTextMessage(
@@ -438,40 +441,34 @@ class ChatDetailManager extends ChangeNotifier {
         );
         break;
       case "IMAGE":
-        MessageCentre.sendImageMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendImageMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       case "VIDEO":
-        MessageCentre.sendVideoMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendVideoMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       case "VOICE":
-        MessageCentre.sendVoiceMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendVoiceMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       case "GEO":
         MessageCentre.sendGeoMessage(
@@ -486,16 +483,14 @@ class ChatDetailManager extends ChangeNotifier {
         );
         break;
       case "FILE":
-        MessageCentre.sendFileMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendFileMessage(currentChatType!, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       default:
         MessageCentre.sendTextMessage(

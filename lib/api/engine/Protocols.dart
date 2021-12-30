@@ -25,9 +25,10 @@ class Protocols {
 
   ///单聊消息（C-->S）
   static CSSendMessage sendMessage(String from, String nick, String to,
-          String icon, String source, String content, String contentType) =>
-      CSSendMessage(getMsgID(), Types.CHAT.stringValue(), "", from, nick, to,
-          icon, source, content, contentType);
+          String icon, String source, String content, String contentType,
+          {String? msgId}) =>
+      CSSendMessage(msgId == null ?getMsgID() : msgId, Types.CHAT.stringValue(), "", from, nick, to, icon,
+          source, content, contentType);
 
   ///群聊消息（C-->S）
   static CSSendGroupMessage sendGroupMessage(
@@ -39,8 +40,8 @@ class Protocols {
           String groupIcon,
           String source,
           String content,
-          String contentType) =>
-      CSSendGroupMessage(getMsgID(), Types.GROUP.stringValue(), "", from, nick,
+          String contentType, {String? msgId}) =>
+      CSSendGroupMessage(msgId == null ?getMsgID(), Types.GROUP.stringValue(), "", from, nick,
           icon, groupId, groupName, groupIcon, source, content, contentType);
 
   ///单聊客户端ACK消息（C-->S）

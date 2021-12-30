@@ -287,7 +287,8 @@ class MessageCentre {
   /// string to //接受者(用户ID)
   /// string content_type
   static sendMessage(String to, String content, String otherName,
-      String otherIcon, String contentType) {
+      String otherIcon, String contentType,
+      {String? msgId}) {
     CSSendMessage msg = Protocols.sendMessage(
         _userInfo?.userID ?? "",
         _userInfo?.nickName ?? "",
@@ -295,15 +296,22 @@ class MessageCentre {
         _userInfo?.icon ?? "",
         TARGET_PLATFORM,
         content,
-        contentType);
-
+        contentType,
+        msgId: msgId);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
-    Log.yellow("sendMessage ${message.progress} ${msg.toJson()}");
-    LocalStore.addMessage(message);
-    LocalStore.findCache(msg.msgId)
-      ?..progress = MSG_SENDING
-      ..save();
+    if (msg.contentType == "TEXT" || msg.contentType == "GEO") {
+      Log.yellow("sendMessage ${message.progress} ${msg.toJson()}");
+      LocalStore.addMessage(message);
+      LocalStore.findCache(msg.msgId)
+        ?..progress = MSG_SENDING
+        ..save();
+    }
+    if (msgId != null) {
+      LocalStore.findCache(msgId)
+        ?..content = MSG_SENDING
+        ..save();
+    }
     LocalStore.refreshSession(message, to, sessionTime: message.createTime);
   }
 
@@ -336,8 +344,7 @@ class MessageCentre {
       String? groupId,
       String? groupName,
       String? groupIcon,
-      String? friendId,
-      bool reSend = false}) {
+      String? friendId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode({"text": text}), otherName ?? "",
             otherIcon ?? "", "TEXT")
@@ -352,10 +359,10 @@ class MessageCentre {
       String? groupName,
       String? groupIcon,
       String? friendId,
-      bool reSend = false}) {
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode({"img_url": imageUrl}),
-            otherName ?? "", otherIcon ?? "", "IMAGE")
+            otherName ?? "", otherIcon ?? "", "IMAGE", msgId: msgId)
         : sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"img_url": imageUrl}), "IMAGE");
   }
@@ -367,10 +374,10 @@ class MessageCentre {
       String? groupName,
       String? groupIcon,
       String? friendId,
-      bool reSend = false}) {
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode({"video_url": videoUrl}),
-            otherName ?? "", otherIcon ?? "", "VIDEO")
+            otherName ?? "", otherIcon ?? "", "VIDEO", msgId: msgId)
         : sendGroupMessage(groupId!, groupName!, groupIcon!,
             jsonEncode({"video_url": videoUrl}), "VIDEO");
   }
@@ -382,10 +389,11 @@ class MessageCentre {
       String? groupName,
       String? groupIcon,
       String? friendId,
-      bool reSend = false}) {
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode({"voice_url": voiceUrl}),
-            otherName ?? "", otherIcon ?? "", "VOICE")
+            otherName ?? "", otherIcon ?? "", "VOICE",
+            msgId: msgId)
         : sendGroupMessage(
             groupId!,
             groupName!,
@@ -415,10 +423,11 @@ class MessageCentre {
       String? groupId,
       String? groupName,
       String? groupIcon,
-      String? friendId}) {
+      String? friendId,
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode(fileMap), otherName ?? "",
-            otherIcon ?? "", "FILE")
+            otherIcon ?? "", "FILE", msgId: msgId)
         : sendGroupMessage(
             groupId!, groupName!, groupIcon!, jsonEncode(fileMap), "FILE");
   }
@@ -451,6 +460,7 @@ class MyEngineHandler implements EngineCallback {
         ..progress = MSG_SENT
         ..save();
     }
+
     Log.red("onMessageSent ${msg?.id}");
   }
 

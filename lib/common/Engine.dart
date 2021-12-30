@@ -160,11 +160,11 @@ class Engine {
     // var data = DispatchProtocol.parser(message);
     try {
       var json = jsonDecode(message);
+      Log.yellow("_handleData()  $json");
       String type = json['type'];
       Types t = Types.values.firstWhere((e) => e.stringValue() == type);
       switch (t) {
         case Types.CHAT: //收到消息。
-          Log.yellow("_handleData() CHAT is $json");
           _handleChat(CSSendMessage.fromJson(json));
           break;
         case Types.GROUP: //收到群聊消息。
