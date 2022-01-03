@@ -15,6 +15,9 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../config.dart';
+import '../../routers.dart';
+
 class QRCodeCardPage extends StatefulWidget {
   final String? avatarUrl, nickName, account, userID;
   QRCodeCardPage({this.avatarUrl, this.nickName, this.account, this.userID});
@@ -23,8 +26,6 @@ class QRCodeCardPage extends StatefulWidget {
 }
 
 class QRCodeCardState extends State<QRCodeCardPage> {
-  Uint8List? _imageFile;
-
   //Create an instance of ScreenshotController
   ScreenshotController screenshotController = ScreenshotController();
   @override
@@ -111,24 +112,32 @@ class QRCodeCardState extends State<QRCodeCardPage> {
         actions: <Widget>[
           CupertinoActionSheetAction(
               child: Text('分享给其他人',
-                  style: TextStyle(color: Flavors.colorInfo.mainColor)),
+                  style: Flavors.textStyles.qrCodeCardNickNameText),
               isDefaultAction: true,
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(App.navState.currentContext!);
+                Routers.navigateTo('/select_contacts_model', arg: {
+                  'titleText': '分享名片',
+                  'tipsText': '请至少选择一名好友',
+                  'leastSelected': 1,
+                  'nextPageBtnText': '分享',
+                  'selectContactsType': SelectContactsType.Share,
+                  'groupMembersFriendId': ['']
+                });
               }),
           CupertinoActionSheetAction(
               child: Text('保存二维码',
-                  style: TextStyle(color: Flavors.colorInfo.mainColor)),
+                  style: Flavors.textStyles.qrCodeCardNickNameText),
               isDefaultAction: true,
               onPressed: () {
                 _saveQRImage();
-                Navigator.pop(context);
+                Navigator.pop(App.navState.currentContext!);
               }),
         ],
         cancelButton: CupertinoActionSheetAction(
             child: const Text('取消'),
             isDefaultAction: false,
-            onPressed: () => Navigator.pop(context)),
+            onPressed: () => Navigator.pop(App.navState.currentContext!)),
       ),
     );
   }
@@ -140,7 +149,7 @@ class QRCodeCardState extends State<QRCodeCardPage> {
         if (value) {
           showToast('二维码已保存到相册');
         } else {
-          showToast('保存失败，没有本地存储权限');
+          showToast('保存失败，没有存储权限');
         }
       });
     });

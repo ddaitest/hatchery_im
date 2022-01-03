@@ -300,7 +300,9 @@ class MessageCentre {
         msgId: msgId);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
-    if (msg.contentType == "TEXT" || msg.contentType == "GEO") {
+    if (msg.contentType == "TEXT" ||
+        msg.contentType == "GEO" ||
+        msg.contentType == "CARD") {
       Log.yellow("sendMessage ${message.progress} ${msg.toJson()}");
       LocalStore.addMessage(message);
       LocalStore.findCache(msg.msgId)
@@ -316,7 +318,8 @@ class MessageCentre {
   }
 
   static sendGroupMessage(String groupId, String groupName, String groupIcon,
-      String content, String contentType) {
+      String content, String contentType,
+      {String? msgId}) {
     CSSendGroupMessage msg = Protocols.sendGroupMessage(
         _userInfo?.userID ?? "",
         _userInfo?.nickName ?? "",
@@ -326,36 +329,125 @@ class MessageCentre {
         groupIcon,
         TARGET_PLATFORM,
         content,
-        contentType);
+        contentType,
+        msgId: msgId);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
-    Log.yellow("sendMessage ${msg.toJson()}");
-    LocalStore.addMessage(message);
-    LocalStore.findCache(msg.msgId)
-      ?..progress = MSG_SENDING
-      ..save();
+    if (msg.contentType == "TEXT" || msg.contentType == "GEO") {
+      Log.yellow("sendGroupMessage ${message.progress} ${msg.toJson()}");
+      LocalStore.addMessage(message);
+      LocalStore.findCache(msg.msgId)
+        ?..progress = MSG_SENDING
+        ..save();
+    }
+    if (msgId != null) {
+      LocalStore.findCache(msgId)
+        ?..content = content
+        ..save();
+    }
     LocalStore.refreshSession(message, groupId,
         sessionTime: message.createTime);
   }
 
-  // static checkMediaContent(String contentType, String mediaUrl) {
-  //   String? finalContent;
-  //   switch (contentType) {
-  //     case "IMAGE":
-  //       finalContent = jsonEncode({"image_url": mediaUrl});
-  //       break;
-  //     case "VIDEO":
-  //       finalContent = jsonEncode({"video_url": mediaUrl});
-  //       break;
-  //     case "VOICE":
-  //       finalContent = jsonEncode({"voice_url": mediaUrl});
-  //       break;
-  //     case "FILE":
-  //       finalContent = mediaUrl;
-  //       break;
-  //   }
-  //   return finalContent;
-  // }
+  static sendMessageModel(
+      {required var term,
+      required String chatType,
+      required String messageType,
+      required String otherName,
+      required String otherIcon,
+      required String currentGroupId,
+      required String currentGroupName,
+      required String currentGroupIcon,
+      required String currentFriendId,
+      String? msgId}) {
+    switch (messageType) {
+      case "TEXT":
+        MessageCentre.sendTextMessage(
+          chatType,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
+        break;
+      case "IMAGE":
+        MessageCentre.sendImageMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
+        break;
+      case "VIDEO":
+        MessageCentre.sendVideoMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
+        break;
+      case "VOICE":
+        MessageCentre.sendVoiceMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
+        break;
+      case "GEO":
+        MessageCentre.sendGeoMessage(
+          chatType,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
+        break;
+      case "FILE":
+        MessageCentre.sendFileMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
+        break;
+      case "CARD":
+        MessageCentre.sendCardMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId);
+        break;
+      default:
+        MessageCentre.sendTextMessage(
+          chatType,
+          term,
+          otherName: otherName,
+          otherIcon: otherIcon,
+          groupId: currentGroupId,
+          groupName: currentGroupName,
+          groupIcon: currentGroupIcon,
+          friendId: currentFriendId,
+        );
+        break;
+    }
+  }
 
   static sendTextMessage(String chatType, String text,
       {String? otherName,
@@ -383,7 +475,8 @@ class MessageCentre {
         ? sendMessage(friendId!, jsonEncode({"img_url": imageUrl}),
             otherName ?? "", otherIcon ?? "", "IMAGE", msgId: msgId)
         : sendGroupMessage(groupId!, groupName!, groupIcon!,
-            jsonEncode({"img_url": imageUrl}), "IMAGE");
+            jsonEncode({"img_url": imageUrl}), "IMAGE",
+            msgId: msgId);
   }
 
   static sendVideoMessage(String chatType, String videoUrl,
@@ -398,7 +491,8 @@ class MessageCentre {
         ? sendMessage(friendId!, jsonEncode({"video_url": videoUrl}),
             otherName ?? "", otherIcon ?? "", "VIDEO", msgId: msgId)
         : sendGroupMessage(groupId!, groupName!, groupIcon!,
-            jsonEncode({"video_url": videoUrl}), "VIDEO");
+            jsonEncode({"video_url": videoUrl}), "VIDEO",
+            msgId: msgId);
   }
 
   static sendVoiceMessage(String chatType, String voiceUrl,
@@ -411,15 +505,10 @@ class MessageCentre {
       String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode({"voice_url": voiceUrl}),
-            otherName ?? "", otherIcon ?? "", "VOICE",
-            msgId: msgId)
-        : sendGroupMessage(
-            groupId!,
-            groupName!,
-            groupIcon!,
-            jsonEncode({"voice_url": voiceUrl}),
-            "VOICE",
-          );
+            otherName ?? "", otherIcon ?? "", "VOICE", msgId: msgId)
+        : sendGroupMessage(groupId!, groupName!, groupIcon!,
+            jsonEncode({"voice_url": voiceUrl}), "VOICE",
+            msgId: msgId);
   }
 
   static sendGeoMessage(String chatType, Map<String, dynamic> positionMap,
@@ -448,7 +537,22 @@ class MessageCentre {
         ? sendMessage(friendId!, jsonEncode(fileMap), otherName ?? "",
             otherIcon ?? "", "FILE", msgId: msgId)
         : sendGroupMessage(
-            groupId!, groupName!, groupIcon!, jsonEncode(fileMap), "FILE");
+            groupId!, groupName!, groupIcon!, jsonEncode(fileMap), "FILE",
+            msgId: msgId);
+  }
+
+  static sendCardMessage(String chatType, Map<String, dynamic> cardMap,
+      {String? otherName,
+      String? otherIcon,
+      String? groupId,
+      String? groupName,
+      String? groupIcon,
+      String? friendId}) {
+    chatType == "CHAT"
+        ? sendMessage(friendId!, jsonEncode(cardMap), otherName ?? "",
+            otherIcon ?? "", "CARD")
+        : sendGroupMessage(
+            groupId!, groupName!, groupIcon!, jsonEncode(cardMap), "CARD");
   }
 
   static void disconnect() => engine?.disconnect();

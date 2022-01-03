@@ -28,9 +28,7 @@ class CardMessageWidget extends StatelessWidget {
           width: 180.0.w,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: belongType == MessageBelongType.Receiver
-                ? Colors.white
-                : Flavors.colorInfo.mainColor,
+            color: Colors.white,
           ),
           padding: const EdgeInsets.all(10),
           child: Column(
@@ -51,7 +49,7 @@ class CardMessageWidget extends StatelessWidget {
                           width: 100.0.w,
                           child: Text(
                             '${content['nick']}',
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           )),
                     ],

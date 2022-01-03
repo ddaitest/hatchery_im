@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/widget/loading_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 import '../../../config.dart';
+import '../../AppContext.dart';
+import '../../log.dart';
 
 class CheckBoxContactsUsersItem extends StatefulWidget {
-  final List<Friends> friendsLists;
+  final List<Friends>? friendsLists;
   final List<GroupMembers>? groupMembersList;
   final SelectContactsType selectContactsType;
-  final manager;
-  CheckBoxContactsUsersItem(this.friendsLists, this.groupMembersList,
-      this.selectContactsType, this.manager);
+  CheckBoxContactsUsersItem(
+      this.friendsLists, this.groupMembersList, this.selectContactsType);
   @override
   _CheckBoxContactsUsersItemState createState() =>
       _CheckBoxContactsUsersItemState();
@@ -21,10 +22,11 @@ class CheckBoxContactsUsersItem extends StatefulWidget {
 class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
   Map<String, bool> _isChecked = Map();
   List<String> groupMembersFriendId = [];
+  final manager = App.manager<SelectContactsModelManager>();
 
   @override
   void initState() {
-    print("DEBUG=> friendsLists ${widget.friendsLists}");
+    Log.green("friendsLists ${widget.friendsLists}");
     // print("DEBUG=> groupMembersList ${widget.groupMembersList!}");
     if (widget.selectContactsType == SelectContactsType.AddGroupMember) {
       if (widget.groupMembersList != null) {
@@ -33,8 +35,8 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
             widget.groupMembersList!.forEach((element) {
               groupMembersFriendId.add(element.userID!);
             });
-            print("DEBUG=> groupMembersFriendId ${groupMembersFriendId}");
-            widget.friendsLists.forEach((element) {
+            Log.green("groupMembersFriendId ${groupMembersFriendId}");
+            widget.friendsLists?.forEach((element) {
               if (groupMembersFriendId.contains(element.friendId)) {
                 _isChecked[element.friendId] = true;
               } else {
@@ -53,7 +55,7 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
   void dispose() {
     groupMembersFriendId.clear();
     widget.groupMembersList?.clear();
-    widget.friendsLists.clear();
+    widget.friendsLists?.clear();
     super.dispose();
   }
 
@@ -78,23 +80,25 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
               onChanged: widget.selectContactsType ==
                           SelectContactsType.CreateGroup ||
                       widget.selectContactsType ==
-                          SelectContactsType.AddGroupMember
+                          SelectContactsType.AddGroupMember ||
+                      widget.selectContactsType == SelectContactsType.Share
                   ? groupMembersFriendId
-                          .contains(widget.friendsLists[index].friendId)
+                          .contains(widget.friendsLists?[index].friendId)
                       ? null
                       : (value) {
-                          print("DEBUG=> value $value");
-                          if (widget.friendsLists.isNotEmpty) {
-                            _isChecked[widget.friendsLists[index].friendId] =
+                          Log.green("value $value");
+                          if (widget.friendsLists != null &&
+                              widget.friendsLists!.isNotEmpty) {
+                            _isChecked[widget.friendsLists![index].friendId] =
                                 value!;
                             setState(() {
                               if (_isChecked[
-                                  widget.friendsLists[index].friendId]!) {
-                                widget.manager.addSelectedFriendsIntoList(
-                                    widget.friendsLists[index]);
+                                  widget.friendsLists![index].friendId]!) {
+                                manager.addSelectedFriendsIntoList(
+                                    widget.friendsLists![index]);
                               } else {
-                                widget.manager.removeSelectedFriendsIntoList(
-                                    widget.friendsLists[index]);
+                                manager.removeSelectedFriendsIntoList(
+                                    widget.friendsLists![index]);
                               }
                             });
                           }
@@ -107,10 +111,10 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
                               value!;
                           if (_isChecked[
                               widget.groupMembersList![index].userID]!) {
-                            widget.manager.addSelectedGroupMembersIntoList(
+                            manager.addSelectedGroupMembersIntoList(
                                 widget.groupMembersList![index]);
                           } else {
-                            widget.manager.removeSelectedGroupMembersIntoList(
+                            manager.removeSelectedGroupMembersIntoList(
                                 widget.groupMembersList![index]);
                           }
                         });
@@ -122,22 +126,20 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
   }
 
   int _listItemCount(selectContactsType) {
-    if (selectContactsType == SelectContactsType.CreateGroup ||
-        selectContactsType == SelectContactsType.AddGroupMember) {
-      return widget.friendsLists.length;
-    } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
+    if (selectContactsType == SelectContactsType.DeleteGroupMember) {
       return widget.groupMembersList!.length;
     } else {
-      return 0;
+      return widget.friendsLists!.length;
     }
   }
 
   Widget _avatarView(int index, selectContactsType) {
     if (selectContactsType == SelectContactsType.CreateGroup ||
-        selectContactsType == SelectContactsType.AddGroupMember) {
-      return widget.friendsLists.isNotEmpty
+        selectContactsType == SelectContactsType.AddGroupMember ||
+        selectContactsType == SelectContactsType.Share) {
+      return widget.friendsLists!.isNotEmpty
           ? CachedNetworkImage(
-              imageUrl: widget.friendsLists[index].icon,
+              imageUrl: widget.friendsLists![index].icon,
               placeholder: (context, url) => CircleAvatar(
                     backgroundImage: AssetImage('images/default_avatar.png'),
                     maxRadius: 20,
@@ -186,11 +188,12 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
 
   Widget _titleView(int index, selectContactsType) {
     if (selectContactsType == SelectContactsType.CreateGroup ||
-        selectContactsType == SelectContactsType.AddGroupMember) {
+        selectContactsType == SelectContactsType.AddGroupMember ||
+        selectContactsType == SelectContactsType.Share) {
       return Container(
-        child: widget.friendsLists.isNotEmpty
+        child: widget.friendsLists!.isNotEmpty
             ? Text(
-                widget.friendsLists[index].nickName,
+                widget.friendsLists![index].nickName,
                 style: Flavors.textStyles.friendsText,
               )
             : LoadingView(),
@@ -211,14 +214,15 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
 
   Widget? _subtitleView(int index, selectContactsType) {
     if (selectContactsType == SelectContactsType.CreateGroup ||
-        selectContactsType == SelectContactsType.AddGroupMember) {
-      return widget.friendsLists[index].remarks != null &&
-              widget.friendsLists[index].remarks != ''
+        selectContactsType == SelectContactsType.AddGroupMember ||
+        widget.selectContactsType == SelectContactsType.Share) {
+      return widget.friendsLists![index].remarks != null &&
+              widget.friendsLists![index].remarks != ''
           ? Container(
               padding: const EdgeInsets.only(top: 5.0),
-              child: widget.friendsLists.isNotEmpty
+              child: widget.friendsLists!.isNotEmpty
                   ? Text(
-                      '备注：${widget.friendsLists[index].remarks}',
+                      '备注：${widget.friendsLists![index].remarks}',
                       style: Flavors.textStyles.friendsSubtitleText,
                     )
                   : LoadingView(),
@@ -244,8 +248,9 @@ class _CheckBoxContactsUsersItemState extends State<CheckBoxContactsUsersItem> {
 
   bool _setCheckBoxValue(int index, selectContactsType) {
     if (selectContactsType == SelectContactsType.CreateGroup ||
-        selectContactsType == SelectContactsType.AddGroupMember) {
-      return _isChecked[widget.friendsLists[index].friendId] ?? false;
+        selectContactsType == SelectContactsType.AddGroupMember ||
+        widget.selectContactsType == SelectContactsType.Share) {
+      return _isChecked[widget.friendsLists![index].friendId] ?? false;
     } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
       return _isChecked[widget.groupMembersList![index].userID] ?? false;
     } else {

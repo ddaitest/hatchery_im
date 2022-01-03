@@ -104,6 +104,7 @@ class ChatBubble extends StatelessWidget {
 
   Widget switchMessageTypeView(
       String messageType, MessageBelongType belongType) {
+    Log.green("contentMessages.content ${contentMessages.content}");
     Widget finalView;
     Map<String, dynamic> content = convert.jsonDecode(contentMessages.content);
     switch (messageType) {
@@ -137,11 +138,11 @@ class ChatBubble extends StatelessWidget {
           finalView = _textMessageView(content['text'], belongType);
         }
         break;
-      // case "CARD":
-      //   {
-      //     finalView = CardMessageWidget(belongType, content);
-      //   }
-      //   break;
+      case "CARD":
+        {
+          finalView = CardMessageWidget(belongType, content);
+        }
+        break;
       case "GEO":
         {
           finalView =
@@ -258,7 +259,7 @@ class ChatBubble extends StatelessWidget {
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
   Widget _sentMessageStatusIcon() {
     if (contentMessages.sender == UserCentre.getUserID()) {
-      return _statusIcon(progress: contentMessages.progress ?? 0);
+      return _statusIcon(progress: contentMessages.progress ?? 2);
     } else {
       return Container();
     }

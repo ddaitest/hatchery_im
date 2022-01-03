@@ -106,9 +106,60 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
-    return GestureDetector(
-      onTap: () => _isPlaying ? _pause() : _play(),
-      child: Container(
+    if (widget.voiceMessageUrl.contains("http")) {
+      return GestureDetector(
+        onTap: () => _isPlaying ? _pause() : _play(),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: belongType == MessageBelongType.Receiver
+                ? Colors.white
+                : Flavors.colorInfo.mainColor,
+          ),
+          padding: const EdgeInsets.all(10),
+          child: Container(
+            height: 25.0.h,
+            width: 200.0.w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(_durationText ?? '....',
+                    style: belongType == MessageBelongType.Receiver
+                        ? Flavors.textStyles.chatBubbleVoiceReceiverText
+                        : Flavors.textStyles.chatBubbleVoiceSenderText),
+                Container(
+                  width: 120.0.w,
+                  child: LinearProgressIndicator(
+                    backgroundColor: Flavors.colorInfo.lightGrep,
+                    valueColor: AlwaysStoppedAnimation(
+                        belongType == MessageBelongType.Receiver
+                            ? Flavors.colorInfo.blueGrey
+                            : Flavors.colorInfo.mainTextColor),
+                    value: (_audioPosition != null &&
+                            _audioDuration != null &&
+                            _audioPosition!.inMilliseconds > 0 &&
+                            _audioPosition!.inMilliseconds <
+                                _audioDuration!.inMilliseconds)
+                        ? _audioPosition!.inMilliseconds /
+                            _audioDuration!.inMilliseconds
+                        : 0.02,
+                  ),
+                ),
+                Icon(
+                    _playerState == PlayerState.PLAYING
+                        ? Icons.pause_circle_outline
+                        : Icons.play_circle_outline,
+                    size: 30.0,
+                    color: belongType == MessageBelongType.Receiver
+                        ? Flavors.colorInfo.blueGrey
+                        : Flavors.colorInfo.mainBackGroundColor)
+              ],
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: belongType == MessageBelongType.Receiver
@@ -119,44 +170,13 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
         child: Container(
           height: 25.0.h,
           width: 200.0.w,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(_durationText ?? '....',
-                  style: belongType == MessageBelongType.Receiver
-                      ? Flavors.textStyles.chatBubbleVoiceReceiverText
-                      : Flavors.textStyles.chatBubbleVoiceSenderText),
-              Container(
-                width: 120.0.w,
-                child: LinearProgressIndicator(
-                  backgroundColor: Flavors.colorInfo.lightGrep,
-                  valueColor: AlwaysStoppedAnimation(
-                      belongType == MessageBelongType.Receiver
-                          ? Flavors.colorInfo.blueGrey
-                          : Flavors.colorInfo.mainTextColor),
-                  value: (_audioPosition != null &&
-                          _audioDuration != null &&
-                          _audioPosition!.inMilliseconds > 0 &&
-                          _audioPosition!.inMilliseconds <
-                              _audioDuration!.inMilliseconds)
-                      ? _audioPosition!.inMilliseconds /
-                          _audioDuration!.inMilliseconds
-                      : 0.02,
-                ),
-              ),
-              Icon(
-                  _playerState == PlayerState.PLAYING
-                      ? Icons.pause_circle_outline
-                      : Icons.play_circle_outline,
-                  size: 30.0,
-                  color: belongType == MessageBelongType.Receiver
-                      ? Flavors.colorInfo.blueGrey
-                      : Flavors.colorInfo.mainBackGroundColor)
-            ],
-          ),
+          child: Text('发送中....',
+              style: belongType == MessageBelongType.Receiver
+                  ? Flavors.textStyles.chatBubbleVoiceReceiverText
+                  : Flavors.textStyles.chatBubbleVoiceSenderText),
         ),
-      ),
-    );
+      );
+    }
   }
 
   void _voiceCountDownTime() {

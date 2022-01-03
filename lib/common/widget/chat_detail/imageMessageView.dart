@@ -28,10 +28,9 @@ class ImageMessageWidget extends StatelessWidget {
               width: 130.0.w,
               fit: BoxFit.cover,
               imageUrl: imageMessageUrl,
-              // imageUrl: friendsHistoryMessages.content,
               placeholder: (context, url) => Container(
-                    width: 150.0.w,
-                    height: 100.0.h,
+                    // width: 150.0.w,
+                    height: 180.0.h,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: Flavors.colorInfo.mainBackGroundColor,
@@ -48,7 +47,7 @@ class ImageMessageWidget extends StatelessWidget {
                       color: Flavors.colorInfo.mainBackGroundColor,
                     ),
                     child: Center(
-                      child: Icon(Icons.image_not_supported_outlined, size: 40),
+                      child: Icon(Icons.broken_image_outlined, size: 30),
                     ),
                   ),
               imageBuilder: (context, imageProvider) {
@@ -73,11 +72,14 @@ class ImageMessageWidget extends StatelessWidget {
             constraints: BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.file(
-                File(imageMessageUrl),
-                width: 130.0.w,
-                fit: BoxFit.cover,
-              ),
+              child: imageMessageUrl != ""
+                  ? Image.file(
+                      File(imageMessageUrl),
+                      width: 130.0.w,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(
+                      width: 130.0.w, child: Icon(Icons.cancel, size: 20.0)),
             ),
           ));
     }

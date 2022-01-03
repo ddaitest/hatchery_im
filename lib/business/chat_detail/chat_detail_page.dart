@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
 import 'package:vibration/vibration.dart';
@@ -222,8 +223,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     padding: const EdgeInsets.all(15.0),
                     child: TextButton(
                       onPressed: () {
-                        manager.sendMessage(
-                            manager.textEditingController.text, "TEXT");
+                        MessageCentre.sendMessageModel(
+                            term: manager.textEditingController.text,
+                            chatType: manager.currentChatType!,
+                            messageType: "TEXT",
+                            otherName: manager.otherName ?? "",
+                            otherIcon: manager.otherIcon ?? "",
+                            currentGroupId: manager.currentGroupId,
+                            currentGroupName: manager.currentGroupName,
+                            currentGroupIcon: manager.currentGroupIcon,
+                            currentFriendId: manager.currentFriendId);
                         manager.textEditingController.clear();
                       },
                       style: ElevatedButton.styleFrom(
@@ -285,7 +294,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
           Log.yellow("textInputAction $term");
-          manager.sendMessage(term, "TEXT");
+          MessageCentre.sendMessageModel(
+              term: term,
+              chatType: manager.currentChatType!,
+              messageType: "TEXT",
+              otherName: manager.otherName ?? "",
+              otherIcon: manager.otherIcon ?? "",
+              currentGroupId: manager.currentGroupId,
+              currentGroupName: manager.currentGroupName,
+              currentGroupIcon: manager.currentGroupIcon,
+              currentFriendId: manager.currentFriendId);
           manager.textEditingController.clear();
         },
         keyboardType: TextInputType.text,

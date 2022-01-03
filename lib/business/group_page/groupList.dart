@@ -1,4 +1,5 @@
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,7 @@ class _GroupPageState extends State<GroupPage> {
   Widget _groupListView() {
     return Selector<GroupsManager, List<Groups>?>(
       builder: (BuildContext context, List<Groups>? value, Widget? child) {
-        print("DEBUG=> _groupListView 重绘了。。。。。");
+        Log.green("_groupListView 重绘了。。。。。");
         return Container(
             padding: const EdgeInsets.only(top: 10.0, bottom: 10),
             child: GroupListItem(value));

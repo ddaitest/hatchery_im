@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -109,11 +110,20 @@ class _ShowMapPageState extends State<ShowMapPageBody> {
               onPressed: () {
                 if (widget.mapOriginType == MapOriginType.Send) {
                   print("DEBUG=> locationResult ${manager.locationResult}");
-                  chatDetailManager.sendMessage({
-                    "name": "${manager.locationResult!['description']}",
-                    "longitude": manager.locationResult!['longitude'],
-                    "latitude": manager.locationResult!['latitude']
-                  }, "GEO");
+                  MessageCentre.sendMessageModel(
+                      term: {
+                        "name": "${manager.locationResult!['description']}",
+                        "longitude": manager.locationResult!['longitude'],
+                        "latitude": manager.locationResult!['latitude']
+                      },
+                      chatType: chatDetailManager.currentChatType!,
+                      messageType: "GEO",
+                      otherName: chatDetailManager.otherName ?? "",
+                      otherIcon: chatDetailManager.otherIcon ?? "",
+                      currentGroupId: chatDetailManager.currentGroupId,
+                      currentGroupName: chatDetailManager.currentGroupName,
+                      currentGroupIcon: chatDetailManager.currentGroupIcon,
+                      currentFriendId: chatDetailManager.currentFriendId);
                   Navigator.pop(App.navState.currentContext!);
                 } else {
                   manager.sheetMenuActionList.isEmpty

@@ -49,8 +49,6 @@ class ChatDetailManager extends ChangeNotifier {
   int recordTiming = 0;
   String currentFriendId = "";
   int currentMessageID = 0;
-  Map<String, dynamic> uploadProgressMaps = {};
-  List<Map<String, dynamic>> uploadFailList = [];
   int? videoHeight;
   int? videoWidth;
   AssetEntity? _entity;
@@ -155,8 +153,6 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   Future<void> pickCamera(BuildContext context) async {
-    // final Size size = MediaQuery.of(context).size;
-    // final double scale = MediaQuery.of(context).devicePixelRatio;
     Navigator.pop(App.navState.currentContext!);
     _entity = await CameraPicker.pickFromCamera(context, enableRecording: true);
     if (_entity == null) {
@@ -166,36 +162,9 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  // Message setMediaMessageMap(
-  //     DateTime dateTime, String messageType, String mediaUrl) {
-  //   Map<String, dynamic> map = {};
-  //   map = {
-  //     "id": dateTime.millisecondsSinceEpoch,
-  //     "type": "",
-  //     "userMsgID": "",
-  //     "sender": UserCentre.getUserID(),
-  //     "nick": "",
-  //     "receiver": "",
-  //     "icon": "",
-  //     "source": "",
-  //     "content": convert.jsonEncode(
-  //         {messageType == 'VIDEO' ? "video_url" : "img_url": "$mediaUrl"}),
-  //     "createTime": dateTime.toString(),
-  //     "contentType": messageType
-  //   };
-  //   print("DEBUG=> messagesList map $map");
-  //   return Message.fromJson(map);
-  // }
-
   Future<String?> uploadMediaFile(String filePath) async {
     ApiResult result =
-        await ApiForFileService.uploadFile(filePath, (count, total) {
-      var uploadProgress = count.toDouble() / total.toDouble();
-      // Map<String, dynamic> progressMap = {
-      //   "id": id,
-      //   "uploadProgress": uploadProgress
-      // };
-    });
+        await ApiForFileService.uploadFile(filePath, (count, total) {});
     if (result.isSuccess()) {
       final url = result.getData();
       if (url is String) {
@@ -213,42 +182,65 @@ class ChatDetailManager extends ChangeNotifier {
 
   void sendLocalMediaMessage(AssetEntity? assetEntity) async {
     await assetEntity!.file.then((fileValue) {
-      String? finalMediaUrl;
       String? msgId;
+      Map<String, dynamic> content = {};
       if (assetEntity.type == AssetType.image) {
         print("DEBUG=> fileValue!.path ${fileValue!.path}");
-        msgId = fakeMediaMessage(
-            fileValue.path, "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
+        content = {"img_url": fileValue.path};
+        msgId = _fakeMediaMessage(convert.jsonEncode(content),
+            "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
+        Log.green("msgId $msgId");
         fileValue.length().then((lengthValue) {
           if (lengthValue > 2080000) {
             compressionImage(fileValue.path).then((compressionValue) {
               uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-                finalMediaUrl = uploadMediaUrl;
+                MessageCentre.sendMessageModel(
+                    term: uploadMediaUrl!,
+                    chatType: currentChatType!,
+                    messageType: "IMAGE",
+                    otherName: otherName ?? "",
+                    otherIcon: otherIcon ?? "",
+                    currentGroupId: currentGroupId,
+                    currentGroupName: currentGroupName,
+                    currentGroupIcon: currentGroupIcon,
+                    currentFriendId: currentFriendId,
+                    msgId: msgId);
               });
             });
           } else {
-            msgId = fakeMediaMessage(fileValue.path, "VIDEO");
             uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
-              finalMediaUrl = uploadMediaUrl;
+              MessageCentre.sendMessageModel(
+                  term: uploadMediaUrl!,
+                  chatType: currentChatType!,
+                  messageType: "IMAGE",
+                  otherName: otherName ?? "",
+                  otherIcon: otherIcon ?? "",
+                  currentGroupId: currentGroupId,
+                  currentGroupName: currentGroupName,
+                  currentGroupIcon: currentGroupIcon,
+                  currentFriendId: currentFriendId,
+                  msgId: msgId);
             });
           }
         });
       } else if (assetEntity.type == AssetType.video) {
+        content = {"video_url": fileValue?.path ?? ""};
+        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
         compressionVideo(fileValue!.path).then((compressionValue) {
           uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-            finalMediaUrl = uploadMediaUrl;
+            MessageCentre.sendMessageModel(
+                term: uploadMediaUrl!,
+                chatType: currentChatType!,
+                messageType: "VIDEO",
+                otherName: otherName ?? "",
+                otherIcon: otherIcon ?? "",
+                currentGroupId: currentGroupId,
+                currentGroupName: currentGroupName,
+                currentGroupIcon: currentGroupIcon,
+                currentFriendId: currentFriendId,
+                msgId: msgId);
           });
         });
-      }
-      if (finalMediaUrl != null) {
-        String? messageType;
-        if (assetEntity.type == AssetType.image) {
-          messageType = "IMAGE";
-        } else if (assetEntity.type == AssetType.video) {
-          messageType = "VIDEO";
-        }
-        if (messageType != null)
-          sendMessage(finalMediaUrl!, messageType, msgId: msgId);
       }
     });
   }
@@ -273,27 +265,43 @@ class ChatDetailManager extends ChangeNotifier {
     Navigator.pop(App.navState.currentContext!);
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
-      DateTime _timeNow = DateTime.now();
+      String? msgId;
+      Map<String, dynamic> content = {
+        "name": "${result.files[0].name}",
+        "file_url": result.files[0].path!,
+        "content_length": result.files[0].size / 1024
+      };
+      msgId = _fakeMediaMessage(convert.jsonEncode(content), "FILE");
       uploadMediaFile(result.files[0].path!).then((uploadMediaUrl) {
         if (uploadMediaUrl != "")
-          sendMessage({
-            "name": "${result.files[0].name}",
-            "file_url": uploadMediaUrl,
-            "content_length": result.files[0].size / 1024
-          }, "FILE");
+          MessageCentre.sendMessageModel(
+              term: {
+                "name": "${result.files[0].name}",
+                "file_url": uploadMediaUrl,
+                "content_length": result.files[0].size / 1024
+              },
+              chatType: currentChatType!,
+              messageType: "FILE",
+              otherName: otherName ?? "",
+              otherIcon: otherIcon ?? "",
+              currentGroupId: currentGroupId,
+              currentGroupName: currentGroupName,
+              currentGroupIcon: currentGroupIcon,
+              currentFriendId: currentFriendId,
+              msgId: msgId);
       });
     }
   }
 
-  String fakeMediaMessage(String localMediaPath, String contentType) {
+  String _fakeMediaMessage(String content, String contentType) {
     if (currentFriendId != "") {
       CSSendMessage msg = Protocols.sendMessage(
-          myProfileData?.userID ?? "",
+          myUserId!,
           myProfileData?.nickName ?? "",
           currentFriendId,
           myProfileData?.icon ?? "",
           TARGET_PLATFORM,
-          localMediaPath,
+          content,
           contentType);
       Message message = ModelHelper.convertMessage(msg);
       LocalStore.addMessage(message);
@@ -303,14 +311,14 @@ class ChatDetailManager extends ChangeNotifier {
       return msg.msgId;
     } else {
       CSSendGroupMessage msg = Protocols.sendGroupMessage(
-          myProfileData?.userID ?? "",
+          myUserId!,
           myProfileData?.nickName ?? "",
           myProfileData?.icon ?? "",
           currentGroupId,
           currentGroupName,
           currentGroupIcon,
           TARGET_PLATFORM,
-          localMediaPath,
+          content,
           contentType);
       Message message = ModelHelper.convertGroupMessage(msg);
       LocalStore.addMessage(message);
@@ -335,25 +343,6 @@ class ChatDetailManager extends ChangeNotifier {
     //TODO 本地数据少 读一次历史
     // MessageCentre().loadMore(currentFriendId)
   }
-
-  queryFriendsHistoryMessages() async {}
-
-  // _getStoredForMyProfileData() async {
-  //   String? stored = SP.getString(SPKey.userInfo);
-  //   if (stored != null) {
-  //     print("_myProfileData ${stored}");
-  //     try {
-  //       var userInfo = MyProfile.fromJson(jsonDecode(stored)['info']);
-  //       myProfileData = userInfo;
-  //       print("_myProfileData ${myProfileData!.userID}");
-  //     } catch (e) {}
-  //   } else {
-  //     showToast('请重新登录');
-  //     SP.delete(SPKey.userInfo);
-  //     Future.delayed(
-  //         Duration(seconds: 1), () => Routers.navigateAndRemoveUntil('/login'));
-  //   }
-  // }
 
   changeInputView() {
     isVoiceModel = !isVoiceModel;
@@ -388,15 +377,31 @@ class ChatDetailManager extends ChangeNotifier {
 
   checkTimeLength() {
     print("DEBUG=> recordTiming $recordTiming");
-    if (recordTiming >= 3) {
-      Future.delayed(Duration(milliseconds: 500), () {
-        uploadMediaFile(voicePath!).then((uploadMediaUrl) {
-          if (uploadMediaUrl != "") sendMessage(uploadMediaUrl!, "VOICE");
+    if (voicePath != null) {
+      String? msgId;
+      Map<String, dynamic> content = {"voice_url": voicePath};
+      msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+      if (recordTiming >= 3) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          uploadMediaFile(voicePath!).then((uploadMediaUrl) {
+            if (uploadMediaUrl != "")
+              MessageCentre.sendMessageModel(
+                  term: uploadMediaUrl!,
+                  chatType: currentChatType!,
+                  messageType: "VOICE",
+                  otherName: otherName ?? "",
+                  otherIcon: otherIcon ?? "",
+                  currentGroupId: currentGroupId,
+                  currentGroupName: currentGroupName,
+                  currentGroupIcon: currentGroupIcon,
+                  currentFriendId: currentFriendId,
+                  msgId: msgId);
+          });
         });
-      });
-    } else {
-      showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
-      if (voicePath != null) deleteFile(voicePath!);
+      } else {
+        showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
+        if (voicePath != null) deleteFile(voicePath!);
+      }
     }
     cancelTimer();
   }
@@ -426,84 +431,84 @@ class ChatDetailManager extends ChangeNotifier {
     isRecording = false;
   }
 
-  void sendMessage(var term, String messageType, {String? msgId}) {
-    switch (messageType) {
-      case "TEXT":
-        MessageCentre.sendTextMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
-        break;
-      case "IMAGE":
-        MessageCentre.sendImageMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon,
-            friendId: currentFriendId,
-            msgId: msgId);
-        break;
-      case "VIDEO":
-        MessageCentre.sendVideoMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon,
-            friendId: currentFriendId,
-            msgId: msgId);
-        break;
-      case "VOICE":
-        MessageCentre.sendVoiceMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon,
-            friendId: currentFriendId,
-            msgId: msgId);
-        break;
-      case "GEO":
-        MessageCentre.sendGeoMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
-        break;
-      case "FILE":
-        MessageCentre.sendFileMessage(currentChatType!, term,
-            otherName: otherName,
-            otherIcon: otherIcon,
-            groupId: currentGroupId,
-            groupName: currentGroupName,
-            groupIcon: currentGroupIcon,
-            friendId: currentFriendId,
-            msgId: msgId);
-        break;
-      default:
-        MessageCentre.sendTextMessage(
-          currentChatType!,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
-        break;
-    }
-  }
+  // void sendMessage(var term, String messageType, {String? msgId}) {
+  //   switch (messageType) {
+  //     case "TEXT":
+  //       MessageCentre.sendTextMessage(
+  //         currentChatType!,
+  //         term,
+  //         otherName: otherName,
+  //         otherIcon: otherIcon,
+  //         groupId: currentGroupId,
+  //         groupName: currentGroupName,
+  //         groupIcon: currentGroupIcon,
+  //         friendId: currentFriendId,
+  //       );
+  //       break;
+  //     case "IMAGE":
+  //       MessageCentre.sendImageMessage(currentChatType!, term,
+  //           otherName: otherName,
+  //           otherIcon: otherIcon,
+  //           groupId: currentGroupId,
+  //           groupName: currentGroupName,
+  //           groupIcon: currentGroupIcon,
+  //           friendId: currentFriendId,
+  //           msgId: msgId);
+  //       break;
+  //     case "VIDEO":
+  //       MessageCentre.sendVideoMessage(currentChatType!, term,
+  //           otherName: otherName,
+  //           otherIcon: otherIcon,
+  //           groupId: currentGroupId,
+  //           groupName: currentGroupName,
+  //           groupIcon: currentGroupIcon,
+  //           friendId: currentFriendId,
+  //           msgId: msgId);
+  //       break;
+  //     case "VOICE":
+  //       MessageCentre.sendVoiceMessage(currentChatType!, term,
+  //           otherName: otherName,
+  //           otherIcon: otherIcon,
+  //           groupId: currentGroupId,
+  //           groupName: currentGroupName,
+  //           groupIcon: currentGroupIcon,
+  //           friendId: currentFriendId,
+  //           msgId: msgId);
+  //       break;
+  //     case "GEO":
+  //       MessageCentre.sendGeoMessage(
+  //         currentChatType!,
+  //         term,
+  //         otherName: otherName,
+  //         otherIcon: otherIcon,
+  //         groupId: currentGroupId,
+  //         groupName: currentGroupName,
+  //         groupIcon: currentGroupIcon,
+  //         friendId: currentFriendId,
+  //       );
+  //       break;
+  //     case "FILE":
+  //       MessageCentre.sendFileMessage(currentChatType!, term,
+  //           otherName: otherName,
+  //           otherIcon: otherIcon,
+  //           groupId: currentGroupId,
+  //           groupName: currentGroupName,
+  //           groupIcon: currentGroupIcon,
+  //           friendId: currentFriendId,
+  //           msgId: msgId);
+  //       break;
+  //     default:
+  //       MessageCentre.sendTextMessage(
+  //         currentChatType!,
+  //         term,
+  //         otherName: otherName,
+  //         otherIcon: otherIcon,
+  //         groupId: currentGroupId,
+  //         groupName: currentGroupName,
+  //         groupIcon: currentGroupIcon,
+  //         friendId: currentFriendId,
+  //       );
+  //       break;
+  //   }
+  // }
 }

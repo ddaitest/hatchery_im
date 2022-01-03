@@ -113,7 +113,9 @@ class GroupMembersGrid extends StatelessWidget {
         'titleText': selectContactsType == SelectContactsType.AddGroupMember
             ? '邀请入群'
             : '移出群组',
-        'tipsText': '请至少选择一名好友',
+        'tipsText': selectContactsType == SelectContactsType.DeleteGroupMember
+            ? "请至少选择一名群成员"
+            : "请至少选择一名好友",
         'leastSelected': 1,
         'nextPageBtnText':
             selectContactsType == SelectContactsType.AddGroupMember

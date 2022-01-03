@@ -22,7 +22,9 @@ class FileMessageWidget extends StatelessWidget {
 
   Widget _fileMessageView(MessageBelongType belongType) {
     return GestureDetector(
-      onTap: () => launchUrl(content['file_url'].toString()),
+      onTap: () => content['file_url'].contains("http")
+          ? launchUrl(content['file_url'])
+          : null,
       child: Container(
           width: 180.0.w,
           decoration: BoxDecoration(

@@ -22,18 +22,23 @@ class _VideoMessageWidgetState extends State<VideoMessageWidget>
   FlickManager? flickManager;
 
   @override
+  void initState() {
+    flickManager = FlickManager(
+      autoPlay: false,
+      videoPlayerController: widget.videoMessageUrl.contains("http")
+          ? VideoPlayerController.network(widget.videoMessageUrl)
+          : VideoPlayerController.file(File(widget.videoMessageUrl)),
+    );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return _voiceMessageView(widget.messageBelongType);
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
-    flickManager = FlickManager(
-      autoPlay: false,
-      videoPlayerController: widget.videoMessageUrl.contains("http://")
-          ? VideoPlayerController.network(widget.videoMessageUrl)
-          : VideoPlayerController.file(File(widget.videoMessageUrl)),
-    );
     return Container(
       constraints: BoxConstraints(maxWidth: 200.0.w, maxHeight: 150.0.h),
       child: ClipRRect(

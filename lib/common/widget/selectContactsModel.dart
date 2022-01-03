@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'dart:convert' as convert;
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +8,7 @@ import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -89,10 +90,10 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
                     searchHintText: "搜索好友",
                     textEditingController: manager.searchController,
                     isEnabled: true),
-                manager.selectFriendsList.isNotEmpty ||
-                        manager.selectGroupMembersList.isNotEmpty
-                    ? _tipsView("已选择的群成员")
-                    : Container(),
+                _tipsView(widget.selectContactsType ==
+                        SelectContactsType.DeleteGroupMember
+                    ? "已选择的群成员"
+                    : "已选择的好友"),
                 Consumer(
                   builder: (BuildContext context,
                       SelectContactsModelManager selectContactsModelManager,
@@ -175,17 +176,11 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
             if (value.isNotEmpty) {
               if (widget.selectContactsType ==
                   SelectContactsType.DeleteGroupMember) {
-                return CheckBoxContactsUsersItem(
-                    manager.friendsList ?? [],
-                    value as List<GroupMembers>,
-                    widget.selectContactsType,
-                    manager);
+                return CheckBoxContactsUsersItem(manager.friendsList ?? [],
+                    value as List<GroupMembers>, widget.selectContactsType);
               } else {
-                return CheckBoxContactsUsersItem(
-                    value as List<Friends>,
-                    widget.groupMembersList,
-                    widget.selectContactsType,
-                    manager);
+                return CheckBoxContactsUsersItem(value as List<Friends>,
+                    widget.groupMembersList, widget.selectContactsType);
               }
             } else {
               return IndicatorView(tipsText: '没有群成员', showLoadingIcon: false);
@@ -259,6 +254,25 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           selectContactsType: selectContactsType,
           groupID: groupId,
           deleteMembersInfo: _deleteMembersInfo);
+    } else if (selectContactsType == SelectContactsType.Share) {
+      manager.selectFriendsList.forEach((element) {
+        Map<String, String> content = {
+          "nick": "${element.nickName}",
+          "icon": "${element.icon}",
+          "user_id": "${element.friendId}"
+        };
+        MessageCentre.sendMessageModel(
+            term: content,
+            chatType: "CHAT",
+            messageType: "CARD",
+            otherName: element.remarks ?? element.nickName,
+            otherIcon: element.icon,
+            currentGroupId: "",
+            currentGroupName: "",
+            currentGroupIcon: "",
+            currentFriendId: element.friendId);
+      });
+      Navigator.pop(App.navState.currentContext!);
     }
   }
 

@@ -33,7 +33,7 @@ class BackgroundListen with WidgetsBindingObserver {
         break;
       case AppLifecycleState.paused: // 应用程序不可见，后台
         Log.red("paused #################");
-        _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+        _timer = Timer.periodic(Duration(seconds: 10), (timer) {
           checkEngineAlive();
         });
         break;

@@ -30,7 +30,8 @@ class SelectContactsModelManager extends ChangeNotifier {
   init(SelectContactsType selectContactsType) {
     searchController = TextEditingController();
     if (selectContactsType == SelectContactsType.CreateGroup ||
-        selectContactsType == SelectContactsType.AddGroupMember) {
+        selectContactsType == SelectContactsType.AddGroupMember ||
+        selectContactsType == SelectContactsType.Share) {
       _queryFriendsRes();
       _searchFriendsInputListener();
     } else if (selectContactsType == SelectContactsType.DeleteGroupMember) {
