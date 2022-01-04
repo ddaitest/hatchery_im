@@ -60,7 +60,6 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupIcon = "";
   String? myUserId;
   ValueNotifier<List<Message>> messageList = ValueNotifier<List<Message>>([]);
-  VideoLoadType videoLoadType = VideoLoadType.Fail;
   final TextEditingController textEditingController = TextEditingController();
 
   /// 初始化
@@ -185,12 +184,11 @@ class ChatDetailManager extends ChangeNotifier {
       String? msgId;
       Map<String, dynamic> content = {};
       if (assetEntity.type == AssetType.image) {
-        print("DEBUG=> fileValue!.path ${fileValue!.path}");
-        content = {"img_url": fileValue.path};
+        content = {"img_url": fileValue?.path};
         msgId = _fakeMediaMessage(convert.jsonEncode(content),
             "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
         Log.green("msgId $msgId");
-        fileValue.length().then((lengthValue) {
+        fileValue?.length().then((lengthValue) {
           if (lengthValue > 2080000) {
             compressionImage(fileValue.path).then((compressionValue) {
               uploadMediaFile(compressionValue).then((uploadMediaUrl) {
@@ -430,85 +428,4 @@ class ChatDetailManager extends ChangeNotifier {
     recordTiming = 0;
     isRecording = false;
   }
-
-  // void sendMessage(var term, String messageType, {String? msgId}) {
-  //   switch (messageType) {
-  //     case "TEXT":
-  //       MessageCentre.sendTextMessage(
-  //         currentChatType!,
-  //         term,
-  //         otherName: otherName,
-  //         otherIcon: otherIcon,
-  //         groupId: currentGroupId,
-  //         groupName: currentGroupName,
-  //         groupIcon: currentGroupIcon,
-  //         friendId: currentFriendId,
-  //       );
-  //       break;
-  //     case "IMAGE":
-  //       MessageCentre.sendImageMessage(currentChatType!, term,
-  //           otherName: otherName,
-  //           otherIcon: otherIcon,
-  //           groupId: currentGroupId,
-  //           groupName: currentGroupName,
-  //           groupIcon: currentGroupIcon,
-  //           friendId: currentFriendId,
-  //           msgId: msgId);
-  //       break;
-  //     case "VIDEO":
-  //       MessageCentre.sendVideoMessage(currentChatType!, term,
-  //           otherName: otherName,
-  //           otherIcon: otherIcon,
-  //           groupId: currentGroupId,
-  //           groupName: currentGroupName,
-  //           groupIcon: currentGroupIcon,
-  //           friendId: currentFriendId,
-  //           msgId: msgId);
-  //       break;
-  //     case "VOICE":
-  //       MessageCentre.sendVoiceMessage(currentChatType!, term,
-  //           otherName: otherName,
-  //           otherIcon: otherIcon,
-  //           groupId: currentGroupId,
-  //           groupName: currentGroupName,
-  //           groupIcon: currentGroupIcon,
-  //           friendId: currentFriendId,
-  //           msgId: msgId);
-  //       break;
-  //     case "GEO":
-  //       MessageCentre.sendGeoMessage(
-  //         currentChatType!,
-  //         term,
-  //         otherName: otherName,
-  //         otherIcon: otherIcon,
-  //         groupId: currentGroupId,
-  //         groupName: currentGroupName,
-  //         groupIcon: currentGroupIcon,
-  //         friendId: currentFriendId,
-  //       );
-  //       break;
-  //     case "FILE":
-  //       MessageCentre.sendFileMessage(currentChatType!, term,
-  //           otherName: otherName,
-  //           otherIcon: otherIcon,
-  //           groupId: currentGroupId,
-  //           groupName: currentGroupName,
-  //           groupIcon: currentGroupIcon,
-  //           friendId: currentFriendId,
-  //           msgId: msgId);
-  //       break;
-  //     default:
-  //       MessageCentre.sendTextMessage(
-  //         currentChatType!,
-  //         term,
-  //         otherName: otherName,
-  //         otherIcon: otherIcon,
-  //         groupId: currentGroupId,
-  //         groupName: currentGroupName,
-  //         groupIcon: currentGroupIcon,
-  //         friendId: currentFriendId,
-  //       );
-  //       break;
-  //   }
-  // }
 }

@@ -107,10 +107,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     manager.cancelTimer();
     manager.emojiShowing = false;
     manager.textEditingController.clear();
-    manager.currentFriendId = "";
-    manager.currentGroupId = "";
-    manager.currentGroupName = "";
-    manager.currentGroupIcon = "";
+    // manager.currentFriendId = "";
+    // manager.currentGroupId = "";
+    // manager.currentGroupName = "";
+    // manager.currentGroupIcon = "";
     super.dispose();
   }
 

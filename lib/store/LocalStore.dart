@@ -85,34 +85,37 @@ class LocalStore {
         info = message.type == "CHAT"
             ? UsersInfo.fromJson(values.getData())
             : GroupInfo.fromJson(values.getData()['group']);
+        Session? result = findSession(otherId);
+        int unReadCount = getUnReadMessageCount(
+            LocalStore.messageBox?.values.toList() ?? [],
+            otherId: otherId);
+        if (result != null) {
+          message.isGroup()
+              ? result.lastGroupChatMessage = message
+              : result.lastChatMessage = message;
+          if (unReadCount > 0) result.unReadCount = unReadCount;
+          result
+            ..title = message.type == "CHAT"
+                ? info.nickName ?? result.title
+                : info.groupName ?? result.title
+            ..icon = info.icon ?? result.icon
+            ..updateTime = sessionTime ?? DateTime.now().millisecondsSinceEpoch
+            ..save();
+        } else {
+          createNewSession(
+              chatType: message.isGroup() ? "GROUP" : "CHAT",
+              message: message,
+              sessionOtherId: otherId,
+              sessionOwnerId: UserCentre.getUserID(),
+              sessionTitle: message.type == "CHAT"
+                  ? info.nickName ?? "昵称"
+                  : info.groupName ?? "群名称",
+              sessionIcon: info.icon ?? "",
+              sessionTime: sessionTime,
+              unRead: unReadCount > 0 ? unReadCount : 0);
+        }
+        sortSession();
       }
-      Session? result = findSession(otherId);
-      int unReadCount = getUnReadMessageCount(
-          LocalStore.messageBox?.values.toList() ?? [],
-          otherId: otherId);
-      if (result != null) {
-        message.isGroup()
-            ? result.lastGroupChatMessage = message
-            : result.lastChatMessage = message;
-        if (unReadCount > 0) result.unReadCount = unReadCount;
-        result
-          ..title = message.type == "CHAT" ? info.nickName : info.groupName
-          ..icon = info.icon ?? ""
-          ..updateTime = sessionTime ?? DateTime.now().millisecondsSinceEpoch
-          ..save();
-      } else {
-        createNewSession(
-            chatType: message.isGroup() ? "GROUP" : "CHAT",
-            message: message,
-            sessionOtherId: otherId,
-            sessionOwnerId: UserCentre.getUserID(),
-            sessionTitle:
-                message.type == "CHAT" ? info.nickName : info.groupName,
-            sessionIcon: info.icon ?? "",
-            sessionTime: sessionTime,
-            unRead: unReadCount > 0 ? unReadCount : 0);
-      }
-      sortSession();
     }
   }
 
