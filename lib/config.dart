@@ -58,10 +58,11 @@ class SlideActionInfo {
       {this.onPressed});
 }
 
-// enum ChatType {
-//   CHAT,
-//   GROUP,
-// }
+class ItemModel {
+  String title;
+  IconData icon;
+  ItemModel(this.title, this.icon);
+}
 
 enum MessageBelongType {
   Sender,

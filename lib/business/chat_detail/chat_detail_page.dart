@@ -14,8 +14,7 @@ import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.da
 import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
-import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
-import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';

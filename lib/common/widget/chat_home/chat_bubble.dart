@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -155,7 +156,62 @@ class ChatBubble extends StatelessWidget {
         }
         break;
     }
-    return finalView;
+    return CustomPopupMenu(
+      child: finalView,
+      menuBuilder: _buildLongPressMenu,
+      barrierColor: Colors.transparent,
+      pressType: PressType.longPress,
+    );
+  }
+
+  Widget _buildLongPressMenu() {
+    List<ItemModel> messageLongPressMenuItems = [];
+    if (contentMessages.contentType == "TEXT") {
+      messageLongPressMenuItems = [
+        ItemModel('复制', Icons.copy),
+        ItemModel('转发', Icons.reply),
+        ItemModel('删除', Icons.delete),
+      ];
+    } else if (contentMessages.contentType == "VOICE") {
+      messageLongPressMenuItems = [
+        ItemModel('删除', Icons.delete),
+      ];
+    } else {
+      messageLongPressMenuItems = [
+        ItemModel('转发', Icons.reply),
+        ItemModel('删除', Icons.delete),
+      ];
+    }
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(5),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        width: (messageLongPressMenuItems.length * 50.0).w,
+        color: const Color(0xFF4C4C4C),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: messageLongPressMenuItems
+              .map((item) => Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Icon(
+                        item.icon,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 2),
+                        child: Text(
+                          item.title,
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ))
+              .toList(),
+        ),
+      ),
+    );
   }
 
   String _checkContentType(Message temp) {
