@@ -157,6 +157,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         ? MessageBelongType.Sender
                         : MessageBelongType.Receiver,
                     contentMessages: value[index],
+                    messageKey: value[index].key,
                   );
                 },
               ),

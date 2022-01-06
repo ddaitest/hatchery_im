@@ -57,6 +57,8 @@ class Routers {
                   nextPageBtnText: map['nextPageBtnText'],
                   tipsText: map['tipsText'],
                   selectContactsType: map['selectContactsType'],
+                  contentType: map['contentType'],
+                  shareMessageContent: map['shareMessageContent'],
                   groupMembersList: map['groupMembersList'] ?? [],
                 ));
       case '/friend_profile':
@@ -152,13 +154,7 @@ class Routers {
       case '/qrCode_scan':
         return MaterialPageRoute(builder: (_) => QRScanPage());
       case '/my_qrCode_card':
-        Map map = settings.arguments as Map<String, dynamic>;
-        return MaterialPageRoute(
-            builder: (_) => QRCodeCardPage(
-                avatarUrl: map['avatarUrl'],
-                nickName: map['nickName'],
-                account: map['account'],
-                userID: map['userID']));
+        return MaterialPageRoute(builder: (_) => QRCodeCardPage());
       case '/imageDetail':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(

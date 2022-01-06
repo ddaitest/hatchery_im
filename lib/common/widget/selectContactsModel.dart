@@ -26,6 +26,8 @@ class SelectContactsModelPage extends StatefulWidget {
   final String tipsText;
   final SelectContactsType selectContactsType;
   final List<GroupMembers>? groupMembersList;
+  final String? contentType;
+  final Map<String, dynamic>? shareMessageContent;
   SelectContactsModelPage(
       {required this.groupId,
       required this.titleText,
@@ -33,7 +35,9 @@ class SelectContactsModelPage extends StatefulWidget {
       required this.nextPageBtnText,
       required this.tipsText,
       required this.selectContactsType,
-      this.groupMembersList});
+      this.contentType,
+      this.groupMembersList,
+      this.shareMessageContent});
 
   @override
   _SelectContactsModelState createState() => _SelectContactsModelState();
@@ -256,15 +260,10 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           deleteMembersInfo: _deleteMembersInfo);
     } else if (selectContactsType == SelectContactsType.Share) {
       manager.selectFriendsList.forEach((element) {
-        Map<String, String> content = {
-          "nick": "${element.nickName}",
-          "icon": "${element.icon}",
-          "user_id": "${element.friendId}"
-        };
         MessageCentre.sendMessageModel(
-            term: content,
+            term: widget.shareMessageContent ?? "",
             chatType: "CHAT",
-            messageType: "CARD",
+            messageType: widget.contentType ?? "TEXT",
             otherName: element.remarks ?? element.nickName,
             otherIcon: element.icon,
             currentGroupId: "",

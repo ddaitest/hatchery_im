@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/aboutAvatar.dart';
@@ -18,16 +20,10 @@ import 'package:screenshot/screenshot.dart';
 import '../../config.dart';
 import '../../routers.dart';
 
-class QRCodeCardPage extends StatefulWidget {
-  final String? avatarUrl, nickName, account, userID;
-  QRCodeCardPage({this.avatarUrl, this.nickName, this.account, this.userID});
-  @override
-  QRCodeCardState createState() => QRCodeCardState();
-}
-
-class QRCodeCardState extends State<QRCodeCardPage> {
+class QRCodeCardPage extends StatelessWidget {
   //Create an instance of ScreenshotController
-  ScreenshotController screenshotController = ScreenshotController();
+  final ScreenshotController _screenshotController = ScreenshotController();
+  final MyProfile? _myProfileData = UserCentre.getInfo();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +41,7 @@ class QRCodeCardState extends State<QRCodeCardPage> {
         color: Colors.grey[200],
         child: Center(
           child: Screenshot(
-            controller: screenshotController,
+            controller: _screenshotController,
             child: Container(
               width: Flavors.sizesInfo.screenWidth - 60.0.w,
               height: Flavors.sizesInfo.screenHeight - 250.0.h,
@@ -61,7 +57,7 @@ class QRCodeCardState extends State<QRCodeCardPage> {
                     Container(
                       child: Row(
                         children: <Widget>[
-                          netWorkAvatar(widget.avatarUrl, 30.0),
+                          netWorkAvatar(_myProfileData?.icon ?? "", 30.0),
                           Container(
                             width: 15.0.w,
                           ),
@@ -71,14 +67,14 @@ class QRCodeCardState extends State<QRCodeCardPage> {
                               Row(
                                 children: <Widget>[
                                   Text(
-                                    widget.nickName!,
+                                    _myProfileData?.nickName ?? "",
                                     style: Flavors
                                         .textStyles.qrCodeCardNickNameText,
                                   ),
                                 ],
                               ),
                               Text(
-                                '账号:  ${widget.account}',
+                                'ID:  ${_myProfileData?.userID ?? ""}',
                                 style:
                                     Flavors.textStyles.qrCodeCardSubtitleText,
                               )
@@ -89,8 +85,9 @@ class QRCodeCardState extends State<QRCodeCardPage> {
                     ),
                     Container(
                         padding: const EdgeInsets.all(10.0),
-                        child:
-                            qrImageModel(key: 'userID', value: widget.userID!)),
+                        child: qrImageModel(
+                            key: 'userID',
+                            value: _myProfileData?.userID ?? "")),
                     Container(
                       child: Text(
                         '扫一扫上面的二维码图案添加我为好友',
@@ -106,6 +103,11 @@ class QRCodeCardState extends State<QRCodeCardPage> {
   }
 
   _showSheetMenu() {
+    Map<String, dynamic> content = {
+      "nick": "${_myProfileData?.nickName ?? ""}",
+      "icon": "${_myProfileData?.icon ?? ""}",
+      "user_id": "${_myProfileData?.userID ?? ""}"
+    };
     showCupertinoModalPopup<String>(
       context: App.navState.currentContext!,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -122,6 +124,8 @@ class QRCodeCardState extends State<QRCodeCardPage> {
                   'leastSelected': 1,
                   'nextPageBtnText': '分享',
                   'selectContactsType': SelectContactsType.Share,
+                  'contentType': 'CARD',
+                  'shareMessageContent': content,
                   'groupMembersFriendId': ['']
                 });
               }),
@@ -143,7 +147,7 @@ class QRCodeCardState extends State<QRCodeCardPage> {
   }
 
   void _saveQRImage() async {
-    screenshotController.capture().then((Uint8List? image) async {
+    _screenshotController.capture().then((Uint8List? image) async {
       //Capture Done
       saveImageToGallery(image!).then((value) {
         if (value) {

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:convert';
-import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
@@ -427,5 +426,31 @@ class ChatDetailManager extends ChangeNotifier {
     timer?.cancel();
     recordTiming = 0;
     isRecording = false;
+  }
+
+  copyText(String? targetText) {
+    if (targetText != null) {
+      Clipboard.setData(ClipboardData(text: targetText));
+      showToast("复制成功");
+    } else {
+      showToast("复制失败");
+    }
+  }
+
+  relayMessage(Map<String, dynamic>? content, String? contentType) async {
+    if (content != null && contentType != null) {
+      return Routers.navigateTo('/select_contacts_model', arg: {
+        'titleText': '转发消息',
+        'tipsText': '请至少选择一名好友',
+        'leastSelected': 1,
+        'nextPageBtnText': '转发',
+        'selectContactsType': SelectContactsType.Share,
+        'contentType': contentType,
+        'shareMessageContent': content,
+        'groupMembersFriendId': ['']
+      });
+    } else {
+      showToast("转发失败");
+    }
   }
 }

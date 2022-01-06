@@ -26,12 +26,7 @@ class Info extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: () => Routers.navigateTo('/my_qrCode_card', arg: {
-              'avatarUrl': imageUrl,
-              'nickName': name,
-              'account': account,
-              'userID': userID
-            }),
+            onTap: () => Routers.navigateTo('/my_qrCode_card'),
             child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,

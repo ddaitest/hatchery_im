@@ -11,6 +11,7 @@ import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:crypto/crypto.dart';
@@ -98,11 +99,12 @@ class MessageCentre {
     }
   }
 
-  static deleteMessage(String? userMsgID) {
-    if (userMsgID != null) {
-      LocalStore.messageBox?.values
-          .firstWhereOrNull((element) => element.userMsgID == userMsgID)
-          ?.delete();
+  static deleteMessage(int? messageKey) {
+    if (messageKey != null) {
+      Log.yellow("deleteMessage. deleteMessage ");
+      return LocalStore.messageBox?.delete(messageKey);
+    } else {
+      showToast("删除失败");
     }
   }
 

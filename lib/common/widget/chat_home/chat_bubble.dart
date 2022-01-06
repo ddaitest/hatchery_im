@@ -18,6 +18,7 @@ import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:provider/provider.dart';
 
 import '../../../config.dart';
@@ -29,11 +30,13 @@ class ChatBubble extends StatelessWidget {
   final String userID;
   final MessageBelongType messageBelongType;
   final Message contentMessages;
+  final int messageKey;
 
   ChatBubble(
       {required this.userID,
       required this.messageBelongType,
-      required this.contentMessages});
+      required this.contentMessages,
+      required this.messageKey});
 
   final manager = App.manager<ChatDetailManager>();
 
@@ -165,22 +168,21 @@ class ChatBubble extends StatelessWidget {
   }
 
   Widget _buildLongPressMenu() {
-    List<ItemModel> messageLongPressMenuItems = [];
-    if (contentMessages.contentType == "TEXT") {
-      messageLongPressMenuItems = [
-        ItemModel('复制', Icons.copy),
-        ItemModel('转发', Icons.reply),
-        ItemModel('删除', Icons.delete),
-      ];
-    } else if (contentMessages.contentType == "VOICE") {
-      messageLongPressMenuItems = [
-        ItemModel('删除', Icons.delete),
-      ];
-    } else {
-      messageLongPressMenuItems = [
-        ItemModel('转发', Icons.reply),
-        ItemModel('删除', Icons.delete),
-      ];
+    List<ItemModel> messageLongPressMenuItems = [
+      ItemModel(
+          '复制',
+          Icons.copy,
+          manager
+              .copyText(convert.jsonDecode(contentMessages.content)['text'])),
+      ItemModel(
+          '转发',
+          Icons.reply,
+          manager.relayMessage(convert.jsonDecode(contentMessages.content),
+              contentMessages.contentType)),
+      ItemModel('删除', Icons.delete, MessageCentre.deleteMessage(messageKey)),
+    ];
+    if (contentMessages.contentType != "TEXT") {
+      messageLongPressMenuItems.removeAt(0);
     }
     return ClipRRect(
       borderRadius: BorderRadius.circular(5),
@@ -191,22 +193,25 @@ class ChatBubble extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: messageLongPressMenuItems
-              .map((item) => Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Icon(
-                        item.icon,
-                        size: 20,
-                        color: Colors.white,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 2),
-                        child: Text(
-                          item.title,
-                          style: TextStyle(color: Colors.white, fontSize: 12),
+              .map((item) => GestureDetector(
+                    onTap: () => item.onTap,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Icon(
+                          item.icon,
+                          size: 20,
+                          color: Colors.white,
                         ),
-                      ),
-                    ],
+                        Container(
+                          margin: EdgeInsets.only(top: 2),
+                          child: Text(
+                            item.title,
+                            style: TextStyle(color: Colors.white, fontSize: 12),
+                          ),
+                        ),
+                      ],
+                    ),
                   ))
               .toList(),
         ),
