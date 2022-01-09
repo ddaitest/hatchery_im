@@ -10,9 +10,9 @@ import '../../../config.dart';
 import '../../../routers.dart';
 
 class ImageMessageWidget extends StatelessWidget {
-  final String imageMessageUrl;
+  final Map<String, dynamic> imageMessageMap;
   final MessageBelongType messageBelongType;
-  ImageMessageWidget(this.imageMessageUrl, this.messageBelongType);
+  ImageMessageWidget(this.imageMessageMap, this.messageBelongType);
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +20,15 @@ class ImageMessageWidget extends StatelessWidget {
   }
 
   Widget _imageMessageView() {
-    if (imageMessageUrl.contains("http")) {
+    String imageUrl = imageMessageMap["img_url"];
+    if (imageUrl.contains("http")) {
       return GestureDetector(
-          onTap: () => Routers.navigateTo('/imageDetail',
-              arg: {"imageUrl": imageMessageUrl}),
+          onTap: () =>
+              Routers.navigateTo('/imageDetail', arg: {"imageUrl": imageUrl}),
           child: CachedNetworkImage(
               width: 130.0.w,
               fit: BoxFit.cover,
-              imageUrl: imageMessageUrl,
+              imageUrl: imageUrl,
               placeholder: (context, url) => Container(
                     // width: 150.0.w,
                     height: 180.0.h,
@@ -67,14 +68,14 @@ class ImageMessageWidget extends StatelessWidget {
     } else {
       return GestureDetector(
           onTap: () => Routers.navigateTo('/imageDetail',
-              arg: {"imageFile": File(imageMessageUrl)}),
+              arg: {"imageFile": File(imageUrl)}),
           child: Container(
             constraints: BoxConstraints(maxWidth: 130.0.w, maxHeight: 180.0.h),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: imageMessageUrl != ""
+              child: imageUrl != ""
                   ? Image.file(
-                      File(imageMessageUrl),
+                      File(imageUrl),
                       width: 130.0.w,
                       fit: BoxFit.cover,
                     )

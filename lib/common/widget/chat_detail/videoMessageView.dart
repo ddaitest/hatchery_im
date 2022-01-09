@@ -8,9 +8,9 @@ import 'package:video_player/video_player.dart';
 import '../../../config.dart';
 
 class VideoMessageWidget extends StatefulWidget {
-  final String videoMessageUrl;
+  final Map<String, dynamic> videoMessageMap;
   final MessageBelongType messageBelongType;
-  VideoMessageWidget(this.videoMessageUrl, this.messageBelongType);
+  VideoMessageWidget(this.videoMessageMap, this.messageBelongType);
   @override
   _VideoMessageWidgetState createState() => _VideoMessageWidgetState();
 }
@@ -20,14 +20,16 @@ class _VideoMessageWidgetState extends State<VideoMessageWidget>
   @override
   bool get wantKeepAlive => true;
   FlickManager? flickManager;
+  String videoUrl = "";
 
   @override
   void initState() {
+    videoUrl = widget.videoMessageMap["video_url"];
     flickManager = FlickManager(
       autoPlay: false,
-      videoPlayerController: widget.videoMessageUrl.contains("http")
-          ? VideoPlayerController.network(widget.videoMessageUrl)
-          : VideoPlayerController.file(File(widget.videoMessageUrl)),
+      videoPlayerController: videoUrl.contains("http")
+          ? VideoPlayerController.network(videoUrl)
+          : VideoPlayerController.file(File(videoUrl)),
     );
     super.initState();
   }

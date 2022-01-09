@@ -128,6 +128,7 @@ class QRCodeCardPage extends StatelessWidget {
                   'shareMessageContent': content,
                   'groupMembersFriendId': ['']
                 });
+                showToast("分享成功");
               }),
           CupertinoActionSheetAction(
               child: Text('保存二维码',

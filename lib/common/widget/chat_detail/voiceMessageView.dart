@@ -10,9 +10,9 @@ import 'package:hatchery_im/common/utils.dart';
 import '../../../config.dart';
 
 class VoiceMessageWidget extends StatefulWidget {
-  final String voiceMessageUrl;
+  final Map<String, dynamic> voiceMessageMap;
   final MessageBelongType messageBelongType;
-  VoiceMessageWidget(this.voiceMessageUrl, this.messageBelongType);
+  VoiceMessageWidget(this.voiceMessageMap, this.messageBelongType);
   @override
   _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();
 }
@@ -29,8 +29,10 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   StreamSubscription? _positionSubscription;
   String? _durationText;
   bool get _isPlaying => _playerState == PlayerState.PLAYING;
+  String voiceUrl = "";
   @override
   void initState() {
+    voiceUrl = widget.voiceMessageMap['voice_url'];
     _initAudioPlayer();
     super.initState();
   }
@@ -43,7 +45,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
 
   void _initAudioPlayer() {
     _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-    _audioPlayer.setUrl(widget.voiceMessageUrl);
+    _audioPlayer.setUrl(voiceUrl);
     _audioPlayer.onDurationChanged.listen((duration) {
       if (_durationText == null) _audioDuration = duration;
       setState(() {
@@ -72,7 +74,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
             _audioPosition!.inMilliseconds < _audioDuration!.inMilliseconds)
         ? _audioPosition
         : null;
-    final result = await _audioPlayer.play(widget.voiceMessageUrl,
+    final result = await _audioPlayer.play(voiceUrl,
         isLocal: false, position: playPosition);
     if (result == 1) {
       setState(() => _playerState = PlayerState.PLAYING);
@@ -106,7 +108,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
-    if (widget.voiceMessageUrl.contains("http")) {
+    if (voiceUrl.contains("http")) {
       return GestureDetector(
         onTap: () => _isPlaying ? _pause() : _play(),
         child: Container(

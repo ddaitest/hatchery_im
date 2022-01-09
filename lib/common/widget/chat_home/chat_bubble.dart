@@ -134,22 +134,22 @@ class _ChatBubbleState extends State<ChatBubble> {
     switch (messageType) {
       case "TEXT":
         {
-          finalView = _textMessageView(content['text'], belongType);
+          finalView = _textMessageView(content, belongType);
         }
         break;
       case "IMAGE":
         {
-          finalView = ImageMessageWidget(content['img_url'], belongType);
+          finalView = ImageMessageWidget(content, belongType);
         }
         break;
       case "VIDEO":
         {
-          finalView = VideoMessageWidget(content['video_url'], belongType);
+          finalView = VideoMessageWidget(content, belongType);
         }
         break;
       case "VOICE":
         {
-          finalView = VoiceMessageWidget(content['voice_url'], belongType);
+          finalView = VoiceMessageWidget(content, belongType);
         }
         break;
       case "FILE":
@@ -159,7 +159,7 @@ class _ChatBubbleState extends State<ChatBubble> {
         break;
       case "URL":
         {
-          finalView = _textMessageView(content['text'], belongType);
+          finalView = _textMessageView(content, belongType);
         }
         break;
       case "CARD":
@@ -175,7 +175,7 @@ class _ChatBubbleState extends State<ChatBubble> {
         break;
       default:
         {
-          finalView = _textMessageView(content['text'], belongType);
+          finalView = _textMessageView(content, belongType);
         }
         break;
     }
@@ -207,6 +207,7 @@ class _ChatBubbleState extends State<ChatBubble> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: messageLongPressMenuItems
               .map((item) => GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () {
                       if (item.title == "复制") {
                         manager.copyText(convert.jsonDecode(
@@ -353,7 +354,8 @@ class _ChatBubbleState extends State<ChatBubble> {
     }
   }
 
-  Widget _textMessageView(String content, MessageBelongType belongType) {
+  Widget _textMessageView(
+      Map<String, dynamic> contentMap, MessageBelongType belongType) {
     return Container(
       constraints: BoxConstraints(
         maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
@@ -365,7 +367,7 @@ class _ChatBubbleState extends State<ChatBubble> {
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Text('$content',
+      child: Text('${contentMap["text"]}',
           maxLines: 10,
           softWrap: true,
           style: widget.messageBelongType == MessageBelongType.Receiver
