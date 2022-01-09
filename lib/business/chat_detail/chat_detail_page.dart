@@ -52,6 +52,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final emojiModelManager = App.manager<EmojiModelManager>();
   List<SendMenuItems> menuItems = [];
   String appTitleName = "";
+  ValueListenable<Box<Message>> valueListenable = LocalStore.listenMessage();
 
   @override
   void initState() {
@@ -101,15 +102,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
-    manager.messageList.value.clear();
     manager.isVoiceModel = false;
     manager.cancelTimer();
     manager.emojiShowing = false;
     manager.textEditingController.clear();
-    // manager.currentFriendId = "";
-    // manager.currentGroupId = "";
-    // manager.currentGroupName = "";
-    // manager.currentGroupIcon = "";
+    manager.currentFriendId = "";
+    manager.currentGroupId = "";
+    manager.currentGroupName = "";
+    manager.currentGroupIcon = "";
     super.dispose();
   }
 
@@ -134,8 +134,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _messageInfoView() {
     return ValueListenableBuilder(
-        valueListenable: manager.messageList,
-        builder: (context, List<Message> value, _) {
+        valueListenable: valueListenable,
+        builder: (context, Box<Message> box, _) {
+          List<Message> value = manager.loadMessages(msgBox: box);
           Log.yellow("_messageInfoView ValueListenableBuilder ${value.length}");
           if (value.isEmpty) {
             return Flexible(child: Container());

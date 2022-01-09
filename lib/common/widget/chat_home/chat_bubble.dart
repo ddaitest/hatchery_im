@@ -26,7 +26,7 @@ import '../../../manager/messageCentre.dart';
 import '../../log.dart';
 import '../aboutAvatar.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble extends StatefulWidget {
   final String userID;
   final MessageBelongType messageBelongType;
   final Message contentMessages;
@@ -38,7 +38,25 @@ class ChatBubble extends StatelessWidget {
       required this.contentMessages,
       required this.messageKey});
 
+  @override
+  _ChatBubbleState createState() => _ChatBubbleState();
+}
+
+class _ChatBubbleState extends State<ChatBubble> {
   final manager = App.manager<ChatDetailManager>();
+  CustomPopupMenuController? _customPopupMenuController;
+
+  @override
+  void initState() {
+    _customPopupMenuController = CustomPopupMenuController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _customPopupMenuController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +67,10 @@ class ChatBubble extends StatelessWidget {
   }
 
   String _getAvatarPicUrl() {
-    if (contentMessages.sender == manager.myProfileData!.userID) {
+    if (widget.contentMessages.sender == manager.myProfileData!.userID) {
       return manager.myProfileData!.icon!;
     } else {
-      return contentMessages.icon;
+      return widget.contentMessages.icon;
     }
   }
 
@@ -62,7 +80,7 @@ class ChatBubble extends StatelessWidget {
         Container(
           padding: const EdgeInsets.only(bottom: 10.0),
           child: Text(
-              "${checkMessageTime(contentMessages.createTime).toString().contains("-") ? checkMessageTime(contentMessages.createTime).toString().split(" ")[0] : checkMessageTime(contentMessages.createTime)}",
+              "${checkMessageTime(widget.contentMessages.createTime).toString().contains("-") ? checkMessageTime(widget.contentMessages.createTime).toString().split(" ")[0] : checkMessageTime(widget.contentMessages.createTime)}",
               maxLines: 1,
               softWrap: true,
               style: Flavors.textStyles.chatBubbleTimeText),
@@ -70,34 +88,35 @@ class ChatBubble extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
-          textDirection: messageBelongType == MessageBelongType.Receiver
+          textDirection: widget.messageBelongType == MessageBelongType.Receiver
               ? TextDirection.ltr
               : TextDirection.rtl,
           children: [
             GestureDetector(
-              onTap: () => messageBelongType == MessageBelongType.Receiver
-                  ? Routers.navigateTo('/friend_profile',
-                      arg: contentMessages.sender)
-                  : null,
+              onTap: () =>
+                  widget.messageBelongType == MessageBelongType.Receiver
+                      ? Routers.navigateTo('/friend_profile',
+                          arg: widget.contentMessages.sender)
+                      : null,
               child: netWorkAvatar(avatarUrl, 20.0),
             ),
             SizedBox(width: 15.0.w),
-            contentMessages.type == "GROUP" &&
-                    messageBelongType == MessageBelongType.Receiver
+            widget.contentMessages.type == "GROUP" &&
+                    widget.messageBelongType == MessageBelongType.Receiver
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        contentMessages.nick,
+                        widget.contentMessages.nick,
                         style: TextStyle(fontSize: 11.0),
                       ),
                       Container(height: 2.0),
-                      switchMessageTypeView(
-                          contentMessages.contentType, messageBelongType),
+                      switchMessageTypeView(widget.contentMessages.contentType,
+                          widget.messageBelongType),
                     ],
                   )
-                : switchMessageTypeView(
-                    contentMessages.contentType, messageBelongType),
+                : switchMessageTypeView(widget.contentMessages.contentType,
+                    widget.messageBelongType),
             Container(width: 10.0.w),
             _sentMessageStatusIcon(),
           ],
@@ -108,9 +127,10 @@ class ChatBubble extends StatelessWidget {
 
   Widget switchMessageTypeView(
       String messageType, MessageBelongType belongType) {
-    Log.green("contentMessages.content ${contentMessages.content}");
+    Log.green("contentMessages.content ${widget.contentMessages.content}");
     Widget finalView;
-    Map<String, dynamic> content = convert.jsonDecode(contentMessages.content);
+    Map<String, dynamic> content =
+        convert.jsonDecode(widget.contentMessages.content);
     switch (messageType) {
       case "TEXT":
         {
@@ -161,6 +181,7 @@ class ChatBubble extends StatelessWidget {
     }
     return CustomPopupMenu(
       child: finalView,
+      controller: _customPopupMenuController,
       menuBuilder: _buildLongPressMenu,
       barrierColor: Colors.transparent,
       pressType: PressType.longPress,
@@ -169,19 +190,11 @@ class ChatBubble extends StatelessWidget {
 
   Widget _buildLongPressMenu() {
     List<ItemModel> messageLongPressMenuItems = [
-      ItemModel(
-          '复制',
-          Icons.copy,
-          manager
-              .copyText(convert.jsonDecode(contentMessages.content)['text'])),
-      ItemModel(
-          '转发',
-          Icons.reply,
-          manager.relayMessage(convert.jsonDecode(contentMessages.content),
-              contentMessages.contentType)),
-      ItemModel('删除', Icons.delete, MessageCentre.deleteMessage(messageKey)),
+      ItemModel('复制', Icons.copy),
+      ItemModel('转发', Icons.reply),
+      ItemModel('删除', Icons.delete),
     ];
-    if (contentMessages.contentType != "TEXT") {
+    if (widget.contentMessages.contentType != "TEXT") {
       messageLongPressMenuItems.removeAt(0);
     }
     return ClipRRect(
@@ -194,7 +207,21 @@ class ChatBubble extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: messageLongPressMenuItems
               .map((item) => GestureDetector(
-                    onTap: () => item.onTap,
+                    onTap: () {
+                      if (item.title == "复制") {
+                        manager.copyText(convert.jsonDecode(
+                            widget.contentMessages.content)['text']);
+                        _customPopupMenuController?.hideMenu();
+                      } else if (item.title == "转发") {
+                        manager.relayMessage(
+                            convert.jsonDecode(widget.contentMessages.content),
+                            widget.contentMessages.contentType);
+                        _customPopupMenuController?.hideMenu();
+                      } else if (item.title == "删除") {
+                        MessageCentre.deleteMessage(widget.messageKey);
+                        _customPopupMenuController?.hideMenu();
+                      }
+                    },
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
@@ -204,7 +231,7 @@ class ChatBubble extends StatelessWidget {
                           color: Colors.white,
                         ),
                         Container(
-                          margin: EdgeInsets.only(top: 2),
+                          margin: const EdgeInsets.only(top: 2),
                           child: Text(
                             item.title,
                             style: TextStyle(color: Colors.white, fontSize: 12),
@@ -319,8 +346,8 @@ class ChatBubble extends StatelessWidget {
 
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
   Widget _sentMessageStatusIcon() {
-    if (contentMessages.sender == UserCentre.getUserID()) {
-      return _statusIcon(progress: contentMessages.progress ?? 2);
+    if (widget.contentMessages.sender == UserCentre.getUserID()) {
+      return _statusIcon(progress: widget.contentMessages.progress ?? 2);
     } else {
       return Container();
     }
@@ -341,49 +368,9 @@ class ChatBubble extends StatelessWidget {
       child: Text('$content',
           maxLines: 10,
           softWrap: true,
-          style: messageBelongType == MessageBelongType.Receiver
+          style: widget.messageBelongType == MessageBelongType.Receiver
               ? Flavors.textStyles.chatBubbleReceiverText
               : Flavors.textStyles.chatBubbleSenderText),
     );
   }
-
-// CrossAxisAlignment _createTimePosition(MessageBelongType belongType) {
-//   if (belongType == MessageBelongType.Receiver) {
-//     return CrossAxisAlignment.end;
-//   } else {
-//     return CrossAxisAlignment.start;
-//   }
-// }
-
-// Widget _videoLoadView() {
-//   return Selector<ChatDetailManager, VideoLoadType>(
-//     builder: (BuildContext context, VideoLoadType value, Widget? child) {
-//       if (value == VideoLoadType.Loading) {
-//         return Container(
-//           child: CupertinoActivityIndicator(),
-//         );
-//       } else if (value == VideoLoadType.Fail) {
-//         return Container(
-//           child: CircleAvatar(
-//             backgroundColor: Colors.pink,
-//             maxRadius: 10,
-//             child: Center(
-//               child: Icon(
-//                 Icons.clear,
-//                 color: Colors.white,
-//                 size: 15,
-//               ),
-//             ),
-//           ),
-//         );
-//       } else {
-//         return Container();
-//       }
-//     },
-//     selector: (BuildContext context, ChatDetailManager chatDetailManager) {
-//       return chatDetailManager.videoLoadType;
-//     },
-//     shouldRebuild: (pre, next) => (pre != next),
-//   );
-// }
 }

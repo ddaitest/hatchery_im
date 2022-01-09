@@ -61,8 +61,7 @@ class SlideActionInfo {
 class ItemModel {
   String title;
   IconData icon;
-  GestureTapCallback? onTap;
-  ItemModel(this.title, this.icon, this.onTap);
+  ItemModel(this.title, this.icon);
 }
 
 enum MessageBelongType {

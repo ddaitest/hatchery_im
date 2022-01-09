@@ -85,7 +85,7 @@ class MessageCentre {
   }
 
   ///传otherId搜索对应message；不传otherId搜索全部message
-  static Future<List<Message>> getMessages({String? otherId}) async {
+  static List<Message> getMessages({String? otherId}) {
     if (otherId != null) {
       return LocalStore.messageBox?.values
               .where((element) => element.type == "CHAT"
@@ -633,10 +633,8 @@ class MyEngineHandler implements EngineCallback {
   void onNewMessage(Message msg) {
     _centre.newMessageListener?.call(msg);
     Log.red("onNewMessage onNewMessage ${msg.toJson()}");
+    msg..progress = MSG_RECEIVED;
     LocalStore.addMessage(msg);
-    msg
-      ..progress = MSG_RECEIVED
-      ..save();
     LocalStore.refreshSession(
         msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
         sessionTime: msg.createTime);

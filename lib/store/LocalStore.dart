@@ -86,9 +86,7 @@ class LocalStore {
             ? UsersInfo.fromJson(values.getData())
             : GroupInfo.fromJson(values.getData()['group']);
         Session? result = findSession(otherId);
-        int unReadCount = getUnReadMessageCount(
-            LocalStore.messageBox?.values.toList() ?? [],
-            otherId: otherId);
+        int unReadCount = getUnReadMessageCount(otherId: otherId);
         if (result != null) {
           message.isGroup()
               ? result.lastGroupChatMessage = message
@@ -208,18 +206,18 @@ class LocalStore {
   }
 
   /// 获取消息未读数，来源：Message.progress = MSG_RECEIVED
-  static int getUnReadMessageCount(List<Message> messageList,
-      {String? otherId}) {
+  static int getUnReadMessageCount({String? otherId}) {
     int count = 0;
-    if (otherId != null) {
-      count = messageList
-          .where((element) => element.type == "CHAT"
-              ? element.sender == otherId &&
-                  element.receiver == UserCentre.getUserID() &&
-                  element.progress == MSG_RECEIVED
-              : element.groupID == otherId && element.progress == MSG_RECEIVED)
-          .length;
-    }
+    List<Message> temp = [];
+    temp = MessageCentre.getMessages();
+    count = temp
+        .where((element) => element.type == "CHAT"
+            ? element.sender == otherId &&
+                element.receiver == UserCentre.getUserID() &&
+                element.progress == MSG_RECEIVED
+            : element.groupID == otherId && element.progress == MSG_RECEIVED)
+        .length;
+    Log.green("getUnReadMessageCount ${count.toString()} ${temp.length}");
     return count >= 0 ? count : 0;
   }
 
@@ -228,6 +226,10 @@ class LocalStore {
   }
 
   static ValueListenable<Box<Message>> listenMessage() {
+    return messageBox!.listenable();
+  }
+
+  static ValueListenable<Box<Message>> removeListenMessage() {
     return messageBox!.listenable();
   }
 

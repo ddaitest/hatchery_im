@@ -58,7 +58,6 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupName = "";
   String currentGroupIcon = "";
   String? myUserId;
-  ValueNotifier<List<Message>> messageList = ValueNotifier<List<Message>>([]);
   final TextEditingController textEditingController = TextEditingController();
 
   /// 初始化
@@ -70,8 +69,6 @@ class ChatDetailManager extends ChangeNotifier {
       String groupId = "",
       String groupName = "",
       String groupIcon = ""}) {
-    // _inputTextListen();
-    // messageList = ValueNotifier<List<Message>>([]);
     myProfileData = UserCentre.getInfo();
     myUserId = myProfileData?.userID ?? "";
     currentChatType = chatType;
@@ -82,41 +79,44 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
     loadMessages();
-    LocalStore.listenMessage().addListener(() {
-      clearUnReadStatus(); // 如果停留在当前消息详情页则会自动清除未读状态
-      loadMessages();
-    });
-    clearUnReadStatus();
   }
 
-  void loadMessages() {
+  List<Message> loadMessages({Box<Message>? msgBox}) {
     List<Message> tempList = [];
     Log.red(currentFriendId != ""
         ? "listenMessage >> friendId= $currentFriendId  myUserId $myUserId"
         : "listenMessage >> groupId= $currentGroupId  myUserId $myUserId");
-    tempList = LocalStore.messageBox?.values
-            .where((element) => element.type == "CHAT"
-                ? (element.receiver == currentFriendId &&
-                        element.sender == myUserId) ||
-                    (element.sender == currentFriendId &&
-                        element.receiver == myUserId)
-                : element.groupID == currentGroupId)
-            .toList() ??
-        [];
+    if (msgBox != null) {
+      tempList = msgBox.values
+          .where((element) => element.type == "CHAT"
+              ? (element.receiver == currentFriendId &&
+                      element.sender == myUserId) ||
+                  (element.sender == currentFriendId &&
+                      element.receiver == myUserId)
+              : element.groupID == currentGroupId)
+          .toList();
+    } else {
+      tempList = LocalStore.messageBox?.values
+              .where((element) => element.type == "CHAT"
+                  ? (element.receiver == currentFriendId &&
+                          element.sender == myUserId) ||
+                      (element.sender == currentFriendId &&
+                          element.receiver == myUserId)
+                  : element.groupID == currentGroupId)
+              .toList() ??
+          [];
+    }
     if (tempList.isNotEmpty) {
       tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
           .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-      messageList.value = tempList;
+      clearUnReadStatus(tempList);
     }
+    return tempList;
   }
 
   /// 清除消息未读状态，会影响首页session的未读和mainTab上的总未读数
   /// messageBox和sessionBox都会刷新数据
-  void clearUnReadStatus() {
-    List<Message>? temp = [];
-    MessageCentre.getMessages(
-            otherId: currentFriendId == "" ? currentGroupId : currentFriendId)
-        .then((value) => temp = value);
+  void clearUnReadStatus(List<Message> temp) {
     Session? session = LocalStore.findSession(
         currentFriendId == "" ? currentGroupId : currentFriendId);
     if (session != null) {
@@ -124,9 +124,10 @@ class ChatDetailManager extends ChangeNotifier {
         ..unReadCount = 0
         ..save();
     }
-    if (temp != null && temp!.isNotEmpty) {
-      temp!.forEach((element) {
-        if (element.progress == MSG_RECEIVED) {
+    if (temp.isNotEmpty) {
+      temp.forEach((element) {
+        if (element.sender != myProfileData?.userID &&
+            element.progress == MSG_RECEIVED) {
           element
             ..progress = MSG_READ
             ..save();
@@ -137,17 +138,17 @@ class ChatDetailManager extends ChangeNotifier {
 
   /// 加载最新的消息，数据来源 本地。
   _loadLatest(String otherId) {
+    List<Message> temp = [];
+    temp = MessageCentre.getMessages();
     // 读本地
-    MessageCentre.getMessages(otherId: otherId).then((value) {
-      if (value.length > 0) {
-        // messagesList = value;
-        notifyListeners();
-      }
-      if (value.length < 10) {
-        //TODO 本地数据少 读一次历史
-        loadMore();
-      }
-    });
+    if (temp.length > 0) {
+      // messagesList = value;
+      notifyListeners();
+    }
+    if (temp.length < 10) {
+      //TODO 本地数据少 读一次历史
+      loadMore();
+    }
   }
 
   Future<void> pickCamera(BuildContext context) async {
