@@ -376,15 +376,15 @@ class ChatDetailManager extends ChangeNotifier {
   checkTimeLength() {
     print("DEBUG=> recordTiming $recordTiming");
     if (voicePath != null) {
-      String? msgId;
-      Map<String, dynamic> content = {"voice_url": voicePath};
-      msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
       if (recordTiming >= 3) {
-        Future.delayed(Duration(milliseconds: 500), () {
+        String? msgId;
+        Map<String, dynamic> content = {"voice_url": voicePath};
+        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+        Future.delayed(Duration(milliseconds: 1000), () {
           uploadMediaFile(voicePath!).then((uploadMediaUrl) {
-            if (uploadMediaUrl != "")
+            if (uploadMediaUrl != "") {
               MessageCentre.sendMessageModel(
-                  term: uploadMediaUrl!,
+                  term: uploadMediaUrl,
                   chatType: currentChatType!,
                   messageType: "VOICE",
                   otherName: otherName ?? "",
@@ -394,6 +394,7 @@ class ChatDetailManager extends ChangeNotifier {
                   currentGroupIcon: currentGroupIcon,
                   currentFriendId: currentFriendId,
                   msgId: msgId);
+            }
           });
         });
       } else {

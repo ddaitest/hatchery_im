@@ -170,6 +170,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
         ),
         padding: const EdgeInsets.all(10),
         child: Container(
+          alignment: Alignment.centerLeft,
           height: 25.0.h,
           width: 200.0.w,
           child: Text('发送中....',
