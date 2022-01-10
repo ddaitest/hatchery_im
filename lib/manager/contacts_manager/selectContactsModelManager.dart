@@ -6,6 +6,7 @@ import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/config.dart';
@@ -166,6 +167,42 @@ class SelectContactsModelManager extends ChangeNotifier {
   void removeSelectedGroupMembersIntoList(GroupMembers groupMembers) {
     selectGroupMembersList.remove(groupMembers);
     notifyListeners();
+  }
+
+  static initShareMessageContent(
+      Map<String, dynamic> messageContent, String contentType) {
+    var finalContent;
+    switch (contentType) {
+      case "TEXT":
+        finalContent = messageContent["text"];
+        break;
+      case "IMAGE":
+        finalContent = messageContent['img_url'];
+        break;
+      case "VIDEO":
+        finalContent = messageContent['video_url'];
+        break;
+      case "VOICE":
+        finalContent = messageContent['voice_url'];
+        break;
+      case "URL":
+        finalContent = messageContent['text'];
+        break;
+      case "GEO":
+        finalContent = messageContent;
+        break;
+      case "FILE":
+        finalContent = messageContent;
+        break;
+      case "CARD":
+        finalContent = messageContent;
+        break;
+      default:
+        finalContent = messageContent;
+        break;
+    }
+    Log.green("initShareMessageContent $finalContent");
+    return finalContent;
   }
 
   @override

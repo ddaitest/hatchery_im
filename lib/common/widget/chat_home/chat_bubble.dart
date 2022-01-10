@@ -209,17 +209,20 @@ class _ChatBubbleState extends State<ChatBubble> {
               .map((item) => GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () {
-                      if (item.title == "复制") {
-                        manager.copyText(convert.jsonDecode(
-                            widget.contentMessages.content)['text']);
-                        _customPopupMenuController?.hideMenu();
-                      } else if (item.title == "转发") {
-                        manager.relayMessage(
-                            convert.jsonDecode(widget.contentMessages.content),
-                            widget.contentMessages.contentType);
-                        _customPopupMenuController?.hideMenu();
-                      } else if (item.title == "删除") {
-                        MessageCentre.deleteMessage(widget.messageKey);
+                      if (widget.contentMessages.progress == MSG_SENDING) {
+                        showToast("发送成功后才可操作");
+                      } else {
+                        if (item.title == "复制") {
+                          ChatDetailManager.copyText(convert.jsonDecode(
+                              widget.contentMessages.content)['text']);
+                        } else if (item.title == "转发") {
+                          ChatDetailManager.relayMessage(
+                              convert
+                                  .jsonDecode(widget.contentMessages.content),
+                              widget.contentMessages.contentType);
+                        } else if (item.title == "删除") {
+                          MessageCentre.deleteMessage(widget.messageKey);
+                        }
                         _customPopupMenuController?.hideMenu();
                       }
                     },

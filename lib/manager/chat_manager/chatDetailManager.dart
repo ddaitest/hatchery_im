@@ -438,7 +438,8 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  static relayMessage(var content, String? contentType) async {
+  static relayMessage(
+      Map<String, dynamic>? content, String? contentType) async {
     if (content != null && contentType != null) {
       return Routers.navigateTo('/select_contacts_model', arg: {
         'titleText': '转发消息',
@@ -447,45 +448,11 @@ class ChatDetailManager extends ChangeNotifier {
         'nextPageBtnText': '转发',
         'selectContactsType': SelectContactsType.Share,
         'contentType': contentType,
-        'shareMessageContent': _initShareMessageContent(content, contentType),
+        'shareMessageContent': content,
         'groupMembersFriendId': ['']
       });
     } else {
       showToast("转发失败");
     }
-  }
-
-  static _initShareMessageContent(var messageContent, String contentType) {
-    var finalContent;
-    switch (contentType) {
-      case "TEXT":
-        finalContent = messageContent['text'];
-        break;
-      case "IMAGE":
-        finalContent = messageContent['img_url'];
-        break;
-      case "VIDEO":
-        finalContent = messageContent['video_url'];
-        break;
-      case "VOICE":
-        finalContent = messageContent['voice_url'];
-        break;
-      case "URL":
-        finalContent = messageContent['text'];
-        break;
-      case "GEO":
-        finalContent = messageContent;
-        break;
-      case "FILE":
-        finalContent = messageContent;
-        break;
-      case "CARD":
-        finalContent = messageContent;
-        break;
-      default:
-        finalContent = messageContent;
-        break;
-    }
-    return finalContent;
   }
 }

@@ -259,19 +259,25 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           groupID: groupId,
           deleteMembersInfo: _deleteMembersInfo);
     } else if (selectContactsType == SelectContactsType.Share) {
-      manager.selectFriendsList.forEach((element) {
-        MessageCentre.sendMessageModel(
-            term: widget.shareMessageContent ?? "",
-            chatType: "CHAT",
-            messageType: widget.contentType ?? "TEXT",
-            otherName: element.remarks ?? element.nickName,
-            otherIcon: element.icon,
-            currentGroupId: "",
-            currentGroupName: "",
-            currentGroupIcon: "",
-            currentFriendId: element.friendId);
-      });
-      Navigator.pop(App.navState.currentContext!);
+      if (widget.shareMessageContent != null &&
+          widget.shareMessageContent!.isNotEmpty) {
+        manager.selectFriendsList.forEach((element) {
+          MessageCentre.sendMessageModel(
+              term: SelectContactsModelManager.initShareMessageContent(
+                  widget.shareMessageContent!, widget.contentType ?? "TEXT"),
+              chatType: "CHAT",
+              messageType: widget.contentType ?? "TEXT",
+              otherName: element.remarks ?? element.nickName,
+              otherIcon: element.icon,
+              currentGroupId: "",
+              currentGroupName: "",
+              currentGroupIcon: "",
+              currentFriendId: element.friendId);
+        });
+        Navigator.pop(App.navState.currentContext!);
+      } else {
+        showToast("转发失败");
+      }
     }
   }
 

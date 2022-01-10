@@ -304,7 +304,8 @@ class MessageCentre {
     Message message = ModelHelper.convertMessage(msg);
     if (msg.contentType == "TEXT" ||
         msg.contentType == "GEO" ||
-        msg.contentType == "CARD") {
+        msg.contentType == "CARD" ||
+        msgId == null) {
       Log.yellow("sendMessage ${message.progress} ${msg.toJson()}");
       LocalStore.addMessage(message);
       LocalStore.findCache(msg.msgId)
