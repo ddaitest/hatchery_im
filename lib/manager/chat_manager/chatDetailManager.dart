@@ -167,7 +167,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (result.isSuccess()) {
       final url = result.getData();
       if (url is String) {
-        print("DEBUG=> mediaUrl = $url");
+        Log.green("mediaUrl = $url");
         return url;
       } else {
         showToast("上传失败，请重试");
@@ -356,7 +356,6 @@ class ChatDetailManager extends ChangeNotifier {
     String voiceTempPath = '$tempPath/voiceFiles/';
     folderCreate(voiceTempPath);
     voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
-    print("DEBUG=> $result / ${status.isDenied}");
     if (result && status.isDenied) {
       await Record().start(
         path: '$voicePath', // required
@@ -370,31 +369,28 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   stopVoiceRecord() async {
-    await Record().stop();
+    await Record().stop().whenComplete(() => _sendVoiceMessage());
   }
 
-  checkTimeLength() {
-    print("DEBUG=> recordTiming $recordTiming");
+  _sendVoiceMessage() {
+    Log.green("recordTiming $recordTiming");
     if (voicePath != null) {
       if (recordTiming >= 3) {
-        String? msgId;
-        Map<String, dynamic> content = {"voice_url": voicePath};
-        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+        // String? msgId;
+        // Map<String, dynamic> content = {"voice_url": voicePath};
+        // msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
         Future.delayed(Duration(milliseconds: 1000), () {
           uploadMediaFile(voicePath!).then((uploadMediaUrl) {
-            if (uploadMediaUrl != "") {
-              MessageCentre.sendMessageModel(
-                  term: uploadMediaUrl,
-                  chatType: currentChatType!,
-                  messageType: "VOICE",
-                  otherName: otherName ?? "",
-                  otherIcon: otherIcon ?? "",
-                  currentGroupId: currentGroupId,
-                  currentGroupName: currentGroupName,
-                  currentGroupIcon: currentGroupIcon,
-                  currentFriendId: currentFriendId,
-                  msgId: msgId);
-            }
+            MessageCentre.sendMessageModel(
+                term: uploadMediaUrl,
+                chatType: currentChatType!,
+                messageType: "VOICE",
+                otherName: otherName ?? "",
+                otherIcon: otherIcon ?? "",
+                currentGroupId: currentGroupId,
+                currentGroupName: currentGroupName,
+                currentGroupIcon: currentGroupIcon,
+                currentFriendId: currentFriendId);
           });
         });
       } else {
@@ -455,5 +451,18 @@ class ChatDetailManager extends ChangeNotifier {
     } else {
       showToast("转发失败");
     }
+  }
+
+  void disposeModel() {
+    isVoiceModel = false;
+    voicePath = null;
+    voiceUrl = null;
+    cancelTimer();
+    emojiShowing = false;
+    textEditingController.clear();
+    currentFriendId = "";
+    currentGroupId = "";
+    currentGroupName = "";
+    currentGroupIcon = "";
   }
 }

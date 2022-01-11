@@ -206,6 +206,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
     _audioPlayer.dispose();
     _durationSubscription?.cancel();
     _positionSubscription?.cancel();
+    voiceUrl = "";
     super.dispose();
   }
 }

@@ -127,7 +127,6 @@ class _ChatBubbleState extends State<ChatBubble> {
 
   Widget switchMessageTypeView(
       String messageType, MessageBelongType belongType) {
-    Log.green("contentMessages.content ${widget.contentMessages.content}");
     Widget finalView;
     Map<String, dynamic> content =
         convert.jsonDecode(widget.contentMessages.content);

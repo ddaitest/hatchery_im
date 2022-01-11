@@ -57,6 +57,7 @@ class _VideoMessageWidgetState extends State<VideoMessageWidget>
   @override
   void dispose() {
     flickManager?.dispose();
+    videoUrl = "";
     super.dispose();
   }
 }

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
@@ -102,14 +103,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   @override
   void dispose() {
-    manager.isVoiceModel = false;
-    manager.cancelTimer();
-    manager.emojiShowing = false;
-    manager.textEditingController.clear();
-    manager.currentFriendId = "";
-    manager.currentGroupId = "";
-    manager.currentGroupName = "";
-    manager.currentGroupIcon = "";
+    manager.disposeModel();
     super.dispose();
   }
 
@@ -351,7 +345,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _voiceRecordBtnView(bool isVoice) {
     return GestureDetector(
-      onLongPress: () {
+      onLongPressStart: (LongPressStartDetails details) {
+        Log.green("onLongPressDown");
         FocusScope.of(context).unfocus();
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
@@ -359,10 +354,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         manager.startVoiceRecord();
       },
       onLongPressEnd: (LongPressEndDetails details) {
+        Log.green("onLongPressEnd");
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
         manager.stopVoiceRecord();
-        manager.checkTimeLength();
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),
