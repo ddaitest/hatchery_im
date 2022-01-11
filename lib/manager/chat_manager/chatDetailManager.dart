@@ -369,16 +369,16 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   stopVoiceRecord() async {
-    await Record().stop().whenComplete(() => _sendVoiceMessage());
+    await Record().stop();
   }
 
-  _sendVoiceMessage() {
+  sendVoiceMessage() {
     Log.green("recordTiming $recordTiming");
     if (voicePath != null) {
       if (recordTiming >= 3) {
-        // String? msgId;
-        // Map<String, dynamic> content = {"voice_url": voicePath};
-        // msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+        String? msgId;
+        Map<String, dynamic> content = {"voice_url": voicePath};
+        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
         Future.delayed(Duration(milliseconds: 1000), () {
           uploadMediaFile(voicePath!).then((uploadMediaUrl) {
             MessageCentre.sendMessageModel(
@@ -390,7 +390,8 @@ class ChatDetailManager extends ChangeNotifier {
                 currentGroupId: currentGroupId,
                 currentGroupName: currentGroupName,
                 currentGroupIcon: currentGroupIcon,
-                currentFriendId: currentFriendId);
+                currentFriendId: currentFriendId,
+                msgId: msgId);
           });
         });
       } else {

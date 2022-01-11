@@ -346,7 +346,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget _voiceRecordBtnView(bool isVoice) {
     return GestureDetector(
       onLongPressStart: (LongPressStartDetails details) {
-        Log.green("onLongPressDown");
+        Log.green("onLongPressStart");
         FocusScope.of(context).unfocus();
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
@@ -356,8 +356,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       onLongPressEnd: (LongPressEndDetails details) {
         Log.green("onLongPressEnd");
         Vibration.vibrate(duration: 100);
-        manager.changeInputView();
         manager.stopVoiceRecord();
+        manager.sendVoiceMessage();
+        manager.changeInputView();
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),

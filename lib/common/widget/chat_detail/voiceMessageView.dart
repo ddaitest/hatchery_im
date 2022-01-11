@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 import '../../../config.dart';
+import '../../log.dart';
 
 class VoiceMessageWidget extends StatefulWidget {
   final Map<String, dynamic> voiceMessageMap;
@@ -151,7 +152,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                     _playerState == PlayerState.PLAYING
                         ? Icons.pause_circle_outline
                         : Icons.play_circle_outline,
-                    size: 30.0,
+                    size: 25.0,
                     color: belongType == MessageBelongType.Receiver
                         ? Flavors.colorInfo.blueGrey
                         : Flavors.colorInfo.mainBackGroundColor)
@@ -164,9 +165,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
       return Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: belongType == MessageBelongType.Receiver
-              ? Colors.white
-              : Flavors.colorInfo.mainColor,
+          color: Flavors.colorInfo.mainColor,
         ),
         padding: const EdgeInsets.all(10),
         child: Container(
@@ -174,9 +173,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
           height: 25.0.h,
           width: 200.0.w,
           child: Text('发送中....',
-              style: belongType == MessageBelongType.Receiver
-                  ? Flavors.textStyles.chatBubbleVoiceReceiverText
-                  : Flavors.textStyles.chatBubbleVoiceSenderText),
+              style: Flavors.textStyles.chatBubbleVoiceSenderText),
         ),
       );
     }
