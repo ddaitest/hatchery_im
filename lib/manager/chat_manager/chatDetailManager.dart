@@ -50,7 +50,6 @@ class ChatDetailManager extends ChangeNotifier {
   int currentMessageID = 0;
   int? videoHeight;
   int? videoWidth;
-  AssetEntity? _entity;
   String? currentChatType;
   String? otherName;
   String? otherIcon;
@@ -153,7 +152,8 @@ class ChatDetailManager extends ChangeNotifier {
 
   Future<void> pickCamera(BuildContext context) async {
     Navigator.pop(App.navState.currentContext!);
-    _entity = await CameraPicker.pickFromCamera(context, enableRecording: true);
+    AssetEntity? _entity =
+        await CameraPicker.pickFromCamera(context, enableRecording: true);
     if (_entity == null) {
       return null;
     } else {
@@ -181,11 +181,10 @@ class ChatDetailManager extends ChangeNotifier {
 
   void sendLocalMediaMessage(AssetEntity? assetEntity) async {
     await assetEntity!.file.then((fileValue) {
-      String? msgId;
-      Map<String, dynamic> content = {};
+      Log.red("fileValue ${fileValue?.path}");
       if (assetEntity.type == AssetType.image) {
-        content = {"img_url": fileValue?.path};
-        msgId = _fakeMediaMessage(convert.jsonEncode(content),
+        Map<String, dynamic> content = {"img_url": fileValue?.path};
+        String msgId = _fakeMediaMessage(convert.jsonEncode(content),
             "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
         Log.green("msgId $msgId");
         fileValue?.length().then((lengthValue) {
@@ -222,8 +221,8 @@ class ChatDetailManager extends ChangeNotifier {
           }
         });
       } else if (assetEntity.type == AssetType.video) {
-        content = {"video_url": fileValue?.path ?? ""};
-        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
+        Map<String, dynamic> content = {"video_url": fileValue?.path ?? ""};
+        String msgId = _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
         compressionVideo(fileValue!.path).then((compressionValue) {
           uploadMediaFile(compressionValue).then((uploadMediaUrl) {
             MessageCentre.sendMessageModel(
@@ -244,7 +243,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   Future getImageByGallery() async {
-    final List<AssetEntity>? assets =
+    List<AssetEntity>? assets =
         await AssetPicker.pickAssets(App.navState.currentContext!,
             requestType: RequestType.common,
             // maxAssets: 1,
@@ -302,10 +301,9 @@ class ChatDetailManager extends ChangeNotifier {
           content,
           contentType);
       Message message = ModelHelper.convertMessage(msg);
+      Log.red("_fakeMediaMessage ${msg.toJson()}");
+      message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-      LocalStore.findCache(msg.msgId)
-        ?..progress = MSG_SENDING
-        ..save();
       return msg.msgId;
     } else {
       CSSendGroupMessage msg = Protocols.sendGroupMessage(
@@ -319,10 +317,8 @@ class ChatDetailManager extends ChangeNotifier {
           content,
           contentType);
       Message message = ModelHelper.convertGroupMessage(msg);
+      message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-      LocalStore.findCache(msg.msgId)
-        ?..progress = MSG_SENDING
-        ..save();
       return msg.msgId;
     }
   }
@@ -376,12 +372,12 @@ class ChatDetailManager extends ChangeNotifier {
     Log.green("recordTiming $recordTiming");
     if (voicePath != null) {
       if (recordTiming >= 3) {
-        // String? msgId;
-        // Map<String, dynamic> content = {"voice_url": voicePath};
-        // msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+        String? msgId;
+        Map<String, dynamic> content = {"voice_url": voicePath};
+        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
         Future.delayed(Duration(milliseconds: 1000), () {
-          uploadMediaFile(voicePath!).then((uploadMediaUrl) {
-            MessageCentre.sendMessageModel(
+          uploadMediaFile(voicePath!).then(
+            (uploadMediaUrl) => MessageCentre.sendMessageModel(
                 term: uploadMediaUrl,
                 chatType: currentChatType!,
                 messageType: "VOICE",
@@ -390,8 +386,9 @@ class ChatDetailManager extends ChangeNotifier {
                 currentGroupId: currentGroupId,
                 currentGroupName: currentGroupName,
                 currentGroupIcon: currentGroupIcon,
-                currentFriendId: currentFriendId);
-          });
+                currentFriendId: currentFriendId,
+                msgId: msgId),
+          );
         });
       } else {
         showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);

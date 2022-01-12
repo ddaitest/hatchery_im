@@ -32,6 +32,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   @override
   void initState() {
     voiceUrl = widget.voiceMessageMap['voice_url'];
+    Log.red("voiceUrl $voiceUrl");
     _initAudioPlayer();
     super.initState();
   }

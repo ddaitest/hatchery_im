@@ -307,7 +307,6 @@ class MessageCentre {
         msg.contentType == "GEO" ||
         msg.contentType == "CARD" ||
         msgId == null) {
-      Log.yellow("sendMessage ${message.progress} ${msg.toJson()}");
       LocalStore.addMessage(message);
       LocalStore.findCache(msg.msgId)
         ?..progress = MSG_SENDING
@@ -318,6 +317,8 @@ class MessageCentre {
         ?..content = content
         ..save();
     }
+    Log.yellow(
+        "sendMessage ${LocalStore.findCache(msgId!)?.content} ${msg.toJson()}");
     LocalStore.refreshSession(message, to, sessionTime: message.createTime);
   }
 
