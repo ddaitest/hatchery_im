@@ -302,6 +302,7 @@ class MessageCentre {
         msgId: msgId);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
+    Log.green("sendMessage sendMessage ${msg.contentType}");
     if (msg.contentType == "TEXT" ||
         msg.contentType == "GEO" ||
         msg.contentType == "CARD" ||

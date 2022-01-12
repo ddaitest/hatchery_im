@@ -13,6 +13,7 @@ class ImageMessageWidget extends StatelessWidget {
   final Map<String, dynamic> imageMessageMap;
   final MessageBelongType messageBelongType;
   ImageMessageWidget(this.imageMessageMap, this.messageBelongType);
+  bool _isShow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,35 +24,43 @@ class ImageMessageWidget extends StatelessWidget {
     String imageUrl = imageMessageMap["img_url"];
     if (imageUrl.contains("http")) {
       return GestureDetector(
-          onTap: () =>
-              Routers.navigateTo('/imageDetail', arg: {"imageUrl": imageUrl}),
+          onTap: () => _isShow
+              ? Routers.navigateTo('/imageDetail', arg: {"imageUrl": imageUrl})
+              : null,
           child: CachedNetworkImage(
               width: 130.0.w,
               fit: BoxFit.cover,
               imageUrl: imageUrl,
-              placeholder: (context, url) => Container(
-                    // width: 150.0.w,
-                    height: 180.0.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Flavors.colorInfo.mainBackGroundColor,
-                    ),
-                    child: Center(
-                      child: CupertinoActivityIndicator(),
-                    ),
+              placeholder: (context, url) {
+                _isShow = false;
+                return Container(
+                  // width: 150.0.w,
+                  height: 180.0.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Flavors.colorInfo.mainBackGroundColor,
                   ),
-              errorWidget: (context, url, error) => Container(
-                    width: 150.0.w,
-                    height: 100.0.h,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Flavors.colorInfo.mainBackGroundColor,
-                    ),
-                    child: Center(
-                      child: Icon(Icons.broken_image_outlined, size: 30),
-                    ),
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
                   ),
+                );
+              },
+              errorWidget: (context, url, error) {
+                _isShow = false;
+                return Container(
+                  width: 150.0.w,
+                  height: 100.0.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Flavors.colorInfo.mainBackGroundColor,
+                  ),
+                  child: Center(
+                    child: Icon(Icons.broken_image_outlined, size: 30),
+                  ),
+                );
+              },
               imageBuilder: (context, imageProvider) {
+                _isShow = true;
                 return GestureDetector(
                   onTap: () => Routers.navigateTo('/imageDetail',
                       arg: {"image": imageProvider}),

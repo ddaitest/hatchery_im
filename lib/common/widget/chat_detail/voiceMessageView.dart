@@ -26,8 +26,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   PlayerState _playerState = PlayerState.STOPPED;
   Duration? _audioDuration;
   Duration? _audioPosition;
-  StreamSubscription? _durationSubscription;
-  StreamSubscription? _positionSubscription;
   String? _durationText;
   bool get _isPlaying => _playerState == PlayerState.PLAYING;
   String voiceUrl = "";
@@ -201,8 +199,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   @override
   void dispose() {
     _audioPlayer.dispose();
-    _durationSubscription?.cancel();
-    _positionSubscription?.cancel();
     voiceUrl = "";
     super.dispose();
   }
