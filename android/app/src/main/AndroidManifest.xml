@@ -3,7 +3,7 @@
    <application
         android:requestLegacyExternalStorage="true"
         android:label="hatchery_im"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_bk"
         android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.amap.api.v2.apikey"
