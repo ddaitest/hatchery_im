@@ -32,7 +32,7 @@ Future<String> compressionImage(filePath) async {
 }
 
 Future<String> compressionVideo(filePath) async {
-  // await VideoCompress.deleteAllCache();
+  VideoCompress.deleteAllCache();
   final MediaInfo? info = await VideoCompress.compressVideo(
     filePath,
     quality: VideoQuality.Res960x540Quality,

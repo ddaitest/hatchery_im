@@ -157,9 +157,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (_entity == null) {
       return null;
     } else {
-      String medieType = _entity.type == AssetType.image ? "media_image": "media_video";
-      _entity.file.then((value) => sendLocalMediaMessage(filePath: value?.path, fileType: medieType));
-
+      sendLocalMediaMessage(_entity);
     }
   }
 
@@ -181,21 +179,58 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void sendLocalMediaMessage({String? filePath, String? fileType}) async {
-    Log.red("filePath fileType $filePath $fileType");
-    if (fileType == "media_image") {
-      Map<String, dynamic> content = {"img_url": filePath};
-      String msgId = _fakeMediaMessage(convert.jsonEncode(content),
-          "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
-      Log.green("msgId $msgId");
-      fileValue?.length().then((lengthValue) {
-        if (lengthValue > 2080000) {
-          compressionImage(fileValue.path).then((compressionValue) {
+  void sendLocalMediaMessage(AssetEntity? assetEntity) async {
+    if (assetEntity != null) {
+      assetEntity.file.then((fileValue) {
+        Log.red("fileValue ${fileValue?.path}");
+        if (assetEntity.type == AssetType.image) {
+          Map<String, dynamic> content = {"img_url": fileValue?.path};
+          String msgId = _fakeMediaMessage(convert.jsonEncode(content),
+              "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
+          Log.green("msgId $msgId");
+          fileValue?.length().then((lengthValue) {
+            if (lengthValue > 2080000) {
+              compressionImage(fileValue.path).then((compressionValue) {
+                uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+                  MessageCentre.sendMessageModel(
+                      term: uploadMediaUrl!,
+                      chatType: currentChatType!,
+                      messageType: "IMAGE",
+                      otherName: otherName ?? "",
+                      otherIcon: otherIcon ?? "",
+                      currentGroupId: currentGroupId,
+                      currentGroupName: currentGroupName,
+                      currentGroupIcon: currentGroupIcon,
+                      currentFriendId: currentFriendId,
+                      msgId: msgId);
+                });
+              });
+            } else {
+              uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
+                MessageCentre.sendMessageModel(
+                    term: uploadMediaUrl!,
+                    chatType: currentChatType!,
+                    messageType: "IMAGE",
+                    otherName: otherName ?? "",
+                    otherIcon: otherIcon ?? "",
+                    currentGroupId: currentGroupId,
+                    currentGroupName: currentGroupName,
+                    currentGroupIcon: currentGroupIcon,
+                    currentFriendId: currentFriendId,
+                    msgId: msgId);
+              });
+            }
+          });
+        } else if (assetEntity.type == AssetType.video) {
+          Map<String, dynamic> content = {"video_url": fileValue?.path ?? ""};
+          String msgId =
+              _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
+          compressionVideo(fileValue!.path).then((compressionValue) {
             uploadMediaFile(compressionValue).then((uploadMediaUrl) {
               MessageCentre.sendMessageModel(
                   term: uploadMediaUrl!,
                   chatType: currentChatType!,
-                  messageType: "IMAGE",
+                  messageType: "VIDEO",
                   otherName: otherName ?? "",
                   otherIcon: otherIcon ?? "",
                   currentGroupId: currentGroupId,
@@ -205,55 +240,26 @@ class ChatDetailManager extends ChangeNotifier {
                   msgId: msgId);
             });
           });
-        } else {
-          uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
-            MessageCentre.sendMessageModel(
-                term: uploadMediaUrl!,
-                chatType: currentChatType!,
-                messageType: "IMAGE",
-                otherName: otherName ?? "",
-                otherIcon: otherIcon ?? "",
-                currentGroupId: currentGroupId,
-                currentGroupName: currentGroupName,
-                currentGroupIcon: currentGroupIcon,
-                currentFriendId: currentFriendId,
-                msgId: msgId);
-          });
         }
       });
-    } else if (assetEntity.type == AssetType.video) {
-      Map<String, dynamic> content = {"video_url": fileValue?.path ?? ""};
-      String msgId = _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
-      compressionVideo(fileValue!.path).then((compressionValue) {
-        uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-          MessageCentre.sendMessageModel(
-              term: uploadMediaUrl!,
-              chatType: currentChatType!,
-              messageType: "VIDEO",
-              otherName: otherName ?? "",
-              otherIcon: otherIcon ?? "",
-              currentGroupId: currentGroupId,
-              currentGroupName: currentGroupName,
-              currentGroupIcon: currentGroupIcon,
-              currentFriendId: currentFriendId,
-              msgId: msgId);
-        });
-      });
+    } else {
+      showToast("选择失败请重试");
     }
   }
 
-  Future getImageByGallery() async {
+  void getImageByGallery() async {
     List<AssetEntity>? assets =
         await AssetPicker.pickAssets(App.navState.currentContext!,
-            requestType: RequestType.common,
-            // maxAssets: 1,
-            themeColor: Flavors.colorInfo.mainColor);
+                requestType: RequestType.common,
+                // maxAssets: 1,
+                themeColor: Flavors.colorInfo.mainColor) ??
+            [];
     Navigator.pop(App.navState.currentContext!);
-    if (assets == null) {
+    if (assets.isNotEmpty) {
       return null;
     } else {
       assets.forEach((element) {
-        sendLocalMediaMessage()
+        sendLocalMediaMessage(element);
       });
     }
   }
