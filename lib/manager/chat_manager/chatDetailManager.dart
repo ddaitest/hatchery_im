@@ -136,19 +136,19 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   /// 加载最新的消息，数据来源 本地。
-  _loadLatest(String otherId) {
-    List<Message> temp = [];
-    temp = MessageCentre.getMessages();
-    // 读本地
-    if (temp.length > 0) {
-      // messagesList = value;
-      notifyListeners();
-    }
-    if (temp.length < 10) {
-      //TODO 本地数据少 读一次历史
-      loadMore();
-    }
-  }
+  // _loadLatest(String otherId) {
+  //   List<Message> temp = [];
+  //   temp = MessageCentre.getMessages();
+  //   // 读本地
+  //   if (temp.length > 0) {
+  //     // messagesList = value;
+  //     notifyListeners();
+  //   }
+  //   if (temp.length < 10) {
+  //     //TODO 本地数据少 读一次历史
+  //     loadMore();
+  //   }
+  // }
 
   Future<void> pickCamera(BuildContext context) async {
     Navigator.pop(App.navState.currentContext!);
@@ -339,10 +339,10 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   /// 加载更多历史消息
-  loadMore() {
-    //TODO 本地数据少 读一次历史
-    // MessageCentre().loadMore(currentFriendId)
-  }
+  // loadMore() {
+  //   //TODO 本地数据少 读一次历史
+  //   // MessageCentre().loadMore(currentFriendId)
+  // }
 
   changeInputView() {
     isVoiceModel = !isVoiceModel;

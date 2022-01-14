@@ -9,19 +9,22 @@ import 'package:hatchery_im/common/widget/imageDetail.dart';
 import '../../../config.dart';
 import '../../../routers.dart';
 
-class ImageMessageWidget extends StatelessWidget {
+class ImageMessageWidget extends StatefulWidget {
   final Map<String, dynamic> imageMessageMap;
   final MessageBelongType messageBelongType;
   ImageMessageWidget(this.imageMessageMap, this.messageBelongType);
-  bool _isShow = false;
+  ImageMessageState createState() => ImageMessageState();
+}
 
+class ImageMessageState extends State<ImageMessageWidget> {
+  bool _isShow = false;
   @override
   Widget build(BuildContext context) {
     return _imageMessageView();
   }
 
   Widget _imageMessageView() {
-    String imageUrl = imageMessageMap["img_url"];
+    String imageUrl = widget.imageMessageMap["img_url"];
     if (imageUrl.contains("http")) {
       return GestureDetector(
           onTap: () => _isShow
