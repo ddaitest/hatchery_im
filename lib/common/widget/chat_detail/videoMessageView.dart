@@ -35,6 +35,7 @@ class VideoMessageState extends State<VideoMessageWidget> {
         cacheConfiguration: BetterPlayerCacheConfiguration(useCache: true));
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
     _betterPlayerController.setupDataSource(_betterPlayerDataSource);
+    _betterPlayerController.controlsAlwaysVisible;
     super.initState();
   }
 
