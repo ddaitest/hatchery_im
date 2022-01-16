@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/chat_detail/voiceMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/imageMessageView.dart';
-import 'package:hatchery_im/common/widget/chat_detail/videoMessageView.dart';
+import 'package:hatchery_im/common/widget/chat_detail/videoMessageInfo/videoMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/cardMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/fileMessageView.dart';
 import 'package:hatchery_im/common/widget/chat_detail/locationMessageView.dart';

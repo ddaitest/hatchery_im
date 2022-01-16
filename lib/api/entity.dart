@@ -303,6 +303,7 @@ class Message extends HiveObject {
   int createTime;
   String? groupID;
   int? progress; // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
+  bool? deleted = false; // 消息是否删除
 
   Message(
       this.id,
@@ -317,7 +318,8 @@ class Message extends HiveObject {
       this.contentType,
       this.createTime,
       this.receiver,
-      this.progress);
+      this.progress,
+      this.deleted);
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);

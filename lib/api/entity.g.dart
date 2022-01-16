@@ -263,6 +263,7 @@ Message _$MessageFromJson(Map<String, dynamic> json) => Message(
       json['createTime'] as int,
       json['receiver'] as String?,
       json['progress'] as int?,
+      json['deleted'] as bool?,
     );
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
@@ -279,6 +280,7 @@ Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
       'createTime': instance.createTime,
       'groupID': instance.groupID,
       'progress': instance.progress,
+      'deleted': instance.deleted,
     };
 
 SearchNewContactsInfo _$SearchNewContactsInfoFromJson(

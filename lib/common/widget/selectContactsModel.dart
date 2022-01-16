@@ -263,8 +263,7 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
           widget.shareMessageContent!.isNotEmpty) {
         manager.selectFriendsList.forEach((element) {
           MessageCentre.sendMessageModel(
-              term: SelectContactsModelManager.initShareMessageContent(
-                  widget.shareMessageContent!, widget.contentType ?? "TEXT"),
+              term: widget.shareMessageContent!,
               chatType: "CHAT",
               messageType: widget.contentType ?? "TEXT",
               otherName: element.remarks ?? element.nickName,

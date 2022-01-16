@@ -177,10 +177,10 @@ class SelectContactsModelManager extends ChangeNotifier {
         finalContent = messageContent["text"];
         break;
       case "IMAGE":
-        finalContent = messageContent['img_url'];
+        finalContent = messageContent;
         break;
       case "VIDEO":
-        finalContent = messageContent['video_url'];
+        finalContent = messageContent;
         break;
       case "VOICE":
         finalContent = messageContent['voice_url'];

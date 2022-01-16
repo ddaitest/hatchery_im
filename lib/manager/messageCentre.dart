@@ -102,7 +102,10 @@ class MessageCentre {
   static deleteMessage(int? messageKey) {
     if (messageKey != null) {
       Log.yellow("deleteMessage. deleteMessage ");
-      return LocalStore.messageBox?.delete(messageKey);
+      LocalStore.messageBox?.get(messageKey)
+        ?..deleted = true
+        ..save();
+      return;
     } else {
       showToast("删除失败");
     }
@@ -268,8 +271,8 @@ class MessageCentre {
 
   /// 保存信息：根据id找到messageBox没有的数据并add进messageBox
   static void saveMessage(Message serverMessage) {
-    Message? msg = LocalStore.messageBox?.values
-        .firstWhereOrNull((element) => element.id == serverMessage.id);
+    Message? msg = LocalStore.messageBox?.values.firstWhereOrNull(
+        (element) => !element.deleted! && element.id == serverMessage.id);
     if (msg != null) {
       Log.red("saveMessage ${msg.id} ${serverMessage.id}");
       LocalStore.addMessage(serverMessage);
@@ -307,18 +310,14 @@ class MessageCentre {
         msg.contentType == "GEO" ||
         msg.contentType == "CARD" ||
         msgId == null) {
+      message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-      LocalStore.findCache(msg.msgId)
-        ?..progress = MSG_SENDING
-        ..save();
     }
     if (msgId != null) {
-      LocalStore.findCache(msgId)
+      LocalStore.findCache(message.userMsgID)
         ?..content = content
         ..save();
     }
-    Log.yellow(
-        "sendMessage ${LocalStore.findCache(msgId!)?.content} ${msg.toJson()}");
     LocalStore.refreshSession(message, to, sessionTime: message.createTime);
   }
 
@@ -338,12 +337,13 @@ class MessageCentre {
         msgId: msgId);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
-    if (msg.contentType == "TEXT" || msg.contentType == "GEO") {
+    if (msg.contentType == "TEXT" ||
+        msg.contentType == "GEO" ||
+        msg.contentType == "CARD" ||
+        msgId == null) {
       Log.yellow("sendGroupMessage ${message.progress} ${msg.toJson()}");
+      message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-      LocalStore.findCache(msg.msgId)
-        ?..progress = MSG_SENDING
-        ..save();
     }
     if (msgId != null) {
       LocalStore.findCache(msgId)
@@ -454,7 +454,7 @@ class MessageCentre {
     }
   }
 
-  static sendTextMessage(String chatType, String text,
+  static sendTextMessage(String chatType, Map<String, dynamic> textMap,
       {String? otherName,
       String? otherIcon,
       String? groupId,
@@ -462,13 +462,13 @@ class MessageCentre {
       String? groupIcon,
       String? friendId}) {
     chatType == "CHAT"
-        ? sendMessage(friendId!, jsonEncode({"text": text}), otherName ?? "",
+        ? sendMessage(friendId!, jsonEncode(textMap), otherName ?? "",
             otherIcon ?? "", "TEXT")
-        : sendGroupMessage(groupId!, groupName!, groupIcon!,
-            jsonEncode({"text": text}), "TEXT");
+        : sendGroupMessage(
+            groupId!, groupName!, groupIcon!, jsonEncode(textMap), "TEXT");
   }
 
-  static sendImageMessage(String chatType, String imageUrl,
+  static sendImageMessage(String chatType, Map<String, dynamic> imageMap,
       {String? otherName,
       String? otherIcon,
       String? groupId,
@@ -477,14 +477,14 @@ class MessageCentre {
       String? friendId,
       String? msgId}) {
     chatType == "CHAT"
-        ? sendMessage(friendId!, jsonEncode({"img_url": imageUrl}),
-            otherName ?? "", otherIcon ?? "", "IMAGE", msgId: msgId)
-        : sendGroupMessage(groupId!, groupName!, groupIcon!,
-            jsonEncode({"img_url": imageUrl}), "IMAGE",
+        ? sendMessage(friendId!, jsonEncode(imageMap), otherName ?? "",
+            otherIcon ?? "", "IMAGE", msgId: msgId)
+        : sendGroupMessage(
+            groupId!, groupName!, groupIcon!, jsonEncode(imageMap), "IMAGE",
             msgId: msgId);
   }
 
-  static sendVideoMessage(String chatType, String videoUrl,
+  static sendVideoMessage(String chatType, Map<String, dynamic> videoMap,
       {String? otherName,
       String? otherIcon,
       String? groupId,
@@ -493,14 +493,14 @@ class MessageCentre {
       String? friendId,
       String? msgId}) {
     chatType == "CHAT"
-        ? sendMessage(friendId!, jsonEncode({"video_url": videoUrl}),
-            otherName ?? "", otherIcon ?? "", "VIDEO", msgId: msgId)
-        : sendGroupMessage(groupId!, groupName!, groupIcon!,
-            jsonEncode({"video_url": videoUrl}), "VIDEO",
+        ? sendMessage(friendId!, jsonEncode(videoMap), otherName ?? "",
+            otherIcon ?? "", "VIDEO", msgId: msgId)
+        : sendGroupMessage(
+            groupId!, groupName!, groupIcon!, jsonEncode(videoMap), "VIDEO",
             msgId: msgId);
   }
 
-  static sendVoiceMessage(String chatType, String voiceUrl,
+  static sendVoiceMessage(String chatType, Map<String, dynamic> voiceMap,
       {String? otherName,
       String? otherIcon,
       String? groupId,
@@ -509,10 +509,10 @@ class MessageCentre {
       String? friendId,
       String? msgId}) {
     chatType == "CHAT"
-        ? sendMessage(friendId!, jsonEncode({"voice_url": voiceUrl}),
-            otherName ?? "", otherIcon ?? "", "VOICE", msgId: msgId)
-        : sendGroupMessage(groupId!, groupName!, groupIcon!,
-            jsonEncode({"voice_url": voiceUrl}), "VOICE",
+        ? sendMessage(friendId!, jsonEncode(voiceMap), otherName ?? "",
+            otherIcon ?? "", "VOICE", msgId: msgId)
+        : sendGroupMessage(
+            groupId!, groupName!, groupIcon!, jsonEncode(voiceMap), "VOICE",
             msgId: msgId);
   }
 

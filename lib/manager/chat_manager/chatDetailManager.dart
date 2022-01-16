@@ -8,7 +8,6 @@ import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/MsgHelper.dart';
-import 'package:hatchery_im/manager/app_manager/app_handler.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
@@ -23,14 +22,9 @@ import 'package:record/record.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
-import 'dart:collection';
 import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:flutter/services.dart';
 import 'package:hatchery_im/config.dart';
-
-// import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:video_compress/video_compress.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'dart:convert' as convert;
@@ -57,7 +51,9 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupName = "";
   String currentGroupIcon = "";
   String? myUserId;
+  List<Message> messageList = [];
   final TextEditingController textEditingController = TextEditingController();
+  ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
 
   /// 初始化
   init(
@@ -77,40 +73,38 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
-    loadMessages();
+    _loadMessages(firstLoad: true);
+    valueListenable?.addListener(() {
+      _loadMessages();
+    });
   }
 
-  List<Message> loadMessages({Box<Message>? msgBox}) {
+  void _loadMessages({bool firstLoad = false}) {
+    Box<Message>? msgBox = LocalStore.messageBox;
     List<Message> tempList = [];
     Log.red(currentFriendId != ""
         ? "listenMessage >> friendId= $currentFriendId  myUserId $myUserId"
         : "listenMessage >> groupId= $currentGroupId  myUserId $myUserId");
     if (msgBox != null) {
       tempList = msgBox.values
-          .where((element) => element.type == "CHAT"
-              ? (element.receiver == currentFriendId &&
-                      element.sender == myUserId) ||
-                  (element.sender == currentFriendId &&
-                      element.receiver == myUserId)
-              : element.groupID == currentGroupId)
-          .toList();
-    } else {
-      tempList = LocalStore.messageBox?.values
-              .where((element) => element.type == "CHAT"
+          .where((element) =>
+              (element.deleted == null || !element.deleted!) &&
+              (element.type == "CHAT"
                   ? (element.receiver == currentFriendId &&
                           element.sender == myUserId) ||
                       (element.sender == currentFriendId &&
                           element.receiver == myUserId)
-                  : element.groupID == currentGroupId)
-              .toList() ??
-          [];
+                  : element.groupID == currentGroupId))
+          .toList();
+      if (tempList.isNotEmpty) {
+        tempList.sort((a, b) =>
+            DateTime.fromMillisecondsSinceEpoch(b.createTime)
+                .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
+        clearUnReadStatus(tempList);
+        messageList = tempList;
+        if (!firstLoad) notifyListeners();
+      }
     }
-    if (tempList.isNotEmpty) {
-      tempList.sort((a, b) => DateTime.fromMillisecondsSinceEpoch(b.createTime)
-          .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-      clearUnReadStatus(tempList);
-    }
-    return tempList;
   }
 
   /// 清除消息未读状态，会影响首页session的未读和mainTab上的总未读数
@@ -184,16 +178,21 @@ class ChatDetailManager extends ChangeNotifier {
       assetEntity.file.then((fileValue) {
         Log.red("fileValue ${fileValue?.path}");
         if (assetEntity.type == AssetType.image) {
-          Map<String, dynamic> content = {"img_url": fileValue?.path};
+          Map<String, dynamic> content = {
+            "img_url": fileValue?.path,
+            "width": assetEntity.width,
+            "height": assetEntity.height
+          };
           String msgId = _fakeMediaMessage(convert.jsonEncode(content),
               "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
-          Log.green("msgId $msgId");
+          Log.green("content ${content.toString()}");
           fileValue?.length().then((lengthValue) {
             if (lengthValue > 2080000) {
               compressionImage(fileValue.path).then((compressionValue) {
                 uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+                  content["img_url"] = uploadMediaUrl;
                   MessageCentre.sendMessageModel(
-                      term: uploadMediaUrl!,
+                      term: content,
                       chatType: currentChatType!,
                       messageType: "IMAGE",
                       otherName: otherName ?? "",
@@ -207,8 +206,9 @@ class ChatDetailManager extends ChangeNotifier {
               });
             } else {
               uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
+                content["img_url"] = uploadMediaUrl;
                 MessageCentre.sendMessageModel(
-                    term: uploadMediaUrl!,
+                    term: content,
                     chatType: currentChatType!,
                     messageType: "IMAGE",
                     otherName: otherName ?? "",
@@ -222,22 +222,32 @@ class ChatDetailManager extends ChangeNotifier {
             }
           });
         } else if (assetEntity.type == AssetType.video) {
-          Map<String, dynamic> content = {"video_url": fileValue?.path ?? ""};
-          String msgId =
-              _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
-          compressionVideo(fileValue!.path).then((compressionValue) {
-            uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-              MessageCentre.sendMessageModel(
-                  term: uploadMediaUrl!,
-                  chatType: currentChatType!,
-                  messageType: "VIDEO",
-                  otherName: otherName ?? "",
-                  otherIcon: otherIcon ?? "",
-                  currentGroupId: currentGroupId,
-                  currentGroupName: currentGroupName,
-                  currentGroupIcon: currentGroupIcon,
-                  currentFriendId: currentFriendId,
-                  msgId: msgId);
+          getVideoThumb(fileValue!.path).then((videoThumbPath) {
+            Map<String, dynamic> content = {
+              "video_url": fileValue.path,
+              "video_thum_url": videoThumbPath,
+              "time": assetEntity.videoDuration.inSeconds.toString(),
+              "width": assetEntity.width,
+              "height": assetEntity.height
+            };
+            String msgId =
+                _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
+            uploadMediaFile(videoThumbPath!).then((videoThumbUrl) {
+              uploadMediaFile(fileValue.path).then((videoUrl) {
+                content["video_url"] = videoUrl;
+                content["video_thum_url"] = videoThumbUrl;
+                MessageCentre.sendMessageModel(
+                    term: content,
+                    chatType: currentChatType!,
+                    messageType: "VIDEO",
+                    otherName: otherName ?? "",
+                    otherIcon: otherIcon ?? "",
+                    currentGroupId: currentGroupId,
+                    currentGroupName: currentGroupName,
+                    currentGroupIcon: currentGroupIcon,
+                    currentFriendId: currentFriendId,
+                    msgId: msgId);
+              });
             });
           });
         }
@@ -255,7 +265,7 @@ class ChatDetailManager extends ChangeNotifier {
                 themeColor: Flavors.colorInfo.mainColor) ??
             [];
     Navigator.pop(App.navState.currentContext!);
-    if (assets.isNotEmpty) {
+    if (assets.isEmpty) {
       return null;
     } else {
       assets.forEach((element) {
@@ -307,10 +317,10 @@ class ChatDetailManager extends ChangeNotifier {
           content,
           contentType);
       Message message = ModelHelper.convertMessage(msg);
-      Log.red("_fakeMediaMessage ${msg.toJson()}");
+      Log.red("_fakeMediaMessage userMsgID ${message.createTime}");
       message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-      return msg.msgId;
+      return message.userMsgID;
     } else {
       CSSendGroupMessage msg = Protocols.sendGroupMessage(
           myUserId!,
@@ -325,7 +335,7 @@ class ChatDetailManager extends ChangeNotifier {
       Message message = ModelHelper.convertGroupMessage(msg);
       message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-      return msg.msgId;
+      return message.userMsgID;
     }
   }
 
@@ -351,14 +361,13 @@ class ChatDetailManager extends ChangeNotifier {
 
   startVoiceRecord() async {
     bool result = await Record().hasPermission();
-    PermissionStatus status = await Permission.storage.status;
     DateTime _timeNow = DateTime.now();
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
     String voiceTempPath = '$tempPath/voiceFiles/';
     folderCreate(voiceTempPath);
     voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
-    if (result && status.isDenied) {
+    if (result) {
       await Record().start(
         path: '$voicePath', // required
       );
@@ -381,19 +390,22 @@ class ChatDetailManager extends ChangeNotifier {
         String? msgId;
         Map<String, dynamic> content = {"voice_url": voicePath};
         msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
-        Future.delayed(Duration(milliseconds: 1000), () {
+        Future.delayed(Duration(milliseconds: 500), () {
           uploadMediaFile(voicePath!).then(
-            (uploadMediaUrl) => MessageCentre.sendMessageModel(
-                term: uploadMediaUrl,
-                chatType: currentChatType!,
-                messageType: "VOICE",
-                otherName: otherName ?? "",
-                otherIcon: otherIcon ?? "",
-                currentGroupId: currentGroupId,
-                currentGroupName: currentGroupName,
-                currentGroupIcon: currentGroupIcon,
-                currentFriendId: currentFriendId,
-                msgId: msgId),
+            (uploadMediaUrl) {
+              content["voice_url"] = uploadMediaUrl;
+              MessageCentre.sendMessageModel(
+                  term: content,
+                  chatType: currentChatType!,
+                  messageType: "VOICE",
+                  otherName: otherName ?? "",
+                  otherIcon: otherIcon ?? "",
+                  currentGroupId: currentGroupId,
+                  currentGroupName: currentGroupName,
+                  currentGroupIcon: currentGroupIcon,
+                  currentFriendId: currentFriendId,
+                  msgId: msgId);
+            },
           );
         });
       } else {
@@ -418,6 +430,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   timingStartMethod() {
     timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      Log.green("timingStartMethod ${recordTiming.toString()}");
       recordTiming++;
       notifyListeners();
     });
@@ -457,6 +470,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void disposeModel() {
+    messageList.clear();
     isVoiceModel = false;
     voicePath = null;
     voiceUrl = null;
@@ -467,5 +481,8 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = "";
     currentGroupName = "";
     currentGroupIcon = "";
+    valueListenable?.removeListener(() {
+      valueListenable = null;
+    });
   }
 }

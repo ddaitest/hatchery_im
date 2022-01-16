@@ -3,17 +3,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:package_info/package_info.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info/device_info.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:video_thumbnail/video_thumbnail.dart' as ImageFormat;
+import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:crypto/crypto.dart';
 import '../config.dart';
-import 'package:video_compress/video_compress.dart';
+
+import 'log.dart';
 
 Future<String> compressionImage(filePath) async {
   ImageProperties properties =
@@ -31,16 +32,42 @@ Future<String> compressionImage(filePath) async {
   }
 }
 
-Future<String> compressionVideo(filePath) async {
-  VideoCompress.deleteAllCache();
-  final MediaInfo? info = await VideoCompress.compressVideo(
-    filePath,
-    quality: VideoQuality.Res960x540Quality,
-    deleteOrigin: false,
-    includeAudio: true,
+// Future<String> compressionVideo(filePath) async {
+//   final MediaInfo? info = await VideoCompress.compressVideo(
+//     filePath,
+//     quality: VideoQuality.Res960x540Quality,
+//     deleteOrigin: false,
+//     includeAudio: true,
+//   );
+//   print("DEBUG=> ###### ${info!.path}");
+//   return info.path!;
+// }
+
+Future<String?> getVideoThumb(String videoPath) async {
+  final fileName = VideoThumbnail.thumbnailFile(
+    video: videoPath,
+    thumbnailPath: (await getTemporaryDirectory()).path,
+    imageFormat: ImageFormat.ImageFormat.WEBP,
+    quality: 100,
   );
-  print("DEBUG=> ###### ${info!.path}");
-  return info.path!;
+  return fileName;
+}
+
+String videoTimeFormat(int seconds) {
+  String finalTime;
+  var d = Duration(seconds: seconds);
+  List<String> parts = d.toString().split(':');
+  if (seconds != 0) {
+    if (parts[0] == "0" || parts[0] == "00") {
+      finalTime = "${parts[1]}:${parts[2].split(".")[0]}";
+    } else {
+      finalTime = "${parts[0]}:${parts[1]}:${parts[2].split(".")[0]}";
+    }
+  } else {
+    finalTime = "";
+  }
+  Log.green("videoTimeFormat $finalTime");
+  return finalTime;
 }
 
 class SP {
@@ -243,7 +270,8 @@ class ModelHelper {
         msg.contentType,
         DateTime.now().millisecondsSinceEpoch,
         "",
-        null);
+        null,
+        false);
     return message;
   }
 
@@ -267,7 +295,8 @@ class ModelHelper {
         msg.contentType,
         DateTime.now().millisecondsSinceEpoch,
         msg.to,
-        null);
+        null,
+        false);
     return message;
   }
 }

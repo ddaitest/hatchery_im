@@ -79,10 +79,10 @@ class TestState extends State<TestPage> {
           TextField(controller: _controllerUID1),
           TextField(controller: _controllerUID2),
           TextField(controller: _controllerContent),
-          ElevatedButton(
-              onPressed: test1, child: Text("SEND MSG 1", style: ts2)),
-          ElevatedButton(
-              onPressed: test2, child: Text("SEND MSG 2", style: ts2)),
+          // ElevatedButton(
+          //     onPressed: test1, child: Text("SEND MSG 1", style: ts2)),
+          // ElevatedButton(
+          //     onPressed: test2, child: Text("SEND MSG 2", style: ts2)),
           // ElevatedButton(onPressed: test2, child: Text("Sessions", style: ts2)),
           ElevatedButton(onPressed: test3, child: Text("CLOSE")),
           ValueListenableBuilder(
@@ -147,17 +147,17 @@ class TestState extends State<TestPage> {
   // }
   // sender: U202121622163000001
   // receiver: U202115215031100001
-  test1() {
-    print("sendTextMessage");
-    MessageCentre.sendTextMessage("CHAT", _controllerContent.text,
-        friendId: _controllerUID1.text);
-  }
-
-  test2() {
-    print("sendTextMessage");
-    MessageCentre.sendTextMessage("CHAT", _controllerContent.text,
-        friendId: _controllerUID2.text);
-  }
+  // test1() {
+  //   print("sendTextMessage");
+  //   MessageCentre.sendTextMessage("CHAT", _controllerContent,
+  //       friendId: _controllerUID1.text);
+  // }
+  //
+  // test2() {
+  //   print("sendTextMessage");
+  //   MessageCentre.sendTextMessage("CHAT", _controllerContent,
+  //       friendId: _controllerUID2.text);
+  // }
 
   test3() {
     MessageCentre.disconnect();

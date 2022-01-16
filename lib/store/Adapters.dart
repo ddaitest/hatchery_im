@@ -33,13 +33,14 @@ class MessageAdapter extends TypeAdapter<Message> {
         fields[10] as String,
         fields[11] as int,
         fields[6] as String?,
-        fields[13] as int?);
+        fields[13] as int?,
+        (fields[14] ?? false) as bool);
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -65,7 +66,9 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..writeByte(12)
       ..write(obj.groupID)
       ..writeByte(13)
-      ..write(obj.progress);
+      ..write(obj.progress)
+      ..writeByte(14)
+      ..write(obj.deleted);
   }
 
   @override

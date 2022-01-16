@@ -53,7 +53,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   final emojiModelManager = App.manager<EmojiModelManager>();
   List<SendMenuItems> menuItems = [];
   String appTitleName = "";
-  ValueListenable<Box<Message>> valueListenable = LocalStore.listenMessage();
 
   @override
   void initState() {
@@ -127,11 +126,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return ValueListenableBuilder(
-        valueListenable: valueListenable,
-        builder: (context, Box<Message> box, _) {
-          List<Message> value = manager.loadMessages(msgBox: box);
-          Log.yellow("_messageInfoView ValueListenableBuilder ${value.length}");
+    return Selector<ChatDetailManager, List<Message>>(
+        builder: (BuildContext context, List<Message> value, Widget? child) {
+          Log.green("_messageInfoView _messageInfoView");
           if (value.isEmpty) {
             return Flexible(child: Container());
           } else {
@@ -158,7 +155,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               ),
             );
           }
-        });
+        },
+        selector: (BuildContext context, ChatDetailManager chatDetailManager) {
+          return chatDetailManager.messageList;
+        },
+        shouldRebuild: (pre, next) =>
+            (pre != next || pre.length != next.length));
   }
 
   Widget _inputMainView() {
@@ -173,16 +175,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               value ? _voiceRecordView() : _moreBtnView(),
-              value
-                  ? Container(
-                      height: 50.0.h,
-                    )
-                  : _emojiBtnView(),
-              value
-                  ? Container(
-                      height: 50.0.h,
-                    )
-                  : _textInputView(),
+              value ? Container(height: 50.0.h) : _emojiBtnView(),
+              value ? Container(height: 50.0.h) : _textInputView(),
               Container(
                 constraints: BoxConstraints(maxHeight: 300.0.h),
                 height: 50.0.h,
@@ -289,8 +283,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
           Log.yellow("textInputAction $term");
+          Map<String, dynamic> content = {"text": term};
           MessageCentre.sendMessageModel(
-              term: term,
+              term: content,
               chatType: manager.currentChatType!,
               messageType: "TEXT",
               otherName: manager.otherName ?? "",
@@ -345,13 +340,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Widget _voiceRecordBtnView(bool isVoice) {
     return GestureDetector(
-      onLongPressStart: (LongPressStartDetails details) {
+      onLongPress: () {
         Log.green("onLongPressStart");
         FocusScope.of(context).unfocus();
         Vibration.vibrate(duration: 100);
         manager.changeInputView();
-        manager.timingStartMethod();
         manager.startVoiceRecord();
+        manager.timingStartMethod();
       },
       onLongPressEnd: (LongPressEndDetails details) {
         Log.green("onLongPressEnd");

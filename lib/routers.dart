@@ -29,6 +29,7 @@ import 'common/AppContext.dart';
 import 'common/log.dart';
 import 'package:hatchery_im/api/entity.dart';
 
+import 'common/widget/chat_detail/videoMessageInfo/videoPlayPage.dart';
 import 'common/widget/imageDetail.dart';
 import 'common/widget/map_view.dart';
 
@@ -163,6 +164,10 @@ class Routers {
                   imageFile: map['imageFile'] ?? null,
                   imageUrl: map['imageUrl'] ?? null,
                 ));
+      case '/video_play':
+        Map map = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(
+            builder: (_) => VideoPlayPage(map["videoUrl"]));
       case '/map_view':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
