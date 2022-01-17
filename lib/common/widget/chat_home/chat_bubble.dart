@@ -138,12 +138,12 @@ class _ChatBubbleState extends State<ChatBubble> {
         break;
       case "IMAGE":
         {
-          finalView = ImageMessageWidget(content, belongType);
+          finalView = ImageMessageWidget(content);
         }
         break;
       case "VIDEO":
         {
-          finalView = VideoMessageWidget(content, belongType);
+          finalView = VideoMessageWidget(content);
         }
         break;
       case "VOICE":
@@ -249,65 +249,12 @@ class _ChatBubbleState extends State<ChatBubble> {
     );
   }
 
-  String _checkContentType(Message temp) {
-    String finalMessage;
-    Map<String, dynamic> content = convert.jsonDecode(temp.content);
-    switch (temp.contentType) {
-      case "TEXT":
-        {
-          finalMessage = content['text'];
-        }
-        break;
-      case "IMAGE":
-        {
-          finalMessage = content['img_url'];
-        }
-        break;
-      case "VIDEO":
-        {
-          finalMessage = content['video_url'];
-        }
-        break;
-      case "VOICE":
-        {
-          finalMessage = content['voice_url'];
-        }
-        break;
-      // case "FILE":
-      //   {
-      //     finalMessage = content['file_url'];
-      //   }
-      //   break;
-      case "URL":
-        {
-          finalMessage = content['text'];
-        }
-        break;
-      // case "CARD":
-      //   {
-      //     finalMessage = content;
-      //   }
-      //   break;
-      // case "GEO":
-      //   {
-      //     finalMessage = content;
-      //   }
-      //   break;
-      default:
-        {
-          finalMessage = content['text'];
-        }
-        break;
-    }
-    return finalMessage;
-  }
-
   // 发送状态Widget
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
-  Widget _statusIcon({int progress = 0}) {
+  Widget _statusIcon({int progress = MSG_SENT}) {
     Widget finalView;
     switch (progress) {
-      case 0:
+      case MSG_FAULT:
         {
           finalView = IconButton(
               onPressed: () {
@@ -328,12 +275,22 @@ class _ChatBubbleState extends State<ChatBubble> {
               icon: Icon(Icons.error, size: 25.0, color: Colors.red));
         }
         break;
-      case 1:
+      case MSG_SENDING:
         {
           finalView = CupertinoActivityIndicator(radius: 7.0);
         }
         break;
-      case 2:
+      case MSG_SENT:
+        {
+          finalView = Container();
+        }
+        break;
+      case MSG_READ:
+        {
+          finalView = Container();
+        }
+        break;
+      case MSG_RECEIVED:
         {
           finalView = Container();
         }
@@ -350,7 +307,7 @@ class _ChatBubbleState extends State<ChatBubble> {
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
   Widget _sentMessageStatusIcon() {
     if (widget.contentMessages.sender == UserCentre.getUserID()) {
-      return _statusIcon(progress: widget.contentMessages.progress ?? 2);
+      return _statusIcon(progress: widget.contentMessages.progress ?? MSG_SENT);
     } else {
       return Container();
     }

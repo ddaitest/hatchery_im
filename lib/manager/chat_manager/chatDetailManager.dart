@@ -189,6 +189,29 @@ class ChatDetailManager extends ChangeNotifier {
             if (lengthValue > 2080000) {
               compressionImage(fileValue.path).then((compressionValue) {
                 uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+                  if (uploadMediaUrl != "") {
+                    content["img_url"] = uploadMediaUrl;
+                    MessageCentre.sendMessageModel(
+                        term: content,
+                        chatType: currentChatType!,
+                        messageType: "IMAGE",
+                        otherName: otherName ?? "",
+                        otherIcon: otherIcon ?? "",
+                        currentGroupId: currentGroupId,
+                        currentGroupName: currentGroupName,
+                        currentGroupIcon: currentGroupIcon,
+                        currentFriendId: currentFriendId,
+                        msgId: msgId);
+                  } else {
+                    LocalStore.findCache(msgId)
+                      ?..progress = MSG_FAULT
+                      ..save();
+                  }
+                });
+              });
+            } else {
+              uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
+                if (uploadMediaUrl != "") {
                   content["img_url"] = uploadMediaUrl;
                   MessageCentre.sendMessageModel(
                       term: content,
@@ -201,22 +224,11 @@ class ChatDetailManager extends ChangeNotifier {
                       currentGroupIcon: currentGroupIcon,
                       currentFriendId: currentFriendId,
                       msgId: msgId);
-                });
-              });
-            } else {
-              uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
-                content["img_url"] = uploadMediaUrl;
-                MessageCentre.sendMessageModel(
-                    term: content,
-                    chatType: currentChatType!,
-                    messageType: "IMAGE",
-                    otherName: otherName ?? "",
-                    otherIcon: otherIcon ?? "",
-                    currentGroupId: currentGroupId,
-                    currentGroupName: currentGroupName,
-                    currentGroupIcon: currentGroupIcon,
-                    currentFriendId: currentFriendId,
-                    msgId: msgId);
+                } else {
+                  LocalStore.findCache(msgId)
+                    ?..progress = MSG_FAULT
+                    ..save();
+                }
               });
             }
           });
@@ -234,19 +246,25 @@ class ChatDetailManager extends ChangeNotifier {
             compressionVideo(fileValue.path).then((compressionVideoPath) {
               uploadMediaFile(videoThumbPath!).then((videoThumbUrl) {
                 uploadMediaFile(compressionVideoPath).then((videoUrl) {
-                  content["video_url"] = videoUrl;
-                  content["video_thum_url"] = videoThumbUrl;
-                  MessageCentre.sendMessageModel(
-                      term: content,
-                      chatType: currentChatType!,
-                      messageType: "VIDEO",
-                      otherName: otherName ?? "",
-                      otherIcon: otherIcon ?? "",
-                      currentGroupId: currentGroupId,
-                      currentGroupName: currentGroupName,
-                      currentGroupIcon: currentGroupIcon,
-                      currentFriendId: currentFriendId,
-                      msgId: msgId);
+                  if (videoUrl != "") {
+                    content["video_url"] = videoUrl;
+                    content["video_thum_url"] = videoThumbUrl;
+                    MessageCentre.sendMessageModel(
+                        term: content,
+                        chatType: currentChatType!,
+                        messageType: "VIDEO",
+                        otherName: otherName ?? "",
+                        otherIcon: otherIcon ?? "",
+                        currentGroupId: currentGroupId,
+                        currentGroupName: currentGroupName,
+                        currentGroupIcon: currentGroupIcon,
+                        currentFriendId: currentFriendId,
+                        msgId: msgId);
+                  } else {
+                    LocalStore.findCache(msgId)
+                      ?..progress = MSG_FAULT
+                      ..save();
+                  }
                 });
               });
             });
@@ -279,15 +297,14 @@ class ChatDetailManager extends ChangeNotifier {
     Navigator.pop(App.navState.currentContext!);
     FilePickerResult? result = await FilePicker.platform.pickFiles();
     if (result != null) {
-      String? msgId;
       Map<String, dynamic> content = {
         "name": "${result.files[0].name}",
         "file_url": result.files[0].path!,
         "content_length": result.files[0].size / 1024
       };
-      msgId = _fakeMediaMessage(convert.jsonEncode(content), "FILE");
+      String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "FILE");
       uploadMediaFile(result.files[0].path!).then((uploadMediaUrl) {
-        if (uploadMediaUrl != "")
+        if (uploadMediaUrl != "") {
           MessageCentre.sendMessageModel(
               term: {
                 "name": "${result.files[0].name}",
@@ -303,6 +320,11 @@ class ChatDetailManager extends ChangeNotifier {
               currentGroupIcon: currentGroupIcon,
               currentFriendId: currentFriendId,
               msgId: msgId);
+        } else {
+          LocalStore.findCache(msgId)
+            ?..progress = MSG_FAULT
+            ..save();
+        }
       });
     }
   }
@@ -388,13 +410,16 @@ class ChatDetailManager extends ChangeNotifier {
     Log.green("recordTiming $recordTiming");
     if (voicePath != null) {
       if (recordTiming >= 3) {
-        String? msgId;
-        Map<String, dynamic> content = {"voice_url": voicePath};
-        msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+        Map<String, dynamic> content = {
+          "voice_url": voicePath,
+          "time": recordTiming
+        };
+        String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
         Future.delayed(Duration(milliseconds: 500), () {
           uploadMediaFile(voicePath!).then(
             (uploadMediaUrl) {
               content["voice_url"] = uploadMediaUrl;
+              Log.green(content.toString());
               MessageCentre.sendMessageModel(
                   term: content,
                   chatType: currentChatType!,
@@ -417,21 +442,8 @@ class ChatDetailManager extends ChangeNotifier {
     cancelTimer();
   }
 
-  // pauseVoiceRecord() async {
-  //   await Record.pause();
-  //   isRecording = false;
-  //   notifyListeners();
-  // }
-  //
-  // resumeVoiceRecord() async {
-  //   await Record.resume();
-  //   isRecording = true;
-  //   notifyListeners();
-  // }
-
   timingStartMethod() {
     timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      Log.green("timingStartMethod ${recordTiming.toString()}");
       recordTiming++;
       notifyListeners();
     });

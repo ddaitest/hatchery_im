@@ -28,11 +28,13 @@ import 'package:hatchery_im/manager/profile_manager/groupProfile_manager/groupPr
 import 'package:hatchery_im/manager/contacts_manager/selectContactsModelManager.dart';
 import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 
+import 'jpush_common.dart';
 import 'manager/chat_manager/chatSettingManager.dart';
 import 'manager/emojiModel_manager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  JpushPlugin.initPush();
   runApp(
     MultiProvider(
       providers: [

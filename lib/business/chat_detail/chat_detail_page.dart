@@ -1,21 +1,13 @@
-import 'dart:io';
-import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
-import 'package:hatchery_im/store/LocalStore.dart';
-import 'package:hive/hive.dart';
 import 'package:vibration/vibration.dart';
 import 'package:hatchery_im/business/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
 import 'package:hatchery_im/common/widget/chat_home/chat_bubble.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
-import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +127,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             return Flexible(
               child: ListView.builder(
                 itemCount: value.length,
-                cacheExtent: 50.0,
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 reverse: true,

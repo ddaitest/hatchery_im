@@ -79,6 +79,7 @@ dependencies:
   flutter_easyloading: ^3.0.3 #ANDROID IOS LINUX MACOS WEB WINDOWS
   custom_pop_up_menu: ^1.2.2 #ANDROID IOS LINUX MACOS WEB WINDOWS
   video_thumbnail: ^0.4.3 #ANDROID IOS
+  jpush_flutter: ^2.2.2 #ANDROID IOS
 
 
   # The following adds the Cupertino Icons font to your application.

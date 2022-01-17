@@ -1,116 +1,71 @@
 import 'dart:async';
-import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 
 import '../../../config.dart';
+import '../../AppContext.dart';
 import '../../log.dart';
+import '../../tools.dart';
 
-class VoiceMessageWidget extends StatefulWidget {
+class VoiceMessageWidget extends StatelessWidget {
   final Map<String, dynamic> voiceMessageMap;
   final MessageBelongType messageBelongType;
   VoiceMessageWidget(this.voiceMessageMap, this.messageBelongType);
-  @override
-  _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();
-}
 
-class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-  late AudioPlayer _audioPlayer;
-  PlayerState _playerState = PlayerState.STOPPED;
-  Duration? _audioDuration;
-  Duration? _audioPosition;
-  String? _durationText;
-  bool get _isPlaying => _playerState == PlayerState.PLAYING;
-  String voiceUrl = "";
-  @override
-  void initState() {
-    voiceUrl = widget.voiceMessageMap['voice_url'];
-    Log.red("voiceUrl $voiceUrl");
-    _initAudioPlayer();
-    super.initState();
+  late final AudioPlayer audioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  late final int? _duration;
+  late final String? _voiceUrl;
+
+  init() {
+    _voiceUrl = voiceMessageMap["voice_url"] ?? null;
+    _duration = voiceMessageMap["time"];
+    Log.red("_initAudioPlayer $_voiceUrl ${_duration}");
+    if (_voiceUrl != null) {
+      _initAudioPlayer();
+    } else {
+      showToast("语音加载失败");
+    }
+  }
+
+  void _initAudioPlayer() {
+    audioPlayer.setUrl(_voiceUrl!);
+  }
+
+  Future<int> play() async {
+    int result = await audioPlayer.play(_voiceUrl!);
+    return result;
+  }
+
+  // Future<int> _stop() async {
+  //   final result = await audioPlayer.stop();
+  //   if (result == 1) {
+  //     _playerState = PlayerState.STOPPED;
+  //   }
+  //   return result;
+  // }
+
+  Future<int> pause() async {
+    int result = await audioPlayer.pause();
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return _voiceMessageView(widget.messageBelongType);
-  }
-
-  void _initAudioPlayer() {
-    _audioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-    _audioPlayer.setUrl(voiceUrl);
-    _audioPlayer.onDurationChanged.listen((duration) {
-      if (_durationText == null) _audioDuration = duration;
-      setState(() {
-        _durationText = durationTransform(duration.inSeconds);
-      });
-    });
-    _audioPlayer.onAudioPositionChanged.listen((p) => setState(() {
-          _audioPosition = p;
-          if (_audioPosition != null && _audioDuration != null)
-            _voiceCountDownTime();
-        }));
-
-    _audioPlayer.onPlayerStateChanged.listen((state) {
-      if (mounted) {
-        setState(() {
-          _playerState = state;
-        });
-      }
-    });
-  }
-
-  Future<int> _play() async {
-    final playPosition = (_audioPosition != null &&
-            _audioDuration != null &&
-            _audioPosition!.inMilliseconds > 0 &&
-            _audioPosition!.inMilliseconds < _audioDuration!.inMilliseconds)
-        ? _audioPosition
-        : null;
-    final result = await _audioPlayer.play(voiceUrl,
-        isLocal: false, position: playPosition);
-    if (result == 1) {
-      setState(() => _playerState = PlayerState.PLAYING);
-    }
-
-    // default playback rate is 1.0
-    // this should be called after _audioPlayer.play() or _audioPlayer.resume()
-    // this can also be called everytime the user wants to change playback rate in the UI
-    _audioPlayer.setPlaybackRate(1.0);
-
-    return result;
-  }
-
-  Future<int> _stop() async {
-    final result = await _audioPlayer.stop();
-    if (result == 1) {
-      setState(() {
-        _playerState = PlayerState.STOPPED;
-        _audioPosition = const Duration();
-      });
-    }
-    return result;
-  }
-
-  Future<int> _pause() async {
-    final result = await _audioPlayer.pause();
-    if (result == 1) {
-      setState(() => _playerState = PlayerState.PAUSED);
-    }
-    return result;
+    init();
+    return _voiceMessageView(messageBelongType);
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
-    if (voiceUrl.contains("http")) {
+    if (_voiceUrl!.contains("http") && _voiceUrl != null) {
       return GestureDetector(
-        onTap: () => _isPlaying ? _pause() : _play(),
+        onTap: () => audioPlayer.state == PlayerState.PAUSED ||
+                audioPlayer.state == PlayerState.STOPPED
+            ? play()
+            : pause(),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -120,43 +75,15 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
           ),
           padding: const EdgeInsets.all(10),
           child: Container(
+            alignment: belongType == MessageBelongType.Receiver
+                ? Alignment.centerRight
+                : Alignment.centerLeft,
             height: 25.0.h,
-            width: 200.0.w,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(_durationText ?? '....',
-                    style: belongType == MessageBelongType.Receiver
-                        ? Flavors.textStyles.chatBubbleVoiceReceiverText
-                        : Flavors.textStyles.chatBubbleVoiceSenderText),
-                Container(
-                  width: 120.0.w,
-                  child: LinearProgressIndicator(
-                    backgroundColor: Flavors.colorInfo.lightGrep,
-                    valueColor: AlwaysStoppedAnimation(
-                        belongType == MessageBelongType.Receiver
-                            ? Flavors.colorInfo.blueGrey
-                            : Flavors.colorInfo.mainTextColor),
-                    value: (_audioPosition != null &&
-                            _audioDuration != null &&
-                            _audioPosition!.inMilliseconds > 0 &&
-                            _audioPosition!.inMilliseconds <
-                                _audioDuration!.inMilliseconds)
-                        ? _audioPosition!.inMilliseconds /
-                            _audioDuration!.inMilliseconds
-                        : 0.02,
-                  ),
-                ),
-                Icon(
-                    _playerState == PlayerState.PLAYING
-                        ? Icons.pause_circle_outline
-                        : Icons.play_circle_outline,
-                    size: 25.0,
-                    color: belongType == MessageBelongType.Receiver
-                        ? Flavors.colorInfo.blueGrey
-                        : Flavors.colorInfo.mainBackGroundColor)
-              ],
-            ),
+            width: _setMessageWidth(_duration!),
+            child: Text("${videoTimeFormat(_duration!)}",
+                style: belongType == MessageBelongType.Receiver
+                    ? Flavors.textStyles.chatBubbleVoiceReceiverText
+                    : Flavors.textStyles.chatBubbleVoiceSenderText),
           ),
         ),
       );
@@ -170,7 +97,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
         child: Container(
           alignment: Alignment.centerLeft,
           height: 25.0.h,
-          width: 200.0.w,
+          width: 100.0.w,
           child: Text('发送中....',
               style: Flavors.textStyles.chatBubbleVoiceSenderText),
         ),
@@ -178,29 +105,11 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
     }
   }
 
-  void _voiceCountDownTime() {
-    if (_audioPosition != null && _audioDuration != null) {
-      int? _finalTimeSeconds =
-          _audioDuration!.inSeconds - _audioPosition!.inSeconds;
-      if (_finalTimeSeconds > 0) {
-        _durationText = durationTransform(_finalTimeSeconds);
-      } else if (_finalTimeSeconds == 0) {
-        voiceFinishReset();
-      } else {
-        voiceFinishReset();
-      }
+  double _setMessageWidth(int seconds) {
+    if (seconds <= 20) {
+      return (seconds * 10).w;
+    } else {
+      return 200.0.w;
     }
-  }
-
-  void voiceFinishReset() {
-    _durationText = durationTransform(_audioDuration!.inSeconds);
-    _stop();
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    voiceUrl = "";
-    super.dispose();
   }
 }

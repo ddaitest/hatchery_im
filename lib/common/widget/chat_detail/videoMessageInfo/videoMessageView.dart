@@ -9,32 +9,27 @@ import '../../../../routers.dart';
 import '../../../log.dart';
 import '../../../tools.dart';
 
-class VideoMessageWidget extends StatefulWidget {
+class VideoMessageWidget extends StatelessWidget {
   final Map<String, dynamic> videoMessageMap;
-  final MessageBelongType messageBelongType;
-  VideoMessageWidget(this.videoMessageMap, this.messageBelongType);
-  @override
-  VideoMessageState createState() => VideoMessageState();
-}
+  VideoMessageWidget(this.videoMessageMap);
+  late final String? _videoUrlThumb;
+  late final String? _videoUrl;
+  late final String? _videoTime;
+  late final int? _videoWidth;
+  late final int? _videoHeight;
 
-class VideoMessageState extends State<VideoMessageWidget> {
-  String? _videoUrlThumb;
-  String? _videoTime;
-  int? _videoWidth;
-  int? _videoHeight;
-  @override
-  void initState() {
-    _videoUrlThumb = widget.videoMessageMap["video_thum_url"] ?? "";
-    _videoTime =
-        videoTimeFormat(int.parse(widget.videoMessageMap['time'] ?? "0"));
-    _videoWidth = widget.videoMessageMap["width"] ?? 1080;
-    _videoHeight = widget.videoMessageMap["height"] ?? 720;
+  void _init() {
+    _videoUrlThumb = videoMessageMap["video_thum_url"] ?? "";
+    _videoUrl = videoMessageMap["video_url"] ?? "";
+    _videoTime = videoTimeFormat(int.parse(videoMessageMap['time'] ?? "0"));
+    _videoWidth = videoMessageMap["width"] ?? 1080;
+    _videoHeight = videoMessageMap["height"] ?? 720;
     Log.green("_videoWidth _videoHeight $_videoWidth $_videoHeight");
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _init();
     return _videoThumbMessageView();
   }
 
@@ -59,9 +54,8 @@ class VideoMessageState extends State<VideoMessageWidget> {
                   },
                   imageBuilder: (context, imageProvider) {
                     return GestureDetector(
-                        onTap: () => Routers.navigateTo("/video_play", arg: {
-                              "videoUrl": widget.videoMessageMap["video_url"]
-                            }),
+                        onTap: () => Routers.navigateTo("/video_play",
+                            arg: {"videoUrl": _videoUrl}),
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
@@ -80,9 +74,8 @@ class VideoMessageState extends State<VideoMessageWidget> {
                   })
               : _videoUrlThumb != ""
                   ? GestureDetector(
-                      onTap: () => Routers.navigateTo("/video_play", arg: {
-                            "videoUrl": widget.videoMessageMap["video_url"]
-                          }),
+                      onTap: () => Routers.navigateTo("/video_play",
+                          arg: {"videoUrl": _videoUrl}),
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
