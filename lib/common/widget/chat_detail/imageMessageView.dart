@@ -39,53 +39,54 @@ class ImageMessageState extends State<ImageMessageWidget> {
 
   Widget _imageMessageView() {
     return GestureDetector(
-      onTap: () => _isShow
-          ? Routers.navigateTo('/imageDetail', arg: {"imageUrl": _imageUrl!})
-          : null,
-      child: Container(
+        onTap: () => _isShow
+            ? Routers.navigateTo('/imageDetail',
+                arg: {"imageProvider": CachedNetworkImageProvider(_imageUrl!)})
+            : null,
+        child: Container(
           color: Flavors.colorInfo.mainBackGroundColor,
           width: _imageWidth! >= _imageHeight! ? 150.0.w : 120.0.w,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: AspectRatio(
-              aspectRatio: _imageWidth! >= _imageHeight! ? 16 / 9 : 9 / 16,
-              child: _imageUrl!.contains("http")
-                  ? CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: _imageUrl!,
-                      placeholder: (context, url) {
-                        _isShow = false;
-                        return Container(
-                          color: Flavors.colorInfo.mainBackGroundColor,
-                          child: Center(
-                            child: CupertinoActivityIndicator(),
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        _isShow = false;
-                        return Container(
+              borderRadius: BorderRadius.circular(10),
+              child: AspectRatio(
+                aspectRatio: _imageWidth! >= _imageHeight! ? 16 / 9 : 9 / 16,
+                child: _imageUrl!.contains("http")
+                    ? CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        imageUrl: _imageUrl!,
+                        placeholder: (context, url) {
+                          _isShow = false;
+                          return Container(
                             color: Flavors.colorInfo.mainBackGroundColor,
                             child: Center(
-                              child:
-                                  Icon(Icons.broken_image_outlined, size: 30),
-                            ));
-                      },
-                      imageBuilder: (context, imageProvider) {
-                        _isShow = true;
-                        return Image(image: imageProvider, fit: BoxFit.cover);
-                      })
-                  : _imageUrl != ""
-                      ? Image.file(
-                          File(_imageUrl!),
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          color: Flavors.colorInfo.mainBackGroundColor,
-                          child: Icon(Icons.cancel,
-                              size: 35.0, color: Flavors.colorInfo.lightGrep)),
-            ),
-          )),
-    );
+                              child: CupertinoActivityIndicator(),
+                            ),
+                          );
+                        },
+                        errorWidget: (context, url, error) {
+                          _isShow = false;
+                          return Container(
+                              color: Flavors.colorInfo.mainBackGroundColor,
+                              child: Center(
+                                child:
+                                    Icon(Icons.broken_image_outlined, size: 30),
+                              ));
+                        },
+                        imageBuilder: (context, imageProvider) {
+                          _isShow = true;
+                          return Image(image: imageProvider, fit: BoxFit.cover);
+                        })
+                    : _imageUrl != ""
+                        ? Image.file(
+                            File(_imageUrl!),
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            color: Flavors.colorInfo.mainBackGroundColor,
+                            child: Icon(Icons.cancel,
+                                size: 35.0,
+                                color: Flavors.colorInfo.lightGrep)),
+              )),
+        ));
   }
 }

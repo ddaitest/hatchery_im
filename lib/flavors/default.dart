@@ -155,7 +155,7 @@ class TextStyles {
       TextStyle(fontSize: 15.0.sp, color: ColorInfo().blueGrey);
 
   final TextStyle chatVideoTimerText =
-      TextStyle(fontSize: 10.0.sp, color: ColorInfo().mainTextColor);
+      TextStyle(fontSize: 12.0.sp, color: ColorInfo().mainTextColor);
 
   final TextStyle chatVoiceTimerText = TextStyle(
       fontSize: 15.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);

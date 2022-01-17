@@ -20,7 +20,6 @@ import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:record/record.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
@@ -232,21 +231,23 @@ class ChatDetailManager extends ChangeNotifier {
             };
             String msgId =
                 _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
-            uploadMediaFile(videoThumbPath!).then((videoThumbUrl) {
-              uploadMediaFile(fileValue.path).then((videoUrl) {
-                content["video_url"] = videoUrl;
-                content["video_thum_url"] = videoThumbUrl;
-                MessageCentre.sendMessageModel(
-                    term: content,
-                    chatType: currentChatType!,
-                    messageType: "VIDEO",
-                    otherName: otherName ?? "",
-                    otherIcon: otherIcon ?? "",
-                    currentGroupId: currentGroupId,
-                    currentGroupName: currentGroupName,
-                    currentGroupIcon: currentGroupIcon,
-                    currentFriendId: currentFriendId,
-                    msgId: msgId);
+            compressionVideo(fileValue.path).then((compressionVideoPath) {
+              uploadMediaFile(videoThumbPath!).then((videoThumbUrl) {
+                uploadMediaFile(compressionVideoPath).then((videoUrl) {
+                  content["video_url"] = videoUrl;
+                  content["video_thum_url"] = videoThumbUrl;
+                  MessageCentre.sendMessageModel(
+                      term: content,
+                      chatType: currentChatType!,
+                      messageType: "VIDEO",
+                      otherName: otherName ?? "",
+                      otherIcon: otherIcon ?? "",
+                      currentGroupId: currentGroupId,
+                      currentGroupName: currentGroupName,
+                      currentGroupIcon: currentGroupIcon,
+                      currentFriendId: currentFriendId,
+                      msgId: msgId);
+                });
               });
             });
           });

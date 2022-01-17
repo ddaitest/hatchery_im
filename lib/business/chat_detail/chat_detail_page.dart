@@ -135,6 +135,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             return Flexible(
               child: ListView.builder(
                 itemCount: value.length,
+                cacheExtent: 50.0,
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 reverse: true,

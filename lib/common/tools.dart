@@ -9,6 +9,7 @@ import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info/device_info.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:video_thumbnail/video_thumbnail.dart' as ImageFormat;
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:crypto/crypto.dart';
@@ -32,25 +33,22 @@ Future<String> compressionImage(filePath) async {
   }
 }
 
-// Future<String> compressionVideo(filePath) async {
-//   final MediaInfo? info = await VideoCompress.compressVideo(
-//     filePath,
-//     quality: VideoQuality.Res960x540Quality,
-//     deleteOrigin: false,
-//     includeAudio: true,
-//   );
-//   print("DEBUG=> ###### ${info!.path}");
-//   return info.path!;
-// }
+Future<String> compressionVideo(filePath) async {
+  final MediaInfo? info = await VideoCompress.compressVideo(
+    filePath,
+    quality: VideoQuality.Res960x540Quality,
+    deleteOrigin: false,
+  );
+  print("DEBUG=> ###### ${info!.path}");
+  return info.path!;
+}
 
 Future<String?> getVideoThumb(String videoPath) async {
-  final fileName = VideoThumbnail.thumbnailFile(
-    video: videoPath,
-    thumbnailPath: (await getTemporaryDirectory()).path,
-    imageFormat: ImageFormat.ImageFormat.WEBP,
-    quality: 100,
-  );
-  return fileName;
+  final thumbnailFile = await VideoCompress.getFileThumbnail(videoPath,
+      quality: 100, // default(100)
+      position: -1 // default(-1)
+      );
+  return thumbnailFile.path;
 }
 
 String videoTimeFormat(int seconds) {

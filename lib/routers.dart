@@ -20,6 +20,7 @@ import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page
 import 'package:hatchery_im/common/widget/profile/edit_detail.dart';
 import 'package:hatchery_im/business/group_page/group_profile/group_profile.dart';
 import 'package:hatchery_im/common/widget/webview_common.dart';
+import 'package:photo_view/photo_view.dart';
 import 'business/chat_detail/chat_detail_page.dart';
 import 'business/chat_detail/chat_setting.dart';
 import 'business/contacts/contactsApply/receiveContactsApply.dart';
@@ -159,11 +160,7 @@ class Routers {
       case '/imageDetail':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (_) => ImageDetailViewPage(
-                  image: map['image'] ?? null,
-                  imageFile: map['imageFile'] ?? null,
-                  imageUrl: map['imageUrl'] ?? null,
-                ));
+            builder: (_) => PhotoView(imageProvider: map["imageProvider"]));
       case '/video_play':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(

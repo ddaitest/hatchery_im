@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:hatchery_im/config.dart";
 import "package:provider/provider.dart";
 import "package:hatchery_im/api/entity.dart";
-import "package:flutter/cupertino.dart";
 import "package:hatchery_im/common/widget/app_bar.dart";
 import "package:hatchery_im/common/AppContext.dart";
 import "package:hatchery_im/manager/profile_manager/friendsProfile_manager/friendProfileManager.dart";
@@ -82,8 +81,9 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         children: [
           usersInfo != null
               ? GestureDetector(
-                  onTap: () => Routers.navigateTo("/imageDetail",
-                      arg: {"imageUrl": usersInfo.icon}),
+                  onTap: () => Routers.navigateTo('/imageDetail', arg: {
+                    "imageProvider": CachedNetworkImageProvider(usersInfo.icon)
+                  }),
                   child: netWorkAvatar(usersInfo.icon, 40.0),
                 )
               : CircleAvatar(

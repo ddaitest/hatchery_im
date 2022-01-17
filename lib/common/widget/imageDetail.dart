@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 
 class ImageDetailViewPage extends StatelessWidget {
@@ -14,10 +12,23 @@ class ImageDetailViewPage extends StatelessWidget {
 
   ImageDetailViewPage({this.image, this.imageFile, this.imageUrl});
 
+  late final PhotoView _photoView;
+
+  _initPhotoView() {
+    if (image == null && imageFile == null) {
+      return CachedNetworkImageProvider(imageUrl!);
+    } else if (image == null) {
+      return FileImage(imageFile!);
+    } else {
+      return image;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _initPhotoView();
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         leading: IconButton(
           padding: const EdgeInsets.all(20.0),
@@ -28,31 +39,18 @@ class ImageDetailViewPage extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        centerTitle: true,
         backgroundColor: Colors.black,
         elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      body:
-          _photoView(imageInfo: image, file: imageFile, urlForImage: imageUrl),
+      body: _photoContainerView(),
     );
   }
 
-  Widget _photoView(
-      {ImageProvider? imageInfo, File? file, String? urlForImage}) {
+  Widget _photoContainerView() {
     return Container(
         width: Flavors.sizesInfo.screenWidth,
         height: Flavors.sizesInfo.screenHeight,
-        child: imageInfo == null && file == null
-            ? PhotoView(
-                imageProvider: CachedNetworkImageProvider(urlForImage!),
-              )
-            : imageInfo == null
-                ? PhotoView(
-                    imageProvider: FileImage(file!),
-                  )
-                : PhotoView(
-                    imageProvider: imageInfo,
-                  ));
+        child: _photoView);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,9 +22,9 @@ class VideoPlayState extends State<VideoPlayPage> {
     BetterPlayerConfiguration betterPlayerConfiguration =
         BetterPlayerConfiguration(
             aspectRatio: 9 / 16,
-            fit: BoxFit.contain,
+            fit: BoxFit.cover,
             autoPlay: true,
-            looping: false);
+            looping: true);
     _betterPlayerDataSource = BetterPlayerDataSource(
         widget.videoUrl.contains("http")
             ? BetterPlayerDataSourceType.network
@@ -33,6 +35,7 @@ class VideoPlayState extends State<VideoPlayPage> {
     _betterPlayerController.setBetterPlayerControlsConfiguration(
         BetterPlayerControlsConfiguration(
             showControlsOnInitialize: false,
+            enableRetry: false,
             enableSubtitles: false,
             enablePlaybackSpeed: false,
             enablePip: false,
@@ -46,6 +49,7 @@ class VideoPlayState extends State<VideoPlayPage> {
         _betterPlayerController.setBetterPlayerControlsConfiguration(
             BetterPlayerControlsConfiguration(
                 showControlsOnInitialize: false,
+                enableRetry: false,
                 enableSubtitles: false,
                 enablePlaybackSpeed: false,
                 enablePip: false,
@@ -68,24 +72,24 @@ class VideoPlayState extends State<VideoPlayPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          padding: const EdgeInsets.all(20.0),
-          icon: Icon(
-            Icons.arrow_back,
-            size: 30.0,
-            color: Colors.white,
-          ),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        centerTitle: true,
         backgroundColor: Colors.black,
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-      ),
-      body: _videoPlayWidget(),
-    );
+        appBar: AppBar(
+          leading: IconButton(
+            padding: const EdgeInsets.all(20.0),
+            icon: Icon(
+              Icons.arrow_back,
+              size: 30.0,
+              color: Colors.white,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        body: SafeArea(
+          child: _videoPlayWidget(),
+        ));
   }
 
   Widget _videoPlayWidget() {

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import '../../../../config.dart';
 import '../../../../routers.dart';
+import '../../../log.dart';
 import '../../../tools.dart';
 
 class VideoMessageWidget extends StatefulWidget {
@@ -17,7 +18,6 @@ class VideoMessageWidget extends StatefulWidget {
 }
 
 class VideoMessageState extends State<VideoMessageWidget> {
-  bool _canClick = false;
   String? _videoUrlThumb;
   String? _videoTime;
   int? _videoWidth;
@@ -29,6 +29,7 @@ class VideoMessageState extends State<VideoMessageWidget> {
         videoTimeFormat(int.parse(widget.videoMessageMap['time'] ?? "0"));
     _videoWidth = widget.videoMessageMap["width"] ?? 1080;
     _videoHeight = widget.videoMessageMap["height"] ?? 720;
+    Log.green("_videoWidth _videoHeight $_videoWidth $_videoHeight");
     super.initState();
   }
 
@@ -38,41 +39,36 @@ class VideoMessageState extends State<VideoMessageWidget> {
   }
 
   Widget _videoThumbMessageView() {
-    return GestureDetector(
-      onTap: () => _canClick
-          ? Routers.navigateTo("/video_play",
-              arg: {"videoUrl": widget.videoMessageMap["video_url"]})
-          : null,
-      child: Container(
-          width: _videoWidth! >= _videoHeight! ? 150.0.w : 120.0.w,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: AspectRatio(
-              aspectRatio: _videoWidth! >= _videoHeight! ? 16 / 9 : 9 / 16,
-              child: _videoUrlThumb!.contains("http")
-                  ? CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: _videoUrlThumb!,
-                      placeholder: (context, url) {
-                        _canClick = false;
-                        return Center(
-                          child: CupertinoActivityIndicator(radius: 10.0),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        _canClick = false;
-                        return Center(
-                          child: Icon(Icons.broken_image_outlined, size: 30),
-                        );
-                      },
-                      imageBuilder: (context, imageProvider) {
-                        _canClick = true;
-                        return Stack(
+    return Container(
+        width: _videoWidth! >= _videoHeight! ? 150.0.w : 120.0.w,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: _videoUrlThumb!.contains("http")
+              ? CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: _videoUrlThumb!,
+                  placeholder: (context, url) {
+                    return Center(
+                      child: CupertinoActivityIndicator(radius: 10.0),
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return Center(
+                      child: Icon(Icons.broken_image_outlined, size: 30),
+                    );
+                  },
+                  imageBuilder: (context, imageProvider) {
+                    return GestureDetector(
+                        onTap: () => Routers.navigateTo("/video_play", arg: {
+                              "videoUrl": widget.videoMessageMap["video_url"]
+                            }),
+                        child: Stack(
                           alignment: Alignment.center,
                           children: [
                             Image(image: imageProvider, fit: BoxFit.cover),
                             Icon(Icons.play_circle_outline,
-                                size: 45.0, color: Flavors.colorInfo.lightGrep),
+                                size: 45.0,
+                                color: Flavors.colorInfo.subtitleColor),
                             Positioned(
                               bottom: 5,
                               right: 10,
@@ -80,31 +76,33 @@ class VideoMessageState extends State<VideoMessageWidget> {
                                   style: Flavors.textStyles.chatVideoTimerText),
                             )
                           ],
-                        );
-                      })
-                  : _videoUrlThumb != ""
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Image.file(
-                              File(_videoUrlThumb!),
-                              fit: BoxFit.cover,
-                            ),
-                            Icon(Icons.play_circle_outline,
-                                size: 45.0, color: Flavors.colorInfo.lightGrep),
-                            Positioned(
-                                bottom: 5,
-                                right: 10,
-                                child: Text("$_videoTime",
-                                    style:
-                                        Flavors.textStyles.chatVideoTimerText))
-                          ],
-                        )
-                      : Container(
-                          child: Icon(Icons.cancel,
-                              size: 35.0, color: Flavors.colorInfo.lightGrep)),
-            ),
-          )),
-    );
+                        ));
+                  })
+              : _videoUrlThumb != ""
+                  ? GestureDetector(
+                      onTap: () => Routers.navigateTo("/video_play", arg: {
+                            "videoUrl": widget.videoMessageMap["video_url"]
+                          }),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.file(
+                            File(_videoUrlThumb!),
+                            fit: BoxFit.cover,
+                          ),
+                          Icon(Icons.play_circle_outline,
+                              size: 45.0,
+                              color: Flavors.colorInfo.subtitleColor),
+                          Positioned(
+                              bottom: 5,
+                              right: 10,
+                              child: Text("$_videoTime",
+                                  style: Flavors.textStyles.chatVideoTimerText))
+                        ],
+                      ))
+                  : Container(
+                      child: Icon(Icons.cancel,
+                          size: 35.0, color: Flavors.colorInfo.subtitleColor)),
+        ));
   }
 }
