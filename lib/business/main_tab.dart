@@ -22,22 +22,22 @@ import '../config.dart';
 import '../routers.dart';
 import 'package:flutter/services.dart';
 
-class MainTab extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MainTabHandler(
-      x: 0,
-      child: MainTab2(),
-    );
-  }
-}
+// class MainTab extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MainTabHandler(
+//       x: 0,
+//       child: MainTab2(),
+//     );
+//   }
+// }
 
-class MainTab2 extends StatefulWidget {
+class MainTab extends StatefulWidget {
   @override
   MainTabState createState() => MainTabState();
 }
 
-class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
+class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
   final manager = App.manager<AppManager>();
   bool nextKickBackExitApp = false;
   var bottomTabs = mainTabs;
@@ -61,11 +61,14 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
     // _tabController = TabController(vsync: this, length: _tabBodies.length);
 
     Future.delayed(Duration.zero, () {
-      MainTabHandler.setGotoFun((page) {
-        if (_tabIndex != page) {
-          _switchTab(page);
-        }
-      });
+      if (_tabIndex != 0) {
+        _switchTab(0);
+      }
+      // MainTabHandler.setGotoFun((page) {
+      //   if (_tabIndex != page) {
+      //     _switchTab(page);
+      //   }
+      // });
     });
     super.initState();
   }
@@ -96,7 +99,7 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   @override
   void dispose() {
-    MainTabHandler.setGotoFun(null);
+    // MainTabHandler.setGotoFun(null);
     super.dispose();
   }
 
@@ -130,6 +133,13 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(
+        BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width,
+            maxHeight: MediaQuery.of(context).size.height),
+        context: context,
+        minTextAdapt: true,
+        orientation: Orientation.portrait);
     _setBottomBar();
     return WillPopScope(
         onWillPop: _onWillPop,
@@ -299,42 +309,42 @@ class MainTabState extends State<MainTab2> with SingleTickerProviderStateMixin {
   }
 }
 
-typedef void Goto(int page);
-
-class MainTabHandler extends InheritedWidget {
-  const MainTabHandler({
-    Key? key,
-    required this.x,
-    required Widget child,
-  }) : super(key: key, child: child);
-
-  final int x;
-
-  static MainTabHandler of(BuildContext context) {
-    final MainTabHandler? result =
-        context.dependOnInheritedWidgetOfExactType<MainTabHandler>();
-    assert(result != null, 'No MainTabHandler found in context');
-    return result!;
-  }
-
-  static int tt = 0;
-
-  static Goto? goto;
-
-  @override
-  bool updateShouldNotify(MainTabHandler old) => x != old.x;
-
-  ///跳转到置顶 Home 的 tab 页。
-  static gotoTab(int tab) {
-    if (tab >= 0 && tab < 3) {
-      if (goto != null) {
-        goto!(tab);
-      }
-    }
-  }
-
-  /// Home 页跳转的回调，应该在initState 时候添加，depose 时候移除
-  static setGotoFun(Goto? fun) {
-    goto = fun;
-  }
-}
+// typedef void Goto(int page);
+//
+// class MainTabHandler extends InheritedWidget {
+//   const MainTabHandler({
+//     Key? key,
+//     required this.x,
+//     required Widget child,
+//   }) : super(key: key, child: child);
+//
+//   final int x;
+//
+//   static MainTabHandler of(BuildContext context) {
+//     final MainTabHandler? result =
+//         context.dependOnInheritedWidgetOfExactType<MainTabHandler>();
+//     assert(result != null, 'No MainTabHandler found in context');
+//     return result!;
+//   }
+//
+//   static int tt = 0;
+//
+//   static Goto? goto;
+//
+//   @override
+//   bool updateShouldNotify(MainTabHandler old) => x != old.x;
+//
+//   ///跳转到置顶 Home 的 tab 页。
+//   static gotoTab(int tab) {
+//     if (tab >= 0 && tab < 3) {
+//       if (goto != null) {
+//         goto!(tab);
+//       }
+//     }
+//   }
+//
+//   /// Home 页跳转的回调，应该在initState 时候添加，depose 时候移除
+//   static setGotoFun(Goto? fun) {
+//     goto = fun;
+//   }
+// }

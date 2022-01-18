@@ -68,28 +68,25 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      builder: () => MaterialApp(
-        navigatorKey: App.navState,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          textTheme: GoogleFonts.notoSansTextTheme(),
-          primarySwatch: Colors.blueGrey,
-        ),
-        initialRoute: '/splash',
-        // initialRoute: '/test',
-        onGenerateRoute: Routers.generateRoute,
-        localizationsDelegates: [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('zh', 'CN'),
-          const Locale('en', 'US'),
-        ],
-        builder: EasyLoading.init(),
+    return MaterialApp(
+      navigatorKey: App.navState,
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textTheme: GoogleFonts.notoSansTextTheme(),
+        primarySwatch: Colors.blueGrey,
       ),
+      initialRoute: '/splash',
+      // initialRoute: '/test',
+      onGenerateRoute: Routers.generateRoute,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('zh', 'CN'),
+        const Locale('en', 'US'),
+      ],
     );
   }
 }

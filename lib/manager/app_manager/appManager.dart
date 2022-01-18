@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
@@ -34,7 +35,7 @@ class AppManager extends ChangeNotifier {
     /// 放到main中会报错，没时间找原因
     /// https://www.codercto.com/a/60738.html
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+    //设置尺寸（填写设计中设备的屏幕尺寸）如果设计基于360dp * 690dp的屏幕
     /// 后台监听初始化
     Log.log("app manager. init ");
     SP.init().then((sp) {

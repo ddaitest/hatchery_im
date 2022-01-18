@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -150,10 +151,13 @@ class LoginPageState extends State<LoginPage> {
             ),
             height: 50.0.h,
             child: IntlPhoneField(
-              searchText: '搜索国家',
               obscureText: false,
               controller: loginManager.phoneNumController,
-              countryCodeTextColor: Flavors.colorInfo.mainTextColor,
+              pickerDialogStyle: PickerDialogStyle(
+                  countryCodeStyle:
+                      TextStyle(color: Flavors.colorInfo.mainTextColor),
+                  searchFieldInputDecoration:
+                      InputDecoration(labelText: '搜索国家')),
               style: Flavors.textStyles.loginNormalText,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly, //只输入数字
@@ -173,7 +177,7 @@ class LoginPageState extends State<LoginPage> {
               initialCountryCode: 'CN',
               onChanged: (phone) {
                 loginManager.phoneNumberAreaCode =
-                    phone.countryCode!.substring(1);
+                    phone.countryCode.substring(1);
               },
             )),
       ],

@@ -6,6 +6,7 @@ import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/routers.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class OTPPage extends StatelessWidget {
@@ -55,9 +56,12 @@ class OTPPage extends StatelessWidget {
                         ),
                         height: 50.0.h,
                         child: IntlPhoneField(
-                          searchText: '搜索国家',
                           obscureText: false,
-                          countryCodeTextColor: Flavors.colorInfo.mainTextColor,
+                          pickerDialogStyle: PickerDialogStyle(
+                              countryCodeStyle: TextStyle(
+                                  color: Flavors.colorInfo.mainTextColor),
+                              searchFieldInputDecoration:
+                                  InputDecoration(labelText: '搜索国家')),
                           autofocus: true,
                           style: Flavors.textStyles.loginNormalText,
                           decoration: InputDecoration(

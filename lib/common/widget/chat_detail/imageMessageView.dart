@@ -32,7 +32,6 @@ class ImageMessageWidget extends StatelessWidget {
 
   Widget _imageMessageView() {
     return Container(
-      color: Flavors.colorInfo.mainBackGroundColor,
       width: _imageWidth! >= _imageHeight! ? 150.0.w : 120.0.w,
       child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
