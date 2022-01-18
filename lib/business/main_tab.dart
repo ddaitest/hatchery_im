@@ -131,15 +131,20 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    ScreenUtil.init(
+  /// 屏幕适配lib初始化
+  void _screenUtilInit() {
+    return ScreenUtil.init(
         BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
             maxHeight: MediaQuery.of(context).size.height),
         context: context,
         minTextAdapt: true,
         orientation: Orientation.portrait);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _screenUtilInit();
     _setBottomBar();
     return WillPopScope(
         onWillPop: _onWillPop,

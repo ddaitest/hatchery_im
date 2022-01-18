@@ -36,11 +36,10 @@ Future<String> compressionImage(filePath) async {
 Future<String> compressionVideo(filePath) async {
   final MediaInfo? info = await VideoCompress.compressVideo(
     filePath,
-    quality: VideoQuality.Res960x540Quality,
-    deleteOrigin: false,
+    quality: VideoQuality.LowQuality,
+    deleteOrigin: true,
   );
-  print("DEBUG=> ###### ${info!.path}");
-  return info.path!;
+  return info?.path ?? "";
 }
 
 Future<String?> getVideoThumb(String videoPath) async {
