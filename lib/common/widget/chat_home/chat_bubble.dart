@@ -317,7 +317,7 @@ class _ChatBubbleState extends State<ChatBubble> {
       Map<String, dynamic> contentMap, MessageBelongType belongType) {
     return Container(
       constraints: BoxConstraints(
-        maxWidth: Flavors.sizesInfo.screenWidth - 100.0.w,
+        maxWidth: Flavors.sizesInfo.screenWidth - 110.0.w,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
