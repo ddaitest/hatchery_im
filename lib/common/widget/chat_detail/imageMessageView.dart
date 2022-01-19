@@ -58,10 +58,8 @@ class ImageMessageWidget extends StatelessWidget {
                     },
                     imageBuilder: (context, imageProvider) {
                       return GestureDetector(
-                          onTap: () => Routers.navigateTo('/imageDetail', arg: {
-                                "imageProvider":
-                                    CachedNetworkImageProvider(_imageUrl!)
-                              }),
+                          onTap: () => Routers.navigateTo('/imageDetail',
+                              arg: {"imageUrl": _imageUrl!}),
                           child:
                               Image(image: imageProvider, fit: BoxFit.cover));
                     })

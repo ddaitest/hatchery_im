@@ -5,28 +5,15 @@ import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 
+import '../AppContext.dart';
+
 class ImageDetailViewPage extends StatelessWidget {
-  final ImageProvider? image;
-  final File? imageFile;
   final String? imageUrl;
 
-  ImageDetailViewPage({this.image, this.imageFile, this.imageUrl});
-
-  late final PhotoView _photoView;
-
-  _initPhotoView() {
-    if (image == null && imageFile == null) {
-      return CachedNetworkImageProvider(imageUrl!);
-    } else if (image == null) {
-      return FileImage(imageFile!);
-    } else {
-      return image;
-    }
-  }
+  ImageDetailViewPage({this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
-    _initPhotoView();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -43,14 +30,7 @@ class ImageDetailViewPage extends StatelessWidget {
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      body: _photoContainerView(),
+      body: PhotoView(imageProvider: CachedNetworkImageProvider(imageUrl!)),
     );
-  }
-
-  Widget _photoContainerView() {
-    return Container(
-        width: Flavors.sizesInfo.screenWidth,
-        height: Flavors.sizesInfo.screenHeight,
-        child: _photoView);
   }
 }

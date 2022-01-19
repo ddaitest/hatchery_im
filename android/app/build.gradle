@@ -50,6 +50,9 @@ android {
                 JPUSH_PKGNAME : applicationId,
                 JPUSH_APPKEY : "9d8b80bc783241abdf1f8ae0", // NOTE: JPush 上注册的包名对应的 Appkey.
                 JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+
+                XIAOMI_APPKEY:"MI-您的应用对应的小米的APPKEY",//小米平台注册的appkey
+                XIAOMI_APPID:"MI-您的应用对应的小米的APPID",//小米平台注册的appid
         ]
     }
     //配置签名文件
@@ -88,4 +91,5 @@ dependencies {
     implementation('com.amap.api:location:5.4.0')
     implementation 'com.huawei.hms:push:5.3.0.301'
     implementation 'cn.jiguang.sdk.plugin:huawei:4.0.6'
+    implementation 'cn.jiguang.sdk.plugin:xiaomi:3.8.5'
 }

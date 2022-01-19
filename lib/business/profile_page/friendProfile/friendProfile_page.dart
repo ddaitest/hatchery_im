@@ -81,9 +81,8 @@ class _FriendProfilePageState extends State<FriendProfilePage> {
         children: [
           usersInfo != null
               ? GestureDetector(
-                  onTap: () => Routers.navigateTo('/imageDetail', arg: {
-                    "imageProvider": CachedNetworkImageProvider(usersInfo.icon)
-                  }),
+                  onTap: () => Routers.navigateTo('/imageDetail',
+                      arg: {"imageUrl": usersInfo.icon}),
                   child: netWorkAvatar(usersInfo.icon, 40.0),
                 )
               : CircleAvatar(

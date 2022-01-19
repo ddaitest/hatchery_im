@@ -160,7 +160,9 @@ class Routers {
       case '/imageDetail':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
-            builder: (_) => PhotoView(imageProvider: map["imageProvider"]));
+            builder: (_) => ImageDetailViewPage(
+                  imageUrl: map['imageUrl'] ?? null,
+                ));
       case '/video_play':
         Map map = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(
