@@ -307,6 +307,7 @@ class _ChatBubbleState extends State<ChatBubble> {
   // 0发送失败；1发送中; 2发送完成; 3消息已读; 4收到但未读
   Widget _sentMessageStatusIcon() {
     if (widget.contentMessages.sender == UserCentre.getUserID()) {
+      // Log.red("_sentMessageStatusIcon ${widget.contentMessages.progress}");
       return _statusIcon(progress: widget.contentMessages.progress ?? MSG_SENT);
     } else {
       return Container();

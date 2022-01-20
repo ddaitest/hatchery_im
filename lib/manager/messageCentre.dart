@@ -319,11 +319,19 @@ class MessageCentre {
         ..save();
     }
     LocalStore.refreshSession(message, to, sessionTime: message.createTime);
+    isNetworkConnect().then((bool isConnect) {
+      if (!isConnect) {
+        LocalStore.findCache(message.userMsgID)
+          ?..progress = MSG_FAULT
+          ..save();
+      }
+    });
   }
 
   static sendGroupMessage(String groupId, String groupName, String groupIcon,
       String content, String contentType,
       {String? msgId}) {
+    /// 先判断是否联网，不联网message
     CSSendGroupMessage msg = Protocols.sendGroupMessage(
         _userInfo?.userID ?? "",
         _userInfo?.nickName ?? "",
@@ -352,6 +360,13 @@ class MessageCentre {
     }
     LocalStore.refreshSession(message, groupId,
         sessionTime: message.createTime);
+    isNetworkConnect().then((bool isConnect) {
+      if (!isConnect) {
+        LocalStore.findCache(message.userMsgID)
+          ?..progress = MSG_FAULT
+          ..save();
+      }
+    });
   }
 
   static sendMessageModel(
