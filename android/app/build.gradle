@@ -38,7 +38,7 @@ android {
         applicationId "com.daivp.hatchery_im"
         multiDexEnabled true
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 21
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         ndk {

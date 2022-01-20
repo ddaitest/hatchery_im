@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart' as fln;
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
@@ -75,7 +76,7 @@ class TestState extends State<TestPage> {
         padding: EdgeInsets.all(10),
         children: [
           Text(_message),
-          ElevatedButton(onPressed: c0, child: Text("User Info")),
+          ElevatedButton(onPressed: notification, child: Text("Test Notification")),
           TextField(controller: _controllerUID1),
           TextField(controller: _controllerUID2),
           TextField(controller: _controllerContent),
@@ -135,6 +136,32 @@ class TestState extends State<TestPage> {
       Log.red("userID=${_userInfo?.userID};token=$_token");
     });
     // MessageCentre().listenMessage((news) { }, friendId)
+  }
+
+  fln.SelectNotificationCallback notificationCallback = (String? payload) async {
+    Log.red("SelectNotificationCallback = $payload");
+  };
+
+  notification() async {
+    var notificationsPlugin = fln.FlutterLocalNotificationsPlugin();
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    var androidSetting = fln.AndroidInitializationSettings('app_icon');
+    final iosSetting =
+    fln.IOSInitializationSettings(onDidReceiveLocalNotification: null);
+    final macOSSetting = fln.MacOSInitializationSettings();
+    final initializationSettings = fln.InitializationSettings(
+        android: androidSetting, iOS: iosSetting, macOS: macOSSetting);
+    await notificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: notificationCallback);
+    final androidPush = fln.AndroidNotificationDetails(
+        'channel_123', 'channel_name',
+        channelDescription: 'test channel description',
+        importance: fln.Importance.max,
+        priority: fln.Priority.high,
+        ticker: 'ticker');
+    final notify = fln.NotificationDetails(android: androidPush);
+    await notificationsPlugin.show(0, 'plain title', 'plain body', notify,
+        payload: 'item x');
   }
 
   // s0() async {
