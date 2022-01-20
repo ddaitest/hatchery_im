@@ -22,7 +22,7 @@ class VoiceMessageWidget extends StatelessWidget {
 
   init() {
     _voiceUrl = voiceMessageMap["voice_url"] ?? null;
-    _duration = voiceMessageMap["time"];
+    _duration = voiceMessageMap["time"] ?? 0;
     Log.red("_initAudioPlayer $_voiceUrl ${_duration}");
     if (_voiceUrl != null) {
       _initAudioPlayer();
