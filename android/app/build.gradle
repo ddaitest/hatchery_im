@@ -51,8 +51,8 @@ android {
                 JPUSH_APPKEY : "9d8b80bc783241abdf1f8ae0", // NOTE: JPush 上注册的包名对应的 Appkey.
                 JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
 
-                XIAOMI_APPID  : "MI-xxxxxxx",
-                XIAOMI_APPKEY : "MI-xxxxxx",
+                XIAOMI_APPID  : "MI-2882303761520132871",
+                XIAOMI_APPKEY : "MI-112013276871",
 
                 OPPO_APPKEY : "OP-xxxxxxxx", // OPPO平台注册的appkey
                 OPPO_APPID : "OP-xxxxxx", // OPPO平台注册的appid

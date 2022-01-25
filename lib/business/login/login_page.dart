@@ -177,7 +177,7 @@ class LoginPageState extends State<LoginPage> {
               initialCountryCode: 'CN',
               onChanged: (phone) {
                 loginManager.phoneNumberAreaCode =
-                    phone.countryCode.substring(1);
+                    phone.countryCode!.substring(1);
               },
             )),
       ],
