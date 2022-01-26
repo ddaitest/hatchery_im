@@ -14,7 +14,6 @@ import 'package:hatchery_im/business/search/searchNewContacts.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendProfile_page.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendSetting_page.dart';
 import 'package:hatchery_im/business/block/blockList.dart';
-import 'package:hatchery_im/business/login/phone/otp_page.dart';
 import 'package:hatchery_im/business/about/about.dart';
 import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page.dart';
 import 'package:hatchery_im/common/widget/profile/edit_detail.dart';
@@ -45,8 +44,6 @@ class Routers {
         return MaterialPageRoute(builder: (_) => LoginPage());
       case '/register':
         return MaterialPageRoute(builder: (_) => RegisterPage());
-      case '/phone_login':
-        return MaterialPageRoute(builder: (_) => OTPPage());
       case '/group':
         return MaterialPageRoute(builder: (_) => GroupPage());
       case '/select_contacts_model':

@@ -1,12 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -88,7 +85,10 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
       '手机号（用于短信验证码登录）',
       registerManager.phoneController,
       TextInputType.number,
-      Icons.phone_android,
+      Icon(
+        Icons.phone,
+        color: Colors.white,
+      ),
       '请输入手机号',
     );
   }
@@ -98,7 +98,10 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
       '电子邮箱',
       registerManager.emailController,
       TextInputType.emailAddress,
-      Icons.mail,
+      Icon(
+        Icons.mail,
+        color: Colors.white,
+      ),
       '请输入电子邮箱地址',
     );
   }
@@ -108,7 +111,10 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
       '个性签名',
       registerManager.notesController,
       TextInputType.text,
-      Icons.article,
+      Icon(
+        Icons.article,
+        color: Colors.white,
+      ),
       '请输入个性签名',
       maxLine: 2,
       maxLength: 20,
@@ -120,7 +126,10 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
       '地址',
       registerManager.addressController,
       TextInputType.text,
-      Icons.location_on,
+      Icon(
+        Icons.location_on,
+        color: Colors.white,
+      ),
       '请输入地址',
       maxLine: 2,
       maxLength: 30,

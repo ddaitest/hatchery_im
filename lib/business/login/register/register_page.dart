@@ -86,7 +86,10 @@ class RegisterPageState extends State<RegisterPage> {
       '注册账号（登录用的）',
       registerManager.accountController,
       TextInputType.text,
-      Icons.account_circle,
+      Icon(
+        Icons.account_circle,
+        color: Colors.white,
+      ),
       '请输入账号',
     );
   }
@@ -96,7 +99,10 @@ class RegisterPageState extends State<RegisterPage> {
       '昵称（其他人看到的名字）',
       registerManager.nickNameController,
       TextInputType.text,
-      Icons.switch_account,
+      Icon(
+        Icons.switch_account,
+        color: Colors.white,
+      ),
       '请输入昵称',
     );
   }
@@ -106,7 +112,10 @@ class RegisterPageState extends State<RegisterPage> {
       '密码',
       registerManager.codeController,
       TextInputType.visiblePassword,
-      Icons.lock,
+      Icon(
+        Icons.lock,
+        color: Colors.white,
+      ),
       '请输入密码',
       hideText: true,
     );

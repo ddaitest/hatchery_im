@@ -8,7 +8,7 @@ class TextFormModel extends StatelessWidget {
   final String title;
   final TextEditingController textEditingController;
   final TextInputType keyboardType;
-  final IconData leadingIcon;
+  final Widget? leadingWidget;
   final Widget? suffixWidget;
   final bool hideText;
   final String hintText;
@@ -16,7 +16,7 @@ class TextFormModel extends StatelessWidget {
   final int? maxLine;
   final bool onlyNumber;
   TextFormModel(this.title, this.textEditingController, this.keyboardType,
-      this.leadingIcon, this.hintText,
+      this.leadingWidget, this.hintText,
       {this.suffixWidget,
       this.hideText = false,
       this.maxLength,
@@ -60,10 +60,7 @@ class TextFormModel extends StatelessWidget {
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: const EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                leadingIcon,
-                color: Colors.white,
-              ),
+              prefixIcon: leadingWidget,
               suffixIcon: suffixWidget,
               hintText: hintText,
               errorMaxLines: 1,

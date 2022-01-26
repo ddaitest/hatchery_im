@@ -1,7 +1,5 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:hatchery_im/common/AppContext.dart';
@@ -11,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/manager/login_manager/loginManager.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:hatchery_im/config.dart';
 
 class LoginPage extends StatefulWidget {
@@ -96,11 +93,11 @@ class LoginPageState extends State<LoginPage> {
                   style: Flavors.textStyles.loginMainTitleText,
                 ),
                 SizedBox(height: 30.0.h),
-                _accountCell(value, manager),
+                _accountCell(value),
                 SizedBox(height: 30.0.h),
-                _codeCell(value, manager),
-                _buildForgotPasswordBtn(manager),
-                _buildLoginBtn(value, manager),
+                _codeCell(value),
+                _buildForgotPasswordBtn(),
+                _buildLoginBtn(value),
                 SizedBox(height: 50.0.h),
                 _buildSignupBtn(),
               ],
@@ -115,92 +112,120 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _accountCell(bool isOTPLogin, loginManager) {
-    return isOTPLogin
-        ? _phoneNumInput(loginManager)
-        : _buildAccountTF(loginManager);
+  Widget _accountCell(bool isOTPLogin) {
+    return isOTPLogin ? _buildPhoneNumberTF() : _buildAccountTF();
   }
 
-  Widget _codeCell(bool isOTPLogin, loginManager) {
-    return isOTPLogin
-        ? _buildPhoneCodeTF(loginManager)
-        : _buildPasswordTF(loginManager);
+  Widget _codeCell(bool isOTPLogin) {
+    return isOTPLogin ? _buildPhoneCodeTF() : _buildPasswordTF();
   }
 
-  Widget _phoneNumInput(loginManager) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '手机号',
-          style: Flavors.textStyles.loginNormalText,
-        ),
-        SizedBox(height: 10.0.h),
-        Container(
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              color: Color(0xFF6CA8F1),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6.0,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            height: 50.0.h,
-            child: IntlPhoneField(
-              obscureText: false,
-              controller: loginManager.phoneNumController,
-              pickerDialogStyle: PickerDialogStyle(
-                  countryCodeStyle:
-                      TextStyle(color: Flavors.colorInfo.mainTextColor),
-                  searchFieldInputDecoration:
-                      InputDecoration(labelText: '搜索国家')),
-              style: Flavors.textStyles.loginNormalText,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly, //只输入数字
-              ],
-              decoration: InputDecoration(
-                hintText: '输入手机号码',
-                helperText: '',
-                suffixText: '',
-                counterText: '',
-                // cursorColor: Flavors.colorInfo.subtitleColor,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.only(top: 6.0),
-                hintMaxLines: 1,
-                errorMaxLines: 1,
-                hintStyle: Flavors.textStyles.hintTextText,
-              ),
-              initialCountryCode: 'CN',
-              onChanged: (phone) {
-                loginManager.phoneNumberAreaCode =
-                    phone.countryCode!.substring(1);
-              },
-            )),
-      ],
-    );
-  }
+  // Widget _phoneNumInput() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       Text(
+  //         '手机号',
+  //         style: Flavors.textStyles.loginNormalText,
+  //       ),
+  //       SizedBox(height: 10.0.h),
+  //       Container(
+  //           alignment: Alignment.center,
+  //           decoration: BoxDecoration(
+  //             color: Color(0xFF6CA8F1),
+  //             borderRadius: BorderRadius.circular(10.0),
+  //             boxShadow: [
+  //               BoxShadow(
+  //                 color: Colors.black12,
+  //                 blurRadius: 6.0,
+  //                 offset: Offset(0, 2),
+  //               ),
+  //             ],
+  //           ),
+  //           height: 50.0.h,
+  //           child: IntlPhoneField(
+  //             initialValue: "CN",
+  //             obscureText: false,
+  //             // controller: manager.phoneNumController,
+  //             pickerDialogStyle: PickerDialogStyle(
+  //                 countryCodeStyle:
+  //                     TextStyle(color: Flavors.colorInfo.mainTextColor),
+  //                 searchFieldInputDecoration:
+  //                     InputDecoration(labelText: '搜索国家')),
+  //             // countries: ["CN", "US"],
+  //             style: Flavors.textStyles.loginNormalText,
+  //             inputFormatters: <TextInputFormatter>[
+  //               FilteringTextInputFormatter.digitsOnly, //只输入数字
+  //             ],
+  //             decoration: InputDecoration(
+  //               labelText: '输入手机号码',
+  //               // cursorColor: Flavors.colorInfo.subtitleColor,
+  //               border: InputBorder.none,
+  //               hintMaxLines: 1,
+  //               errorMaxLines: 1,
+  //               hintStyle: Flavors.textStyles.hintTextText,
+  //             ),
+  //             initialCountryCode: 'CN',
+  //             onChanged: (phone) {
+  //               manager.phoneNumberAreaCode = phone.countryCode.substring(1);
+  //             },
+  //           )),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildPhoneCodeTF(loginManager) {
+  Widget _buildPhoneNumberTF() {
     return Container(
-        // padding: const EdgeInsets.only(right: 40.0),
+        width: Flavors.sizesInfo.screenWidth,
+        child: TextFormModel(
+          '手机号',
+          manager.phoneNumController,
+          TextInputType.number,
+          CountryCodePicker(
+            onInit: (phone) => manager.phoneNumberAreaCode =
+                phone?.dialCode!.substring(1) ?? "86",
+            onChanged: (phone) => manager.phoneNumberAreaCode =
+                phone.dialCode?.substring(1) ?? "86",
+            // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 4.0, bottom: 8.0, top: 8.0),
+            textStyle: Flavors.textStyles.hintTextText,
+            initialSelection: 'CN',
+            favorite: ['+86', 'CN'],
+            countryFilter: ['CN', 'US', 'SG'],
+            // optional. Shows only country name and flag
+            showCountryOnly: false,
+            // optional. Shows only country name and flag when popup is closed.
+            showOnlyCountryWhenClosed: false,
+            // optional. aligns the flag and the Text left
+            alignLeft: false,
+          ),
+          '请输入手机号',
+          suffixWidget: null,
+          maxLength: 15,
+          onlyNumber: true,
+        ));
+  }
+
+  Widget _buildPhoneCodeTF() {
+    return Container(
         width: Flavors.sizesInfo.screenWidth,
         child: TextFormModel(
           '验证码',
-          loginManager.phoneCodeController,
+          manager.phoneCodeController,
           TextInputType.number,
-          Icons.mail,
+          Icon(
+            Icons.mail,
+            color: Colors.white,
+          ),
           '请输入验证码',
-          suffixWidget: _countDownTimeView(loginManager),
+          suffixWidget: _countDownTimeView(),
           maxLength: 6,
           onlyNumber: true,
         ));
   }
 
-  Widget _countDownTimeView(loginManager) {
+  Widget _countDownTimeView() {
     return Selector<LoginManager, int>(
       builder: (BuildContext context, int value, Widget? child) {
         return Container(
@@ -213,12 +238,10 @@ class LoginPageState extends State<LoginPage> {
                 onPressed: value == TimeConfig.OTP_CODE_RESEND
                     ? () {
                         print(
-                            "DEBUG=>sendPhoneNumText ${loginManager.phoneNumController.text}");
-                        if (loginManager.phoneNumController.text != '') {
-                          loginManager.sendOTP(
-                              loginManager.phoneNumController.text,
-                              loginManager.phoneNumberAreaCode,
-                              1);
+                            "DEBUG=>sendPhoneNumText ${manager.phoneNumController.text}");
+                        if (manager.phoneNumController.text != '') {
+                          manager.sendOTP(manager.phoneNumController.text,
+                              manager.phoneNumberAreaCode, 1);
                         } else {
                           showToast('请输入手机号');
                         }
@@ -232,37 +255,43 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildAccountTF(loginManager) {
+  Widget _buildAccountTF() {
     return TextFormModel(
       '账号',
-      loginManager.accountController,
+      manager.accountController,
       TextInputType.text,
-      Icons.account_circle,
+      Icon(
+        Icons.account_circle,
+        color: Colors.white,
+      ),
       '请输入账号',
     );
   }
 
-  Widget _buildPasswordTF(loginManager) {
+  Widget _buildPasswordTF() {
     return TextFormModel(
       '密码',
-      loginManager.codeController,
+      manager.codeController,
       TextInputType.visiblePassword,
-      Icons.lock,
+      Icon(
+        Icons.lock,
+        color: Colors.white,
+      ),
       '请输入密码',
       hideText: true,
     );
   }
 
-  Widget _buildForgotPasswordBtn(loginManager) {
+  Widget _buildForgotPasswordBtn() {
     return Container(
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton(
-              onPressed: () => loginManager.setOTPLogin(),
+              onPressed: () => manager.setOTPLogin(),
               child: Text(
-                loginManager.isOTPLogin ? '账号登录' : '手机验证码登录',
+                manager.isOTPLogin ? '账号登录' : '手机验证码登录',
                 style: Flavors.textStyles.hintTextText,
               ),
             ),
@@ -277,7 +306,7 @@ class LoginPageState extends State<LoginPage> {
         ));
   }
 
-  Widget _buildLoginBtn(bool isOTPLogin, loginManager) {
+  Widget _buildLoginBtn(bool isOTPLogin) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 15.0),
       width: double.infinity,
@@ -291,8 +320,7 @@ class LoginPageState extends State<LoginPage> {
             borderRadius: BorderRadius.circular(30.0),
           ),
         ),
-        onPressed: () =>
-            isOTPLogin ? _phoneCodeSubmit(loginManager) : _submit(loginManager),
+        onPressed: () => isOTPLogin ? _phoneCodeSubmit() : _submit(),
         child: Text(
           '登 录',
           style: Flavors.textStyles.loginInButtonText,
@@ -319,22 +347,22 @@ class LoginPageState extends State<LoginPage> {
   }
 
   ///提交
-  void _submit(loginManager) {
-    String account = loginManager.accountController.text;
-    String password = loginManager.codeController.text;
+  void _submit() {
+    String account = manager.accountController.text;
+    String password = manager.codeController.text;
     if (account != '' && password != '') {
       print("$account $password");
-      loginManager.submit(account, password);
+      manager.submit(account, password);
     } else {
       showToast('账号或密码不能为空');
     }
   }
 
   ///提交
-  void _phoneCodeSubmit(loginManager) {
-    String phoneNum = loginManager.phoneNumController.text;
-    String phoneNumberAreaCode = loginManager.phoneNumberAreaCode;
-    String phoneCode = loginManager.phoneCodeController.text;
+  void _phoneCodeSubmit() {
+    String phoneNum = manager.phoneNumController.text;
+    String phoneNumberAreaCode = manager.phoneNumberAreaCode;
+    String phoneCode = manager.phoneCodeController.text;
     print("DEBUG=> $phoneNum");
     if (phoneNum == '') {
       showToast('手机号不能为空');
@@ -342,7 +370,7 @@ class LoginPageState extends State<LoginPage> {
       showToast('验证码不能为空');
     } else {
       FocusScope.of(App.navState.currentContext!).requestFocus(FocusNode());
-      loginManager.phoneSubmit(phoneNum, phoneNumberAreaCode, phoneCode);
+      manager.phoneSubmit(phoneNum, phoneNumberAreaCode, phoneCode);
     }
   }
 }
