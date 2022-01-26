@@ -1,16 +1,18 @@
 import 'package:jpush_flutter/jpush_flutter.dart';
 
+import 'common/log.dart';
+
 class JpushPlugin {
   static void initPush() {
     JPush().addEventHandler(
       onReceiveNotification: (Map message) async {
-        print("flutter onReceiveNotification: $message");
+        Log.green("flutter onReceiveNotification: $message");
       },
       onOpenNotification: (Map message) async {
-        print("flutter onOpenNotification: $message");
+        Log.green("flutter onOpenNotification: $message");
       },
       onReceiveMessage: (Map message) async {
-        print("flutter onReceiveMessage: $message");
+        Log.green("flutter onReceiveMessage: $message");
       },
     );
 
@@ -40,7 +42,7 @@ class JpushPlugin {
 
   /// 清空角标
 
-  static void setBadge() {
-    JPush().setBadge(0);
+  static void setBadge({int badgeCount = 0}) {
+    JPush().setBadge(badgeCount);
   }
 }

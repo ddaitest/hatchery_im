@@ -2,6 +2,8 @@ import 'dart:convert' as convert;
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hatchery_im/api/engine/Protocols.dart';
+import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
@@ -259,18 +261,23 @@ class _ChatBubbleState extends State<ChatBubble> {
           finalView = IconButton(
               onPressed: () {
                 showToast("请重新发送");
-                // if (contentMessages.contentType != "FILE" &&
-                //     contentMessages.contentType != "GEO") {
-                //   contentMessages
-                //     ..progress = MSG_SENDING
-                //     ..createTime = DateTime.now().millisecondsSinceEpoch
-                //     ..save();
-                //   Message temp = contentMessages;
-                //   manager.sendMessage(
-                //       _checkContentType(temp), contentMessages.contentType);
-                // } else {
-                //   showToast("请重新发送");
-                // }
+                isNetworkConnect().then((bool isConnect) {
+                  if (isConnect) {
+                    LocalStore.findCache(widget.contentMessages.userMsgID)
+                      ?..progress = MSG_SENDING
+                      ..save();
+                    MyProfile? _userInfo = UserCentre.getInfo();
+                    CSSendMessage msg = Protocols.sendMessage(
+                        _userInfo?.userID ?? "",
+                        _userInfo?.nickName ?? "",
+                        widget.userID,
+                        _userInfo?.icon ?? "",
+                        TARGET_PLATFORM,
+                        widget.contentMessages.content,
+                        widget.contentMessages.contentType);
+                    MessageCentre.engine?.sendProtocol(msg.toJson());
+                  }
+                });
               },
               icon: Icon(Icons.error, size: 25.0, color: Colors.red));
         }

@@ -120,60 +120,6 @@ class LoginPageState extends State<LoginPage> {
     return isOTPLogin ? _buildPhoneCodeTF() : _buildPasswordTF();
   }
 
-  // Widget _phoneNumInput() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       Text(
-  //         '手机号',
-  //         style: Flavors.textStyles.loginNormalText,
-  //       ),
-  //       SizedBox(height: 10.0.h),
-  //       Container(
-  //           alignment: Alignment.center,
-  //           decoration: BoxDecoration(
-  //             color: Color(0xFF6CA8F1),
-  //             borderRadius: BorderRadius.circular(10.0),
-  //             boxShadow: [
-  //               BoxShadow(
-  //                 color: Colors.black12,
-  //                 blurRadius: 6.0,
-  //                 offset: Offset(0, 2),
-  //               ),
-  //             ],
-  //           ),
-  //           height: 50.0.h,
-  //           child: IntlPhoneField(
-  //             initialValue: "CN",
-  //             obscureText: false,
-  //             // controller: manager.phoneNumController,
-  //             pickerDialogStyle: PickerDialogStyle(
-  //                 countryCodeStyle:
-  //                     TextStyle(color: Flavors.colorInfo.mainTextColor),
-  //                 searchFieldInputDecoration:
-  //                     InputDecoration(labelText: '搜索国家')),
-  //             // countries: ["CN", "US"],
-  //             style: Flavors.textStyles.loginNormalText,
-  //             inputFormatters: <TextInputFormatter>[
-  //               FilteringTextInputFormatter.digitsOnly, //只输入数字
-  //             ],
-  //             decoration: InputDecoration(
-  //               labelText: '输入手机号码',
-  //               // cursorColor: Flavors.colorInfo.subtitleColor,
-  //               border: InputBorder.none,
-  //               hintMaxLines: 1,
-  //               errorMaxLines: 1,
-  //               hintStyle: Flavors.textStyles.hintTextText,
-  //             ),
-  //             initialCountryCode: 'CN',
-  //             onChanged: (phone) {
-  //               manager.phoneNumberAreaCode = phone.countryCode.substring(1);
-  //             },
-  //           )),
-  //     ],
-  //   );
-  // }
-
   Widget _buildPhoneNumberTF() {
     return Container(
         width: Flavors.sizesInfo.screenWidth,
