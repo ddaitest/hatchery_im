@@ -276,16 +276,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         onFieldSubmitted: (term) {
           Log.yellow("textInputAction $term");
           Map<String, dynamic> content = {"text": term};
-          MessageCentre.sendMessageModel(
-              term: content,
-              chatType: manager.currentChatType!,
-              messageType: "TEXT",
-              otherName: manager.otherName ?? "",
-              otherIcon: manager.otherIcon ?? "",
-              currentGroupId: manager.currentGroupId,
-              currentGroupName: manager.currentGroupName,
-              currentGroupIcon: manager.currentGroupIcon,
-              currentFriendId: manager.currentFriendId);
+          manager.sendTextMessage(content: content);
           manager.textEditingController.clear();
         },
         keyboardType: TextInputType.text,

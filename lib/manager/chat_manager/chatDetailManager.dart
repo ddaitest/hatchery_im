@@ -276,14 +276,13 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void reSendMessage(
-      {required Map<String, dynamic> content,
-      required String messageType,
-      required String msgId}) {
-    return MessageCentre.sendMessageModel(
+  void sendTextMessage({required Map<String, dynamic> content}) {
+    String msgId = _fakeMediaMessage(convert.jsonEncode(content),
+        "TEXT"); // 假上墙，获取msgId，发送成功后利用msgId更新message
+    MessageCentre.sendMessageModel(
         term: content,
         chatType: currentChatType!,
-        messageType: messageType,
+        messageType: "TEXT",
         otherName: otherName ?? "",
         otherIcon: otherIcon ?? "",
         currentGroupId: currentGroupId,
@@ -291,6 +290,40 @@ class ChatDetailManager extends ChangeNotifier {
         currentGroupIcon: currentGroupIcon,
         currentFriendId: currentFriendId,
         msgId: msgId);
+  }
+
+  void reSendMessage(
+      {required Map<String, dynamic> content,
+      required String messageType,
+      required String msgId}) {
+    if (messageType == "IMAGE" ||
+        messageType == "VIDEO" ||
+        messageType == "VOICE" ||
+        messageType == "FILE") {
+      if (content.containsValue("http")) {
+        MessageCentre.sendMessageModel(
+            term: content,
+            chatType: currentChatType!,
+            messageType: messageType,
+            otherName: otherName ?? "",
+            otherIcon: otherIcon ?? "",
+            currentGroupId: currentGroupId,
+            currentGroupName: currentGroupName,
+            currentGroupIcon: currentGroupIcon,
+            currentFriendId: currentFriendId,
+            msgId: msgId);
+      } else {
+        if (messageType == "IMAGE") {
+          //
+        } else if (messageType == "VIDEO") {
+          //
+        } else if (messageType == "VOICE") {
+          //
+        } else if (messageType == "FILE") {
+          //
+        }
+      }
+    }
   }
 
   void getImageByGallery() async {

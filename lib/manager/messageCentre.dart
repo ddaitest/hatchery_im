@@ -306,14 +306,10 @@ class MessageCentre {
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
     Log.green("sendMessage sendMessage ${msg.contentType}");
-    // if (msg.contentType == "TEXT" ||
-    //     msg.contentType == "GEO" ||
-    //     msg.contentType == "CARD" ||
-    //     msgId == null) {
-    //   message..progress = MSG_SENDING;
-    //   LocalStore.addMessage(message);
-    // }
-    if (msgId != null) {
+    if (msgId == null) {
+      message..progress = MSG_SENDING;
+      LocalStore.addMessage(message);
+    } else {
       LocalStore.findCache(message.userMsgID)
         ?..content = content
         ..save();
@@ -346,15 +342,11 @@ class MessageCentre {
         msgId: msgId);
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertGroupMessage(msg);
-    if (msg.contentType == "TEXT" ||
-        msg.contentType == "GEO" ||
-        msg.contentType == "CARD" ||
-        msgId == null) {
+    if (msgId == null) {
       Log.yellow("sendGroupMessage ${message.progress} ${msg.toJson()}");
       message..progress = MSG_SENDING;
       LocalStore.addMessage(message);
-    }
-    if (msgId != null) {
+    } else {
       LocalStore.findCache(msgId)
         ?..content = content
         ..save();
@@ -384,16 +376,14 @@ class MessageCentre {
       String? msgId}) {
     switch (messageType) {
       case "TEXT":
-        MessageCentre.sendTextMessage(
-          chatType,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendTextMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       case "IMAGE":
         MessageCentre.sendImageMessage(chatType, term,
@@ -426,16 +416,14 @@ class MessageCentre {
             msgId: msgId);
         break;
       case "GEO":
-        MessageCentre.sendGeoMessage(
-          chatType,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendGeoMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       case "FILE":
         MessageCentre.sendFileMessage(chatType, term,
@@ -454,19 +442,18 @@ class MessageCentre {
             groupId: currentGroupId,
             groupName: currentGroupName,
             groupIcon: currentGroupIcon,
-            friendId: currentFriendId);
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
       default:
-        MessageCentre.sendTextMessage(
-          chatType,
-          term,
-          otherName: otherName,
-          otherIcon: otherIcon,
-          groupId: currentGroupId,
-          groupName: currentGroupName,
-          groupIcon: currentGroupIcon,
-          friendId: currentFriendId,
-        );
+        MessageCentre.sendTextMessage(chatType, term,
+            otherName: otherName,
+            otherIcon: otherIcon,
+            groupId: currentGroupId,
+            groupName: currentGroupName,
+            groupIcon: currentGroupIcon,
+            friendId: currentFriendId,
+            msgId: msgId);
         break;
     }
   }
@@ -477,12 +464,14 @@ class MessageCentre {
       String? groupId,
       String? groupName,
       String? groupIcon,
-      String? friendId}) {
+      String? friendId,
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode(textMap), otherName ?? "",
-            otherIcon ?? "", "TEXT")
+            otherIcon ?? "", "TEXT", msgId: msgId)
         : sendGroupMessage(
-            groupId!, groupName!, groupIcon!, jsonEncode(textMap), "TEXT");
+            groupId!, groupName!, groupIcon!, jsonEncode(textMap), "TEXT",
+            msgId: msgId);
   }
 
   static sendImageMessage(String chatType, Map<String, dynamic> imageMap,
@@ -539,12 +528,14 @@ class MessageCentre {
       String? groupId,
       String? groupName,
       String? groupIcon,
-      String? friendId}) {
+      String? friendId,
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode(positionMap), otherName ?? "",
-            otherIcon ?? "", "GEO")
+            otherIcon ?? "", "GEO", msgId: msgId)
         : sendGroupMessage(
-            groupId!, groupName!, groupIcon!, jsonEncode(positionMap), "GEO");
+            groupId!, groupName!, groupIcon!, jsonEncode(positionMap), "GEO",
+            msgId: msgId);
   }
 
   static sendFileMessage(String chatType, Map<String, dynamic> fileMap,
@@ -569,12 +560,14 @@ class MessageCentre {
       String? groupId,
       String? groupName,
       String? groupIcon,
-      String? friendId}) {
+      String? friendId,
+      String? msgId}) {
     chatType == "CHAT"
         ? sendMessage(friendId!, jsonEncode(cardMap), otherName ?? "",
-            otherIcon ?? "", "CARD")
+            otherIcon ?? "", "CARD", msgId: msgId)
         : sendGroupMessage(
-            groupId!, groupName!, groupIcon!, jsonEncode(cardMap), "CARD");
+            groupId!, groupName!, groupIcon!, jsonEncode(cardMap), "CARD",
+            msgId: msgId);
   }
 
   static void disconnect() => engine?.disconnect();
