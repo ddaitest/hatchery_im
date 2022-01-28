@@ -306,13 +306,13 @@ class MessageCentre {
     engine?.sendProtocol(msg.toJson());
     Message message = ModelHelper.convertMessage(msg);
     Log.green("sendMessage sendMessage ${msg.contentType}");
-    if (msg.contentType == "TEXT" ||
-        msg.contentType == "GEO" ||
-        msg.contentType == "CARD" ||
-        msgId == null) {
-      message..progress = MSG_SENDING;
-      LocalStore.addMessage(message);
-    }
+    // if (msg.contentType == "TEXT" ||
+    //     msg.contentType == "GEO" ||
+    //     msg.contentType == "CARD" ||
+    //     msgId == null) {
+    //   message..progress = MSG_SENDING;
+    //   LocalStore.addMessage(message);
+    // }
     if (msgId != null) {
       LocalStore.findCache(message.userMsgID)
         ?..content = content
@@ -324,6 +324,7 @@ class MessageCentre {
         LocalStore.findCache(message.userMsgID)
           ?..progress = MSG_FAULT
           ..save();
+        showToast("无网络，请联网后重试");
       }
     });
   }
@@ -365,6 +366,7 @@ class MessageCentre {
         LocalStore.findCache(message.userMsgID)
           ?..progress = MSG_FAULT
           ..save();
+        showToast("无网络，请联网后重试");
       }
     });
   }

@@ -54,9 +54,9 @@ android {
                 XIAOMI_APPID  : "MI-2882303761520132871",
                 XIAOMI_APPKEY : "MI-112013276871",
 
-                OPPO_APPKEY : "OP-xxxxxxxx", // OPPO平台注册的appkey
-                OPPO_APPID : "OP-xxxxxx", // OPPO平台注册的appid
-                OPPO_APPSECRET: "OP-xxxxxx",//OPPO平台注册的appsecret
+                OPPO_APPKEY : "OP-570e5a14cc0b4e16b27ef146ab06d8b8", // OPPO平台注册的appkey
+                OPPO_APPID : "OP-30739725", // OPPO平台注册的appid
+                OPPO_APPSECRET: "OP-35da3282b5f749b6b74e96cd50e3e2c2",//OPPO平台注册的appsecret
 
                 VIVO_APPKEY : "xxxxxxx", // VIVO平台注册的appkey
                 VIVO_APPID : "xxxxxx", // VIVO平台注册的appid

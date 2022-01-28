@@ -260,24 +260,12 @@ class _ChatBubbleState extends State<ChatBubble> {
         {
           finalView = IconButton(
               onPressed: () {
-                showToast("请重新发送");
-                isNetworkConnect().then((bool isConnect) {
-                  if (isConnect) {
-                    LocalStore.findCache(widget.contentMessages.userMsgID)
-                      ?..progress = MSG_SENDING
-                      ..save();
-                    MyProfile? _userInfo = UserCentre.getInfo();
-                    CSSendMessage msg = Protocols.sendMessage(
-                        _userInfo?.userID ?? "",
-                        _userInfo?.nickName ?? "",
-                        widget.userID,
-                        _userInfo?.icon ?? "",
-                        TARGET_PLATFORM,
-                        widget.contentMessages.content,
-                        widget.contentMessages.contentType);
-                    MessageCentre.engine?.sendProtocol(msg.toJson());
-                  }
-                });
+                Map<String, dynamic> reSendContent =
+                    convert.jsonDecode(widget.contentMessages.content);
+                manager.reSendMessage(
+                    content: reSendContent,
+                    messageType: widget.contentMessages.contentType,
+                    msgId: widget.contentMessages.userMsgID);
               },
               icon: Icon(Icons.error, size: 25.0, color: Colors.red));
         }

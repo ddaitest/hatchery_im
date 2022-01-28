@@ -276,6 +276,23 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
+  void reSendMessage(
+      {required Map<String, dynamic> content,
+      required String messageType,
+      required String msgId}) {
+    return MessageCentre.sendMessageModel(
+        term: content,
+        chatType: currentChatType!,
+        messageType: messageType,
+        otherName: otherName ?? "",
+        otherIcon: otherIcon ?? "",
+        currentGroupId: currentGroupId,
+        currentGroupName: currentGroupName,
+        currentGroupIcon: currentGroupIcon,
+        currentFriendId: currentFriendId,
+        msgId: msgId);
+  }
+
   void getImageByGallery() async {
     List<AssetEntity>? assets =
         await AssetPicker.pickAssets(App.navState.currentContext!,
