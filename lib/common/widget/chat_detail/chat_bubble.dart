@@ -260,14 +260,14 @@ class _ChatBubbleState extends State<ChatBubble> {
         {
           finalView = IconButton(
               onPressed: () {
-                Map<String, dynamic> reSendContent =
+                Map<String, dynamic> retrySendContent =
                     convert.jsonDecode(widget.contentMessages.content);
-                manager.reSendMessage(
-                    content: reSendContent,
+                manager.retrySendMessage(
+                    content: retrySendContent,
                     messageType: widget.contentMessages.contentType,
                     msgId: widget.contentMessages.userMsgID);
               },
-              icon: Icon(Icons.error, size: 25.0, color: Colors.red));
+              icon: Icon(Icons.error, size: 20.0, color: Colors.red));
         }
         break;
       case MSG_SENDING:

@@ -185,53 +185,11 @@ class ChatDetailManager extends ChangeNotifier {
           String msgId = _fakeMediaMessage(convert.jsonEncode(content),
               "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
           Log.green("content ${content.toString()}");
-          fileValue?.length().then((lengthValue) {
-            if (lengthValue > 2080000) {
-              compressionImage(fileValue.path).then((compressionValue) {
-                uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-                  if (uploadMediaUrl != "") {
-                    content["img_url"] = uploadMediaUrl;
-                    MessageCentre.sendMessageModel(
-                        term: content,
-                        chatType: currentChatType!,
-                        messageType: "IMAGE",
-                        otherName: otherName ?? "",
-                        otherIcon: otherIcon ?? "",
-                        currentGroupId: currentGroupId,
-                        currentGroupName: currentGroupName,
-                        currentGroupIcon: currentGroupIcon,
-                        currentFriendId: currentFriendId,
-                        msgId: msgId);
-                  } else {
-                    LocalStore.findCache(msgId)
-                      ?..progress = MSG_FAULT
-                      ..save();
-                  }
-                });
-              });
-            } else {
-              uploadMediaFile(fileValue.path).then((uploadMediaUrl) {
-                if (uploadMediaUrl != "") {
-                  content["img_url"] = uploadMediaUrl;
-                  MessageCentre.sendMessageModel(
-                      term: content,
-                      chatType: currentChatType!,
-                      messageType: "IMAGE",
-                      otherName: otherName ?? "",
-                      otherIcon: otherIcon ?? "",
-                      currentGroupId: currentGroupId,
-                      currentGroupName: currentGroupName,
-                      currentGroupIcon: currentGroupIcon,
-                      currentFriendId: currentFriendId,
-                      msgId: msgId);
-                } else {
-                  LocalStore.findCache(msgId)
-                    ?..progress = MSG_FAULT
-                    ..save();
-                }
-              });
-            }
-          });
+          _uploadMediaModel(
+              file: fileValue,
+              contentType: "IMAGE",
+              content: content,
+              msgId: msgId);
         } else if (assetEntity.type == AssetType.video) {
           getVideoThumb(fileValue!.path).then((videoThumbPath) {
             Map<String, dynamic> content = {
@@ -276,6 +234,81 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
+  void _uploadMediaModel(
+      {required File? file,
+      required String contentType,
+      required Map<String, dynamic> content,
+      required String msgId}) {
+    if (file != null) {
+      if (contentType == "IMAGE") {
+        file.length().then((lengthValue) {
+          if (lengthValue > 2080000) {
+            compressionImage(file.path).then((compressionValue) {
+              uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+                if (uploadMediaUrl != "") {
+                  content["img_url"] = uploadMediaUrl;
+                  MessageCentre.sendMessageModel(
+                      term: content,
+                      chatType: currentChatType!,
+                      messageType: "IMAGE",
+                      otherName: otherName ?? "",
+                      otherIcon: otherIcon ?? "",
+                      currentGroupId: currentGroupId,
+                      currentGroupName: currentGroupName,
+                      currentGroupIcon: currentGroupIcon,
+                      currentFriendId: currentFriendId,
+                      msgId: msgId);
+                } else {
+                  LocalStore.findCache(msgId)
+                    ?..progress = MSG_FAULT
+                    ..save();
+                }
+              });
+            });
+          } else {
+            uploadMediaFile(file.path).then((uploadMediaUrl) {
+              if (uploadMediaUrl != "") {
+                content["img_url"] = uploadMediaUrl;
+                MessageCentre.sendMessageModel(
+                    term: content,
+                    chatType: currentChatType!,
+                    messageType: "IMAGE",
+                    otherName: otherName ?? "",
+                    otherIcon: otherIcon ?? "",
+                    currentGroupId: currentGroupId,
+                    currentGroupName: currentGroupName,
+                    currentGroupIcon: currentGroupIcon,
+                    currentFriendId: currentFriendId,
+                    msgId: msgId);
+              } else {
+                LocalStore.findCache(msgId)
+                  ?..progress = MSG_FAULT
+                  ..save();
+              }
+            });
+          }
+        });
+      } else if (contentType == "VIDEO") {
+      } else if (contentType == "VOICE") {
+      } else if (contentType == "FILE") {
+      } else {
+        showToast("无法识别请重试");
+      }
+    } else {
+      String toastText = "";
+      if (contentType == "IMAGE") {
+        toastText = "图片";
+      } else if (contentType == "VIDEO") {
+        toastText = "视频";
+      } else if (contentType == "VOICE") {
+        toastText = "语音";
+      } else if (contentType == "FILE") {
+        toastText = "文件";
+      }
+      showToast("$toastText选择失败请重试");
+    }
+  }
+
   void sendTextMessage({required Map<String, dynamic> content}) {
     String msgId = _fakeMediaMessage(convert.jsonEncode(content),
         "TEXT"); // 假上墙，获取msgId，发送成功后利用msgId更新message
@@ -292,7 +325,7 @@ class ChatDetailManager extends ChangeNotifier {
         msgId: msgId);
   }
 
-  void reSendMessage(
+  void retrySendMessage(
       {required Map<String, dynamic> content,
       required String messageType,
       required String msgId}) {
