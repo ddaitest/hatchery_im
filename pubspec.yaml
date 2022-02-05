@@ -69,7 +69,7 @@ dependencies:
   amap_flutter_location: ^3.0.0
   amap_flutter_map: ^3.0.0
   map_launcher: ^2.1.1
-  emoji_picker_flutter: ^1.0.7
+  emoji_picker_flutter: ^1.1.1
   flutter_svg: ^1.0.0 #ANDROID IOS LINUX MACOS WINDOWS
   wechat_camera_picker: ^2.6.4
   wechat_assets_picker: ^6.3.1
@@ -110,6 +110,7 @@ flutter:
     - images/
     - images/2.0x/
     - images/3.0x/
+    - sounds/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

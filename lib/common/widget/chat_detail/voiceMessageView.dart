@@ -23,7 +23,7 @@ class VoiceMessageWidget extends StatelessWidget {
   init() {
     _voiceUrl = voiceMessageMap["voice_url"] ?? null;
     _duration = voiceMessageMap["time"] ?? 0;
-    if (_voiceUrl != null) {
+    if (_voiceUrl != null && _voiceUrl!.contains("http")) {
       _initAudioPlayer();
     } else {
       showToast("语音加载失败");

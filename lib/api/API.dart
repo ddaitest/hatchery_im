@@ -467,7 +467,7 @@ class API {
     }
   }
 
-  ///获取单聊离线消息
+  ///获取单聊历史记录
   static Future<ApiResult> messageHistoryWithFriend(
       {String? friendID, int? page, int? size, int? currentMsgID}) async {
     init();

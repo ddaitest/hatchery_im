@@ -39,7 +39,7 @@ class EmojiModelView extends StatelessWidget {
               noRecentsStyle:
                   const TextStyle(fontSize: 20, color: Colors.black26),
               tabIndicatorAnimDuration: kTabScrollDuration,
-              categoryIcons: const CategoryIcons(),
+              categoryIcons: const CategoryIcons(smileyIcon: Icons.tag_faces),
               buttonMode: ButtonMode.MATERIAL)),
     );
   }

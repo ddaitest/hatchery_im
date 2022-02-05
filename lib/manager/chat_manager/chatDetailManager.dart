@@ -6,6 +6,7 @@ import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
@@ -186,7 +187,7 @@ class ChatDetailManager extends ChangeNotifier {
               "IMAGE"); // 假上墙，获取msgId，发送成功后利用msgId更新message
           Log.green("content ${content.toString()}");
           _uploadMediaModel(
-              file: fileValue,
+              filePath: fileValue?.path,
               contentType: "IMAGE",
               content: content,
               msgId: msgId);
@@ -201,31 +202,11 @@ class ChatDetailManager extends ChangeNotifier {
             };
             String msgId =
                 _fakeMediaMessage(convert.jsonEncode(content), "VIDEO");
-            compressionVideo(fileValue.path).then((compressionVideoPath) {
-              uploadMediaFile(videoThumbPath!).then((videoThumbUrl) {
-                uploadMediaFile(compressionVideoPath).then((videoUrl) {
-                  if (videoUrl != "") {
-                    content["video_url"] = videoUrl;
-                    content["video_thum_url"] = videoThumbUrl;
-                    MessageCentre.sendMessageModel(
-                        term: content,
-                        chatType: currentChatType!,
-                        messageType: "VIDEO",
-                        otherName: otherName ?? "",
-                        otherIcon: otherIcon ?? "",
-                        currentGroupId: currentGroupId,
-                        currentGroupName: currentGroupName,
-                        currentGroupIcon: currentGroupIcon,
-                        currentFriendId: currentFriendId,
-                        msgId: msgId);
-                  } else {
-                    LocalStore.findCache(msgId)
-                      ?..progress = MSG_FAULT
-                      ..save();
-                  }
-                });
-              });
-            });
+            _uploadMediaModel(
+                filePath: fileValue.path,
+                contentType: "VIDEO",
+                content: content,
+                msgId: msgId);
           });
         }
       });
@@ -235,44 +216,45 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void _uploadMediaModel(
-      {required File? file,
+      {required String? filePath,
       required String contentType,
       required Map<String, dynamic> content,
       required String msgId}) {
-    if (file != null) {
+    if (filePath != null) {
       if (contentType == "IMAGE") {
-        file.length().then((lengthValue) {
-          if (lengthValue > 2080000) {
-            compressionImage(file.path).then((compressionValue) {
-              uploadMediaFile(compressionValue).then((uploadMediaUrl) {
-                if (uploadMediaUrl != "") {
-                  content["img_url"] = uploadMediaUrl;
-                  MessageCentre.sendMessageModel(
-                      term: content,
-                      chatType: currentChatType!,
-                      messageType: "IMAGE",
-                      otherName: otherName ?? "",
-                      otherIcon: otherIcon ?? "",
-                      currentGroupId: currentGroupId,
-                      currentGroupName: currentGroupName,
-                      currentGroupIcon: currentGroupIcon,
-                      currentFriendId: currentFriendId,
-                      msgId: msgId);
-                } else {
-                  LocalStore.findCache(msgId)
-                    ?..progress = MSG_FAULT
-                    ..save();
-                }
-              });
-            });
-          } else {
-            uploadMediaFile(file.path).then((uploadMediaUrl) {
-              if (uploadMediaUrl != "") {
-                content["img_url"] = uploadMediaUrl;
+        compressionImage(filePath).then((compressionValue) {
+          uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+            if (uploadMediaUrl != "") {
+              content["img_url"] = uploadMediaUrl;
+              MessageCentre.sendMessageModel(
+                  term: content,
+                  chatType: currentChatType!,
+                  messageType: contentType,
+                  otherName: otherName ?? "",
+                  otherIcon: otherIcon ?? "",
+                  currentGroupId: currentGroupId,
+                  currentGroupName: currentGroupName,
+                  currentGroupIcon: currentGroupIcon,
+                  currentFriendId: currentFriendId,
+                  msgId: msgId);
+            } else {
+              LocalStore.findCache(msgId)
+                ?..progress = MSG_FAULT
+                ..save();
+            }
+          });
+        });
+      } else if (contentType == "VIDEO") {
+        compressionVideo(filePath).then((compressionVideoPath) {
+          uploadMediaFile(content["video_thum_url"]).then((videoThumbUrl) {
+            uploadMediaFile(compressionVideoPath).then((videoUrl) {
+              if (videoUrl != "") {
+                content["video_url"] = videoUrl;
+                content["video_thum_url"] = videoThumbUrl;
                 MessageCentre.sendMessageModel(
                     term: content,
                     chatType: currentChatType!,
-                    messageType: "IMAGE",
+                    messageType: contentType,
                     otherName: otherName ?? "",
                     otherIcon: otherIcon ?? "",
                     currentGroupId: currentGroupId,
@@ -286,9 +268,8 @@ class ChatDetailManager extends ChangeNotifier {
                   ..save();
               }
             });
-          }
+          });
         });
-      } else if (contentType == "VIDEO") {
       } else if (contentType == "VOICE") {
       } else if (contentType == "FILE") {
       } else {
@@ -329,11 +310,26 @@ class ChatDetailManager extends ChangeNotifier {
       {required Map<String, dynamic> content,
       required String messageType,
       required String msgId}) {
-    if (messageType == "IMAGE" ||
-        messageType == "VIDEO" ||
-        messageType == "VOICE" ||
-        messageType == "FILE") {
-      if (content.containsValue("http")) {
+    // 重试前先重连长链接
+    // Engine.getInstance().reconnect();
+    String? mediaPath;
+    if (messageType == "IMAGE") {
+      mediaPath = content["img_url"];
+    } else if (messageType == "VIDEO") {
+      mediaPath = content["video_url"];
+    } else if (messageType == "VOICE") {
+      mediaPath = content["voice_url"];
+    } else if (messageType == "FILE") {
+      mediaPath = content["file_url"];
+    } else {
+      mediaPath = "";
+    }
+    if (mediaPath != null) {
+      if (messageType == "TEXT" ||
+          messageType == "CARD" ||
+          messageType == "GEO" ||
+          messageType == "URL") {
+        Log.green("retrySendMessage $messageType");
         MessageCentre.sendMessageModel(
             term: content,
             chatType: currentChatType!,
@@ -346,16 +342,31 @@ class ChatDetailManager extends ChangeNotifier {
             currentFriendId: currentFriendId,
             msgId: msgId);
       } else {
-        if (messageType == "IMAGE") {
-          //
-        } else if (messageType == "VIDEO") {
-          //
-        } else if (messageType == "VOICE") {
-          //
-        } else if (messageType == "FILE") {
-          //
+        if (mediaPath.contains("http")) {
+          MessageCentre.sendMessageModel(
+              term: content,
+              chatType: currentChatType!,
+              messageType: messageType,
+              otherName: otherName ?? "",
+              otherIcon: otherIcon ?? "",
+              currentGroupId: currentGroupId,
+              currentGroupName: currentGroupName,
+              currentGroupIcon: currentGroupIcon,
+              currentFriendId: currentFriendId,
+              msgId: msgId);
+        } else {
+          _uploadMediaModel(
+              filePath: mediaPath,
+              contentType: messageType,
+              content: content,
+              msgId: msgId);
         }
       }
+    } else {
+      showToast("重新发送失败，请重新发送");
+      LocalStore.findCache(msgId)
+        ?..deleted = true
+        ..save();
     }
   }
 

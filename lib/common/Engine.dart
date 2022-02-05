@@ -128,7 +128,7 @@ class Engine {
       retryInterval = retryInterval + 10;
       Log.yellow("delay $retryInterval reconnect");
       Future.delayed(Duration(seconds: retryInterval), () {
-        _reconnect();
+        reconnect();
       });
     }
   }
@@ -138,7 +138,7 @@ class Engine {
     _channel?.sink.add(json);
   }
 
-  _reconnect() {
+  reconnect() {
     //ADD Delay
     _channel = null;
     connect();

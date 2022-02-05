@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:dart_ipify/dart_ipify.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:collection/collection.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
@@ -218,7 +218,7 @@ class MessageCentre {
     LocalStore.sortSession();
   }
 
-  ///同步message 本地有的忽略，本地没有的加入，最多50条
+  ///同步message 本地有的忽略，本地没有的加入，最多50条，deleted标记为ture的忽略
   _syncNewMessage(Session? serverSession) {
     if (serverSession != null && serverSession.otherID != "") {
       List<Message> localMessageList =
@@ -226,6 +226,7 @@ class MessageCentre {
       serverSession.type == 0
           ? _queryHistoryFriend(serverSession.otherID)
               .then((List<Message>? msgList) {
+              Log.red("_queryHistoryFriend ${msgList?.length}");
               if (msgList != null && msgList.isNotEmpty) {
                 if (localMessageList.isEmpty) {
                   LocalStore.messageBox?.addAll(msgList);
@@ -272,7 +273,7 @@ class MessageCentre {
   /// 保存信息：根据id找到messageBox没有的数据并add进messageBox
   static void saveMessage(Message serverMessage) {
     Message? msg = LocalStore.messageBox?.values.firstWhereOrNull(
-        (element) => !element.deleted! && element.id == serverMessage.id);
+        (element) => element.deleted != true && element.id == serverMessage.id);
     if (msg != null) {
       Log.red("saveMessage ${msg.id} ${serverMessage.id}");
       LocalStore.addMessage(serverMessage);
@@ -570,6 +571,11 @@ class MessageCentre {
             msgId: msgId);
   }
 
+  static playSound() async {
+    AudioCache _player = AudioCache(prefix: 'sounds/');
+    _player.play("message.mp3");
+  }
+
   static void disconnect() => engine?.disconnect();
 }
 
@@ -643,13 +649,18 @@ class MyEngineHandler implements EngineCallback {
   }
 
   @override
-  void onNewMessage(Message msg) {
-    _centre.newMessageListener?.call(msg);
-    Log.red("onNewMessage onNewMessage ${msg.toJson()}");
-    msg..progress = MSG_RECEIVED;
-    LocalStore.addMessage(msg);
-    LocalStore.refreshSession(
-        msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
-        sessionTime: msg.createTime);
+  void onNewMessage(Message? msg) {
+    if (msg != null) {
+      _centre.newMessageListener?.call(msg);
+      Log.red("onNewMessage onNewMessage ${msg.toJson()}");
+      msg..progress = MSG_RECEIVED;
+      LocalStore.addMessage(msg);
+      LocalStore.refreshSession(
+          msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
+          sessionTime: msg.createTime);
+      if (LocalStore.findSession(msg.type == "CHAT" ? msg.sender : msg.groupID!)
+              ?.mute !=
+          1) MessageCentre.playSound();
+    }
   }
 }

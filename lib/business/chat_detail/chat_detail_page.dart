@@ -204,16 +204,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     padding: const EdgeInsets.all(15.0),
                     child: TextButton(
                       onPressed: () {
-                        MessageCentre.sendMessageModel(
-                            term: manager.textEditingController.text,
-                            chatType: manager.currentChatType!,
-                            messageType: "TEXT",
-                            otherName: manager.otherName ?? "",
-                            otherIcon: manager.otherIcon ?? "",
-                            currentGroupId: manager.currentGroupId,
-                            currentGroupName: manager.currentGroupName,
-                            currentGroupIcon: manager.currentGroupIcon,
-                            currentFriendId: manager.currentFriendId);
+                        Map<String, dynamic> content = {
+                          "text": manager.textEditingController.text
+                        };
+                        manager.sendTextMessage(content: content);
                         manager.textEditingController.clear();
                       },
                       style: ElevatedButton.styleFrom(
