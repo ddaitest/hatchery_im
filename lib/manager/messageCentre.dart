@@ -28,6 +28,7 @@ typedef MessageListener = void Function(List<Message> news);
 typedef NewMessageListener = void Function(Message news);
 
 const LOAD_SIZE = 20;
+const LOAD_OFFLINE_SIZE = 100;
 
 class MessageCentre {
   static final MessageCentre _singleton = MessageCentre._internal();
@@ -187,6 +188,9 @@ class MessageCentre {
         });
       }
     }
+    if (!_loginManager.isFirstLogin) {
+      _loadOfflineMessage();
+    }
   }
 
   ///同步 session 并更新
@@ -228,28 +232,31 @@ class MessageCentre {
     if (serverSession != null && serverSession.otherID != "") {
       List<Message> localMessageList =
           LocalStore.messageBox?.values.toList() ?? [];
-      serverSession.type == 0
-          ? _queryHistoryFriend(serverSession.otherID)
-              .then((List<Message>? msgList) {
-              Log.red("_queryHistoryFriend ${msgList?.length}");
-              if (msgList != null && msgList.isNotEmpty) {
-                if (localMessageList.isEmpty) {
-                  LocalStore.messageBox?.addAll(msgList);
-                } else {
-                  _syncMessage(msgList);
-                }
-              }
-            })
-          : _queryHistoryGroup(serverSession.otherID)
-              .then((List<Message>? msgList) {
-              if (msgList != null && msgList.isNotEmpty) {
-                if (localMessageList.isEmpty) {
-                  LocalStore.messageBox?.addAll(msgList);
-                } else {
-                  _syncMessage(msgList);
-                }
-              }
-            });
+
+      if (serverSession.type == 0) {
+        _queryHistoryFriend(serverSession.otherID)
+            .then((List<Message>? msgList) {
+          Log.red("_queryHistoryFriend ${msgList?.length}");
+          if (msgList != null && msgList.isNotEmpty) {
+            if (localMessageList.isEmpty) {
+              LocalStore.messageBox?.addAll(msgList);
+            } else {
+              _syncMessage(msgList);
+            }
+          }
+        });
+      } else {
+        _queryHistoryGroup(serverSession.otherID)
+            .then((List<Message>? msgList) {
+          if (msgList != null && msgList.isNotEmpty) {
+            if (localMessageList.isEmpty) {
+              LocalStore.messageBox?.addAll(msgList);
+            } else {
+              _syncMessage(msgList);
+            }
+          }
+        });
+      }
     }
   }
 
@@ -259,6 +266,21 @@ class MessageCentre {
         messagesList.forEach((element) => saveMessage(element));
       }
     }
+  }
+
+  void _loadOfflineMessage() {
+    _queryFriendOffline().then((List<Message>? msgList) {
+      Log.red("_queryFriendOffline ${msgList?.length}");
+      if (msgList != null && msgList.isNotEmpty) {
+        _syncMessage(msgList);
+      }
+    });
+    _queryGroupOffline().then((List<Message>? msgList) {
+      Log.green("_queryGroupOffline ${msgList?.length}");
+      if (msgList != null && msgList.isNotEmpty) {
+        _syncMessage(msgList);
+      }
+    });
   }
 
   Future<List<Message>> _queryHistoryFriend(String friendID) async {
@@ -271,6 +293,20 @@ class MessageCentre {
   Future<List<Message>> _queryHistoryGroup(String groupID) async {
     ApiResult values =
         await API.getGroupHistory(groupID: groupID, page: 0, size: LOAD_SIZE);
+    List<Message> news = values.getDataList((m) => Message.fromJson(m));
+    return news;
+  }
+
+  Future<List<Message>> _queryFriendOffline() async {
+    ApiResult values =
+        await API.getChatOffline(page: 0, size: LOAD_OFFLINE_SIZE);
+    List<Message> news = values.getDataList((m) => Message.fromJson(m));
+    return news;
+  }
+
+  Future<List<Message>> _queryGroupOffline() async {
+    ApiResult values =
+        await API.getGroupOffline(page: 0, size: LOAD_OFFLINE_SIZE);
     List<Message> news = values.getDataList((m) => Message.fromJson(m));
     return news;
   }
