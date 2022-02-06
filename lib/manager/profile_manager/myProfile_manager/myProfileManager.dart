@@ -60,9 +60,7 @@ class MyProfileManager extends ChangeNotifier {
       ..indicatorType = EasyLoadingIndicatorType.fadingCircle
       ..loadingStyle = EasyLoadingStyle.light
       ..maskType = EasyLoadingMaskType.none;
-    EasyLoading.show(status: '退出中...');
     Routers.navigateAndRemoveUntil('/login');
-    EasyLoading.dismiss();
   }
 
   @override

@@ -476,28 +476,41 @@ class ChatDetailManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  startVoiceRecord() async {
-    bool result = await Record().hasPermission();
-    DateTime _timeNow = DateTime.now();
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-    String voiceTempPath = '$tempPath/voiceFiles/';
-    folderCreate(voiceTempPath);
-    voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
-    if (result) {
-      await Record().start(
-        path: '$voicePath', // required
-      );
-      isRecording = true;
-    } else {
-      showToast('没有录音或者存储权限，请在系统设置中开启');
+  void startVoiceRecord() async {
+    try {
+      bool result = await Record().hasPermission();
+      DateTime _timeNow = DateTime.now();
+      Directory tempDir = await getTemporaryDirectory();
+      String tempPath = tempDir.path;
+      String voiceTempPath = '$tempPath/voiceFiles/';
+      folderCreate(voiceTempPath);
+      voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
+      Log.green("startVoiceRecord $result");
+      if (result) {
+        await Record().start(
+          path: '$voicePath', // required
+        );
+        isRecording = true;
+        changeInputView();
+        timingStartMethod();
+      } else {
+        showToast('没有麦克风或者存储权限，请在系统设置中开启');
+        isRecording = false;
+        cancelTimer();
+      }
+    } catch (e) {
       isRecording = false;
+      showToast('没有麦克风或者存储权限，请在系统设置中开启');
       cancelTimer();
     }
   }
 
   stopVoiceRecord() async {
-    await Record().stop();
+    if (isRecording) {
+      await Record().stop();
+      sendVoiceMessage();
+      changeInputView();
+    }
   }
 
   sendVoiceMessage() {

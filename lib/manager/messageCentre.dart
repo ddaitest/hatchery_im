@@ -7,6 +7,7 @@ import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
@@ -20,6 +21,7 @@ import '../store/LocalStore.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'MsgHelper.dart';
 import 'app_manager/app_handler.dart';
+import 'login_manager/loginManager.dart';
 
 typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);
@@ -161,12 +163,13 @@ class MessageCentre {
   ///找出需要同步的session
   _syncNewSessions(
       List<Session> serverSessionList, List<Session> localSessionList) {
+    LoginManager _loginManager = App.manager<LoginManager>();
     if (serverSessionList.isNotEmpty) {
       if (localSessionList.isEmpty) {
         Log.yellow("_syncNewSessions localSessionList.isEmpty");
         serverSessionList.forEach((serverSession) => {
               _syncSession(null, serverSession, null),
-              _syncNewMessage(serverSession)
+              if (_loginManager.isFirstLogin) {_syncNewMessage(serverSession)}
             });
       } else {
         Log.yellow("_syncNewSessions localSessionList.isNotEmpty");
@@ -178,7 +181,9 @@ class MessageCentre {
           } else {
             _syncSession(null, serverSession, null);
           }
-          _syncNewMessage(serverSession);
+          if (_loginManager.isFirstLogin) {
+            _syncNewMessage(serverSession);
+          }
         });
       }
     }

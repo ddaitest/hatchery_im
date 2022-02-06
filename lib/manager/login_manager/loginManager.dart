@@ -34,6 +34,7 @@ class LoginManager extends ChangeNotifier {
   int countDown = 10;
   Timer? countDownTimer;
   bool isClickLoginBtn = false;
+  bool isFirstLogin = false;
 
   /// 初始化
   init() {
@@ -61,6 +62,7 @@ class LoginManager extends ChangeNotifier {
         print("DEBUG=> result.getData() ${result.getData()['info']}");
         // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
         UserCentre.saveUserInfo(jsonEncode(result.getData()));
+        isFirstLogin = true;
         hiveDBInit();
       } else {
         showToast('账号或密码错误');
@@ -91,6 +93,7 @@ class LoginManager extends ChangeNotifier {
       print("DEBUG=> result.getData() ${result.getData()}");
       // SP.set(SPKey.userInfo, jsonEncode(result.getData()));
       UserCentre.saveUserInfo(jsonEncode(result.getData()));
+      isFirstLogin = true;
       hiveDBInit();
     } else {
       showToast('${result.info}');

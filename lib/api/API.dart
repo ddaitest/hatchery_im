@@ -478,8 +478,84 @@ class API {
       "currentMsgID": currentMsgID
     };
     try {
-      if (currentMsgID == 0) queryParam.remove("currentMsgID");
+      if (currentMsgID == 0 || currentMsgID == null)
+        queryParam.remove("currentMsgID");
       Response response = await _dio.get("/messages/chat/history",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取群聊历史消息
+  static Future<ApiResult> getGroupHistory(
+      {String? groupID, int? page, int? size, int? currentMsgID}) async {
+    init();
+    Map<String, dynamic> queryParam = {
+      "groupID": groupID,
+      "page": page,
+      "size": size,
+      "currentMsgID": currentMsgID
+    };
+    try {
+      if (currentMsgID == 0 || currentMsgID == null)
+        queryParam.remove("currentMsgID");
+      Response response = await _dio.get("/messages/groupchat/history",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取单聊离线消息
+  static Future<ApiResult> getChatOffline(
+      {int? page, int? size, int? currentMsgID}) async {
+    init();
+    Map<String, dynamic> queryParam = {
+      "page": page,
+      "source": TARGET_PLATFORM,
+      "size": size,
+      "currentMsgID": currentMsgID
+    };
+    try {
+      if (currentMsgID == 0 || currentMsgID == null)
+        queryParam.remove("currentMsgID");
+      Response response = await _dio.get("/messages/chat/offline",
+          queryParameters: queryParam,
+          options: Options(
+            headers: {"BEE_TOKEN": _token},
+          ));
+      return ApiResult.of(response.data);
+    } catch (e) {
+      print("e = $e");
+      return ApiResult.error(e);
+    }
+  }
+
+  ///获取群聊离线消息
+  static Future<ApiResult> getGroupOffline(
+      {int? page, int? size, int? currentMsgID}) async {
+    init();
+    Map<String, dynamic> queryParam = {
+      "page": page,
+      "source": TARGET_PLATFORM,
+      "size": size,
+      "currentMsgID": currentMsgID
+    };
+    try {
+      if (currentMsgID == 0 || currentMsgID == null)
+        queryParam.remove("currentMsgID");
+      Response response = await _dio.get("/messages/groupchat/offline",
           queryParameters: queryParam,
           options: Options(
             headers: {"BEE_TOKEN": _token},
@@ -571,30 +647,6 @@ class API {
     init();
     try {
       Response response = await _dio.get("/roster/black_list/list",
-          queryParameters: queryParam,
-          options: Options(
-            headers: {"BEE_TOKEN": _token},
-          ));
-      return ApiResult.of(response.data);
-    } catch (e) {
-      print("e = $e");
-      return ApiResult.error(e);
-    }
-  }
-
-  ///获取群聊离线消息
-  static Future<ApiResult> getGroupHistory(
-      {String? groupID, int? page, int? size, int? currentMsgID}) async {
-    init();
-    Map<String, dynamic> queryParam = {
-      "groupID": groupID,
-      "page": page,
-      "size": size,
-      "currentMsgID": currentMsgID
-    };
-    try {
-      if (currentMsgID == 0) queryParam.remove("currentMsgID");
-      Response response = await _dio.get("/messages/groupchat/history",
           queryParameters: queryParam,
           options: Options(
             headers: {"BEE_TOKEN": _token},
