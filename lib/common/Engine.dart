@@ -139,7 +139,8 @@ class Engine {
   }
 
   reconnect() {
-    //ADD Delay
+    //拉取离线消息
+    MessageCentre().loadOfflineMessage();
     _channel = null;
     connect();
   }

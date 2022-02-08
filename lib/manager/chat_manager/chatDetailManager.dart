@@ -271,7 +271,43 @@ class ChatDetailManager extends ChangeNotifier {
           });
         });
       } else if (contentType == "VOICE") {
+        uploadMediaFile(filePath).then(
+          (uploadMediaUrl) {
+            content["voice_url"] = uploadMediaUrl;
+            Log.green(content.toString());
+            MessageCentre.sendMessageModel(
+                term: content,
+                chatType: currentChatType!,
+                messageType: contentType,
+                otherName: otherName ?? "",
+                otherIcon: otherIcon ?? "",
+                currentGroupId: currentGroupId,
+                currentGroupName: currentGroupName,
+                currentGroupIcon: currentGroupIcon,
+                currentFriendId: currentFriendId,
+                msgId: msgId);
+          },
+        );
       } else if (contentType == "FILE") {
+        uploadMediaFile(filePath).then((uploadMediaUrl) {
+          if (uploadMediaUrl != "") {
+            MessageCentre.sendMessageModel(
+                term: content,
+                chatType: currentChatType!,
+                messageType: contentType,
+                otherName: otherName ?? "",
+                otherIcon: otherIcon ?? "",
+                currentGroupId: currentGroupId,
+                currentGroupName: currentGroupName,
+                currentGroupIcon: currentGroupIcon,
+                currentFriendId: currentFriendId,
+                msgId: msgId);
+          } else {
+            LocalStore.findCache(msgId)
+              ?..progress = MSG_FAULT
+              ..save();
+          }
+        });
       } else {
         showToast("无法识别请重试");
       }
@@ -311,7 +347,7 @@ class ChatDetailManager extends ChangeNotifier {
       required String messageType,
       required String msgId}) {
     // 重试前先重连长链接
-    // Engine.getInstance().reconnect();
+    Engine.getInstance().reconnect();
     String? mediaPath;
     if (messageType == "IMAGE") {
       mediaPath = content["img_url"];
@@ -397,29 +433,11 @@ class ChatDetailManager extends ChangeNotifier {
         "content_length": result.files[0].size / 1024
       };
       String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "FILE");
-      uploadMediaFile(result.files[0].path!).then((uploadMediaUrl) {
-        if (uploadMediaUrl != "") {
-          MessageCentre.sendMessageModel(
-              term: {
-                "name": "${result.files[0].name}",
-                "file_url": uploadMediaUrl,
-                "content_length": result.files[0].size / 1024
-              },
-              chatType: currentChatType!,
-              messageType: "FILE",
-              otherName: otherName ?? "",
-              otherIcon: otherIcon ?? "",
-              currentGroupId: currentGroupId,
-              currentGroupName: currentGroupName,
-              currentGroupIcon: currentGroupIcon,
-              currentFriendId: currentFriendId,
-              msgId: msgId);
-        } else {
-          LocalStore.findCache(msgId)
-            ?..progress = MSG_FAULT
-            ..save();
-        }
-      });
+      _uploadMediaModel(
+          filePath: result.files[0].path!,
+          contentType: "FILE",
+          content: content,
+          msgId: msgId);
     }
   }
 
@@ -511,6 +529,7 @@ class ChatDetailManager extends ChangeNotifier {
       sendVoiceMessage();
       changeInputView();
     }
+    cancelTimer();
   }
 
   sendVoiceMessage() {
@@ -523,30 +542,17 @@ class ChatDetailManager extends ChangeNotifier {
         };
         String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
         Future.delayed(Duration(milliseconds: 500), () {
-          uploadMediaFile(voicePath!).then(
-            (uploadMediaUrl) {
-              content["voice_url"] = uploadMediaUrl;
-              Log.green(content.toString());
-              MessageCentre.sendMessageModel(
-                  term: content,
-                  chatType: currentChatType!,
-                  messageType: "VOICE",
-                  otherName: otherName ?? "",
-                  otherIcon: otherIcon ?? "",
-                  currentGroupId: currentGroupId,
-                  currentGroupName: currentGroupName,
-                  currentGroupIcon: currentGroupIcon,
-                  currentFriendId: currentFriendId,
-                  msgId: msgId);
-            },
-          );
+          _uploadMediaModel(
+              filePath: voicePath,
+              contentType: "VOICE",
+              content: content,
+              msgId: msgId);
         });
       } else {
         showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
         if (voicePath != null) deleteFile(voicePath!);
       }
     }
-    cancelTimer();
   }
 
   timingStartMethod() {

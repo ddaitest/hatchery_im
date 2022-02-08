@@ -73,9 +73,9 @@ class LocalStore {
   }
 
   /// 刷新session，尽量传sessionTime
-  static Future<void> refreshSession(Message message, String? otherId,
+  static Future<void> refreshSession(Message? message, String? otherId,
       {int? sessionTime}) async {
-    if (otherId != null) {
+    if (otherId != null && message != null) {
       var info;
 
       ApiResult values = message.type == "CHAT"

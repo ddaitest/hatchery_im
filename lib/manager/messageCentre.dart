@@ -16,6 +16,7 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:crypto/crypto.dart';
+import 'package:vibration/vibration.dart';
 import 'contacts_manager/Constants.dart';
 import '../store/LocalStore.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
@@ -189,7 +190,7 @@ class MessageCentre {
       }
     }
     if (!_loginManager.isFirstLogin) {
-      _loadOfflineMessage();
+      loadOfflineMessage();
     }
   }
 
@@ -202,8 +203,8 @@ class MessageCentre {
       if (result == null) {
         LocalStore.refreshSession(
             latest.type == CHAT_TYPE_ONE
-                ? latest.lastChatMessage!
-                : latest.lastGroupChatMessage!,
+                ? latest.lastChatMessage ?? null
+                : latest.lastGroupChatMessage ?? null,
             latest.otherID,
             sessionTime: latest.updateTime);
       }
@@ -268,7 +269,7 @@ class MessageCentre {
     }
   }
 
-  void _loadOfflineMessage() {
+  void loadOfflineMessage() {
     _queryFriendOffline().then((List<Message>? msgList) {
       Log.red("_queryFriendOffline ${msgList?.length}");
       if (msgList != null && msgList.isNotEmpty) {
@@ -701,7 +702,10 @@ class MyEngineHandler implements EngineCallback {
           sessionTime: msg.createTime);
       if (LocalStore.findSession(msg.type == "CHAT" ? msg.sender : msg.groupID!)
               ?.mute !=
-          1) MessageCentre.playSound();
+          1) {
+        MessageCentre.playSound();
+        Vibration.vibrate(duration: 100);
+      }
     }
   }
 }

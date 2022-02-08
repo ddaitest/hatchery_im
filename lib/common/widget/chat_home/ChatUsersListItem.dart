@@ -71,48 +71,59 @@ class ChatUsersListItem extends StatelessWidget {
         color: chatTopType == 1 ? Colors.grey[200] : Colors.white,
         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
         child: ListTile(
-          onTap: () => Routers.navigateTo("/chat_detail",
-              arg: chatType == 0
-                  ? {
-                      "chatType": "CHAT",
-                      "otherName": title,
-                      "otherIcon": icon,
-                      "friendId": chatId
-                    }
-                  : {
-                      "chatType": "GROUP",
-                      "groupId": chatId,
-                      "groupName": title,
-                      "groupIcon": icon
-                    }),
-          dense: false,
-          visualDensity: VisualDensity.comfortable,
-          leading: Badge(
-              position: BadgePosition.topEnd(top: -5, end: -5),
-              toAnimate: false,
-              showBadge: unReadNum == 0 ? false : true,
-              elevation: 0.5,
-              badgeContent: Text('$unReadNum',
-                  style: Flavors.textStyles.homeTabBubbleText),
-              animationType: BadgeAnimationType.scale,
-              child: netWorkAvatar(icon, 25.0,
-                  avatarType: chatType != 0 ? "groupAvatar" : "avatar")),
-          title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
-          subtitle: Container(
-            padding: const EdgeInsets.only(top: 5.0),
-            child: Text(
-              chatType == 0 ? content : "$senderName: $content",
-              style: Flavors.textStyles.groupMembersNumberText,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            onTap: () => Routers.navigateTo("/chat_detail",
+                arg: chatType == 0
+                    ? {
+                        "chatType": "CHAT",
+                        "otherName": title,
+                        "otherIcon": icon,
+                        "friendId": chatId
+                      }
+                    : {
+                        "chatType": "GROUP",
+                        "groupId": chatId,
+                        "groupName": title,
+                        "groupIcon": icon
+                      }),
+            dense: false,
+            visualDensity: VisualDensity.comfortable,
+            leading: Badge(
+                position: BadgePosition.topEnd(top: -5, end: -5),
+                toAnimate: false,
+                showBadge: unReadNum == 0 ? false : true,
+                elevation: 0.5,
+                badgeContent: Text('$unReadNum',
+                    style: Flavors.textStyles.homeTabBubbleText),
+                animationType: BadgeAnimationType.scale,
+                child: netWorkAvatar(icon, 25.0,
+                    avatarType: chatType != 0 ? "groupAvatar" : "avatar")),
+            title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            subtitle: Container(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: Text(
+                chatType == 0 ? content : "$senderName: $content",
+                style: Flavors.textStyles.groupMembersNumberText,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          trailing: Text(
-            "${checkMessageTime(updateTime).toString().contains("-") ? checkMessageTime(updateTime).toString().split(" ")[0] : checkMessageTime(updateTime)}",
-            style: TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
-            maxLines: 1,
-          ),
-        ),
+            trailing: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    "${checkMessageTime(updateTime).toString().contains("-") ? checkMessageTime(updateTime).toString().split(" ")[0] : checkMessageTime(updateTime)}",
+                    style:
+                        TextStyle(fontSize: 12.0, color: Colors.grey.shade500),
+                    maxLines: 1,
+                  ),
+                  chatMute == 1
+                      ? Icon(Icons.notifications_off_outlined,
+                          size: 15.0, color: Flavors.colorInfo.lightGrep)
+                      : Container(width: 15.0.w, height: 15.0.h)
+                ],
+              ),
+            )),
       ),
     );
   }
