@@ -2,12 +2,9 @@ import 'dart:convert' as convert;
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/api/engine/Protocols.dart';
-import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/chat_detail/voiceMessageView.dart';
@@ -20,12 +17,9 @@ import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/chat_manager/chatDetailManager.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/store/LocalStore.dart';
-import 'package:provider/provider.dart';
 
 import '../../../config.dart';
 import '../../../manager/messageCentre.dart';
-import '../../log.dart';
 import '../aboutAvatar.dart';
 
 class ChatBubble extends StatefulWidget {
@@ -46,17 +40,16 @@ class ChatBubble extends StatefulWidget {
 
 class _ChatBubbleState extends State<ChatBubble> {
   final manager = App.manager<ChatDetailManager>();
-  CustomPopupMenuController? _customPopupMenuController;
+  final _customPopupMenuController = CustomPopupMenuController();
 
   @override
   void initState() {
-    _customPopupMenuController = CustomPopupMenuController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _customPopupMenuController?.dispose();
+    _customPopupMenuController.dispose();
     super.dispose();
   }
 
@@ -224,7 +217,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                         } else if (item.title == "删除") {
                           MessageCentre.deleteMessage(widget.messageKey);
                         }
-                        _customPopupMenuController?.hideMenu();
+                        _customPopupMenuController.hideMenu();
                       }
                     },
                     child: Column(

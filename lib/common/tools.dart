@@ -1,17 +1,12 @@
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
-import 'package:package_info/package_info.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:video_compress/video_compress.dart';
-import 'package:video_thumbnail/video_thumbnail.dart' as ImageFormat;
-import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:crypto/crypto.dart';
 import '../config.dart';
 
@@ -107,80 +102,6 @@ class SP {
   static getStringList(String key) => sp.getStringList(key);
 }
 
-class DeviceInfo {
-  static final info = <String, String>{};
-
-  static Future init() async {
-    if (info.isEmpty) {
-      var deviceInfo = DeviceInfo();
-      //info为空，初始化info内容. 先读取SP
-      var storedMap = deviceInfo.readSp();
-      if (storedMap.isNotEmpty) {
-        //使用SP中的值
-        info.addAll(storedMap);
-      } else {
-        //生成info
-        var newInfo = await deviceInfo.createInfo();
-        info.addAll(newInfo);
-        //写入SP
-        deviceInfo.writeSp(newInfo);
-      }
-    }
-  }
-
-  //从SP读取缓存的值。
-  Map<String, String> readSp() {
-    try {
-      var stored = SP.getString(SPKey.COMMON_PARAM_KEY);
-      if (stored != null) {
-        Map<String, String>? storedMap = jsonDecode(stored);
-        if (storedMap?.isNotEmpty ?? false) {
-          return storedMap!;
-        }
-      }
-    } catch (e) {}
-    return <String, String>{};
-  }
-
-  writeSp(Map<String, String> data) {
-    try {
-      SP.set(SPKey.COMMON_PARAM_KEY, jsonEncode(data));
-    } catch (e) {}
-  }
-
-  Future<Map<String, String>> createInfo() async {
-    var _commonParamMap = <String, String>{};
-    var deviceInfo = DeviceInfoPlugin();
-    var packageInfo = await PackageInfo.fromPlatform();
-    if (Platform.isAndroid) {
-      AndroidDeviceInfo info = await deviceInfo.androidInfo;
-      _commonParamMap.addAll({
-        "device_model": info.model,
-        "phone_board": info.brand,
-        "version": packageInfo.version,
-        "vc": packageInfo.buildNumber,
-        "package_name": packageInfo.packageName,
-        "system_version": info.version.release,
-        "android_id": info.androidId,
-        "isPhysicalDevice": info.isPhysicalDevice ? "1" : "0"
-      });
-    } else {
-      IosDeviceInfo info = await deviceInfo.iosInfo;
-      _commonParamMap.addAll({
-        "device_model": info.utsname.machine,
-        "phone_board": info.model,
-        "version": packageInfo.version,
-        "vc": packageInfo.buildNumber,
-        "package_name": packageInfo.packageName,
-        "system_version": info.systemVersion,
-        "IDFV": info.identifierForVendor,
-        "isPhysicalDevice": info.isPhysicalDevice ? "1" : "0"
-      });
-    }
-    return _commonParamMap;
-  }
-}
-
 class UserId {
   static String id = "";
 
@@ -222,22 +143,22 @@ class UserId {
     if (Platform.isAndroid) {
       AndroidDeviceInfo info = await deviceInfo.androidInfo;
       _info = [
-        info.hardware,
-        info.androidId,
-        info.board,
-        info.brand,
-        info.device,
-        info.display,
-        info.model,
-        info.product,
+        info.hardware ?? "",
+        info.androidId ?? "",
+        info.board ?? "",
+        info.brand ?? "",
+        info.device ?? "",
+        info.display ?? "",
+        info.model ?? "",
+        info.product ?? "",
       ];
     } else {
       IosDeviceInfo info = await deviceInfo.iosInfo;
       _info = [
-        info.utsname.machine,
-        info.model,
-        info.systemVersion,
-        info.identifierForVendor,
+        info.utsname.machine ?? "",
+        info.model ?? "",
+        info.systemVersion ?? "",
+        info.identifierForVendor ?? "",
         info.isPhysicalDevice ? "1" : "0"
       ];
     }

@@ -35,7 +35,7 @@ dependencies:
   connectivity: ^3.0.3 #ANDROID IOS MACOS WEB
   equatable: ^2.0.0
   cached_network_image: ^3.0.0 #ANDROID IOS MACOS
-  device_info: ^2.0.1 #ANDROID IOS
+  device_info_plus: ^3.2.1 #ANDROID IOS LINUX MACOS WEB WINDOWS
   image_stack: ^2.0.1
   google_fonts: ^2.0.0
   animated_text_kit: ^4.2.1

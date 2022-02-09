@@ -11,7 +11,6 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
-import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
@@ -19,9 +18,8 @@ import 'package:crypto/crypto.dart';
 import 'package:vibration/vibration.dart';
 import 'contacts_manager/Constants.dart';
 import '../store/LocalStore.dart';
-import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'MsgHelper.dart';
-import 'app_manager/app_handler.dart';
+import 'devicesInfoCentre.dart';
 import 'login_manager/loginManager.dart';
 
 typedef SessionListener = void Function(List<Session> news);
@@ -41,7 +39,7 @@ class MessageCentre {
   MessageCentre._internal();
 
   ///本地存储
-  LocalStore _localStore = LocalStore();
+  // LocalStore _localStore = LocalStore();
 
   ///Session
   List<Session>? sessions;

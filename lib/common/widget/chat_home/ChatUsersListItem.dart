@@ -1,17 +1,13 @@
 import 'package:badges/badges.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
-import 'dart:convert' as convert;
 import '../../../routers.dart';
-import '../../log.dart';
 import '../../utils.dart';
 import '../aboutAvatar.dart';
 
@@ -56,10 +52,11 @@ class ChatUsersListItem extends StatelessWidget {
           Flavors.colorInfo.blueGrey,
           onPressed: (_) => LocalStore.setChatMute(
               otherId: chatId, chatMuteType: chatMute == 1 ? 0 : 1)),
-      SlideActionInfo('删除', Icons.delete, Colors.pinkAccent,
+      SlideActionInfo('删除', Icons.delete, Colors.redAccent,
           onPressed: (_) => LocalStore.deleteSession(sessionKey)),
     ];
     return Slidable(
+      key: ValueKey("$sessionKey"),
       endActionPane: ActionPane(
         // A motion is a widget used to control how the pane animates.
         motion: const DrawerMotion(),
@@ -135,6 +132,7 @@ class ChatUsersListItem extends StatelessWidget {
       icon: slideActionInfo.icon,
       foregroundColor: Colors.white,
       onPressed: slideActionInfo.onPressed,
+      autoClose: true,
     );
   }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
 import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
+import '../../manager/devicesInfoCentre.dart';
 
 class AboutPage extends StatelessWidget {
   static Map<String, dynamic> commonParamMap = DeviceInfo.info;

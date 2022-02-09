@@ -1,30 +1,18 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
-
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/log.dart';
-import 'dart:collection';
-import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/services.dart';
-import 'package:hatchery_im/business/chat_home/chat_page.dart';
-import 'package:hatchery_im/business/contacts/contacts_page.dart';
-import 'package:hatchery_im/business/group_page/groupList.dart';
-import 'package:hatchery_im/business/profile_page/my_profile.dart';
-
-// import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import '../../config.dart';
-import '../messageCentre.dart';
+import '../devicesInfoCentre.dart';
 
 class AppManager extends ChangeNotifier {
   CustomMenuInfo? customMenuInfo;

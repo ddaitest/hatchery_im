@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'manager/devicesInfoCentre.dart';
 
 bool debugMode = kDebugMode;
 
-const String TARGET_PLATFORM = "ANDROID"; //IOS/WEB/IOT/PC
+String TARGET_PLATFORM = DeviceInfo.platformName; //IOS/WEB/IOT/PC
 // String platform = "IOS";//IOS/WEB/IOT/PC
 // String platform = "WEB";//IOS/WEB/IOT/PC
 // String platform = "IOT";//IOS/WEB/IOT/PC
