@@ -13,6 +13,7 @@ import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import '../../config.dart';
 import '../devicesInfoCentre.dart';
+import '../settingCentre.dart';
 
 class AppManager extends ChangeNotifier {
   CustomMenuInfo? customMenuInfo;
@@ -31,6 +32,7 @@ class AppManager extends ChangeNotifier {
       DeviceInfo.init();
       UserId.init();
       UserCentre.getInfo();
+      SettingCentre.init();
       BackgroundListen().init();
       if (UserCentre.isLogin()) {
         LocalStore.init();
@@ -42,7 +44,7 @@ class AppManager extends ChangeNotifier {
   Future<bool> _configToSP() async {
     ApiResult result = await API.getConfig();
     if (result.isSuccess()) {
-      SP.set(SPKey.config, jsonEncode(result.getData()));
+      SP.set(SPKey.CONFIG, jsonEncode(result.getData()));
       return result.isSuccess();
     } else {
       return false;
@@ -50,7 +52,7 @@ class AppManager extends ChangeNotifier {
   }
 
   _getConfigFromSP() async {
-    String? _configData = SP.getString(SPKey.config);
+    String? _configData = SP.getString(SPKey.CONFIG);
     if (_configData != null) {
       customMenuInfo =
           CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);

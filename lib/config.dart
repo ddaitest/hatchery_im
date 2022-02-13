@@ -5,39 +5,25 @@ import 'manager/devicesInfoCentre.dart';
 
 bool debugMode = kDebugMode;
 
-String TARGET_PLATFORM = DeviceInfo.platformName; //IOS/WEB/IOT/PC
-// String platform = "IOS";//IOS/WEB/IOT/PC
-// String platform = "WEB";//IOS/WEB/IOT/PC
-// String platform = "IOT";//IOS/WEB/IOT/PC
-// String platform = "PC";//IOS/WEB/IOT/PC
+String TARGET_PLATFORM = DeviceInfo.platformName; //IOS/ANDROID/WINDOWS/MAC
 
 class SPKey {
-  static final String showAgreement = 'ShowAgreement';
-  static final String splashAD = 'splashAD';
-  static final String userInfo = 'userInfo';
-  static final String config = 'config';
-  static final String CONFIG_KEY = 'configKey';
-  static final String upgrade = 'upgrade';
-
-  // static final String POP_AD_SHOW_TIMES_KEY = 'popShowTimesKey';
-  static final String COMMON_PARAM_KEY = 'commonParamKey';
-  static final String USER_ID_KEY = 'USER_ID_KEY';
+  static const String USERINFO = 'userInfo';
+  static const String CONFIG = 'config';
+  static const String SETTING_CONFIG = 'setting_config';
+  static const String COMMON_PARAM_KEY = 'commonParamKey';
+  static const String USER_ID_KEY = 'USER_ID_KEY';
 }
 
 class TimeConfig {
-  static final int SPLASH_TIMEOUT = debugMode ? 3 : 5;
   static final int OTP_CODE_RESEND = debugMode ? 10 : 60;
-  static final int UPGRADE_SHOW_DELAY = debugMode ? 5 : 10;
-  static final int UPGRADE_WAIT_DAY = debugMode ? 3 : 3;
-  static final int DEFAULT_SHOW_POP_TIMES = debugMode ? 5 : 1;
-  static final int BACKGROUND_SPLASH_WAIT_TIME = debugMode ? 3 : 60;
 }
 
 const mainTabs = [
-  TabInfo(Icons.messenger_outline, Icons.messenger, 0),
+  TabInfo(Icons.messenger_outline, Icons.message, 0),
   TabInfo(Icons.account_circle_outlined, Icons.account_circle, 1),
   TabInfo(Icons.group_outlined, Icons.group, 2),
-  TabInfo(Icons.perm_identity, Icons.person, 3),
+  TabInfo(Icons.person_outline, Icons.person, 3),
 ];
 
 class TabInfo {

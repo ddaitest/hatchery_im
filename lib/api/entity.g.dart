@@ -324,6 +324,8 @@ Session _$SessionFromJson(Map<String, dynamic> json) => Session(
       json['top'] as int?,
       json['unReadCount'] as int?,
       json['mute'] as int?,
+      json['shock'] as int?,
+      json['notice'] as int?,
     );
 
 Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
@@ -340,4 +342,20 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
       'top': instance.top,
       'unReadCount': instance.unReadCount,
       'mute': instance.mute,
+      'shock': instance.shock,
+      'notice': instance.notice,
+    };
+
+SettingConfig _$SettingConfigFromJson(Map<String, dynamic> json) =>
+    SettingConfig(
+      json['mute'] as int?,
+      json['shock'] as int?,
+      json['notice'] as int?,
+    );
+
+Map<String, dynamic> _$SettingConfigToJson(SettingConfig instance) =>
+    <String, dynamic>{
+      'mute': instance.mute,
+      'shock': instance.shock,
+      'notice': instance.notice,
     };

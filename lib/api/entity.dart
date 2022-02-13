@@ -359,7 +359,9 @@ class Session extends HiveObject {
   int createTime;
   int? top = 0; //是否置顶，0=不置顶，1=置顶
   int? unReadCount = 0; // 未读消息数
-  int? mute = 0; //是否静音，0=不静音，1=静音
+  int? mute = 0; //是否静音，0=打开声音，1=静音
+  int? shock = 0; //是否震动，0=打开震动，1=关闭震动
+  int? notice = 0; //是否通知，0=打开通知，1=关闭通知
 
   Session(
       this.id,
@@ -374,10 +376,26 @@ class Session extends HiveObject {
       this.createTime, //创建时间
       this.top,
       this.unReadCount,
-      this.mute);
+      this.mute,
+      this.shock,
+      this.notice);
 
   factory Session.fromJson(Map<String, dynamic> json) =>
       _$SessionFromJson(json);
 
   Map<String, dynamic> toJson() => _$SessionToJson(this);
+}
+
+@JsonSerializable()
+class SettingConfig {
+  int? mute = 0; //是否静音，0=打开声音，1=静音
+  int? shock = 0; //是否震动，0=打开震动，1=关闭震动
+  int? notice = 0; //是否通知，0=打开通知，1=关闭通知
+
+  SettingConfig(this.mute, this.shock, this.notice);
+
+  factory SettingConfig.fromJson(Map<String, dynamic> json) =>
+      _$SettingConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SettingConfigToJson(this);
 }

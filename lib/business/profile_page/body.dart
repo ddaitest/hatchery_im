@@ -19,7 +19,11 @@ class ProfileBody extends StatelessWidget {
           userID: "${myProfileManager.myProfileData.userID ?? null}",
         ),
         SizedBox(height: 20.0.h),
-        ProfileMenuItem('images/notice.png', "消息通知"),
+        ProfileMenuItem(
+          'images/notice.png',
+          "消息设置",
+          onTap: () => Routers.navigateTo("/notice_setting"),
+        ),
         ProfileMenuItem('images/language.png', "语言", trailingText: '中文'),
         ProfileMenuItem('images/support.png', "清理缓存",
             trailingText: '${myProfileManager.cacheSize}', onTap: () {

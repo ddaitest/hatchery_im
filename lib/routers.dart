@@ -19,12 +19,12 @@ import 'package:hatchery_im/business/profile_page/friendProfile/friendApply_page
 import 'package:hatchery_im/common/widget/profile/edit_detail.dart';
 import 'package:hatchery_im/business/group_page/group_profile/group_profile.dart';
 import 'package:hatchery_im/common/widget/webview_common.dart';
-import 'package:photo_view/photo_view.dart';
 import 'business/chat_detail/chat_detail_page.dart';
 import 'business/chat_detail/chat_setting.dart';
 import 'business/contacts/contactsApply/receiveContactsApply.dart';
 import 'business/contacts/contactsApply/sendContactsApply.dart';
 import 'business/main_tab.dart';
+import 'business/profile_page/setting/notification.dart';
 import 'common/AppContext.dart';
 import 'common/log.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -172,6 +172,8 @@ class Routers {
                   addressName: map['address'],
                   position: map['position'],
                 ));
+      case '/notice_setting':
+        return MaterialPageRoute(builder: (_) => NotificationSettingPage());
       case '/test':
         return MaterialPageRoute(builder: (_) => TestPage());
       default:

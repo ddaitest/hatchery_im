@@ -61,10 +61,10 @@ class DeviceInfo {
         "version": packageInfo.version,
         "vc": packageInfo.buildNumber,
         "package_name": packageInfo.packageName,
-        "system_version": info.version.release ?? "",
         "android_id": info.androidId ?? "",
         "isPhysicalDevice": info.isPhysicalDevice ?? true ? "1" : "0",
-        "os": "ANDROID"
+        "os": platformName,
+        "os_version": info.version.release ?? ""
       });
     } else if (Platform.isIOS) {
       platformName = "IOS";
@@ -75,13 +75,34 @@ class DeviceInfo {
         "version": packageInfo.version,
         "vc": packageInfo.buildNumber,
         "package_name": packageInfo.packageName,
-        "system_version": info.systemVersion ?? "",
         "IDFV": info.identifierForVendor ?? "",
         "isPhysicalDevice": info.isPhysicalDevice ? "1" : "0",
-        "os": "IOS"
+        "os": platformName,
+        "os_version": info.systemVersion ?? ""
       });
     } else if (Platform.isWindows) {
-    } else if (Platform.isMacOS) {}
+      platformName = "WINDOWS";
+      WindowsDeviceInfo info = await deviceInfo.windowsInfo;
+      _commonParamMap.addAll({
+        "computerName": info.computerName,
+        "version": packageInfo.version,
+        "vc": packageInfo.buildNumber,
+        "package_name": packageInfo.packageName,
+        "os": platformName
+      });
+    } else if (Platform.isMacOS) {
+      platformName = "MACOS";
+      MacOsDeviceInfo info = await deviceInfo.macOsInfo;
+      _commonParamMap.addAll({
+        "computerName": info.computerName,
+        "device_model": info.model,
+        "version": packageInfo.version,
+        "vc": packageInfo.buildNumber,
+        "package_name": packageInfo.packageName,
+        "os": platformName,
+        "os_version": info.osRelease
+      });
+    }
     return _commonParamMap;
   }
 }

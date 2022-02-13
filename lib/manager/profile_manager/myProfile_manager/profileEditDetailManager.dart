@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/config.dart';
-import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/common/tools.dart';
@@ -64,7 +61,7 @@ class ProfileEditDetailManager extends ChangeNotifier {
   }
 
   Future _getStoredForMyProfileData() async {
-    String? stored = SP.getString(SPKey.userInfo);
+    String? stored = SP.getString(SPKey.USERINFO);
     if (stored != null) {
       print("_myProfileData ${stored}");
       try {

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'dart:io';
-import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'common/AppContext.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/manager/app_manager/appManager.dart';
@@ -31,6 +27,7 @@ import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 import 'jpush_common.dart';
 import 'manager/chat_manager/chatSettingManager.dart';
 import 'manager/emojiModel_manager.dart';
+import 'manager/profile_manager/setting_manager/settingManager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,6 +56,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => SelectContactsModelManager()),
         ChangeNotifierProvider(create: (_) => ShowMapManager()),
         ChangeNotifierProvider(create: (_) => EmojiModelManager()),
+        ChangeNotifierProvider(create: (_) => SettingManager()),
       ],
       child: MyApp(),
     ),

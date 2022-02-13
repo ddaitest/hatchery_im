@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/tools.dart';
-import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import '../config.dart';
-import '../routers.dart';
-import 'messageCentre.dart';
 
 class UserCentre {
   static MyProfile? _info;
@@ -14,7 +11,7 @@ class UserCentre {
   static String? _nickName;
 
   static MyProfile? getInfo() {
-    String? userInfoSP = SP.getString(SPKey.userInfo);
+    String? userInfoSP = SP.getString(SPKey.USERINFO);
     if (userInfoSP != null) {
       if (_info == null) {
         _info = MyProfile.fromJson(jsonDecode(userInfoSP)['info']);
@@ -25,7 +22,7 @@ class UserCentre {
 
   static String getToken() {
     if (_token == null) {
-      var userInfoData = SP.getString(SPKey.userInfo);
+      var userInfoData = SP.getString(SPKey.USERINFO);
       if (userInfoData != null) {
         _token = jsonDecode(userInfoData)['token'];
       }
@@ -48,7 +45,7 @@ class UserCentre {
   }
 
   static void saveUserInfo(String data) {
-    SP.set(SPKey.userInfo, data);
+    SP.set(SPKey.USERINFO, data);
     _info = MyProfile.fromJson(jsonDecode(data)['info']);
   }
 
@@ -58,7 +55,7 @@ class UserCentre {
   }
 
   static void logout() {
-    SP.delete(SPKey.userInfo);
+    SP.delete(SPKey.USERINFO);
     LocalStore.closeHiveDB();
     _info = null;
     _token = null;

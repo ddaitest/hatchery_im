@@ -1,15 +1,12 @@
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-import 'package:hatchery_im/business/models/chat_users.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/chat_home/ChatUsersListItem.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 import 'package:hatchery_im/common/widget/search/search_bar.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/chat_manager/chatHomeManager.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';

@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:hatchery_im/manager/profile_manager/myProfile_manager/myProfileManager.dart';
-import 'package:flutter/cupertino.dart';
 import 'body.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/routers.dart';
 
 class MyProfilePage extends StatelessWidget {

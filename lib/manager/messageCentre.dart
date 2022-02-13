@@ -13,6 +13,7 @@ import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/manager/settingCentre.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:crypto/crypto.dart';
 import 'package:vibration/vibration.dart';
@@ -150,13 +151,8 @@ class MessageCentre {
             Log.yellow("_initSessions 从Server获取最新数据 ${element.toJson()}");
           });
           Log.yellow("_syncMessage 同步message");
-
-          // sessions?.forEach((element) {
-          //   Log.red("本地sessions ${element.toJson()}");
-          // });
         }
       });
-      // LocalStore.sortSession();
     });
   }
 
@@ -698,12 +694,18 @@ class MyEngineHandler implements EngineCallback {
       LocalStore.refreshSession(
           msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
           sessionTime: msg.createTime);
-      if (LocalStore.findSession(msg.type == "CHAT" ? msg.sender : msg.groupID!)
-              ?.mute !=
-          1) {
+      Session? temp = LocalStore.findSession(
+          msg.type == "CHAT" ? msg.sender : msg.groupID!);
+      if (temp?.mute != 1 && SettingCentre.settingConfigInfo?.mute != 1) {
         MessageCentre.playSound();
+      }
+      if (temp?.mute != 1 && SettingCentre.settingConfigInfo?.shock != 1) {
         Vibration.vibrate(duration: 100);
       }
+      if (LocalStore.findSession(msg.type == "CHAT" ? msg.sender : msg.groupID!)
+                  ?.notice !=
+              1 &&
+          SettingCentre.settingConfigInfo?.notice != 1) {}
     }
   }
 }

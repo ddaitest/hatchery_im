@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
-import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:vibration/vibration.dart';
 import 'package:hatchery_im/business/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';

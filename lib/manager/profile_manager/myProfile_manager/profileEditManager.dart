@@ -69,7 +69,7 @@ class ProfileEditManager extends ChangeNotifier {
   }
 
   Future _getMyProfileData() async {
-    String? _stored = SP.getString(SPKey.userInfo);
+    String? _stored = SP.getString(SPKey.USERINFO);
     if (_stored != null) {
       print("DEBUG=> _stored _myProfileData ${_stored}");
       try {

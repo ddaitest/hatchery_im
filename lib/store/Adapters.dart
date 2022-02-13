@@ -106,13 +106,15 @@ class SessionAdapter extends TypeAdapter<Session> {
       fields[11] as int?,
       fields[12] as int?,
       fields[13] as int?,
+      fields[14] as int?,
+      fields[15] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Session obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(15)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -138,7 +140,11 @@ class SessionAdapter extends TypeAdapter<Session> {
       ..writeByte(12)
       ..write(obj.unReadCount)
       ..writeByte(13)
-      ..write(obj.mute);
+      ..write(obj.mute)
+      ..writeByte(14)
+      ..write(obj.shock)
+      ..writeByte(15)
+      ..write(obj.notice);
   }
 
   @override

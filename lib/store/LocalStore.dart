@@ -138,6 +138,8 @@ class LocalStore {
           sessionTime ?? DateTime.now().millisecondsSinceEpoch,
           0,
           unRead,
+          0,
+          0,
           0);
       sessionBox?.add(session);
     }
@@ -163,6 +165,8 @@ class LocalStore {
     if (otherId != null && otherId != "") {
       findSession(otherId)
         ?..mute = chatMuteType
+        ..shock = chatMuteType
+        ..notice = chatMuteType
         ..save();
       showToast("设置成功");
       return true;
