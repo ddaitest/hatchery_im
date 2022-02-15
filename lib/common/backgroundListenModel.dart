@@ -49,10 +49,12 @@ class BackgroundListen with WidgetsBindingObserver {
       if (MessageCentre.engine != null) {
         Log.log(
             "MessageCentre.engine!.connectStatus() ${MessageCentre.engine!.connectStatus()}");
-        if (!MessageCentre.engine!.connectStatus()) MessageCentre.init();
+        if (!MessageCentre.engine!.connectStatus()) {
+          MessageCentre.engine?.reconnect();
+        }
       } else {
         Log.log("MessageCentre.engine = null");
-        MessageCentre.init();
+        MessageCentre.engine?.reconnect();
       }
     }
   }
