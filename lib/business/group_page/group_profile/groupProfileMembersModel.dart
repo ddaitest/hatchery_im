@@ -99,8 +99,8 @@ class GroupMembersGrid extends StatelessWidget {
         ),
         Expanded(
             child: LoadingView(
-          viewWidth: 50.0,
-          viewHeight: 10.0,
+          viewWidth: 50.0.w,
+          viewHeight: 10.0.h,
         )),
       ],
     );
