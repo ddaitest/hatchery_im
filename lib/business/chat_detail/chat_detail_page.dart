@@ -300,7 +300,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 20.0,
+                  height: 20.0.h,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballScaleMultiple,
                     backgroundColor: Colors.red,
@@ -339,8 +339,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         // padding: const EdgeInsets.only(bottom: 20),
         child: Image.asset(
             isVoice ? 'images/keyboard.png' : 'images/recordAudioBtn.png',
-            height: 30.0,
-            width: 30.0),
+            height: 30.0.h,
+            width: 30.0.w),
       ),
     );
   }
