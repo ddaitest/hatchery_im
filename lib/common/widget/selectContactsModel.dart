@@ -48,7 +48,8 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
 
   @override
   void initState() {
-    if (widget.selectContactsType == SelectContactsType.DeleteGroupMember) {
+    if (widget.selectContactsType == SelectContactsType.DeleteGroupMember ||
+        widget.selectContactsType == SelectContactsType.AtSomeOne) {
       widget.groupMembersList
           ?.removeWhere((element) => element.userID == UserCentre.getUserID());
       manager.copyGroupMembersToList(widget.groupMembersList!);
@@ -277,6 +278,8 @@ class _SelectContactsModelState extends State<SelectContactsModelPage> {
       } else {
         showToast("转发失败");
       }
+    } else if (selectContactsType == SelectContactsType.AtSomeOne) {
+      Navigator.pop(App.navState.currentContext!);
     }
   }
 

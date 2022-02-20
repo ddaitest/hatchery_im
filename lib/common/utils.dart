@@ -397,9 +397,8 @@ class CacheInfo {
     if (file is Directory) {
       final List<FileSystemEntity> children = file.listSync();
       double total = 0;
-      if (children != null)
-        for (final FileSystemEntity child in children)
-          total += await _getTotalSizeOfFilesInDir(child);
+      for (final FileSystemEntity child in children)
+        total += await _getTotalSizeOfFilesInDir(child);
       return total;
     }
     return 0;

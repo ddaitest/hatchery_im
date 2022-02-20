@@ -115,7 +115,6 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
           'leastSelected': 2,
           'nextPageBtnText': '完成',
           'selectContactsType': SelectContactsType.CreateGroup,
-          'groupMembersFriendId': ['']
         });
         break;
       case '扫一扫':

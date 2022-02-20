@@ -272,6 +272,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           manager.sendTextMessage(content: content);
           manager.textEditingController.clear();
         },
+        onChanged: (term) {
+          if (term.length > 0 && widget.chatType == "GROUP") {
+            if (term.substring(term.length - 1) == "@") {
+              showToast("@@@@@@@@@@");
+            }
+          }
+        },
         keyboardType: TextInputType.text,
         cursorColor: Flavors.colorInfo.mainColor,
         decoration: InputDecoration(
@@ -340,10 +347,73 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   void showModal() {
     showModalBottomSheet(
-        context: context,
+        context: App.navState.currentContext!,
         builder: (context) {
           return Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: Flavors.sizesInfo.screenHeight / 2,
+            color: Color(0xff737373),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+              ),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: 16.0.h,
+                  ),
+                  Center(
+                    child: Container(
+                      height: 4.0.h,
+                      width: 50.0.w,
+                      color: Colors.grey.shade200,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.0.h,
+                  ),
+                  ListView.builder(
+                    itemCount: menuItems.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+                        child: ListTile(
+                          onTap: menuItems[index].onTap,
+                          leading: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: menuItems[index].color!.shade50,
+                            ),
+                            height: 50.0.h,
+                            width: 50.0.w,
+                            child: Icon(
+                              menuItems[index].icons,
+                              size: 20.0,
+                              color: menuItems[index].color!.shade400,
+                            ),
+                          ),
+                          title: Text(menuItems[index].text!),
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void showGroupMemberModal() {
+    showModalBottomSheet(
+        context: App.navState.currentContext!,
+        builder: (context) {
+          return Container(
+            height: Flavors.sizesInfo.screenHeight / 2,
             color: Color(0xff737373),
             child: Container(
               decoration: BoxDecoration(

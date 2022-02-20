@@ -61,6 +61,7 @@ enum SelectContactsType {
   AddGroupMember,
   DeleteGroupMember,
   Share,
+  AtSomeOne
 }
 
 enum QRCodeScanOriginType {

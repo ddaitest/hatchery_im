@@ -588,7 +588,6 @@ class ChatDetailManager extends ChangeNotifier {
         'selectContactsType': SelectContactsType.Share,
         'contentType': contentType,
         'shareMessageContent': content,
-        'groupMembersFriendId': ['']
       });
     } else {
       showToast("转发失败");

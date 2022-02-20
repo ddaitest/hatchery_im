@@ -126,7 +126,6 @@ class QRCodeCardPage extends StatelessWidget {
                   'selectContactsType': SelectContactsType.Share,
                   'contentType': 'CARD',
                   'shareMessageContent': content,
-                  'groupMembersFriendId': ['']
                 });
               }),
           CupertinoActionSheetAction(

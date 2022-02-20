@@ -62,7 +62,7 @@ class NotificationSettingPage extends StatelessWidget {
       color: Flavors.colorInfo.mainBackGroundColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text('振动'), _switchShockView()],
+        children: [Text('震动'), _switchShockView()],
       ),
     );
   }
@@ -90,7 +90,7 @@ class NotificationSettingPage extends StatelessWidget {
       color: Flavors.colorInfo.mainBackGroundColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Text('震动'), _switchNoticeView()],
+        children: [Text('消息通知'), _switchNoticeView()],
       ),
     );
   }

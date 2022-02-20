@@ -92,7 +92,6 @@ class _GroupPageState extends State<GroupPage> {
             'leastSelected': 2,
             'nextPageBtnText': '完成',
             'selectContactsType': SelectContactsType.CreateGroup,
-            'groupMembersFriendId': ['']
           }).then((value) => value ? groupsManager.refreshData() : null),
           leading: CircleAvatar(
             backgroundColor: Colors.pink,
