@@ -52,7 +52,7 @@ dependencies:
   loading_indicator: ^3.0.1
   vibration: ^1.7.4-nullsafety.0 #ANDROID IOS WEB
   record: ^3.0.0 #ANDROID IOS WEB
-  permission_handler: ^8.1.1 #ANDROID IOS
+  permission_handler: ^9.1.0 #ANDROID IOS
   path_provider: ^2.0.2 #ANDROID IOS LINUX MACOS WINDOWS
   pull_to_refresh: ^2.0.0
   country_code_picker: ^2.0.2
@@ -62,7 +62,7 @@ dependencies:
   cool_alert: ^1.1.0
   url_launcher: ^6.0.9
   flutter_inappwebview: ^5.3.2
-  qr_code_scanner: ^0.6.1
+  qr_code_scanner: ^0.7.0
   qr_flutter: ^4.0.0
   image_gallery_saver: ^1.7.0
   screenshot: ^1.2.3

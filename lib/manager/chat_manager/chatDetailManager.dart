@@ -52,6 +52,7 @@ class ChatDetailManager extends ChangeNotifier {
   String currentGroupIcon = "";
   String? myUserId;
   List<Message> messageList = [];
+  List<GroupMembers> groupMembersList = [];
   final TextEditingController textEditingController = TextEditingController();
   ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
 
@@ -591,6 +592,18 @@ class ChatDetailManager extends ChangeNotifier {
       });
     } else {
       showToast("转发失败");
+    }
+  }
+
+  Future<dynamic> getGroupMembersData() async {
+    ApiResult result = await API.getGroupMembers(currentGroupId);
+    if (result.isSuccess()) {
+      groupMembersList =
+          result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
+      print("DEBUG=> getGroupMembersData result.getData() $groupMembersList");
+      notifyListeners();
+    } else {
+      showToast('${result.info}');
     }
   }
 

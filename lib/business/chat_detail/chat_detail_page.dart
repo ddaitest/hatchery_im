@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
@@ -15,6 +16,8 @@ import 'package:loading_indicator/loading_indicator.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/common/widget/emojiModel.dart';
+import '../../common/widget/loading_Indicator.dart';
+import '../../common/widget/loading_view.dart';
 import '../../routers.dart';
 
 class ChatDetailPage extends StatefulWidget {
@@ -276,6 +279,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           if (term.length > 0 && widget.chatType == "GROUP") {
             if (term.substring(term.length - 1) == "@") {
               showToast("@@@@@@@@@@");
+              showGroupMemberModal();
             }
           }
         },
@@ -409,65 +413,106 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   void showGroupMemberModal() {
-    showModalBottomSheet(
-        context: App.navState.currentContext!,
-        builder: (context) {
-          return Container(
-            height: Flavors.sizesInfo.screenHeight / 2,
-            color: Color(0xff737373),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(20),
-                    topLeft: Radius.circular(20)),
-              ),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 16.0.h,
-                  ),
-                  Center(
-                    child: Container(
-                      height: 4.0.h,
-                      width: 50.0.w,
-                      color: Colors.grey.shade200,
+    manager.getGroupMembersData().then((_) {
+      showModalBottomSheet(
+          context: App.navState.currentContext!,
+          builder: (context) {
+            return Container(
+                height: Flavors.sizesInfo.screenHeight / 2,
+                color: Color(0xff737373),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          topLeft: Radius.circular(20)),
                     ),
-                  ),
-                  SizedBox(
-                    height: 10.0.h,
-                  ),
-                  ListView.builder(
-                    itemCount: menuItems.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
-                        child: ListTile(
-                          onTap: menuItems[index].onTap,
-                          leading: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: menuItems[index].color!.shade50,
-                            ),
-                            height: 50.0.h,
-                            width: 50.0.w,
-                            child: Icon(
-                              menuItems[index].icons,
-                              size: 20.0,
-                              color: menuItems[index].color!.shade400,
-                            ),
-                          ),
-                          title: Text(menuItems[index].text!),
+                    child: Column(children: <Widget>[
+                      SizedBox(
+                        height: 16.0.h,
+                      ),
+                      Center(
+                        child: Container(
+                          height: 4.0.h,
+                          width: 50.0.w,
+                          color: Colors.grey.shade200,
                         ),
-                      );
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
-        });
+                      ),
+                      SizedBox(
+                        height: 10.0.h,
+                      ),
+                      Selector<ChatDetailManager, List<GroupMembers>>(
+                        builder: (BuildContext context,
+                            List<GroupMembers> value, Widget? child) {
+                          return value.isNotEmpty
+                              ? ListView.builder(
+                                  itemCount: value.length,
+                                  shrinkWrap: true,
+                                  physics: const BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      color: Colors.white,
+                                      padding: EdgeInsets.only(
+                                          left: 16,
+                                          right: 16,
+                                          top: 10,
+                                          bottom: 10),
+                                      child: Row(
+                                        children: <Widget>[
+                                          CachedNetworkImage(
+                                              imageUrl: value[index].icon!,
+                                              placeholder: (context, url) =>
+                                                  CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        'images/default_avatar.png'),
+                                                    maxRadius: 20,
+                                                  ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      CircleAvatar(
+                                                        backgroundImage: AssetImage(
+                                                            'images/default_avatar.png'),
+                                                        maxRadius: 20,
+                                                      ),
+                                              imageBuilder:
+                                                  (context, imageProvider) {
+                                                return CircleAvatar(
+                                                  backgroundImage:
+                                                      imageProvider,
+                                                  maxRadius: 20,
+                                                );
+                                              }),
+                                          SizedBox(
+                                            width: 16.0.w,
+                                          ),
+                                          Container(
+                                            color: Colors.transparent,
+                                            width:
+                                                Flavors.sizesInfo.screenWidth -
+                                                    100.0.w,
+                                            child: Text(
+                                                value[index].nickName ?? "",
+                                                style: Flavors
+                                                    .textStyles.friendsText,
+                                                maxLines: 1,
+                                                overflow:
+                                                    TextOverflow.ellipsis),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                )
+                              : IndicatorView();
+                        },
+                        selector: (BuildContext context,
+                            ChatDetailManager chatDetailManager) {
+                          return chatDetailManager.groupMembersList;
+                        },
+                        shouldRebuild: (pre, next) => (pre != next),
+                      ),
+                    ])));
+          });
+    });
   }
 }
