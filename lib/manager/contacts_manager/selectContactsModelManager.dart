@@ -205,6 +205,18 @@ class SelectContactsModelManager extends ChangeNotifier {
     return finalContent;
   }
 
+  Future<dynamic> getGroupMembersData(String groupId) async {
+    ApiResult result = await API.getGroupMembers(groupId);
+    if (result.isSuccess()) {
+      var temp = result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
+      print("DEBUG=> getGroupMembersData result.getData() $temp");
+      return temp;
+    } else {
+      showToast('${result.info}');
+      return false;
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();

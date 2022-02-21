@@ -453,10 +453,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     return Container(
                                       color: Colors.white,
                                       padding: EdgeInsets.only(
-                                          left: 16,
-                                          right: 16,
-                                          top: 10,
-                                          bottom: 10),
+                                          left: 15.0, top: 15.0),
                                       child: Row(
                                         children: <Widget>[
                                           CachedNetworkImage(
