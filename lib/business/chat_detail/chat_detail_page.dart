@@ -276,8 +276,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           manager.textEditingController.clear();
         },
         onChanged: (term) {
+          Log.green("##### ${term.characters.last}");
           if (term.length > 0 && widget.chatType == "GROUP") {
-            if (term.substring(term.length - 1) == "@") {
+            if (term.characters.last == "@") {
               showToast("@@@@@@@@@@");
               showGroupMemberModal();
             }
@@ -431,83 +432,93 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       SizedBox(
                         height: 16.0.h,
                       ),
-                      Center(
-                        child: Container(
-                          height: 4.0.h,
-                          width: 50.0.w,
-                          color: Colors.grey.shade200,
-                        ),
+                      Container(
+                        height: 4.0.h,
+                        width: 50.0.w,
+                        color: Colors.grey.shade200,
                       ),
                       SizedBox(
                         height: 10.0.h,
                       ),
-                      Selector<ChatDetailManager, List<GroupMembers>>(
-                        builder: (BuildContext context,
-                            List<GroupMembers> value, Widget? child) {
-                          return value.isNotEmpty
-                              ? ListView.builder(
-                                  itemCount: value.length,
-                                  shrinkWrap: true,
-                                  physics: const BouncingScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      color: Colors.white,
-                                      padding: EdgeInsets.only(
-                                          left: 15.0, top: 15.0),
-                                      child: Row(
-                                        children: <Widget>[
-                                          CachedNetworkImage(
-                                              imageUrl: value[index].icon!,
-                                              placeholder: (context, url) =>
-                                                  CircleAvatar(
-                                                    backgroundImage: AssetImage(
-                                                        'images/default_avatar.png'),
-                                                    maxRadius: 20,
-                                                  ),
-                                              errorWidget:
-                                                  (context, url, error) =>
+                      Container(
+                        child: Text(
+                          "选择要提醒的人",
+                          style: Flavors.textStyles.chatDetailAppBarNameText,
+                        ),
+                      ),
+                      Expanded(
+                        child: Selector<ChatDetailManager, List<GroupMembers>>(
+                          builder: (BuildContext context,
+                              List<GroupMembers> value, Widget? child) {
+                            return value.isNotEmpty
+                                ? ListView.builder(
+                                    itemCount: value.length,
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () => manager.atSomeOneMethod(
+                                            value[index].nickName!),
+                                        child: Container(
+                                          color: Colors.white,
+                                          padding: EdgeInsets.only(
+                                              left: 15.0, top: 15.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              CachedNetworkImage(
+                                                  imageUrl: value[index].icon!,
+                                                  placeholder: (context, url) =>
                                                       CircleAvatar(
                                                         backgroundImage: AssetImage(
                                                             'images/default_avatar.png'),
                                                         maxRadius: 20,
                                                       ),
-                                              imageBuilder:
-                                                  (context, imageProvider) {
-                                                return CircleAvatar(
-                                                  backgroundImage:
-                                                      imageProvider,
-                                                  maxRadius: 20,
-                                                );
-                                              }),
-                                          SizedBox(
-                                            width: 16.0.w,
-                                          ),
-                                          Container(
-                                            color: Colors.transparent,
-                                            width:
-                                                Flavors.sizesInfo.screenWidth -
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      CircleAvatar(
+                                                        backgroundImage: AssetImage(
+                                                            'images/default_avatar.png'),
+                                                        maxRadius: 20,
+                                                      ),
+                                                  imageBuilder:
+                                                      (context, imageProvider) {
+                                                    return CircleAvatar(
+                                                      backgroundImage:
+                                                          imageProvider,
+                                                      maxRadius: 20,
+                                                    );
+                                                  }),
+                                              SizedBox(
+                                                width: 16.0.w,
+                                              ),
+                                              Container(
+                                                color: Colors.transparent,
+                                                width: Flavors
+                                                        .sizesInfo.screenWidth -
                                                     100.0.w,
-                                            child: Text(
-                                                value[index].nickName ?? "",
-                                                style: Flavors
-                                                    .textStyles.friendsText,
-                                                maxLines: 1,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
+                                                child: Text(
+                                                    value[index].nickName ?? "",
+                                                    style: Flavors
+                                                        .textStyles.friendsText,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                )
-                              : IndicatorView();
-                        },
-                        selector: (BuildContext context,
-                            ChatDetailManager chatDetailManager) {
-                          return chatDetailManager.groupMembersList;
-                        },
-                        shouldRebuild: (pre, next) => (pre != next),
-                      ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : IndicatorView();
+                          },
+                          selector: (BuildContext context,
+                              ChatDetailManager chatDetailManager) {
+                            return chatDetailManager.groupMembersList;
+                          },
+                          shouldRebuild: (pre, next) => (pre != next),
+                        ),
+                      )
                     ])));
           });
     });

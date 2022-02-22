@@ -55,6 +55,7 @@ class ChatDetailManager extends ChangeNotifier {
   List<GroupMembers> groupMembersList = [];
   final TextEditingController textEditingController = TextEditingController();
   ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
+  int _oldInputTextLength = 0;
 
   /// 初始化
   init(
@@ -74,6 +75,17 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupId = groupId;
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
+    textEditingController.addListener(() {
+      String temp = textEditingController.text;
+      Log.green("##### ${temp.characters.last}");
+      if (temp.length > 0 && currentGroupId == "GROUP") {
+        if (temp.characters.last == "@" && temp.length < _oldInputTextLength) {
+          showToast("@@@@@@@@@@");
+          // showGroupMemberModal();
+        }
+      }
+      _oldInputTextLength = temp.length;
+    });
     _loadMessages(firstLoad: true);
     valueListenable?.addListener(() {
       _loadMessages();
@@ -605,6 +617,14 @@ class ChatDetailManager extends ChangeNotifier {
     } else {
       showToast('${result.info}');
     }
+  }
+
+  void atSomeOneMethod(String nickName) {
+    textEditingController
+      ..text += nickName + " "
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: textEditingController.text.length));
+    Navigator.pop(App.navState.currentContext!);
   }
 
   void disposeModel() {

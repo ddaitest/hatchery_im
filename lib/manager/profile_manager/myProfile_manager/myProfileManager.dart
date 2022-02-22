@@ -1,13 +1,8 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hatchery_im/common/log.dart';
-import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/api/entity.dart';
-import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/common/utils.dart';
@@ -57,13 +52,6 @@ class MyProfileManager extends ChangeNotifier {
 
   logOutMethod() {
     UserCentre.logout();
-    EasyLoading.instance
-      ..displayDuration = const Duration(milliseconds: 1500)
-      ..dismissOnTap = false
-      ..userInteractions = false
-      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-      ..loadingStyle = EasyLoadingStyle.light
-      ..maskType = EasyLoadingMaskType.none;
     Routers.navigateAndRemoveUntil('/login');
   }
 
