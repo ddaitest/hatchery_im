@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
@@ -19,6 +21,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
@@ -28,6 +31,7 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'dart:convert' as convert;
+import '../../common/widget/loading_Indicator.dart';
 import '../../config.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
@@ -76,15 +80,7 @@ class ChatDetailManager extends ChangeNotifier {
     currentGroupName = groupName;
     currentGroupIcon = groupIcon;
     textEditingController.addListener(() {
-      String temp = textEditingController.text;
-      Log.green("##### ${temp.characters.last}");
-      if (temp.length > 0 && currentGroupId == "GROUP") {
-        if (temp.characters.last == "@" && temp.length < _oldInputTextLength) {
-          showToast("@@@@@@@@@@");
-          // showGroupMemberModal();
-        }
-      }
-      _oldInputTextLength = temp.length;
+      _atTextListenMethod();
     });
     _loadMessages(firstLoad: true);
     valueListenable?.addListener(() {
@@ -607,7 +603,7 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  Future<dynamic> getGroupMembersData() async {
+  Future<dynamic> _getGroupMembersData() async {
     ApiResult result = await API.getGroupMembers(currentGroupId);
     if (result.isSuccess()) {
       groupMembersList =
@@ -619,12 +615,135 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
+  void showGroupMemberModal() {
+    _getGroupMembersData().then((_) {
+      showModalBottomSheet(
+          context: App.navState.currentContext!,
+          builder: (context) {
+            return Container(
+                height: Flavors.sizesInfo.screenHeight / 2,
+                color: Color(0xff737373),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(20),
+                          topLeft: Radius.circular(20)),
+                    ),
+                    child: Column(children: <Widget>[
+                      SizedBox(
+                        height: 16.0.h,
+                      ),
+                      Container(
+                        height: 4.0.h,
+                        width: 50.0.w,
+                        color: Colors.grey.shade200,
+                      ),
+                      SizedBox(
+                        height: 10.0.h,
+                      ),
+                      Container(
+                        child: Text(
+                          "选择要提醒的人",
+                          style: Flavors.textStyles.chatDetailAppBarNameText,
+                        ),
+                      ),
+                      Expanded(
+                        child: Selector<ChatDetailManager, List<GroupMembers>>(
+                          builder: (BuildContext context,
+                              List<GroupMembers> value, Widget? child) {
+                            return value.isNotEmpty
+                                ? ListView.builder(
+                                    itemCount: value.length,
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return GestureDetector(
+                                        onTap: () => atSomeOneMethod(
+                                            value[index].nickName!),
+                                        child: Container(
+                                          color: Colors.white,
+                                          padding: EdgeInsets.only(
+                                              left: 15.0, top: 15.0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              CachedNetworkImage(
+                                                  imageUrl: value[index].icon!,
+                                                  placeholder: (context, url) =>
+                                                      CircleAvatar(
+                                                        backgroundImage: AssetImage(
+                                                            'images/default_avatar.png'),
+                                                        maxRadius: 20,
+                                                      ),
+                                                  errorWidget: (context, url,
+                                                          error) =>
+                                                      CircleAvatar(
+                                                        backgroundImage: AssetImage(
+                                                            'images/default_avatar.png'),
+                                                        maxRadius: 20,
+                                                      ),
+                                                  imageBuilder:
+                                                      (context, imageProvider) {
+                                                    return CircleAvatar(
+                                                      backgroundImage:
+                                                          imageProvider,
+                                                      maxRadius: 20,
+                                                    );
+                                                  }),
+                                              SizedBox(
+                                                width: 16.0.w,
+                                              ),
+                                              Container(
+                                                color: Colors.transparent,
+                                                width: Flavors
+                                                        .sizesInfo.screenWidth -
+                                                    100.0.w,
+                                                child: Text(
+                                                    value[index].nickName ?? "",
+                                                    style: Flavors
+                                                        .textStyles.friendsText,
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : IndicatorView();
+                          },
+                          selector: (BuildContext context,
+                              ChatDetailManager chatDetailManager) {
+                            return chatDetailManager.groupMembersList;
+                          },
+                          shouldRebuild: (pre, next) => (pre != next),
+                        ),
+                      )
+                    ])));
+          });
+    });
+  }
+
   void atSomeOneMethod(String nickName) {
     textEditingController
       ..text += nickName + " "
       ..selection = TextSelection.fromPosition(
           TextPosition(offset: textEditingController.text.length));
     Navigator.pop(App.navState.currentContext!);
+  }
+
+  void _atTextListenMethod() {
+    String temp = textEditingController.text;
+    Log.green("##### ${temp.characters.last}");
+    if (temp.length > 0 && currentGroupId == "GROUP") {
+      if (temp.characters.last == "@" && temp.length < _oldInputTextLength) {
+        showToast("@@@@@@@@@@");
+        showGroupMemberModal();
+      }
+    }
+    _oldInputTextLength = temp.length;
   }
 
   void disposeModel() {
