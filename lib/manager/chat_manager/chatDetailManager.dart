@@ -60,6 +60,7 @@ class ChatDetailManager extends ChangeNotifier {
   final TextEditingController textEditingController = TextEditingController();
   ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
   int _oldInputTextLength = 0;
+  Map<String, String> _atMemberMap = {};
 
   /// 初始化
   init(
@@ -660,7 +661,8 @@ class ChatDetailManager extends ChangeNotifier {
                                     itemBuilder: (context, index) {
                                       return GestureDetector(
                                         onTap: () => atSomeOneMethod(
-                                            value[index].nickName!),
+                                            value[index].nickName!,
+                                            value[index].userID!),
                                         child: Container(
                                           color: Colors.white,
                                           padding: EdgeInsets.only(
@@ -726,23 +728,31 @@ class ChatDetailManager extends ChangeNotifier {
     });
   }
 
-  void atSomeOneMethod(String nickName) {
+  void atSomeOneMethod(String nickName, String userId) {
     textEditingController
       ..text += nickName + " "
       ..selection = TextSelection.fromPosition(
           TextPosition(offset: textEditingController.text.length));
+    _atMemberMap[nickName] = userId;
     Navigator.pop(App.navState.currentContext!);
   }
 
   void _atTextListenMethod() {
     String temp = textEditingController.text;
-    Log.green("##### ${temp.characters.last}");
-    if (temp.length > 0 && currentGroupId == "GROUP") {
-      if (temp.characters.last == "@" && temp.length < _oldInputTextLength) {
+    if (temp.length > 0 && currentGroupId != "") {
+      Log.green("##### ${temp.characters.last} ${temp.length}");
+      if (temp.characters.last == "@" && temp.length > _oldInputTextLength) {
         showToast("@@@@@@@@@@");
         showGroupMemberModal();
       }
     }
+    _atMemberMap.keys.forEach((element) {
+      String finalKey = "@$element ";
+      if (!finalKey.contains(temp)) {
+        _atMemberMap.remove(element);
+      }
+    });
+    Log.green("final atMemberMap ${_atMemberMap.toString()}");
     _oldInputTextLength = temp.length;
   }
 
