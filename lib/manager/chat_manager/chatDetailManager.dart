@@ -60,7 +60,7 @@ class ChatDetailManager extends ChangeNotifier {
   final TextEditingController textEditingController = TextEditingController();
   ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
   int _oldInputTextLength = 0;
-  Map<String, String> _atMemberMap = {};
+  Map<String, String> atMemberMap = {};
 
   /// 初始化
   init(
@@ -609,7 +609,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (result.isSuccess()) {
       groupMembersList =
           result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
-      print("DEBUG=> getGroupMembersData result.getData() $groupMembersList");
+      Log.green("getGroupMembersData result.getData() $groupMembersList");
       notifyListeners();
     } else {
       showToast('${result.info}');
@@ -733,26 +733,26 @@ class ChatDetailManager extends ChangeNotifier {
       ..text += nickName + " "
       ..selection = TextSelection.fromPosition(
           TextPosition(offset: textEditingController.text.length));
-    _atMemberMap[nickName] = userId;
+    atMemberMap[nickName] = userId;
     Navigator.pop(App.navState.currentContext!);
   }
 
   void _atTextListenMethod() {
     String temp = textEditingController.text;
     if (temp.length > 0 && currentGroupId != "") {
-      Log.green("##### ${temp.characters.last} ${temp.length}");
+      Log.green("##### ${temp.characters.last}");
       if (temp.characters.last == "@" && temp.length > _oldInputTextLength) {
         showToast("@@@@@@@@@@");
         showGroupMemberModal();
       }
+      atMemberMap.keys.forEach((element) {
+        String finalKey = "@$element ";
+        if (!temp.contains(finalKey)) {
+          atMemberMap.remove(element);
+        }
+      });
+      Log.green("final atMemberMap $atMemberMap");
     }
-    _atMemberMap.keys.forEach((element) {
-      String finalKey = "@$element ";
-      if (!finalKey.contains(temp)) {
-        _atMemberMap.remove(element);
-      }
-    });
-    Log.green("final atMemberMap ${_atMemberMap.toString()}");
     _oldInputTextLength = temp.length;
   }
 

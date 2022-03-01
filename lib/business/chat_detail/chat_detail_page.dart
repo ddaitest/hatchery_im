@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
@@ -270,8 +269,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         maxLength: 140,
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
-          Log.yellow("textInputAction $term");
-          Map<String, dynamic> content = {"text": term};
+          String reminderCode = "~~##${manager.atMemberMap}##~~";
+          Map<String, dynamic> content = {"text": "$term$reminderCode"};
+          Log.green("textInputAction $content");
           manager.sendTextMessage(content: content);
           manager.textEditingController.clear();
         },
