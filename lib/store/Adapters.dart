@@ -93,22 +93,22 @@ class SessionAdapter extends TypeAdapter<Session> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Session(
-      fields[1] as int,
-      fields[2] as String,
-      fields[6] as int,
-      fields[3] as String,
-      fields[4] as String,
-      fields[5] as String,
-      fields[7] as Message?,
-      fields[8] as Message?,
-      fields[9] as int,
-      fields[10] as int,
-      fields[11] as int?,
-      fields[12] as int?,
-      fields[13] as int?,
-      fields[14] as int?,
-      fields[15] as int?,
-    );
+        fields[1] as int,
+        fields[2] as String,
+        fields[6] as int,
+        fields[3] as String,
+        fields[4] as String,
+        fields[5] as String,
+        fields[7] as Message?,
+        fields[8] as Message?,
+        fields[9] as int,
+        fields[10] as int,
+        fields[11] as int?,
+        fields[12] as int?,
+        fields[13] as int?,
+        fields[14] as int?,
+        fields[15] as int?,
+        fields[16] as int?);
   }
 
   @override
@@ -144,7 +144,9 @@ class SessionAdapter extends TypeAdapter<Session> {
       ..writeByte(14)
       ..write(obj.shock)
       ..writeByte(15)
-      ..write(obj.notice);
+      ..write(obj.notice)
+      ..writeByte(16)
+      ..write(obj.reminderMe);
   }
 
   @override

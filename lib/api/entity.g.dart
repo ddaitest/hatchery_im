@@ -326,6 +326,7 @@ Session _$SessionFromJson(Map<String, dynamic> json) => Session(
       json['mute'] as int?,
       json['shock'] as int?,
       json['notice'] as int?,
+      json['reminderMe'] as int?,
     );
 
 Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
@@ -344,6 +345,7 @@ Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
       'mute': instance.mute,
       'shock': instance.shock,
       'notice': instance.notice,
+      'reminderMe': instance.reminderMe,
     };
 
 SettingConfig _$SettingConfigFromJson(Map<String, dynamic> json) =>

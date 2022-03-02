@@ -140,6 +140,7 @@ class LocalStore {
           unRead,
           0,
           0,
+          0,
           0);
       sessionBox?.add(session);
     }

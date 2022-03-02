@@ -362,6 +362,7 @@ class Session extends HiveObject {
   int? mute = 0; //是否静音，0=打开声音，1=静音
   int? shock = 0; //是否震动，0=打开震动，1=关闭震动
   int? notice = 0; //是否通知，0=打开通知，1=关闭通知
+  int? reminderMe = 0; //是否有人@我，0=无，1=有
 
   Session(
       this.id,
@@ -378,7 +379,8 @@ class Session extends HiveObject {
       this.unReadCount,
       this.mute,
       this.shock,
-      this.notice);
+      this.notice,
+      this.reminderMe);
 
   factory Session.fromJson(Map<String, dynamic> json) =>
       _$SessionFromJson(json);
