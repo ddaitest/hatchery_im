@@ -22,6 +22,7 @@ import '../store/LocalStore.dart';
 import 'MsgHelper.dart';
 import 'devicesInfoCentre.dart';
 import 'login_manager/loginManager.dart';
+import 'dart:convert' as convert;
 
 typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);
@@ -690,10 +691,34 @@ class MyEngineHandler implements EngineCallback {
       _centre.newMessageListener?.call(msg);
       Log.red("onNewMessage onNewMessage ${msg.toJson()}");
       msg..progress = MSG_RECEIVED;
+      // 判断是否有群@
+      if (msg.contentType == "TEXT") {
+        // 将群@的编码解码
+        var msgText = checkRemindMsg(convert.jsonDecode(msg.content)["text"]);
+        // 如果有群提醒则判断是否提醒了自己
+        if (msgText is List) {
+          msg..content = convert.jsonEncode({"text": msgText[0]});
+          Map<String, String> temp = convert.jsonDecode(msgText[1]);
+          var result = temp.values.firstWhere(
+              (element) => element == UserCentre.getInfo()?.userID,
+              orElse: () => "");
+          // 如果提醒了自己则在session中标记
+          if (result != "") {
+            LocalStore.refreshSession(
+                msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
+                sessionTime: msg.createTime, reminderMe: 1);
+          }
+        } else {
+          LocalStore.refreshSession(
+              msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
+              sessionTime: msg.createTime);
+        }
+      } else {
+        LocalStore.refreshSession(
+            msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
+            sessionTime: msg.createTime);
+      }
       LocalStore.addMessage(msg);
-      LocalStore.refreshSession(
-          msg, msg.type == "CHAT" ? msg.sender : msg.groupID,
-          sessionTime: msg.createTime);
       Session? temp = LocalStore.findSession(
           msg.type == "CHAT" ? msg.sender : msg.groupID!);
       if (temp?.mute != 1 && SettingCentre.settingConfigInfo?.mute != 1) {

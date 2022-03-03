@@ -71,7 +71,7 @@ class LocalStore {
 
   /// 刷新session，尽量传sessionTime
   static Future<void> refreshSession(Message? message, String? otherId,
-      {int? sessionTime}) async {
+      {int? sessionTime, int reminderMe = 0}) async {
     if (otherId != null && message != null) {
       var info;
 
@@ -95,6 +95,7 @@ class LocalStore {
                 : info.groupName ?? result.title
             ..icon = info.icon ?? result.icon
             ..updateTime = sessionTime ?? DateTime.now().millisecondsSinceEpoch
+            ..reminderMe = reminderMe
             ..save();
         } else {
           createNewSession(
@@ -107,7 +108,8 @@ class LocalStore {
                   : info.groupName ?? "群名称",
               sessionIcon: info.icon ?? "",
               sessionTime: sessionTime,
-              unRead: unReadCount > 0 ? unReadCount : 0);
+              unRead: unReadCount > 0 ? unReadCount : 0,
+              reminderMe: reminderMe);
         }
         sortSession();
       }
@@ -123,7 +125,8 @@ class LocalStore {
       String sessionTitle = "",
       String sessionIcon = "",
       int? sessionTime,
-      int unRead = 0}) {
+      int unRead = 0,
+      int reminderMe = 0}) {
     if (message != null) {
       Session session = Session(
           message.id,
@@ -141,7 +144,7 @@ class LocalStore {
           0,
           0,
           0,
-          0);
+          reminderMe);
       sessionBox?.add(session);
     }
   }

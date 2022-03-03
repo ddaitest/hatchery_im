@@ -160,6 +160,9 @@ class TextStyles {
   final TextStyle chatVoiceTimerText = TextStyle(
       fontSize: 15.0.sp, color: ColorInfo().diver, fontWeight: FontWeight.w400);
 
+  final TextStyle chatReminderMeText =
+      TextStyle(fontSize: 12.0.sp, color: ColorInfo().redColor);
+
   final TextStyle logOutBtnText =
       TextStyle(fontSize: 18.0.sp, color: ColorInfo().mainTextColor);
 

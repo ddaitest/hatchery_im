@@ -23,6 +23,7 @@ class ChatUsersListItem extends StatelessWidget {
   final String content;
   final int sessionKey;
   final int unReadNum;
+  final int reminderMe;
   ChatUsersListItem(
       {required this.chatTopType,
       required this.chatMute,
@@ -34,7 +35,8 @@ class ChatUsersListItem extends StatelessWidget {
       required this.updateTime,
       required this.content,
       required this.sessionKey,
-      required this.unReadNum});
+      required this.unReadNum,
+      required this.reminderMe});
   final manager = App.manager<ChatHomeManager>();
 
   @override
@@ -55,7 +57,6 @@ class ChatUsersListItem extends StatelessWidget {
       SlideActionInfo('删除', Icons.delete, Colors.redAccent,
           onPressed: (_) => LocalStore.deleteSession(sessionKey)),
     ];
-    // todo
     String finalText = chatType == 0 ? content : "$senderName: $content";
     return Slidable(
       key: ValueKey("$sessionKey"),
@@ -99,12 +100,26 @@ class ChatUsersListItem extends StatelessWidget {
             title: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
             subtitle: Container(
               padding: const EdgeInsets.only(top: 5.0),
-              child: Text(
-                finalText,
-                style: Flavors.textStyles.groupMembersNumberText,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              child: reminderMe == 1
+                  ? RichText(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                          text: "[有人@我] ",
+                          style: Flavors.textStyles.chatReminderMeText,
+                          children: [
+                            TextSpan(
+                              text: finalText,
+                              style: Flavors.textStyles.groupMembersNumberText,
+                            )
+                          ]),
+                    )
+                  : Text(
+                      finalText,
+                      style: Flavors.textStyles.groupMembersNumberText,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
             ),
             trailing: Container(
               child: Column(

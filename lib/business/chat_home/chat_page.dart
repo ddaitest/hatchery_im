@@ -76,7 +76,8 @@ class _ChatPageState extends State<ChatPage>
                                     ? session.lastChatMessage
                                     : session.lastGroupChatMessage),
                                 sessionKey: box.keyAt(index),
-                                unReadNum: unReadCount);
+                                unReadNum: unReadCount,
+                                reminderMe: session.reminderMe ?? 0);
                           } else {
                             return Container();
                           }

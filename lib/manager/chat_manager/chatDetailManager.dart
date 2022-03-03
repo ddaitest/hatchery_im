@@ -111,6 +111,7 @@ class ChatDetailManager extends ChangeNotifier {
             DateTime.fromMillisecondsSinceEpoch(b.createTime)
                 .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
         clearUnReadStatus(tempList);
+        clearReminderMeStatus();
         messageList = tempList;
         if (!firstLoad) notifyListeners();
       }
@@ -136,6 +137,19 @@ class ChatDetailManager extends ChangeNotifier {
             ..save();
         }
       });
+    }
+  }
+
+  /// 点击清除群提醒状态
+  /// todo  缺少点击滚动到指定位置
+  void clearReminderMeStatus() {
+    if (currentGroupId != "") {
+      Session? temp = LocalStore.findSession(currentGroupId);
+      if (temp?.reminderMe == 1) {
+        temp
+          ?..reminderMe = 0
+          ..save();
+      }
     }
   }
 
