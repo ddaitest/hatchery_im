@@ -742,7 +742,6 @@ class ChatDetailManager extends ChangeNotifier {
     if (temp.length > 0 && currentGroupId != "") {
       Log.green("##### ${temp.characters.last}");
       if (temp.characters.last == "@" && temp.length > _oldInputTextLength) {
-        showToast("@@@@@@@@@@");
         showGroupMemberModal();
       }
       atMemberMap.keys.forEach((element) {

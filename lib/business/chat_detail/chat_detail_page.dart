@@ -269,7 +269,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         maxLength: 140,
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
-          String reminderCode = "~~##${manager.atMemberMap}##~~";
+          String reminderCode =
+              widget.chatType != "CHAT" && manager.atMemberMap.isNotEmpty
+                  ? "~~##${manager.atMemberMap}##~~"
+                  : "";
           Map<String, dynamic> content = {"text": "$term$reminderCode"};
           Log.green("textInputAction $content");
           manager.sendTextMessage(content: content);

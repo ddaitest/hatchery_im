@@ -514,3 +514,13 @@ String sendContactsApplyStatusText(int status) {
   }
   return statusText;
 }
+
+/// 消息提醒转换，用于有@的情况
+dynamic checkRemindMsg(String text) {
+  if (text.contains("~~##{") && text.contains("}##~~")) {
+    List<String> finalTextList = text.split(new RegExp(r'(~~##|##~~)'));
+    return finalTextList;
+  } else {
+    return text;
+  }
+}

@@ -55,6 +55,8 @@ class ChatUsersListItem extends StatelessWidget {
       SlideActionInfo('删除', Icons.delete, Colors.redAccent,
           onPressed: (_) => LocalStore.deleteSession(sessionKey)),
     ];
+    // todo
+    String finalText = chatType == 0 ? content : "$senderName: $content";
     return Slidable(
       key: ValueKey("$sessionKey"),
       endActionPane: ActionPane(
@@ -98,7 +100,7 @@ class ChatUsersListItem extends StatelessWidget {
             subtitle: Container(
               padding: const EdgeInsets.only(top: 5.0),
               child: Text(
-                chatType == 0 ? content : "$senderName: $content",
+                finalText,
                 style: Flavors.textStyles.groupMembersNumberText,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
