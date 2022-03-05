@@ -623,6 +623,9 @@ class ChatDetailManager extends ChangeNotifier {
     if (result.isSuccess()) {
       groupMembersList =
           result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
+      // 剔除自己
+      groupMembersList
+          .removeWhere((element) => element.userID == myProfileData?.userID);
       Log.green("getGroupMembersData result.getData() $groupMembersList");
       notifyListeners();
     } else {

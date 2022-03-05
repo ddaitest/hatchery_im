@@ -304,6 +304,7 @@ class _ChatBubbleState extends State<ChatBubble> {
 
   Widget _textMessageView(
       Map<String, dynamic> contentMap, MessageBelongType belongType) {
+    var temp = checkRemindMsg(contentMap["text"]);
     return Container(
       constraints: BoxConstraints(
         maxWidth: Flavors.sizesInfo.screenWidth - 110.0.w,
@@ -315,7 +316,7 @@ class _ChatBubbleState extends State<ChatBubble> {
             : Flavors.colorInfo.mainColor,
       ),
       padding: const EdgeInsets.all(10),
-      child: Text('${checkRemindMsg(contentMap["text"])[0]}',
+      child: Text('${temp is List ? temp[0] : temp}',
           maxLines: 10,
           softWrap: true,
           style: widget.messageBelongType == MessageBelongType.Receiver

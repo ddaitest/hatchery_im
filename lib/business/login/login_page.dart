@@ -61,14 +61,11 @@ class LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              mainBackGroundWidget(),
-              _mainContainerView(),
-            ],
-          ),
+        child: Stack(
+          children: <Widget>[
+            mainBackGroundWidget(),
+            _mainContainerView(),
+          ],
         ),
       ),
     );

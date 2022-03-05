@@ -18,6 +18,7 @@ import 'package:hatchery_im/common/widget/emojiModel.dart';
 import '../../common/widget/loading_Indicator.dart';
 import '../../common/widget/loading_view.dart';
 import '../../routers.dart';
+import 'dart:convert' as convert;
 
 class ChatDetailPage extends StatefulWidget {
   final String? otherName;
@@ -271,7 +272,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         onFieldSubmitted: (term) {
           String reminderCode =
               widget.chatType != "CHAT" && manager.atMemberMap.isNotEmpty
-                  ? "~~##${manager.atMemberMap}##~~"
+                  ? "~~##${convert.jsonEncode(manager.atMemberMap)}##~~"
                   : "";
           Map<String, dynamic> content = {"text": "$term$reminderCode"};
           Log.green("textInputAction $content");

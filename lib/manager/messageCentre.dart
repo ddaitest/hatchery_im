@@ -698,7 +698,7 @@ class MyEngineHandler implements EngineCallback {
         // 如果有群提醒则判断是否提醒了自己
         if (msgText is List) {
           msg..content = convert.jsonEncode({"text": msgText[0]});
-          Map<String, String> temp = convert.jsonDecode(msgText[1]);
+          Map<String, dynamic> temp = convert.jsonDecode(msgText[1]);
           var result = temp.values.firstWhere(
               (element) => element == UserCentre.getInfo()?.userID,
               orElse: () => "");
