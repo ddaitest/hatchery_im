@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:just_audio/just_audio.dart';
 import 'package:dart_ipify/dart_ipify.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:collection/collection.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
@@ -609,8 +609,10 @@ class MessageCentre {
   }
 
   static playSound() async {
-    AudioCache _player = AudioCache(prefix: 'sounds/');
-    _player.play("message.mp3");
+    final player = AudioPlayer();
+    player
+        .setAsset("assets/sounds/message.mp3")
+        .whenComplete(() => player.play());
   }
 
   static void disconnect() => engine?.disconnect();

@@ -46,7 +46,7 @@ dependencies:
   skeleton_text: ^3.0.0
   flutter_slidable: ^1.1.0
   photo_view: ^0.13.0
-  audioplayers: ^0.20.1 #ANDROID IOS MACOS WEB
+#  audioplayers: ^0.20.1 #ANDROID IOS MACOS WEB
   better_player: ^0.0.81 #ANDROID IOS
   badges: ^2.0.1
   loading_indicator: ^3.0.1
@@ -79,6 +79,7 @@ dependencies:
   custom_pop_up_menu: ^1.2.2 #ANDROID IOS LINUX MACOS WEB WINDOWS
   video_thumbnail: ^0.4.3 #ANDROID IOS
   jpush_flutter: ^2.2.2 #ANDROID IOS
+  just_audio: ^0.9.20 #ANDROID IOS MACOS WEB
 
 
   # The following adds the Cupertino Icons font to your application.

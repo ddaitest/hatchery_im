@@ -1,107 +1,78 @@
 import 'dart:async';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/common/utils.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 
 import '../../../config.dart';
+import '../../../manager/chat_manager/voiceBubbleManager.dart';
 import '../../AppContext.dart';
-import '../../log.dart';
-import '../../tools.dart';
 
-class VoiceMessageWidget extends StatelessWidget {
+class VoiceMessageWidget extends StatefulWidget {
   final Map<String, dynamic> voiceMessageMap;
   final MessageBelongType messageBelongType;
   VoiceMessageWidget(this.voiceMessageMap, this.messageBelongType);
+  @override
+  _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();
+}
 
-  late final AudioPlayer audioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  late final int? _duration;
-  late final String? _voiceUrl;
+class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
 
-  init() {
-    _voiceUrl = voiceMessageMap["voice_url"] ?? null;
-    _duration = voiceMessageMap["time"] ?? 0;
-    if (_voiceUrl != null && _voiceUrl!.contains("http")) {
-      _initAudioPlayer();
-    } else {
-      showToast("语音加载失败");
-    }
-  }
+  final manager = App.manager<VoiceBubbleManager>();
 
-  void _initAudioPlayer() {
-    audioPlayer.setUrl(_voiceUrl!);
-  }
-
-  Future<int> play() async {
-    int result = await audioPlayer.play(_voiceUrl!);
-    return result;
-  }
-
-  // Future<int> _stop() async {
-  //   final result = await audioPlayer.stop();
-  //   if (result == 1) {
-  //     _playerState = PlayerState.STOPPED;
-  //   }
-  //   return result;
-  // }
-
-  Future<int> pause() async {
-    int result = await audioPlayer.pause();
-    return result;
+  @override
+  void initState() {
+    manager.init(widget.voiceMessageMap);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    init();
-    return _voiceMessageView(messageBelongType);
+    super.build(context);
+    return _voiceMessageView(widget.messageBelongType);
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
-    if (_voiceUrl!.contains("http") && _voiceUrl != null) {
-      return GestureDetector(
-        onTap: () => audioPlayer.state == PlayerState.PAUSED ||
-                audioPlayer.state == PlayerState.STOPPED
-            ? play()
-            : pause(),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: belongType == MessageBelongType.Receiver
-                ? Colors.white
-                : Flavors.colorInfo.mainColor,
-          ),
-          padding: const EdgeInsets.all(10),
-          child: Container(
-            alignment: belongType == MessageBelongType.Receiver
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            height: 25.0.h,
-            width: _setMessageWidth(_duration!),
-            child: Text("${videoTimeFormat(_duration!)}",
-                style: belongType == MessageBelongType.Receiver
-                    ? Flavors.textStyles.chatBubbleVoiceReceiverText
-                    : Flavors.textStyles.chatBubbleVoiceSenderText),
-          ),
-        ),
-      );
-    } else {
-      return Container(
+    return GestureDetector(
+      onTap: () => manager.play(),
+      child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Flavors.colorInfo.mainColor,
+          color: belongType == MessageBelongType.Receiver
+              ? Colors.white
+              : Flavors.colorInfo.mainColor,
         ),
         padding: const EdgeInsets.all(10),
         child: Container(
-          alignment: Alignment.centerLeft,
           height: 25.0.h,
-          width: 100.0.w,
-          child: Text('发送中....',
-              style: Flavors.textStyles.chatBubbleVoiceSenderText),
+          width: _setMessageWidth(widget.voiceMessageMap["time"]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('....',
+                  style: belongType == MessageBelongType.Receiver
+                      ? Flavors.textStyles.chatBubbleVoiceReceiverText
+                      : Flavors.textStyles.chatBubbleVoiceSenderText),
+              Icon(
+                  manager.audioPlayer.playing
+                      ? Icons.pause_circle_outline
+                      : Icons.play_circle_outline,
+                  size: 30.0,
+                  color: belongType == MessageBelongType.Receiver
+                      ? Flavors.colorInfo.blueGrey
+                      : Flavors.colorInfo.mainBackGroundColor)
+            ],
+          ),
         ),
-      );
-    }
+      ),
+    );
   }
 
   double _setMessageWidth(int seconds) {
@@ -110,5 +81,10 @@ class VoiceMessageWidget extends StatelessWidget {
     } else {
       return 200.0.w;
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

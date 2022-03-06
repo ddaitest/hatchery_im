@@ -26,6 +26,7 @@ import 'package:hatchery_im/manager/map_manager/showMapManager.dart';
 
 import 'jpush_common.dart';
 import 'manager/chat_manager/chatSettingManager.dart';
+import 'manager/chat_manager/voiceBubbleManager.dart';
 import 'manager/emojiModel_manager.dart';
 import 'manager/profile_manager/setting_manager/settingManager.dart';
 
@@ -51,6 +52,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => FriendApplyManager()),
         ChangeNotifierProvider(create: (_) => BlockListManager()),
         ChangeNotifierProvider(create: (_) => ChatDetailManager()),
+        ChangeNotifierProvider(create: (_) => VoiceBubbleManager()),
         ChangeNotifierProvider(create: (_) => ChatSettingManager()),
         ChangeNotifierProvider(create: (_) => ChatHomeManager()),
         ChangeNotifierProvider(create: (_) => SelectContactsModelManager()),
