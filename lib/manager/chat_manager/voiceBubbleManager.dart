@@ -3,21 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:just_audio/just_audio.dart';
+import '../../common/log.dart';
 import '../../common/utils.dart';
 
 class VoiceBubbleManager extends ChangeNotifier {
   final _audioPlayer = AudioPlayer();
-  Duration? _audioDuration;
-  int? _duration;
-  String? _voiceUrl;
-  int? _totalDuration;
-  String? _timeLeftText;
+  String? _durationTime;
+  bool _isPlaying = false;
   AudioPlayer get audioPlayer => _audioPlayer;
-  Duration? get audioDuration => _audioDuration;
-  int? get duration => _duration;
-  String? get voiceUrl => _voiceUrl;
-  int? get totalDuration => _totalDuration;
-  String? get timeLeftText => _timeLeftText;
+  String? get durationTime => _durationTime;
+  bool get isPlaying => _isPlaying == _audioPlayer.playing;
 
   /// 初始化
   init(Map<String, dynamic> voiceMessageMap) {
@@ -26,7 +21,20 @@ class VoiceBubbleManager extends ChangeNotifier {
 
   void _initAudioPlayer(Map<String, dynamic> voiceMessageMap) async {
     await _audioPlayer.setUrl(voiceMessageMap["voice_url"]);
-    // _totalDuration = voiceMessageMap["time"];
+    _durationTime = voiceMessageMap["time"].toString();
+    _durationTime = _audioPlayer.duration?.inSeconds.toString();
+    notifyListeners();
+    _audioListen();
+  }
+
+  void _audioListen() {
+    _audioPlayer.playerStateStream.listen((event) {
+      if (event.playing) {
+        _durationTime = _audioPlayer.bufferedPosition.inSeconds.toString();
+        Log.green("_durationTime $_durationTime");
+        notifyListeners();
+      }
+    });
   }
 
   // void _voiceCountDownTime() {
@@ -43,21 +51,19 @@ class VoiceBubbleManager extends ChangeNotifier {
   //   }
   // }
 
-  // void voiceFinishReset() {
-  //   _timeLeftText = durationTransform(_audioDuration!.inSeconds);
-  //   stop();
-  // }
-  //
   play() async {
     await _audioPlayer.play();
+    notifyListeners();
   }
 
   pause() async {
     await _audioPlayer.pause();
+    notifyListeners();
   }
 
   stop() async {
     await _audioPlayer.stop();
+    notifyListeners();
   }
 
   @override

@@ -49,27 +49,86 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
               ? Colors.white
               : Flavors.colorInfo.mainColor,
         ),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(
+            left: 10.0, right: 20.0, top: 10.0, bottom: 10.0),
         child: Container(
-          height: 25.0.h,
+          height: 20.0.h,
           width: _setMessageWidth(widget.voiceMessageMap["time"]),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('....',
-                  style: belongType == MessageBelongType.Receiver
-                      ? Flavors.textStyles.chatBubbleVoiceReceiverText
-                      : Flavors.textStyles.chatBubbleVoiceSenderText),
-              Icon(
-                  manager.audioPlayer.playing
-                      ? Icons.pause_circle_outline
-                      : Icons.play_circle_outline,
-                  size: 30.0,
-                  color: belongType == MessageBelongType.Receiver
-                      ? Flavors.colorInfo.blueGrey
-                      : Flavors.colorInfo.mainBackGroundColor)
-            ],
-          ),
+          child: belongType == MessageBelongType.Receiver
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Selector<VoiceBubbleManager, String?>(
+                        builder: (BuildContext context, String? value,
+                            Widget? child) {
+                          return Text('${manager.durationTime ?? '...'}',
+                              style: belongType == MessageBelongType.Receiver
+                                  ? Flavors
+                                      .textStyles.chatBubbleVoiceReceiverText
+                                  : Flavors
+                                      .textStyles.chatBubbleVoiceSenderText);
+                        },
+                        selector: (BuildContext context,
+                            VoiceBubbleManager voiceBubbleManager) {
+                          return voiceBubbleManager.durationTime;
+                        },
+                        shouldRebuild: (pre, next) => (pre != next)),
+                    Selector<VoiceBubbleManager, bool>(
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                          return Icon(
+                              !value
+                                  ? Icons.pause_circle_outline_outlined
+                                  : Icons.play_circle_outline,
+                              size: 25.0,
+                              color: belongType == MessageBelongType.Receiver
+                                  ? Flavors.colorInfo.mainColor
+                                  : Flavors.colorInfo.mainBackGroundColor);
+                        },
+                        selector: (BuildContext context,
+                            VoiceBubbleManager voiceBubbleManager) {
+                          return voiceBubbleManager.isPlaying;
+                        },
+                        shouldRebuild: (pre, next) => (pre != next)),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Selector<VoiceBubbleManager, bool>(
+                        builder:
+                            (BuildContext context, bool value, Widget? child) {
+                          return Icon(
+                              !value
+                                  ? Icons.pause_circle_outline_outlined
+                                  : Icons.play_circle_outline,
+                              size: 25.0,
+                              color: belongType == MessageBelongType.Receiver
+                                  ? Flavors.colorInfo.mainColor
+                                  : Flavors.colorInfo.mainBackGroundColor);
+                        },
+                        selector: (BuildContext context,
+                            VoiceBubbleManager voiceBubbleManager) {
+                          return voiceBubbleManager.isPlaying;
+                        },
+                        shouldRebuild: (pre, next) => (pre != next)),
+                    Selector<VoiceBubbleManager, String?>(
+                        builder: (BuildContext context, String? value,
+                            Widget? child) {
+                          return Text('${manager.durationTime ?? '...'}',
+                              style: belongType == MessageBelongType.Receiver
+                                  ? Flavors
+                                      .textStyles.chatBubbleVoiceReceiverText
+                                  : Flavors
+                                      .textStyles.chatBubbleVoiceSenderText);
+                        },
+                        selector: (BuildContext context,
+                            VoiceBubbleManager voiceBubbleManager) {
+                          return voiceBubbleManager.durationTime;
+                        },
+                        shouldRebuild: (pre, next) => (pre != next)),
+                  ],
+                ),
         ),
       ),
     );
@@ -77,14 +136,15 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
 
   double _setMessageWidth(int seconds) {
     if (seconds <= 20) {
-      return (seconds * 10).w;
+      return Flavors.sizesInfo.screenWidth - 300.0.w;
     } else {
-      return 200.0.w;
+      return Flavors.sizesInfo.screenWidth - 200.0.w;
     }
   }
 
   @override
   void dispose() {
     super.dispose();
+    manager.audioPlayer.dispose();
   }
 }
