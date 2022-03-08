@@ -4,6 +4,7 @@ import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:just_audio/just_audio.dart';
 import '../../common/log.dart';
+import '../../common/tools.dart';
 import '../../common/utils.dart';
 
 class VoiceBubbleManager extends ChangeNotifier {
@@ -12,7 +13,7 @@ class VoiceBubbleManager extends ChangeNotifier {
   bool _isPlaying = false;
   AudioPlayer get audioPlayer => _audioPlayer;
   String? get durationTime => _durationTime;
-  bool get isPlaying => _isPlaying == _audioPlayer.playing;
+  bool get isPlaying => _isPlaying;
 
   /// 初始化
   init(Map<String, dynamic> voiceMessageMap) {
@@ -21,19 +22,20 @@ class VoiceBubbleManager extends ChangeNotifier {
 
   void _initAudioPlayer(Map<String, dynamic> voiceMessageMap) async {
     await _audioPlayer.setUrl(voiceMessageMap["voice_url"]);
-    _durationTime = voiceMessageMap["time"].toString();
-    _durationTime = _audioPlayer.duration?.inSeconds.toString();
+    _durationTime = mediaTimeFormat(voiceMessageMap["time"]);
     notifyListeners();
-    _audioListen();
+    _audioPositionListen();
   }
 
-  void _audioListen() {
-    _audioPlayer.playerStateStream.listen((event) {
-      if (event.playing) {
-        _durationTime = _audioPlayer.bufferedPosition.inSeconds.toString();
-        Log.green("_durationTime $_durationTime");
-        notifyListeners();
-      }
+  void _audioPositionListen() {
+    _audioPlayer.durationStream.listen((event) {
+      Log.green("positionStream positionStream");
+      _durationTime = mediaTimeFormat(event!.inSeconds);
+      Log.green("_durationTime $_durationTime");
+      // if (event.inSeconds <= 0) {
+      //   stop();
+      // }
+      // notifyListeners();
     });
   }
 
@@ -53,21 +55,24 @@ class VoiceBubbleManager extends ChangeNotifier {
 
   play() async {
     await _audioPlayer.play();
+    _isPlaying = true;
     notifyListeners();
   }
 
   pause() async {
     await _audioPlayer.pause();
+    _isPlaying = false;
     notifyListeners();
   }
 
   stop() async {
     await _audioPlayer.stop();
-    notifyListeners();
+    _isPlaying = false;
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void disposeM() {
+    _isPlaying = false;
+    _durationTime = "";
+    _audioPlayer.dispose();
   }
 }

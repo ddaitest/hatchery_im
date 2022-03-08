@@ -21,7 +21,7 @@ class VideoMessageWidget extends StatelessWidget {
   void _init() {
     _videoUrlThumb = videoMessageMap["video_thum_url"] ?? "";
     _videoUrl = videoMessageMap["video_url"] ?? "";
-    _videoTime = videoTimeFormat(int.parse(videoMessageMap['time'] ?? "0"));
+    _videoTime = mediaTimeFormat(int.parse(videoMessageMap['time'] ?? "0"));
     _videoWidth = videoMessageMap["width"] ?? 1080;
     _videoHeight = videoMessageMap["height"] ?? 720;
     Log.green("_videoWidth _videoHeight $_videoWidth $_videoHeight");

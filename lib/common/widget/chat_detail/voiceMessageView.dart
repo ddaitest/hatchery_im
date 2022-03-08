@@ -41,7 +41,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
 
   Widget _voiceMessageView(MessageBelongType belongType) {
     return GestureDetector(
-      onTap: () => manager.play(),
+      onTap: () => manager.isPlaying ? manager.pause() : manager.play(),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -62,11 +62,8 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                         builder: (BuildContext context, String? value,
                             Widget? child) {
                           return Text('${manager.durationTime ?? '...'}',
-                              style: belongType == MessageBelongType.Receiver
-                                  ? Flavors
-                                      .textStyles.chatBubbleVoiceReceiverText
-                                  : Flavors
-                                      .textStyles.chatBubbleVoiceSenderText);
+                              style: Flavors
+                                  .textStyles.chatBubbleVoiceReceiverText);
                         },
                         selector: (BuildContext context,
                             VoiceBubbleManager voiceBubbleManager) {
@@ -77,13 +74,11 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return Icon(
-                              !value
+                              value
                                   ? Icons.pause_circle_outline_outlined
                                   : Icons.play_circle_outline,
                               size: 25.0,
-                              color: belongType == MessageBelongType.Receiver
-                                  ? Flavors.colorInfo.mainColor
-                                  : Flavors.colorInfo.mainBackGroundColor);
+                              color: Flavors.colorInfo.diver);
                         },
                         selector: (BuildContext context,
                             VoiceBubbleManager voiceBubbleManager) {
@@ -99,13 +94,11 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                         builder:
                             (BuildContext context, bool value, Widget? child) {
                           return Icon(
-                              !value
+                              value
                                   ? Icons.pause_circle_outline_outlined
                                   : Icons.play_circle_outline,
                               size: 25.0,
-                              color: belongType == MessageBelongType.Receiver
-                                  ? Flavors.colorInfo.mainColor
-                                  : Flavors.colorInfo.mainBackGroundColor);
+                              color: Flavors.colorInfo.mainBackGroundColor);
                         },
                         selector: (BuildContext context,
                             VoiceBubbleManager voiceBubbleManager) {
@@ -116,11 +109,8 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                         builder: (BuildContext context, String? value,
                             Widget? child) {
                           return Text('${manager.durationTime ?? '...'}',
-                              style: belongType == MessageBelongType.Receiver
-                                  ? Flavors
-                                      .textStyles.chatBubbleVoiceReceiverText
-                                  : Flavors
-                                      .textStyles.chatBubbleVoiceSenderText);
+                              style:
+                                  Flavors.textStyles.chatBubbleVoiceSenderText);
                         },
                         selector: (BuildContext context,
                             VoiceBubbleManager voiceBubbleManager) {
@@ -145,6 +135,6 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
   @override
   void dispose() {
     super.dispose();
-    manager.audioPlayer.dispose();
+    manager.disposeM();
   }
 }

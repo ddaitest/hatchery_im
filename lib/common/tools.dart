@@ -45,11 +45,14 @@ Future<String?> getVideoThumb(String videoPath) async {
   return thumbnailFile.path;
 }
 
-String videoTimeFormat(int seconds) {
+String mediaTimeFormat(int seconds) {
   String finalTime;
   var d = Duration(seconds: seconds);
   List<String> parts = d.toString().split(':');
   if (seconds != 0) {
+    if (seconds <= 60) {
+      return '${seconds.toString()}"';
+    }
     if (parts[0] == "0" || parts[0] == "00") {
       finalTime = "${parts[1]}:${parts[2].split(".")[0]}";
     } else {

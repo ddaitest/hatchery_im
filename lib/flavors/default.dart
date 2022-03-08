@@ -152,7 +152,7 @@ class TextStyles {
       TextStyle(fontSize: 15.0.sp, color: ColorInfo().mainTextColor);
 
   final TextStyle chatBubbleVoiceReceiverText =
-      TextStyle(fontSize: 15.0.sp, color: ColorInfo().blueGrey);
+      TextStyle(fontSize: 15.0.sp, color: ColorInfo().diver);
 
   final TextStyle chatVideoTimerText =
       TextStyle(fontSize: 12.0.sp, color: ColorInfo().mainTextColor);
