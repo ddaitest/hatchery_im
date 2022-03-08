@@ -8,71 +8,62 @@ import '../../common/tools.dart';
 import '../../common/utils.dart';
 
 class VoiceBubbleManager extends ChangeNotifier {
-  final _audioPlayer = AudioPlayer();
-  String? _durationTime;
-  bool _isPlaying = false;
-  AudioPlayer get audioPlayer => _audioPlayer;
-  String? get durationTime => _durationTime;
-  bool get isPlaying => _isPlaying;
+  AudioPlayer? _audioPlayer;
+  int _totalTime = 0;
+  int? _durationTime;
+  AudioPlayer? get audioPlayer => _audioPlayer;
+  int? get durationTime => _durationTime;
 
   /// 初始化
   init(Map<String, dynamic> voiceMessageMap) {
+    _audioPlayer = AudioPlayer();
     _initAudioPlayer(voiceMessageMap);
   }
 
   void _initAudioPlayer(Map<String, dynamic> voiceMessageMap) async {
-    await _audioPlayer.setUrl(voiceMessageMap["voice_url"]);
-    _durationTime = mediaTimeFormat(voiceMessageMap["time"]);
+    _totalTime = voiceMessageMap["time"];
+    _durationTime = _totalTime;
     notifyListeners();
+    await _audioPlayer?.setUrl(voiceMessageMap["voice_url"]).then((value) {
+      if (value != null) {
+        _totalTime = value.inSeconds;
+        _durationTime = _totalTime;
+        notifyListeners();
+      }
+    });
     _audioPositionListen();
   }
 
   void _audioPositionListen() {
-    _audioPlayer.durationStream.listen((event) {
-      Log.green("positionStream positionStream");
-      _durationTime = mediaTimeFormat(event!.inSeconds);
+    _audioPlayer?.positionStream.listen((event) {
+      _durationTime = _totalTime - event.inSeconds;
       Log.green("_durationTime $_durationTime");
-      // if (event.inSeconds <= 0) {
-      //   stop();
-      // }
-      // notifyListeners();
+      if (event.inSeconds >= _totalTime) {
+        _durationTime = _totalTime;
+        stop();
+      }
+      notifyListeners();
     });
   }
 
-  // void _voiceCountDownTime() {
-  //   if (_audioPosition != null && _audioDuration != null) {
-  //     int? _finalTimeSeconds =
-  //         _audioDuration!.inSeconds - _audioPosition!.inSeconds;
-  //     if (_finalTimeSeconds > 0) {
-  //       _timeLeftText = durationTransform(_finalTimeSeconds);
-  //     } else if (_finalTimeSeconds == 0) {
-  //       voiceFinishReset();
-  //     } else {
-  //       voiceFinishReset();
-  //     }
-  //   }
-  // }
-
   play() async {
-    await _audioPlayer.play();
-    _isPlaying = true;
-    notifyListeners();
+    await _audioPlayer?.play();
+    Log.green("play");
   }
 
   pause() async {
-    await _audioPlayer.pause();
-    _isPlaying = false;
-    notifyListeners();
+    await _audioPlayer?.pause();
   }
 
   stop() async {
-    await _audioPlayer.stop();
-    _isPlaying = false;
+    await _audioPlayer?.stop();
+    _audioPlayer?.seek(Duration.zero);
+    Log.green("stop");
   }
 
   void disposeM() {
-    _isPlaying = false;
-    _durationTime = "";
-    _audioPlayer.dispose();
+    _durationTime = null;
+    _totalTime = 0;
+    _audioPlayer?.dispose();
   }
 }

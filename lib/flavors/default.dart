@@ -137,10 +137,12 @@ class TextStyles {
       fontSize: 15.0.sp, fontWeight: FontWeight.w600, color: ColorInfo().diver);
 
   final TextStyle chatBubbleSenderText = TextStyle(
-      fontSize: 13.0.sp, color: ColorInfo().mainTextColor, height: 1.5);
+      fontSize: 15.0.sp,
+      fontWeight: FontWeight.w400,
+      color: ColorInfo().mainTextColor);
 
-  final TextStyle chatBubbleReceiverText =
-      TextStyle(fontSize: 13.0.sp, color: ColorInfo().diver, height: 1.5);
+  final TextStyle chatBubbleReceiverText = TextStyle(
+      fontSize: 15.0.sp, fontWeight: FontWeight.w400, color: ColorInfo().diver);
 
   final TextStyle chatBubbleTimeText =
       TextStyle(fontSize: 10.0.sp, color: ColorInfo().subtitleColor);
