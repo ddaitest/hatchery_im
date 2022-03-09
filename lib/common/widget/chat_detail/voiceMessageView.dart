@@ -10,42 +10,29 @@ import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 import '../../../config.dart';
-import '../../../manager/chat_manager/voiceBubbleManager.dart';
-import '../../AppContext.dart';
+import '../../log.dart';
 import '../../tools.dart';
 
-class VoiceMessageWidget extends StatefulWidget {
+class VoiceMessageWidget extends StatelessWidget {
   final Map<String, dynamic> voiceMessageMap;
   final MessageBelongType messageBelongType;
   VoiceMessageWidget(this.voiceMessageMap, this.messageBelongType);
-  @override
-  _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();
-}
-
-class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  final manager = App.manager<VoiceBubbleManager>();
-
-  @override
-  void initState() {
-    manager.init(widget.voiceMessageMap);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return _voiceMessageView(widget.messageBelongType);
+    return _voiceMessageView(messageBelongType);
   }
 
   Widget _voiceMessageView(MessageBelongType belongType) {
+    AudioPlayer _audioPlayer = AudioPlayer();
+    int _totalTime = voiceMessageMap["time"] ?? 0;
+    _audioPlayer.setUrl(voiceMessageMap["voice_url"]).whenComplete(() {
+      _audioPlayer.load().then((value) => _totalTime = value!.inSeconds);
+    });
     return GestureDetector(
-        onTap: () => manager.audioPlayer!.playerState.playing
-            ? manager.stop()
-            : manager.play(),
+        onTap: () => _audioPlayer.playerState.playing
+            ? _audioPlayer.stop()
+            : _audioPlayer.play(),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
@@ -60,13 +47,13 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                   left: 15.0, right: 12.0, top: 10.0, bottom: 12.0),
           child: Container(
             height: 20.0.h,
-            width: _setMessageWidth(widget.voiceMessageMap["time"]),
+            width: _setMessageWidth(voiceMessageMap["time"]),
             child: belongType == MessageBelongType.Receiver
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       StreamBuilder<PlayerState?>(
-                          stream: manager.audioPlayer?.playerStateStream,
+                          stream: _audioPlayer.playerStateStream,
                           builder: (context, value) {
                             return Icon(
                                 value.data!.playing
@@ -75,36 +62,45 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
                                 size: 25.0,
                                 color: Flavors.colorInfo.diver);
                           }),
-                      Selector<VoiceBubbleManager, int?>(
-                          builder: (BuildContext context, int? value,
-                              Widget? child) {
-                            return Text('${value.toString()}"',
-                                style:
-                                    Flavors.textStyles.chatBubbleReceiverText);
-                          },
-                          selector: (BuildContext context,
-                              VoiceBubbleManager voiceBubbleManager) {
-                            return voiceBubbleManager.durationTime;
-                          },
-                          shouldRebuild: (pre, next) => (pre != next)),
+                      StreamBuilder<Duration?>(
+                          stream: _audioPlayer.positionStream,
+                          builder: (context, positionDuration) {
+                            if (positionDuration.data!.inSeconds < _totalTime) {
+                              return Text(
+                                  '${(_totalTime - positionDuration.data!.inSeconds).toString()}"',
+                                  style: Flavors
+                                      .textStyles.chatBubbleReceiverText);
+                            } else {
+                              _audioPlayer.stop();
+                              _audioPlayer.seek(Duration.zero);
+                              return Text('${_totalTime.toString()}"',
+                                  style: Flavors
+                                      .textStyles.chatBubbleReceiverText);
+                            }
+                          })
                     ],
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Selector<VoiceBubbleManager, int?>(
-                          builder: (BuildContext context, int? value,
-                              Widget? child) {
-                            return Text('${value.toString()}"',
-                                style: Flavors.textStyles.chatBubbleSenderText);
-                          },
-                          selector: (BuildContext context,
-                              VoiceBubbleManager voiceBubbleManager) {
-                            return voiceBubbleManager.durationTime;
-                          },
-                          shouldRebuild: (pre, next) => (pre != next)),
+                      StreamBuilder<Duration?>(
+                          stream: _audioPlayer.positionStream,
+                          builder: (context, positionDuration) {
+                            if (positionDuration.data!.inSeconds < _totalTime) {
+                              return Text(
+                                  '${(_totalTime - positionDuration.data!.inSeconds).toString()}"',
+                                  style:
+                                      Flavors.textStyles.chatBubbleSenderText);
+                            } else {
+                              _audioPlayer.stop();
+                              _audioPlayer.seek(Duration.zero);
+                              return Text('${_totalTime.toString()}"',
+                                  style:
+                                      Flavors.textStyles.chatBubbleSenderText);
+                            }
+                          }),
                       StreamBuilder<PlayerState?>(
-                          stream: manager.audioPlayer?.playerStateStream,
+                          stream: _audioPlayer.playerStateStream,
                           builder: (context, value) {
                             return Icon(
                                 value.data!.playing
@@ -125,11 +121,5 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget>
     } else {
       return Flavors.sizesInfo.screenWidth - 200.0.w;
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    manager.disposeM();
   }
 }
