@@ -14,7 +14,7 @@ import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/entity.dart';
@@ -38,7 +38,6 @@ import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 class ChatDetailManager extends ChangeNotifier {
   MyProfile? myProfileData;
   bool isVoiceModel = false;
-  bool isRecording = false;
   bool emojiShowing = false;
   String? voicePath;
   String? voiceUrl;
@@ -57,6 +56,7 @@ class ChatDetailManager extends ChangeNotifier {
   String? myUserId;
   List<Message> messageList = [];
   List<GroupMembers> groupMembersList = [];
+  final Record _voiceRecord = Record();
   final TextEditingController textEditingController = TextEditingController();
   ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
   int _oldInputTextLength = 0;
@@ -514,46 +514,55 @@ class ChatDetailManager extends ChangeNotifier {
   // }
 
   changeInputView() {
-    isVoiceModel = !isVoiceModel;
+    _voiceRecord.isRecording().then((value) {
+      if (value) {
+        isVoiceModel = true;
+      } else {
+        isVoiceModel = false;
+      }
+    });
     notifyListeners();
   }
 
   void startVoiceRecord() async {
     try {
-      bool result = await Record().hasPermission();
       DateTime _timeNow = DateTime.now();
       Directory tempDir = await getTemporaryDirectory();
       String tempPath = tempDir.path;
       String voiceTempPath = '$tempPath/voiceFiles/';
       folderCreate(voiceTempPath);
       voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
-      Log.green("startVoiceRecord $result");
-      if (result) {
-        await Record().start(
-          path: '$voicePath', // required
-        );
-        isRecording = true;
-        changeInputView();
-        timingStartMethod();
-      } else {
-        showToast('没有麦克风或者存储权限，请在系统设置中开启');
-        isRecording = false;
-        cancelTimer();
-      }
+      await _voiceRecord.start(
+        path: '$voicePath', // required
+      );
+      changeInputView();
+      timingStartMethod();
     } catch (e) {
-      isRecording = false;
       showToast('没有麦克风或者存储权限，请在系统设置中开启');
       cancelTimer();
     }
   }
 
-  stopVoiceRecord() async {
-    if (isRecording) {
-      await Record().stop();
-      sendVoiceMessage();
-      changeInputView();
-    }
+  void stopVoiceRecord() async {
+    _voiceRecord.isRecording().then((value) async {
+      if (value) {
+        await _voiceRecord.stop();
+        sendVoiceMessage();
+        changeInputView();
+      }
+    });
     cancelTimer();
+  }
+
+  void checkRecordPermission() async {
+    await _voiceRecord.hasPermission().then((value) {
+      if (value) {
+        startVoiceRecord();
+      } else {
+        showToast('没有麦克风或者存储权限，请在系统设置中开启');
+        cancelTimer();
+      }
+    });
   }
 
   sendVoiceMessage() {
@@ -589,7 +598,6 @@ class ChatDetailManager extends ChangeNotifier {
   cancelTimer() {
     timer?.cancel();
     recordTiming = 0;
-    isRecording = false;
   }
 
   static copyText(String? targetText) {

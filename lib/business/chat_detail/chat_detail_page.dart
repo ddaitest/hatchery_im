@@ -324,16 +324,19 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget _voiceRecordBtnView(bool isVoice) {
     return GestureDetector(
       onTap: () => showToast("长按录制消息，松手发送消息"),
-      onLongPress: () {
+      onLongPressStart: (LongPressStartDetails details) {
         Log.green("onLongPressStart");
         FocusScope.of(context).unfocus();
         Vibration.vibrate(duration: 100);
-        manager.startVoiceRecord();
+        manager.checkRecordPermission();
+      },
+      onLongPressCancel: () {
+        manager.stopVoiceRecord();
       },
       onLongPressEnd: (LongPressEndDetails details) {
         Log.green("onLongPressEnd");
         Vibration.vibrate(duration: 100);
-        manager.stopVoiceRecord();
+        // manager.stopVoiceRecord();
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),
