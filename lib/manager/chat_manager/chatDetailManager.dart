@@ -545,24 +545,34 @@ class ChatDetailManager extends ChangeNotifier {
 
   void stopVoiceRecord() async {
     _voiceRecord.isRecording().then((value) async {
-      if (value) {
+      changeInputView();
+      cancelTimer();
+      if (value && recordTiming != 0) {
         await _voiceRecord.stop();
         sendVoiceMessage();
-        changeInputView();
       }
     });
-    cancelTimer();
   }
 
   void checkRecordPermission() async {
-    await _voiceRecord.hasPermission().then((value) {
-      if (value) {
+    Permission.microphone.status.then((PermissionStatus status) async{
+      if (status == PermissionStatus.granted) {
         startVoiceRecord();
-      } else {
-        showToast('没有麦克风或者存储权限，请在系统设置中开启');
+      } else if (status == PermissionStatus.denied) {
+        await Permission
+      } else if (status == PermissionStatus.permanentlyDenied) {
         cancelTimer();
+        showToast('没有麦克风或者存储权限，请在系统设置中开启');
       }
     });
+    // await _voiceRecord.hasPermission().then((value) {
+    //   if (value) {
+    //     startVoiceRecord();
+    //   } else {
+    //     showToast('没有麦克风或者存储权限，请在系统设置中开启');
+    //     cancelTimer();
+    //   }
+    // });
   }
 
   sendVoiceMessage() {

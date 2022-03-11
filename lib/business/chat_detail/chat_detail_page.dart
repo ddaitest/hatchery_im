@@ -330,13 +330,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         Vibration.vibrate(duration: 100);
         manager.checkRecordPermission();
       },
-      onLongPressCancel: () {
-        manager.stopVoiceRecord();
-      },
       onLongPressEnd: (LongPressEndDetails details) {
         Log.green("onLongPressEnd");
         Vibration.vibrate(duration: 100);
-        // manager.stopVoiceRecord();
+        manager.stopVoiceRecord();
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),
