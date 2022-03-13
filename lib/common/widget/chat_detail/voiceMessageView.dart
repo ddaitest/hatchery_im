@@ -13,35 +13,23 @@ import '../../../config.dart';
 import '../../log.dart';
 import '../../tools.dart';
 
-class VoiceMessageWidget extends StatefulWidget {
+class VoiceMessageWidget extends StatelessWidget {
   final Map<String, dynamic> voiceMessageMap;
   final MessageBelongType messageBelongType;
   VoiceMessageWidget(this.voiceMessageMap, this.messageBelongType);
-  @override
-  _VoiceMessageWidgetState createState() => _VoiceMessageWidgetState();
-}
 
-class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
-  AudioPlayer _audioPlayer = AudioPlayer();
-  int? _totalTime;
+  static final AudioPlayer _audioPlayer = AudioPlayer();
+  late final int? _totalTime;
 
-  @override
-  void initState() {
-    _audioPlayer.setUrl(widget.voiceMessageMap["voice_url"]);
-    Log.green("voice_url ${widget.voiceMessageMap["voice_url"]}");
-    _totalTime = widget.voiceMessageMap["time"] ?? 0;
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    _totalTime = null;
-    super.dispose();
+  void init() {
+    _audioPlayer.setUrl(voiceMessageMap["voice_url"]);
+    Log.green("voice_url ${voiceMessageMap["voice_url"]}");
+    _totalTime = voiceMessageMap["time"] ?? 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    init();
     return _voiceMessageView();
   }
 
@@ -51,11 +39,11 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: widget.messageBelongType == MessageBelongType.Receiver
+            color: messageBelongType == MessageBelongType.Receiver
                 ? Colors.white
                 : Flavors.colorInfo.mainColor,
           ),
-          padding: widget.messageBelongType == MessageBelongType.Receiver
+          padding: messageBelongType == MessageBelongType.Receiver
               ? const EdgeInsets.only(
                   left: 12.0, right: 15.0, top: 10.0, bottom: 12.0)
               : const EdgeInsets.only(
@@ -63,7 +51,7 @@ class _VoiceMessageWidgetState extends State<VoiceMessageWidget> {
           child: Container(
             height: 20.0.h,
             width: _setMessageWidth(_totalTime!),
-            child: widget.messageBelongType == MessageBelongType.Receiver
+            child: messageBelongType == MessageBelongType.Receiver
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

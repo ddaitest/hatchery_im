@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/manager/emojiModel_manager.dart';
+import 'package:hive/hive.dart';
 import 'package:vibration/vibration.dart';
 import 'package:hatchery_im/business/models/send_menu_items.dart';
 import 'package:hatchery_im/common/widget/chat_detail/chat_detail_page_appbar.dart';
@@ -303,14 +304,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   height: 20.0.h,
                   child: LoadingIndicator(
                     indicatorType: Indicator.ballScaleMultiple,
-                    backgroundColor: Colors.red,
+                    colors: [Colors.red],
+                    backgroundColor: Colors.transparent,
                   ),
                 ),
                 SizedBox(
                   width: 20.0.w,
                 ),
-                Text("${durationTransform(value)}",
-                    style: Flavors.textStyles.chatVoiceTimerText),
+                Text('$value"', style: Flavors.textStyles.chatVoiceTimerText),
               ],
             ));
       },
@@ -331,9 +332,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         manager.checkRecordPermission();
       },
       onLongPressEnd: (LongPressEndDetails details) {
-        Log.green("onLongPressEnd");
-        Vibration.vibrate(duration: 100);
-        manager.stopVoiceRecord();
+        if (manager.recordTiming != 0 ||
+            manager.recordTiming <= TimeConfig.recordVoiceTotalTime) {
+          Log.green("onLongPressEnd");
+          Vibration.vibrate(duration: 100);
+          manager.stopVoiceRecord();
+        }
       },
       child: Container(
         // padding: const EdgeInsets.only(bottom: 20),

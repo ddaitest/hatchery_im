@@ -77,6 +77,7 @@ class ChatDetailManager extends ChangeNotifier {
   String get currentGroupName => _currentGroupName;
   String get currentGroupIcon => _currentGroupIcon;
   String get currentFriendId => _currentFriendId;
+  ValueListenable<Box<Message>>? get valueListenable => _valueListenable;
 
   /// 初始化
   void init(
@@ -128,6 +129,7 @@ class ChatDetailManager extends ChangeNotifier {
         clearUnReadStatus(tempList);
         clearReminderMeStatus();
         _messageList = tempList;
+        notifyListeners();
         if (!firstLoad) notifyListeners();
       }
     }
@@ -527,43 +529,48 @@ class ChatDetailManager extends ChangeNotifier {
   //   // MessageCentre().loadMore(currentFriendId)
   // }
 
-  void changeInputView() {
-    _voiceRecord.isRecording().then((value) {
-      if (value) {
-        _isVoiceModel = true;
-      } else {
-        _isVoiceModel = false;
-      }
-    });
+  void changeInputView(bool status) {
+    _isVoiceModel = status;
     notifyListeners();
   }
 
   void startVoiceRecord() async {
     try {
-      DateTime _timeNow = DateTime.now();
-      Directory tempDir = await getTemporaryDirectory();
-      String tempPath = tempDir.path;
-      String voiceTempPath = '$tempPath/voiceFiles/';
-      folderCreate(voiceTempPath);
-      _voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
-      await _voiceRecord.start(
-        path: '$_voicePath', // required
-      );
-      changeInputView();
-      timingStartMethod();
+      if (_recordTiming == 0) {
+        _recordingVoice();
+      } else {
+        await _voiceRecord.stop();
+        changeInputView(false);
+        _cancelTimer();
+        _recordingVoice();
+      }
     } catch (e) {
       showToast('没有麦克风或者存储权限，请在系统设置中开启');
       _cancelTimer();
     }
   }
 
+  void _recordingVoice() async {
+    changeInputView(true);
+    DateTime _timeNow = DateTime.now();
+    Directory tempDir = await getTemporaryDirectory();
+    String tempPath = tempDir.path;
+    String voiceTempPath = '$tempPath/voiceFiles/';
+    folderCreate(voiceTempPath);
+    _voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
+    await _voiceRecord
+        .start(
+      path: '$_voicePath', // required
+    )
+        .whenComplete(() {
+      timingStartMethod();
+    });
+  }
+
   void stopVoiceRecord() async {
-    bool temp = await _voiceRecord.isRecording();
-    if (temp) {
-      await _voiceRecord.stop();
-      changeInputView();
-      sendVoiceMessage();
-    }
+    changeInputView(false);
+    await _voiceRecord.stop();
+    if (_recordTiming >= 3) sendVoiceMessage();
     _cancelTimer();
   }
 
@@ -582,7 +589,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   sendVoiceMessage() {
-    Log.green("recordTiming $_recordTiming");
+    Log.green("_recordTiming $_recordTiming");
     if (_voicePath != null) {
       if (_recordTiming >= 3) {
         Map<String, dynamic> content = {
@@ -608,6 +615,10 @@ class ChatDetailManager extends ChangeNotifier {
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       _recordTiming++;
       notifyListeners();
+      if (_recordTiming >= TimeConfig.recordVoiceTotalTime) {
+        stopVoiceRecord();
+        changeInputView(false);
+      }
     });
   }
 

@@ -17,6 +17,7 @@ class SPKey {
 
 class TimeConfig {
   static final int OTP_CODE_RESEND = debugMode ? 10 : 60;
+  static final int recordVoiceTotalTime = debugMode ? 10 : 60;
 }
 
 const mainTabs = [
