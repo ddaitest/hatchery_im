@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
@@ -36,34 +37,49 @@ import '../../config.dart';
 import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 class ChatDetailManager extends ChangeNotifier {
-  MyProfile? myProfileData;
-  bool isVoiceModel = false;
-  bool emojiShowing = false;
-  String? voicePath;
-  String? voiceUrl;
-  Timer? timer;
-  int recordTiming = 0;
-  String currentFriendId = "";
-  int currentMessageID = 0;
-  int? videoHeight;
-  int? videoWidth;
-  String? currentChatType;
-  String? otherName;
-  String? otherIcon;
-  String currentGroupId = "";
-  String currentGroupName = "";
-  String currentGroupIcon = "";
-  String? myUserId;
-  List<Message> messageList = [];
-  List<GroupMembers> groupMembersList = [];
-  final Record _voiceRecord = Record();
-  final TextEditingController textEditingController = TextEditingController();
-  ValueListenable<Box<Message>>? valueListenable = LocalStore.listenMessage();
+  static Record _voiceRecord = Record();
+  static final TextEditingController _textEditingController =
+      TextEditingController();
+  static final MyProfile? _myProfileData = UserCentre.getInfo();
+  bool _isVoiceModel = false;
+  bool _emojiShowing = false;
+  String? _voicePath;
+  // String? _voiceUrl;
+  Timer? _timer;
+  int _recordTiming = 0;
+  String _currentFriendId = "";
+  // int _currentMessageID = 0;
+  // int? _videoHeight;
+  // int? _videoWidth;
+  String? _currentChatType;
+  String? _otherName;
+  String? _otherIcon;
+  String _currentGroupId = "";
+  String _currentGroupName = "";
+  String _currentGroupIcon = "";
+  String? _myUserId;
+  List<Message> _messageList = [];
+  List<GroupMembers> _groupMembersList = [];
+  ValueListenable<Box<Message>>? _valueListenable = LocalStore.listenMessage();
   int _oldInputTextLength = 0;
-  Map<String, String> atMemberMap = {};
+  Map<String, String> _atMemberMap = {};
+  MyProfile? get myProfileData => _myProfileData;
+  int get recordTiming => _recordTiming;
+  List<Message> get messageList => _messageList;
+  bool get isVoiceModel => _isVoiceModel;
+  TextEditingController get textEditingController => _textEditingController;
+  bool get emojiShowing => _emojiShowing;
+  Map<String, String> get atMemberMap => _atMemberMap;
+  String? get currentChatType => _currentChatType;
+  String? get otherName => _otherName;
+  String? get otherIcon => _otherIcon;
+  String get currentGroupId => _currentGroupId;
+  String get currentGroupName => _currentGroupName;
+  String get currentGroupIcon => _currentGroupIcon;
+  String get currentFriendId => _currentFriendId;
 
   /// 初始化
-  init(
+  void init(
       {String? chatType,
       String friendName = "",
       String friendIcon = "",
@@ -71,20 +87,19 @@ class ChatDetailManager extends ChangeNotifier {
       String groupId = "",
       String groupName = "",
       String groupIcon = ""}) {
-    myProfileData = UserCentre.getInfo();
-    myUserId = myProfileData?.userID ?? "";
-    currentChatType = chatType;
-    otherName = friendName;
-    otherIcon = friendIcon;
-    currentFriendId = friendId;
-    currentGroupId = groupId;
-    currentGroupName = groupName;
-    currentGroupIcon = groupIcon;
-    textEditingController.addListener(() {
+    _myUserId = _myProfileData?.userID ?? "";
+    _currentChatType = chatType;
+    _otherName = friendName;
+    _otherIcon = friendIcon;
+    _currentFriendId = friendId;
+    _currentGroupId = groupId;
+    _currentGroupName = groupName;
+    _currentGroupIcon = groupIcon;
+    _textEditingController.addListener(() {
       _atTextListenMethod();
     });
     _loadMessages(firstLoad: true);
-    valueListenable?.addListener(() {
+    _valueListenable?.addListener(() {
       _loadMessages();
     });
   }
@@ -92,19 +107,19 @@ class ChatDetailManager extends ChangeNotifier {
   void _loadMessages({bool firstLoad = false}) {
     Box<Message>? msgBox = LocalStore.messageBox;
     List<Message> tempList = [];
-    Log.red(currentFriendId != ""
-        ? "listenMessage >> friendId= $currentFriendId  myUserId $myUserId"
-        : "listenMessage >> groupId= $currentGroupId  myUserId $myUserId");
+    Log.red(_currentFriendId != ""
+        ? "listenMessage >> friendId= $_currentFriendId  myUserId $_myUserId"
+        : "listenMessage >> groupId= $_currentGroupId  myUserId $_myUserId");
     if (msgBox != null) {
       tempList = msgBox.values
           .where((element) =>
               (element.deleted == null || !element.deleted!) &&
               (element.type == "CHAT"
-                  ? (element.receiver == currentFriendId &&
-                          element.sender == myUserId) ||
-                      (element.sender == currentFriendId &&
-                          element.receiver == myUserId)
-                  : element.groupID == currentGroupId))
+                  ? (element.receiver == _currentFriendId &&
+                          element.sender == _myUserId) ||
+                      (element.sender == _currentFriendId &&
+                          element.receiver == _myUserId)
+                  : element.groupID == _currentGroupId))
           .toList();
       if (tempList.isNotEmpty) {
         tempList.sort((a, b) =>
@@ -112,7 +127,7 @@ class ChatDetailManager extends ChangeNotifier {
                 .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
         clearUnReadStatus(tempList);
         clearReminderMeStatus();
-        messageList = tempList;
+        _messageList = tempList;
         if (!firstLoad) notifyListeners();
       }
     }
@@ -122,7 +137,7 @@ class ChatDetailManager extends ChangeNotifier {
   /// messageBox和sessionBox都会刷新数据
   void clearUnReadStatus(List<Message> temp) {
     Session? session = LocalStore.findSession(
-        currentFriendId == "" ? currentGroupId : currentFriendId);
+        _currentFriendId == "" ? _currentGroupId : _currentFriendId);
     if (session != null) {
       session
         ..unReadCount = 0
@@ -130,7 +145,7 @@ class ChatDetailManager extends ChangeNotifier {
     }
     if (temp.isNotEmpty) {
       temp.forEach((element) {
-        if (element.sender != myProfileData?.userID &&
+        if (element.sender != _myProfileData?.userID &&
             element.progress == MSG_RECEIVED) {
           element
             ..progress = MSG_READ
@@ -143,8 +158,8 @@ class ChatDetailManager extends ChangeNotifier {
   /// 点击清除群提醒状态
   /// todo  缺少点击滚动到指定位置
   void clearReminderMeStatus() {
-    if (currentGroupId != "") {
-      Session? temp = LocalStore.findSession(currentGroupId);
+    if (_currentGroupId != "") {
+      Session? temp = LocalStore.findSession(_currentGroupId);
       if (temp?.reminderMe == 1) {
         temp
           ?..reminderMe = 0
@@ -170,8 +185,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   Future<void> pickCamera(BuildContext context) async {
     Navigator.pop(App.navState.currentContext!);
-    AssetEntity? _entity =
-        await CameraPicker.pickFromCamera(context, enableRecording: true);
+    AssetEntity? _entity = await CameraPicker.pickFromCamera(context);
     if (_entity == null) {
       return null;
     } else {
@@ -252,14 +266,14 @@ class ChatDetailManager extends ChangeNotifier {
               content["img_url"] = uploadMediaUrl;
               MessageCentre.sendMessageModel(
                   term: content,
-                  chatType: currentChatType!,
+                  chatType: _currentChatType!,
                   messageType: contentType,
-                  otherName: otherName ?? "",
-                  otherIcon: otherIcon ?? "",
-                  currentGroupId: currentGroupId,
-                  currentGroupName: currentGroupName,
-                  currentGroupIcon: currentGroupIcon,
-                  currentFriendId: currentFriendId,
+                  otherName: _otherName ?? "",
+                  otherIcon: _otherIcon ?? "",
+                  currentGroupId: _currentGroupId,
+                  currentGroupName: _currentGroupName,
+                  currentGroupIcon: _currentGroupIcon,
+                  currentFriendId: _currentFriendId,
                   msgId: msgId);
             } else {
               LocalStore.findCache(msgId)
@@ -277,14 +291,14 @@ class ChatDetailManager extends ChangeNotifier {
                 content["video_thum_url"] = videoThumbUrl;
                 MessageCentre.sendMessageModel(
                     term: content,
-                    chatType: currentChatType!,
+                    chatType: _currentChatType!,
                     messageType: contentType,
-                    otherName: otherName ?? "",
-                    otherIcon: otherIcon ?? "",
-                    currentGroupId: currentGroupId,
-                    currentGroupName: currentGroupName,
-                    currentGroupIcon: currentGroupIcon,
-                    currentFriendId: currentFriendId,
+                    otherName: _otherName ?? "",
+                    otherIcon: _otherIcon ?? "",
+                    currentGroupId: _currentGroupId,
+                    currentGroupName: _currentGroupName,
+                    currentGroupIcon: _currentGroupIcon,
+                    currentFriendId: _currentFriendId,
                     msgId: msgId);
               } else {
                 LocalStore.findCache(msgId)
@@ -301,14 +315,14 @@ class ChatDetailManager extends ChangeNotifier {
             Log.green(content.toString());
             MessageCentre.sendMessageModel(
                 term: content,
-                chatType: currentChatType!,
+                chatType: _currentChatType!,
                 messageType: contentType,
-                otherName: otherName ?? "",
-                otherIcon: otherIcon ?? "",
-                currentGroupId: currentGroupId,
-                currentGroupName: currentGroupName,
-                currentGroupIcon: currentGroupIcon,
-                currentFriendId: currentFriendId,
+                otherName: _otherName ?? "",
+                otherIcon: _otherIcon ?? "",
+                currentGroupId: _currentGroupId,
+                currentGroupName: _currentGroupName,
+                currentGroupIcon: _currentGroupIcon,
+                currentFriendId: _currentFriendId,
                 msgId: msgId);
           },
         );
@@ -317,14 +331,14 @@ class ChatDetailManager extends ChangeNotifier {
           if (uploadMediaUrl != "") {
             MessageCentre.sendMessageModel(
                 term: content,
-                chatType: currentChatType!,
+                chatType: _currentChatType!,
                 messageType: contentType,
-                otherName: otherName ?? "",
-                otherIcon: otherIcon ?? "",
-                currentGroupId: currentGroupId,
-                currentGroupName: currentGroupName,
-                currentGroupIcon: currentGroupIcon,
-                currentFriendId: currentFriendId,
+                otherName: _otherName ?? "",
+                otherIcon: _otherIcon ?? "",
+                currentGroupId: _currentGroupId,
+                currentGroupName: _currentGroupName,
+                currentGroupIcon: _currentGroupIcon,
+                currentFriendId: _currentFriendId,
                 msgId: msgId);
           } else {
             LocalStore.findCache(msgId)
@@ -355,14 +369,14 @@ class ChatDetailManager extends ChangeNotifier {
         "TEXT"); // 假上墙，获取msgId，发送成功后利用msgId更新message
     MessageCentre.sendMessageModel(
         term: content,
-        chatType: currentChatType!,
+        chatType: _currentChatType!,
         messageType: "TEXT",
-        otherName: otherName ?? "",
-        otherIcon: otherIcon ?? "",
-        currentGroupId: currentGroupId,
-        currentGroupName: currentGroupName,
-        currentGroupIcon: currentGroupIcon,
-        currentFriendId: currentFriendId,
+        otherName: _otherName ?? "",
+        otherIcon: _otherIcon ?? "",
+        currentGroupId: _currentGroupId,
+        currentGroupName: _currentGroupName,
+        currentGroupIcon: _currentGroupIcon,
+        currentFriendId: _currentFriendId,
         msgId: msgId);
   }
 
@@ -392,27 +406,27 @@ class ChatDetailManager extends ChangeNotifier {
         Log.green("retrySendMessage $messageType");
         MessageCentre.sendMessageModel(
             term: content,
-            chatType: currentChatType!,
+            chatType: _currentChatType!,
             messageType: messageType,
-            otherName: otherName ?? "",
-            otherIcon: otherIcon ?? "",
-            currentGroupId: currentGroupId,
-            currentGroupName: currentGroupName,
-            currentGroupIcon: currentGroupIcon,
-            currentFriendId: currentFriendId,
+            otherName: _otherName ?? "",
+            otherIcon: _otherIcon ?? "",
+            currentGroupId: _currentGroupId,
+            currentGroupName: _currentGroupName,
+            currentGroupIcon: _currentGroupIcon,
+            currentFriendId: _currentFriendId,
             msgId: msgId);
       } else {
         if (mediaPath.contains("http")) {
           MessageCentre.sendMessageModel(
               term: content,
-              chatType: currentChatType!,
+              chatType: _currentChatType!,
               messageType: messageType,
-              otherName: otherName ?? "",
-              otherIcon: otherIcon ?? "",
-              currentGroupId: currentGroupId,
-              currentGroupName: currentGroupName,
-              currentGroupIcon: currentGroupIcon,
-              currentFriendId: currentFriendId,
+              otherName: _otherName ?? "",
+              otherIcon: _otherIcon ?? "",
+              currentGroupId: _currentGroupId,
+              currentGroupName: _currentGroupName,
+              currentGroupIcon: _currentGroupIcon,
+              currentFriendId: _currentFriendId,
               msgId: msgId);
         } else {
           _uploadMediaModel(
@@ -433,9 +447,9 @@ class ChatDetailManager extends ChangeNotifier {
   void getImageByGallery() async {
     List<AssetEntity>? assets =
         await AssetPicker.pickAssets(App.navState.currentContext!,
-                requestType: RequestType.common,
-                // maxAssets: 1,
-                themeColor: Flavors.colorInfo.mainColor) ??
+                pickerConfig: AssetPickerConfig(
+                    requestType: RequestType.common, // maxAssets: 1,
+                    themeColor: Flavors.colorInfo.mainColor)) ??
             [];
     Navigator.pop(App.navState.currentContext!);
     if (assets.isEmpty) {
@@ -466,12 +480,12 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   String _fakeMediaMessage(String content, String contentType) {
-    if (currentFriendId != "") {
+    if (_currentFriendId != "") {
       CSSendMessage msg = Protocols.sendMessage(
-          myUserId!,
-          myProfileData?.nickName ?? "",
-          currentFriendId,
-          myProfileData?.icon ?? "",
+          _myUserId!,
+          _myProfileData?.nickName ?? "",
+          _currentFriendId,
+          _myProfileData?.icon ?? "",
           TARGET_PLATFORM,
           content,
           contentType);
@@ -482,12 +496,12 @@ class ChatDetailManager extends ChangeNotifier {
       return message.userMsgID;
     } else {
       CSSendGroupMessage msg = Protocols.sendGroupMessage(
-          myUserId!,
-          myProfileData?.nickName ?? "",
-          myProfileData?.icon ?? "",
-          currentGroupId,
-          currentGroupName,
-          currentGroupIcon,
+          _myUserId!,
+          _myProfileData?.nickName ?? "",
+          _myProfileData?.icon ?? "",
+          _currentGroupId,
+          _currentGroupName,
+          _currentGroupIcon,
           TARGET_PLATFORM,
           content,
           contentType);
@@ -500,9 +514,9 @@ class ChatDetailManager extends ChangeNotifier {
 
   void setEmojiShowStatus({bool? showStatus}) {
     if (showStatus != null) {
-      emojiShowing = showStatus;
+      _emojiShowing = showStatus;
     } else {
-      emojiShowing = !emojiShowing;
+      _emojiShowing = !_emojiShowing;
     }
     notifyListeners();
   }
@@ -513,12 +527,12 @@ class ChatDetailManager extends ChangeNotifier {
   //   // MessageCentre().loadMore(currentFriendId)
   // }
 
-  changeInputView() {
+  void changeInputView() {
     _voiceRecord.isRecording().then((value) {
       if (value) {
-        isVoiceModel = true;
+        _isVoiceModel = true;
       } else {
-        isVoiceModel = false;
+        _isVoiceModel = false;
       }
     });
     notifyListeners();
@@ -531,83 +545,75 @@ class ChatDetailManager extends ChangeNotifier {
       String tempPath = tempDir.path;
       String voiceTempPath = '$tempPath/voiceFiles/';
       folderCreate(voiceTempPath);
-      voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
+      _voicePath = '${voiceTempPath}_${_timeNow.millisecondsSinceEpoch}.mp3';
       await _voiceRecord.start(
-        path: '$voicePath', // required
+        path: '$_voicePath', // required
       );
       changeInputView();
       timingStartMethod();
     } catch (e) {
       showToast('没有麦克风或者存储权限，请在系统设置中开启');
-      cancelTimer();
+      _cancelTimer();
     }
   }
 
   void stopVoiceRecord() async {
-    _voiceRecord.isRecording().then((value) async {
+    bool temp = await _voiceRecord.isRecording();
+    if (temp) {
+      await _voiceRecord.stop();
       changeInputView();
-      cancelTimer();
-      if (value && recordTiming != 0) {
-        await _voiceRecord.stop();
-        sendVoiceMessage();
-      }
-    });
+      sendVoiceMessage();
+    }
+    _cancelTimer();
   }
 
   void checkRecordPermission() async {
-    Permission.microphone.status.then((PermissionStatus status) async{
+    Permission.microphone.status.then((PermissionStatus status) async {
       if (status == PermissionStatus.granted) {
+        Log.green("PermissionStatus.granted");
         startVoiceRecord();
       } else if (status == PermissionStatus.denied) {
-        await Permission
+        await Permission.microphone.request();
       } else if (status == PermissionStatus.permanentlyDenied) {
-        cancelTimer();
+        _cancelTimer();
         showToast('没有麦克风或者存储权限，请在系统设置中开启');
       }
     });
-    // await _voiceRecord.hasPermission().then((value) {
-    //   if (value) {
-    //     startVoiceRecord();
-    //   } else {
-    //     showToast('没有麦克风或者存储权限，请在系统设置中开启');
-    //     cancelTimer();
-    //   }
-    // });
   }
 
   sendVoiceMessage() {
-    Log.green("recordTiming $recordTiming");
-    if (voicePath != null) {
-      if (recordTiming >= 3) {
+    Log.green("recordTiming $_recordTiming");
+    if (_voicePath != null) {
+      if (_recordTiming >= 3) {
         Map<String, dynamic> content = {
-          "voice_url": voicePath,
-          "time": recordTiming
+          "voice_url": _voicePath,
+          "time": _recordTiming
         };
         String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
         Future.delayed(Duration(milliseconds: 500), () {
           _uploadMediaModel(
-              filePath: voicePath,
+              filePath: _voicePath,
               contentType: "VOICE",
               content: content,
               msgId: msgId);
         });
       } else {
         showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
-        if (voicePath != null) deleteFile(voicePath!);
+        if (_voicePath != null) deleteFile(_voicePath!);
       }
     }
   }
 
   timingStartMethod() {
-    timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      recordTiming++;
+    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+      _recordTiming++;
       notifyListeners();
     });
   }
 
-  cancelTimer() {
-    timer?.cancel();
-    recordTiming = 0;
+  _cancelTimer() {
+    _timer?.cancel();
+    _recordTiming = 0;
   }
 
   static copyText(String? targetText) {
@@ -637,14 +643,14 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   Future<dynamic> _getGroupMembersData() async {
-    ApiResult result = await API.getGroupMembers(currentGroupId);
+    ApiResult result = await API.getGroupMembers(_currentGroupId);
     if (result.isSuccess()) {
-      groupMembersList =
+      _groupMembersList =
           result.getDataList((m) => GroupMembers.fromJson(m), type: 1);
       // 剔除自己
-      groupMembersList
-          .removeWhere((element) => element.userID == myProfileData?.userID);
-      Log.green("getGroupMembersData result.getData() $groupMembersList");
+      _groupMembersList
+          .removeWhere((element) => element.userID == _myProfileData?.userID);
+      Log.green("getGroupMembersData result.getData() $_groupMembersList");
       notifyListeners();
     } else {
       showToast('${result.info}');
@@ -753,7 +759,7 @@ class ChatDetailManager extends ChangeNotifier {
                           },
                           selector: (BuildContext context,
                               ChatDetailManager chatDetailManager) {
-                            return chatDetailManager.groupMembersList;
+                            return chatDetailManager._groupMembersList;
                           },
                           shouldRebuild: (pre, next) => (pre != next),
                         ),
@@ -764,46 +770,46 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void atSomeOneMethod(String nickName, String userId) {
-    textEditingController
+    _textEditingController
       ..text += nickName + " "
       ..selection = TextSelection.fromPosition(
-          TextPosition(offset: textEditingController.text.length));
-    atMemberMap[nickName] = userId;
+          TextPosition(offset: _textEditingController.text.length));
+    _atMemberMap[nickName] = userId;
     Navigator.pop(App.navState.currentContext!);
   }
 
   void _atTextListenMethod() {
-    String temp = textEditingController.text;
-    if (temp.length > 0 && currentGroupId != "") {
+    String temp = _textEditingController.text;
+    if (temp.length > 0 && _currentGroupId != "") {
       Log.green("##### ${temp.characters.last}");
       if (temp.characters.last == "@" && temp.length > _oldInputTextLength) {
         showGroupMemberModal();
       }
-      atMemberMap.keys.forEach((element) {
+      _atMemberMap.keys.forEach((element) {
         String finalKey = "@$element ";
         if (!temp.contains(finalKey)) {
-          atMemberMap.remove(element);
+          _atMemberMap.remove(element);
         }
       });
-      Log.green("final atMemberMap $atMemberMap");
+      Log.green("final atMemberMap $_atMemberMap");
     }
     _oldInputTextLength = temp.length;
   }
 
   void disposeModel() {
-    messageList.clear();
-    isVoiceModel = false;
-    voicePath = null;
-    voiceUrl = null;
-    cancelTimer();
-    emojiShowing = false;
-    textEditingController.clear();
-    currentFriendId = "";
-    currentGroupId = "";
-    currentGroupName = "";
-    currentGroupIcon = "";
-    valueListenable?.removeListener(() {
-      valueListenable = null;
+    _voiceRecord.dispose();
+    _messageList.clear();
+    _isVoiceModel = false;
+    _voicePath = null;
+    _cancelTimer();
+    _emojiShowing = false;
+    _textEditingController.clear();
+    _currentFriendId = "";
+    _currentGroupId = "";
+    _currentGroupName = "";
+    _currentGroupIcon = "";
+    _valueListenable?.removeListener(() {
+      _valueListenable = null;
     });
   }
 }
