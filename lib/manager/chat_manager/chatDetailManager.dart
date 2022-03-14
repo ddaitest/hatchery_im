@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
@@ -195,7 +194,7 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  Future<String?> uploadMediaFile(String filePath) async {
+  Future<String?> uploadMediaFile(String filePath, String msgId) async {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {});
     if (result.isSuccess()) {
@@ -205,10 +204,16 @@ class ChatDetailManager extends ChangeNotifier {
         return url;
       } else {
         showToast("上传失败，请重试");
+        LocalStore.findCache(msgId)
+          ?..progress = MSG_FAULT
+          ..save();
         return '';
       }
     } else {
       showToast("上传失败，请重试");
+      LocalStore.findCache(msgId)
+        ?..progress = MSG_FAULT
+        ..save();
       return '';
     }
   }
@@ -263,7 +268,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (filePath != null) {
       if (contentType == "IMAGE") {
         compressionImage(filePath).then((compressionValue) {
-          uploadMediaFile(compressionValue).then((uploadMediaUrl) {
+          uploadMediaFile(compressionValue, msgId).then((uploadMediaUrl) {
             if (uploadMediaUrl != "") {
               content["img_url"] = uploadMediaUrl;
               MessageCentre.sendMessageModel(
@@ -286,8 +291,9 @@ class ChatDetailManager extends ChangeNotifier {
         });
       } else if (contentType == "VIDEO") {
         compressionVideo(filePath).then((compressionVideoPath) {
-          uploadMediaFile(content["video_thum_url"]).then((videoThumbUrl) {
-            uploadMediaFile(compressionVideoPath).then((videoUrl) {
+          uploadMediaFile(content["video_thum_url"], msgId)
+              .then((videoThumbUrl) {
+            uploadMediaFile(compressionVideoPath, msgId).then((videoUrl) {
               if (videoUrl != "") {
                 content["video_url"] = videoUrl;
                 content["video_thum_url"] = videoThumbUrl;
@@ -311,7 +317,7 @@ class ChatDetailManager extends ChangeNotifier {
           });
         });
       } else if (contentType == "VOICE") {
-        uploadMediaFile(filePath).then(
+        uploadMediaFile(filePath, msgId).then(
           (uploadMediaUrl) {
             content["voice_url"] = uploadMediaUrl;
             Log.green(content.toString());
@@ -329,7 +335,7 @@ class ChatDetailManager extends ChangeNotifier {
           },
         );
       } else if (contentType == "FILE") {
-        uploadMediaFile(filePath).then((uploadMediaUrl) {
+        uploadMediaFile(filePath, msgId).then((uploadMediaUrl) {
           if (uploadMediaUrl != "") {
             MessageCentre.sendMessageModel(
                 term: content,
@@ -389,6 +395,7 @@ class ChatDetailManager extends ChangeNotifier {
     // 重试前先重连长链接
     Engine.getInstance().reconnect();
     String? mediaPath;
+    Log.green("retrySendMessage content $content");
     if (messageType == "IMAGE") {
       mediaPath = content["img_url"];
     } else if (messageType == "VIDEO") {
@@ -418,6 +425,7 @@ class ChatDetailManager extends ChangeNotifier {
             currentFriendId: _currentFriendId,
             msgId: msgId);
       } else {
+        Log.green("retrySendMessage ${mediaPath}");
         if (mediaPath.contains("http")) {
           MessageCentre.sendMessageModel(
               term: content,
@@ -531,6 +539,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   void changeInputView(bool status) {
     _isVoiceModel = status;
+    if (_isVoiceModel) _voicePath = null;
     notifyListeners();
   }
 
@@ -569,8 +578,14 @@ class ChatDetailManager extends ChangeNotifier {
 
   void stopVoiceRecord() async {
     changeInputView(false);
+    Log.green("_voicePath _voicePath $_voicePath");
     await _voiceRecord.stop();
-    if (_recordTiming >= 3) sendVoiceMessage();
+    if (_recordTiming >= 3 && _voicePath != null) {
+      _sendVoiceMessage(_voicePath!);
+    } else {
+      showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
+      if (_voicePath != null) deleteFile(_voicePath!);
+    }
     _cancelTimer();
   }
 
@@ -588,27 +603,28 @@ class ChatDetailManager extends ChangeNotifier {
     });
   }
 
-  sendVoiceMessage() {
+  _sendVoiceMessage(String voicePath) {
     Log.green("_recordTiming $_recordTiming");
-    if (_voicePath != null) {
-      if (_recordTiming >= 3) {
-        Map<String, dynamic> content = {
-          "voice_url": _voicePath,
-          "time": _recordTiming
-        };
-        String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
-        Future.delayed(Duration(milliseconds: 500), () {
+    Map<String, dynamic> content = {
+      "voice_url": voicePath,
+      "time": _recordTiming
+    };
+    String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "VOICE");
+    Future.delayed(Duration(milliseconds: 500), () {
+      isNetworkConnect().then((bool isConnect) {
+        if (!isConnect) {
+          LocalStore.findCache(msgId)
+            ?..progress = MSG_FAULT
+            ..save();
+        } else {
           _uploadMediaModel(
-              filePath: _voicePath,
+              filePath: voicePath,
               contentType: "VOICE",
               content: content,
               msgId: msgId);
-        });
-      } else {
-        showToast('录制时间太短', showGravity: ToastGravity.BOTTOM);
-        if (_voicePath != null) deleteFile(_voicePath!);
-      }
-    }
+        }
+      });
+    });
   }
 
   timingStartMethod() {

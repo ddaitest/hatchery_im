@@ -16,7 +16,13 @@ class VoiceMessageWidget extends StatelessWidget {
 
   void init() {
     _audioPlayer = AudioPlayer();
-    _audioPlayer.setUrl(voiceMessageMap["voice_url"]);
+    String voicePath = voiceMessageMap["voice_url"];
+    if (voicePath.contains("http")) {
+      _audioPlayer.setAudioSource(LockCachingAudioSource(Uri.parse(voicePath)),
+          preload: false);
+    } else {
+      _audioPlayer.setFilePath(voicePath);
+    }
     Log.green("voice_url ${voiceMessageMap["voice_url"]}");
     _totalTime = voiceMessageMap["time"] ?? 0;
   }
