@@ -1,27 +1,21 @@
-import 'dart:async';
-import 'dart:math';
-import 'package:hatchery_im/business/chat_detail/chat_detail_page.dart';
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/common/utils.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:provider/provider.dart';
-
 import '../../../config.dart';
 import '../../log.dart';
-import '../../tools.dart';
 
 class VoiceMessageWidget extends StatelessWidget {
   final Map<String, dynamic> voiceMessageMap;
   final MessageBelongType messageBelongType;
   VoiceMessageWidget(this.voiceMessageMap, this.messageBelongType);
 
-  static final AudioPlayer _audioPlayer = AudioPlayer();
+  late final AudioPlayer _audioPlayer;
   late final int? _totalTime;
 
   void init() {
+    _audioPlayer = AudioPlayer();
     _audioPlayer.setUrl(voiceMessageMap["voice_url"]);
     Log.green("voice_url ${voiceMessageMap["voice_url"]}");
     _totalTime = voiceMessageMap["time"] ?? 0;
