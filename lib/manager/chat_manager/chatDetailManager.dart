@@ -125,10 +125,11 @@ class ChatDetailManager extends ChangeNotifier {
         tempList.sort((a, b) =>
             DateTime.fromMillisecondsSinceEpoch(b.createTime)
                 .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
-        clearUnReadStatus(tempList);
-        clearReminderMeStatus();
+        _clearUnReadStatus(tempList);
         _messageList = tempList;
         notifyListeners();
+        _clearReminderMeStatus();
+        _syncSessionMessage(tempList);
         if (!firstLoad) notifyListeners();
       }
     }
@@ -136,7 +137,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   /// 清除消息未读状态，会影响首页session的未读和mainTab上的总未读数
   /// messageBox和sessionBox都会刷新数据
-  void clearUnReadStatus(List<Message> temp) {
+  void _clearUnReadStatus(List<Message> temp) {
     Session? session = LocalStore.findSession(
         _currentFriendId == "" ? _currentGroupId : _currentFriendId);
     if (session != null) {
@@ -158,7 +159,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   /// 点击清除群提醒状态
   /// todo  缺少点击滚动到指定位置
-  void clearReminderMeStatus() {
+  void _clearReminderMeStatus() {
     if (_currentGroupId != "") {
       Session? temp = LocalStore.findSession(_currentGroupId);
       if (temp?.reminderMe == 1) {
@@ -184,17 +185,30 @@ class ChatDetailManager extends ChangeNotifier {
   //   }
   // }
 
+  /// 同步首页session
+  _syncSessionMessage(List<Message> messageList) {
+    if (currentFriendId == "") {
+      LocalStore.findSession(_currentGroupId)
+        ?..lastGroupChatMessage = messageList.first
+        ..save();
+    } else {
+      LocalStore.findSession(_currentFriendId)
+        ?..lastChatMessage = messageList.first
+        ..save();
+    }
+  }
+
   Future<void> pickCamera(BuildContext context) async {
     Navigator.pop(App.navState.currentContext!);
     AssetEntity? _entity = await CameraPicker.pickFromCamera(context);
     if (_entity == null) {
       return null;
     } else {
-      sendLocalMediaMessage(_entity);
+      _sendLocalMediaMessage(_entity);
     }
   }
 
-  Future<String?> uploadMediaFile(String filePath, String msgId) async {
+  Future<String?> _uploadMediaFile(String filePath, String msgId) async {
     ApiResult result =
         await ApiForFileService.uploadFile(filePath, (count, total) {});
     if (result.isSuccess()) {
@@ -218,7 +232,7 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void sendLocalMediaMessage(AssetEntity? assetEntity) async {
+  void _sendLocalMediaMessage(AssetEntity? assetEntity) async {
     if (assetEntity != null) {
       assetEntity.file.then((fileValue) {
         Log.red("fileValue ${fileValue?.path}");
@@ -268,7 +282,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (filePath != null) {
       if (contentType == "IMAGE") {
         compressionImage(filePath).then((compressionValue) {
-          uploadMediaFile(compressionValue, msgId).then((uploadMediaUrl) {
+          _uploadMediaFile(compressionValue, msgId).then((uploadMediaUrl) {
             if (uploadMediaUrl != "") {
               content["img_url"] = uploadMediaUrl;
               MessageCentre.sendMessageModel(
@@ -291,9 +305,9 @@ class ChatDetailManager extends ChangeNotifier {
         });
       } else if (contentType == "VIDEO") {
         compressionVideo(filePath).then((compressionVideoPath) {
-          uploadMediaFile(content["video_thum_url"], msgId)
+          _uploadMediaFile(content["video_thum_url"], msgId)
               .then((videoThumbUrl) {
-            uploadMediaFile(compressionVideoPath, msgId).then((videoUrl) {
+            _uploadMediaFile(compressionVideoPath, msgId).then((videoUrl) {
               if (videoUrl != "") {
                 content["video_url"] = videoUrl;
                 content["video_thum_url"] = videoThumbUrl;
@@ -317,7 +331,7 @@ class ChatDetailManager extends ChangeNotifier {
           });
         });
       } else if (contentType == "VOICE") {
-        uploadMediaFile(filePath, msgId).then(
+        _uploadMediaFile(filePath, msgId).then(
           (uploadMediaUrl) {
             content["voice_url"] = uploadMediaUrl;
             Log.green(content.toString());
@@ -335,7 +349,7 @@ class ChatDetailManager extends ChangeNotifier {
           },
         );
       } else if (contentType == "FILE") {
-        uploadMediaFile(filePath, msgId).then((uploadMediaUrl) {
+        _uploadMediaFile(filePath, msgId).then((uploadMediaUrl) {
           if (uploadMediaUrl != "") {
             MessageCentre.sendMessageModel(
                 term: content,
@@ -466,7 +480,7 @@ class ChatDetailManager extends ChangeNotifier {
       return null;
     } else {
       assets.forEach((element) {
-        sendLocalMediaMessage(element);
+        _sendLocalMediaMessage(element);
       });
     }
   }
@@ -537,19 +551,19 @@ class ChatDetailManager extends ChangeNotifier {
   //   // MessageCentre().loadMore(currentFriendId)
   // }
 
-  void changeInputView(bool status) {
+  void _changeInputView(bool status) {
     _isVoiceModel = status;
     if (_isVoiceModel) _voicePath = null;
     notifyListeners();
   }
 
-  void startVoiceRecord() async {
+  void _startVoiceRecord() async {
     try {
       if (_recordTiming == 0) {
         _recordingVoice();
       } else {
         await _voiceRecord.stop();
-        changeInputView(false);
+        _changeInputView(false);
         _cancelTimer();
         _recordingVoice();
       }
@@ -560,7 +574,7 @@ class ChatDetailManager extends ChangeNotifier {
   }
 
   void _recordingVoice() async {
-    changeInputView(true);
+    _changeInputView(true);
     DateTime _timeNow = DateTime.now();
     Directory tempDir = await getTemporaryDirectory();
     String tempPath = tempDir.path;
@@ -572,12 +586,12 @@ class ChatDetailManager extends ChangeNotifier {
       path: '$_voicePath', // required
     )
         .whenComplete(() {
-      timingStartMethod();
+      _timingStartMethod();
     });
   }
 
   void stopVoiceRecord() async {
-    changeInputView(false);
+    _changeInputView(false);
     Log.green("_voicePath _voicePath $_voicePath");
     await _voiceRecord.stop();
     if (_recordTiming >= 3 && _voicePath != null) {
@@ -593,7 +607,7 @@ class ChatDetailManager extends ChangeNotifier {
     Permission.microphone.status.then((PermissionStatus status) async {
       if (status == PermissionStatus.granted) {
         Log.green("PermissionStatus.granted");
-        startVoiceRecord();
+        _startVoiceRecord();
       } else if (status == PermissionStatus.denied) {
         await Permission.microphone.request();
       } else if (status == PermissionStatus.permanentlyDenied) {
@@ -627,13 +641,13 @@ class ChatDetailManager extends ChangeNotifier {
     });
   }
 
-  timingStartMethod() {
+  _timingStartMethod() {
     _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       _recordTiming++;
       notifyListeners();
       if (_recordTiming >= TimeConfig.recordVoiceTotalTime) {
         stopVoiceRecord();
-        changeInputView(false);
+        _changeInputView(false);
       }
     });
   }
@@ -684,7 +698,7 @@ class ChatDetailManager extends ChangeNotifier {
     }
   }
 
-  void showGroupMemberModal() {
+  void _showGroupMemberModal() {
     _getGroupMembersData().then((_) {
       showModalBottomSheet(
           context: App.navState.currentContext!,
@@ -810,7 +824,7 @@ class ChatDetailManager extends ChangeNotifier {
     if (temp.length > 0 && _currentGroupId != "") {
       Log.green("##### ${temp.characters.last}");
       if (temp.characters.last == "@" && temp.length > _oldInputTextLength) {
-        showGroupMemberModal();
+        _showGroupMemberModal();
       }
       _atMemberMap.keys.forEach((element) {
         String finalKey = "@$element ";
