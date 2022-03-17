@@ -14,14 +14,36 @@ class VoiceMessageWidget extends StatelessWidget {
   late final AudioPlayer _audioPlayer;
   late final int? _totalTime;
 
-  void init() {
+  void _init() {
     _audioPlayer = AudioPlayer();
     String voicePath = voiceMessageMap["voice_url"];
-    if (voicePath.contains("http")) {
-      _audioPlayer.setAudioSource(LockCachingAudioSource(Uri.parse(voicePath)),
-          preload: false);
-    } else {
-      _audioPlayer.setFilePath(voicePath);
+    try {
+      if (voicePath.contains("http")) {
+        _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(voicePath)),
+            preload: false);
+      } else {
+        _audioPlayer.setAudioSource(AudioSource.uri(Uri.file(voicePath)),
+            preload: false);
+      }
+    } on PlayerException catch (e) {
+      // iOS/macOS: maps to NSError.code
+      // Android: maps to ExoPlayerException.type
+      // Web: maps to MediaError.code
+      // Linux/Windows: maps to PlayerErrorCode.index
+      print("Error code: ${e.code}");
+      // iOS/macOS: maps to NSError.localizedDescription
+      // Android: maps to ExoPlaybackException.getMessage()
+      // Web/Linux: a generic message
+      // Windows: MediaPlayerError.message
+      print("Error message: ${e.message}");
+    } on PlayerInterruptedException catch (e) {
+      // This call was interrupted since another audio source was loaded or the
+      // player was stopped or disposed before this audio source could complete
+      // loading.
+      print("Connection aborted: ${e.message}");
+    } catch (e) {
+      // Fallback for all errors
+      print(e);
     }
     Log.green("voice_url ${voiceMessageMap["voice_url"]}");
     _totalTime = voiceMessageMap["time"] ?? 0;
@@ -29,7 +51,7 @@ class VoiceMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    init();
+    _init();
     return _voiceMessageView();
   }
 
@@ -89,10 +111,10 @@ class VoiceMessageWidget extends StatelessWidget {
                       StreamBuilder<Duration?>(
                           stream: _audioPlayer.positionStream,
                           builder: (context, positionDuration) {
-                            if (positionDuration.data!.inSeconds <
-                                _totalTime!) {
+                            int positionTime = positionDuration.data!.inSeconds;
+                            if (positionTime < _totalTime!) {
                               return Text(
-                                  '${(_totalTime! - positionDuration.data!.inSeconds).toString()}"',
+                                  '${(_totalTime! - positionTime).toString()}"',
                                   style:
                                       Flavors.textStyles.chatBubbleSenderText);
                             } else {

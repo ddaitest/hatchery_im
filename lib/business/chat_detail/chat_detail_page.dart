@@ -44,34 +44,27 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  final manager = App.manager<ChatDetailManager>();
-  final emojiModelManager = App.manager<EmojiModelManager>();
-  List<SendMenuItems> menuItems = [];
-  String appTitleName = "";
+  final _manager = App.manager<ChatDetailManager>();
+  static List<SendMenuItems> _menuItems = [];
 
   @override
   void initState() {
-    if (widget.otherName != null) {
-      appTitleName = widget.otherName!;
-    } else if (widget.groupName != null) {
-      appTitleName = widget.groupName!;
-    }
-    menuItems = [
+    _menuItems = [
       SendMenuItems(
           text: "相册",
           icons: Icons.image,
           color: Colors.amber,
-          onTap: () => manager.getImageByGallery()),
+          onTap: () => _manager.getImageByGallery()),
       SendMenuItems(
           text: "拍摄",
           icons: Icons.camera_alt,
           color: Colors.orange,
-          onTap: () => manager.pickCamera(App.navState.currentContext!)),
+          onTap: () => _manager.pickCamera(App.navState.currentContext!)),
       SendMenuItems(
           text: "文件",
           icons: Icons.insert_drive_file,
           color: Colors.blue,
-          onTap: () => manager.pickFile()),
+          onTap: () => _manager.pickFile()),
       SendMenuItems(
           text: "位置",
           icons: Icons.location_on,
@@ -83,7 +76,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           }),
       // SendMenuItems(text: "名片", icons: Icons.person, color: Colors.purple),
     ];
-    manager.init(
+    _manager.init(
         chatType: widget.chatType!,
         friendName: widget.otherName ?? "",
         friendIcon: widget.otherIcon ?? "",
@@ -91,20 +84,21 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         groupId: widget.groupId!,
         groupName: widget.groupName!,
         groupIcon: widget.groupIcon!);
-    // manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
+    // _manager.queryFriendsHistoryMessages(widget.usersInfo.friendId, 0);
     super.initState();
   }
 
   @override
   void dispose() {
-    manager.disposeModel();
+    _manager.disposeModel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ChatDetailPageAppBar.chatDetailAppBar(appTitleName,
+      appBar: ChatDetailPageAppBar.chatDetailAppBar(
+          widget.otherName ?? widget.groupName,
           otherId: widget.chatType == "CHAT" ? widget.friendId : widget.groupId,
           chatType: widget.chatType,
           groupName: widget.groupName,
@@ -138,7 +132,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 itemBuilder: (context, index) {
                   return ChatBubble(
                     userID: widget.friendId ?? "",
-                    messageBelongType: manager.myProfileData!.userID!
+                    messageBelongType: _manager.myProfileData!.userID!
                                 .compareTo(value[index].sender) ==
                             0
                         ? MessageBelongType.Sender
@@ -208,10 +202,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     child: TextButton(
                       onPressed: () {
                         Map<String, dynamic> content = {
-                          "text": manager.textEditingController.text
+                          "text": _manager.textEditingController.text
                         };
-                        manager.sendTextMessage(content: content);
-                        manager.textEditingController.clear();
+                        _manager.sendTextMessage(content: content);
+                        _manager.textEditingController.clear();
                       },
                       style: ElevatedButton.styleFrom(
                         elevation: 0.5,
@@ -243,7 +237,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         onTap: () {
           /// 点击先收起键盘
           FocusScope.of(context).unfocus();
-          showModal();
+          _showModal();
         },
         child: Image.asset('images/moreBtn.png'));
   }
@@ -255,7 +249,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           FocusScope.of(context).unfocus();
 
           /// 设置表情选择框是否显示
-          manager.setEmojiShowStatus();
+          _manager.setEmojiShowStatus();
         },
         child: Image.asset('images/emojiBtn.png'));
   }
@@ -264,21 +258,21 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Container(
       width: Flavors.sizesInfo.screenWidth - 140.0.w,
       child: TextFormField(
-        controller: manager.textEditingController,
-        onTap: () => manager.setEmojiShowStatus(showStatus: false),
+        controller: _manager.textEditingController,
+        onTap: () => _manager.setEmojiShowStatus(showStatus: false),
         maxLines: null,
         minLines: 1,
         maxLength: 140,
         textInputAction: TextInputAction.send,
         onFieldSubmitted: (term) {
           String reminderCode =
-              widget.chatType != "CHAT" && manager.atMemberMap.isNotEmpty
-                  ? "~~##${convert.jsonEncode(manager.atMemberMap)}##~~"
+              widget.chatType != "CHAT" && _manager.atMemberMap.isNotEmpty
+                  ? "~~##${convert.jsonEncode(_manager.atMemberMap)}##~~"
                   : "";
           Map<String, dynamic> content = {"text": "$term$reminderCode"};
           Log.green("textInputAction $content");
-          manager.sendTextMessage(content: content);
-          manager.textEditingController.clear();
+          _manager.sendTextMessage(content: content);
+          _manager.textEditingController.clear();
         },
         keyboardType: TextInputType.text,
         cursorColor: Flavors.colorInfo.mainColor,
@@ -329,14 +323,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         Log.green("onLongPressStart");
         FocusScope.of(context).unfocus();
         Vibration.vibrate(duration: 100);
-        manager.checkRecordPermission();
+        _manager.checkRecordPermission();
       },
       onLongPressEnd: (LongPressEndDetails details) {
-        if (manager.recordTiming != 0 ||
-            manager.recordTiming <= TimeConfig.recordVoiceTotalTime) {
+        if (_manager.recordTiming != 0 ||
+            _manager.recordTiming <= TimeConfig.recordVoiceTotalTime) {
           Log.green("onLongPressEnd");
           Vibration.vibrate(duration: 100);
-          manager.stopVoiceRecord();
+          _manager.stopVoiceRecord();
         }
       },
       child: Container(
@@ -349,7 +343,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     );
   }
 
-  void showModal() {
+  void _showModal() {
     showModalBottomSheet(
         context: App.navState.currentContext!,
         builder: (context) {
@@ -379,28 +373,28 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     height: 10.0.h,
                   ),
                   ListView.builder(
-                    itemCount: menuItems.length,
+                    itemCount: _menuItems.length,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return Container(
                         padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
                         child: ListTile(
-                          onTap: menuItems[index].onTap,
+                          onTap: _menuItems[index].onTap,
                           leading: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(30),
-                              color: menuItems[index].color!.shade50,
+                              color: _menuItems[index].color!.shade50,
                             ),
                             height: 50.0.h,
                             width: 50.0.w,
                             child: Icon(
-                              menuItems[index].icons,
+                              _menuItems[index].icons,
                               size: 20.0,
-                              color: menuItems[index].color!.shade400,
+                              color: _menuItems[index].color!.shade400,
                             ),
                           ),
-                          title: Text(menuItems[index].text!),
+                          title: Text(_menuItems[index].text!),
                         ),
                       );
                     },
