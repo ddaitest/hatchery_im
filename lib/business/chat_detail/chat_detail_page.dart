@@ -105,6 +105,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           groupIcon: widget.groupIcon),
       backgroundColor: Colors.grey[100],
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           _messageInfoView(),
           _inputMainView(),
@@ -115,41 +116,45 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   }
 
   Widget _messageInfoView() {
-    return Selector<ChatDetailManager, List<Message>>(
-        builder: (BuildContext context, List<Message> value, Widget? child) {
-          Log.green("_messageInfoView _messageInfoView");
-          if (value.isEmpty) {
-            return Flexible(child: Container());
-          } else {
-            return Flexible(
-              child: ListView.builder(
-                itemCount: value.length,
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                reverse: true,
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return ChatBubble(
-                    userID: widget.friendId ?? "",
-                    messageBelongType: _manager.myProfileData!.userID!
-                                .compareTo(value[index].sender) ==
-                            0
-                        ? MessageBelongType.Sender
-                        : MessageBelongType.Receiver,
-                    contentMessages: value[index],
-                    messageKey: value[index].key,
-                  );
-                },
-              ),
-            );
-          }
-        },
-        selector: (BuildContext context, ChatDetailManager chatDetailManager) {
-          return chatDetailManager.messageList;
-        },
-        shouldRebuild: (pre, next) =>
-            (pre != next || pre.length != next.length));
+    return Flexible(
+      child: Selector<ChatDetailManager, List<Message>>(
+          builder: (BuildContext context, List<Message> value, Widget? child) {
+            Log.green("_messageInfoView _messageInfoView");
+            if (value.isEmpty) {
+              return Container();
+            } else {
+              return Container(
+                color: Colors.grey[100],
+                child: ListView.builder(
+                  itemCount: value.length,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  reverse: true,
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return ChatBubble(
+                      userID: widget.friendId ?? "",
+                      messageBelongType: _manager.myProfileData!.userID!
+                                  .compareTo(value[index].sender) ==
+                              0
+                          ? MessageBelongType.Sender
+                          : MessageBelongType.Receiver,
+                      contentMessages: value[index],
+                      messageKey: value[index].key,
+                    );
+                  },
+                ),
+              );
+            }
+          },
+          selector:
+              (BuildContext context, ChatDetailManager chatDetailManager) {
+            return chatDetailManager.messageList;
+          },
+          shouldRebuild: (pre, next) =>
+              (pre != next || pre.length != next.length)),
+    );
   }
 
   Widget _inputMainView() {
