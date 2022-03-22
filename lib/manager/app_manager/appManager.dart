@@ -16,10 +16,11 @@ import '../devicesInfoCentre.dart';
 import '../settingCentre.dart';
 
 class AppManager extends ChangeNotifier {
-  CustomMenuInfo? customMenuInfo;
+  late final CustomMenuInfo? _customMenuInfo;
+  CustomMenuInfo? get customMenuInfo => _customMenuInfo;
 
   /// 初始化
-  init() {
+  void init() {
     /// 此 强制竖屏 方法只支持Android ios通过Xcode打开Flutter项目中的iOS工程, 根据下图找到 Device Orientation 这一项 勾选需要支持的布局方向
     /// 放到main中会报错，没时间找原因
     /// https://www.codercto.com/a/60738.html
@@ -41,7 +42,7 @@ class AppManager extends ChangeNotifier {
     });
   }
 
-  Future<bool> _configToSP() async {
+  static Future<bool> _configToSP() async {
     ApiResult result = await API.getConfig();
     if (result.isSuccess()) {
       SP.set(SPKey.CONFIG, jsonEncode(result.getData()));
@@ -54,9 +55,9 @@ class AppManager extends ChangeNotifier {
   _getConfigFromSP() async {
     String? _configData = SP.getString(SPKey.CONFIG);
     if (_configData != null) {
-      customMenuInfo =
+      _customMenuInfo =
           CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);
-      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
+      Log.yellow("DEBUG=> customMenuInfo $_customMenuInfo");
     }
   }
 

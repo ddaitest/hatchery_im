@@ -8,7 +8,8 @@ import 'package:hatchery_im/common/utils.dart';
 
 class BlockListManager extends ChangeNotifier {
   //拉黑列表
-  List<BlockList>? blockContactsList;
+  late final List<BlockList>? _blockContactsList;
+  List<BlockList>? get blockContactsList => _blockContactsList;
 
   /// 初始化
   init() {
@@ -22,7 +23,7 @@ class BlockListManager extends ChangeNotifier {
     API.getBlockList(size, current).then((value) {
       print("DEBUG=> $value");
       if (value.isSuccess()) {
-        blockContactsList =
+        _blockContactsList =
             value.getDataList((m) => BlockList.fromJson(m), type: 1);
 
         notifyListeners();
@@ -30,7 +31,7 @@ class BlockListManager extends ChangeNotifier {
     });
   }
 
-  Future<dynamic> delBlockFriend(String userID) async {
+  static Future<dynamic> delBlockFriend(String userID) async {
     List<String> blackUserIds = [];
     blackUserIds.add(userID);
     ApiResult result = await API.delBlockFriend(blackUserIds);

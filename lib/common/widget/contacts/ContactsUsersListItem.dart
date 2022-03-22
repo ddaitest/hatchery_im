@@ -402,8 +402,8 @@ class BlockListItem extends StatelessWidget {
                         confirmText: '移出黑名单后可以收到对方的消息',
                         confirmBtnTap: () {
                           Navigator.of(App.navState.currentContext!).pop(true);
-                          manager
-                              .delBlockFriend(blockContactsList![index].userID)
+                          BlockListManager.delBlockFriend(
+                                  blockContactsList![index].userID)
                               .then((value) {
                             manager.refreshData();
                           });

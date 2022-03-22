@@ -22,7 +22,7 @@ class _BlockListPageState extends State<BlockListPage> {
 
   @override
   void dispose() {
-    manager.blockContactsList = null;
+    manager.blockContactsList?.clear();
     super.dispose();
   }
 
