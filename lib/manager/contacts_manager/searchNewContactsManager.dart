@@ -1,52 +1,43 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:flutter/material.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hatchery_im/api/entity.dart';
-import 'dart:collection';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:flutter/services.dart';
-import 'package:hatchery_im/config.dart';
-// import 'package:hatchery_im/common/backgroundListenModel.dart';
-import 'package:hatchery_im/common/tools.dart';
-import '../../config.dart';
 
 class SearchNewContactsManager extends ChangeNotifier {
-  late TextEditingController? searchController;
-  bool showSearchBtn = false;
-  List<SearchNewContactsInfo> searchNewContactsList = [];
+  late final TextEditingController? _searchController = TextEditingController();
+  bool _showSearchBtn = false;
+  List<SearchNewContactsInfo> _searchNewContactsList = [];
+  TextEditingController? get searchController => _searchController;
+  bool get showSearchBtn => _showSearchBtn;
+  List<SearchNewContactsInfo> get searchNewContactsList =>
+      _searchNewContactsList;
 
   /// 初始化
-  init() {
-    searchController = TextEditingController();
-    checkSearchBtnListener();
+  void init() {
+    _checkSearchBtnListener();
   }
 
-  querySearchNewContactsData() async {
-    searchNewContactsList.clear();
-    if (searchController!.text != '') {
-      API.searchNewContacts(searchController!.text).then((value) {
+  void querySearchNewContactsData() async {
+    _searchNewContactsList.clear();
+    if (_searchController?.text != '') {
+      API.searchNewContacts(_searchController!.text).then((value) {
         if (value.isSuccess()) {
-          searchNewContactsList =
+          _searchNewContactsList =
               value.getDataList((m) => SearchNewContactsInfo.fromJson(m));
-          print('DEBUG=>  querySearchNewContactsData ${searchNewContactsList}');
+          print(
+              'DEBUG=>  querySearchNewContactsData ${_searchNewContactsList}');
           notifyListeners();
         }
       });
     }
   }
 
-  checkSearchBtnListener() {
-    searchController!.addListener(() {
-      if (searchController!.text != '') {
-        showSearchBtn = true;
+  void _checkSearchBtnListener() {
+    _searchController?.addListener(() {
+      if (_searchController?.text != '') {
+        _showSearchBtn = true;
       } else {
-        showSearchBtn = false;
+        _showSearchBtn = false;
       }
 
       notifyListeners();
@@ -55,7 +46,7 @@ class SearchNewContactsManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    searchController!.dispose();
+    _searchController?.dispose();
     super.dispose();
   }
 }

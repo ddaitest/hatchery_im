@@ -31,7 +31,6 @@ class _ContactsState extends State<ContactsPage> {
 
   @override
   void dispose() {
-    manager.untreatedReceiveContactsApplyLength = 0;
     super.dispose();
   }
 

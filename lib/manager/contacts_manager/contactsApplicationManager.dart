@@ -1,22 +1,19 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/config.dart';
-// import 'package:hatchery_im/common/backgroundListenModel.dart';
-import 'package:hatchery_im/common/tools.dart';
-import '../../config.dart';
 
 class ContactsApplyManager extends ChangeNotifier {
   //发送的好友申请数据
-  List<FriendsApplicationInfo> sendContactsApplyList = [];
+  List<FriendsApplicationInfo> _sendContactsApplyList = [];
   //接收的好友申请数据
-  List<FriendsApplicationInfo>? receiveContactsApplyList;
+  List<FriendsApplicationInfo>? _receiveContactsApplyList;
+  List<FriendsApplicationInfo> get sendContactsApplyList =>
+      _sendContactsApplyList;
+  List<FriendsApplicationInfo>? get receiveContactsApplyList =>
+      _receiveContactsApplyList;
 
   /// 初始化
   init() {
@@ -32,7 +29,7 @@ class ContactsApplyManager extends ChangeNotifier {
       if (value.isSuccess()) {
         print(
             "DEBUG=> _sendNewFriendsApplicationRes _sendNewFriendsApplicationRes");
-        sendContactsApplyList = value
+        _sendContactsApplyList = value
             .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
         notifyListeners();
       }
@@ -45,7 +42,7 @@ class ContactsApplyManager extends ChangeNotifier {
   }) async {
     API.getReceiveNewFriendsApplicationListData(size, current).then((value) {
       if (value.isSuccess()) {
-        receiveContactsApplyList = value
+        _receiveContactsApplyList = value
             .getDataList((m) => FriendsApplicationInfo.fromJson(m), type: 1);
         notifyListeners();
       }
@@ -65,6 +62,7 @@ class ContactsApplyManager extends ChangeNotifier {
         showToast('${value.info}');
       }
     });
+    return null;
   }
 
   @override

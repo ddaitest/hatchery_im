@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/API.dart';
@@ -10,10 +8,9 @@ import 'package:hatchery_im/common/log.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/config.dart';
-// import 'package:hatchery_im/common/backgroundListenModel.dart';
 
 class SelectContactsModelManager extends ChangeNotifier {
-  late TextEditingController searchController;
+  final TextEditingController _searchController = TextEditingController();
   //联系人列表 数据
   List<Friends>? friendsList;
   // 群组成员数据
@@ -26,10 +23,10 @@ class SelectContactsModelManager extends ChangeNotifier {
   List<Friends> backupFriendsList = [];
   List<GroupMembers> backupGroupMembersList = [];
   List<Widget> selectList = [];
+  TextEditingController get searchController => _searchController;
 
   /// 初始化
   init(SelectContactsType selectContactsType) {
-    searchController = TextEditingController();
     if (selectContactsType == SelectContactsType.CreateGroup ||
         selectContactsType == SelectContactsType.AddGroupMember ||
         selectContactsType == SelectContactsType.Share) {
@@ -41,8 +38,8 @@ class SelectContactsModelManager extends ChangeNotifier {
   }
 
   void _searchFriendsInputListener() {
-    searchController.addListener(() {
-      String _inputText = searchController.text;
+    _searchController.addListener(() {
+      String _inputText = _searchController.text;
       friendsList = List.from(backupFriendsList);
       if (_inputText.isNotEmpty) {
         print('DEBUG=> _inputText $_inputText');
@@ -72,8 +69,8 @@ class SelectContactsModelManager extends ChangeNotifier {
   }
 
   void _searchGroupMembersInputListener() {
-    searchController.addListener(() {
-      String _inputText = searchController.text;
+    _searchController.addListener(() {
+      String _inputText = _searchController.text;
       groupMembersList = List.from(backupGroupMembersList);
       if (_inputText.isNotEmpty) {
         print('DEBUG=> backupGroupMembersList _inputText $_inputText');
@@ -205,7 +202,7 @@ class SelectContactsModelManager extends ChangeNotifier {
     return finalContent;
   }
 
-  Future<dynamic> getGroupMembersData(String groupId) async {
+  Future<dynamic> _getGroupMembersData(String groupId) async {
     ApiResult result = await API.getGroupMembers(groupId);
     if (result.isSuccess()) {
       var temp = result.getDataList((m) => GroupMembers.fromJson(m), type: 1);

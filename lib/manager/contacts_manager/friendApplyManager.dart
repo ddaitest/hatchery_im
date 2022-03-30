@@ -1,23 +1,22 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/common/utils.dart';
-import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
-// import 'package:hatchery_im/common/backgroundListenModel.dart';
-import 'package:hatchery_im/common/tools.dart';
-import '../../config.dart';
 
 class FriendApplyManager extends ChangeNotifier {
-  TextEditingController applyTextEditingController = TextEditingController();
-  TextEditingController remarkEditingController = TextEditingController();
+  final TextEditingController _applyTextEditingController =
+      TextEditingController();
+  final TextEditingController _remarkEditingController =
+      TextEditingController();
+  TextEditingController get applyTextEditingController =>
+      _applyTextEditingController;
+  TextEditingController get remarkEditingController => _remarkEditingController;
 
   init() {
     _getStoredForMyProfileData();
@@ -27,7 +26,7 @@ class FriendApplyManager extends ChangeNotifier {
     MyProfile? _myProfile = UserCentre.getInfo();
     if (_myProfile != null) {
       print("_myProfileData ${_myProfile.nickName}");
-      applyTextEditingController.text = '我是 ${_myProfile.nickName}';
+      _applyTextEditingController.text = '我是 ${_myProfile.nickName}';
     } else {
       showToast('请重新登录');
       UserCentre.logout();
@@ -52,8 +51,8 @@ class FriendApplyManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    applyTextEditingController.dispose();
-    remarkEditingController.dispose();
+    _applyTextEditingController.dispose();
+    _remarkEditingController.dispose();
     super.dispose();
   }
 }
