@@ -99,7 +99,7 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "androidx.multidex:multidex:2.0.1"
     implementation('com.amap.api:3dmap:8.1.0')
     implementation('com.amap.api:location:5.6.0')
