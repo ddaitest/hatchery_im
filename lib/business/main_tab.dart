@@ -75,7 +75,7 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
 
   void _setBottomBar() {
     _bottomBarIcon = bottomTabs.map((e) => _navBarItem(e)).toList();
-    if (manager.customMenuInfo != null) {
+    if (AppManager.customMenuInfo != null) {
       _bottomBarIcon.insert(2, SizedBox(width: 30.0.w));
     }
   }
@@ -172,7 +172,7 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
           ),
           bottomNavigationBar: BottomAppBar(
               color: Flavors.colorInfo.mainBackGroundColor, //底部工具栏的颜色。
-              shape: manager.customMenuInfo != null
+              shape: AppManager.customMenuInfo != null
                   ? CircularNotchedRectangle()
                   : null,
               //设置底栏的形状，一般使用这个都是为了和floatingActionButton融合，
@@ -186,7 +186,7 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
                   children: _bottomBarIcon,
                 ),
               )),
-          floatingActionButton: manager.customMenuInfo != null
+          floatingActionButton: AppManager.customMenuInfo != null
               ? _floatingButtonView()
               : Container(),
           floatingActionButtonLocation:
@@ -205,7 +205,7 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
               backgroundColor: Flavors.colorInfo.mainBackGroundColor,
               elevation: 0.0,
               onPressed: () => Routers.navigateTo('/web_view',
-                  arg: {"url": manager.customMenuInfo!.url!}),
+                  arg: {"url": AppManager.customMenuInfo!.url!}),
               child: _floatingPicView(),
             ),
           ),
@@ -213,7 +213,7 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
             width: 50.0.w,
             child: Center(
               child: Text(
-                '${manager.customMenuInfo?.title ?? ''}',
+                '${AppManager.customMenuInfo?.title ?? ''}',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Flavors.textStyles.homeTabFloatingText,
@@ -232,9 +232,9 @@ class MainTabState extends State<MainTab> with SingleTickerProviderStateMixin {
           shape: BoxShape.circle,
           color: Flavors.colorInfo.mainBackGroundColor,
         ),
-        child: manager.customMenuInfo?.icon != null
+        child: AppManager.customMenuInfo?.icon != null
             ? CachedNetworkImage(
-                imageUrl: manager.customMenuInfo!.icon!,
+                imageUrl: AppManager.customMenuInfo!.icon!,
                 fit: BoxFit.cover,
                 placeholder: (context, url) => Icon(
                       Icons.cloud_download_rounded,

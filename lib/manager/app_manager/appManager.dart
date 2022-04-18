@@ -16,8 +16,7 @@ import '../devicesInfoCentre.dart';
 import '../settingCentre.dart';
 
 class AppManager extends ChangeNotifier {
-  late final CustomMenuInfo? _customMenuInfo;
-  CustomMenuInfo? get customMenuInfo => _customMenuInfo;
+  static CustomMenuInfo? customMenuInfo;
 
   /// 初始化
   void init() {
@@ -55,9 +54,9 @@ class AppManager extends ChangeNotifier {
   _getConfigFromSP() async {
     String? _configData = SP.getString(SPKey.CONFIG);
     if (_configData != null) {
-      _customMenuInfo =
+      customMenuInfo =
           CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);
-      Log.yellow("DEBUG=> customMenuInfo $_customMenuInfo");
+      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
     }
   }
 
