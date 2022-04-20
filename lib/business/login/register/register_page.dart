@@ -15,14 +15,9 @@ import 'package:hatchery_im/manager/register_manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
 import 'package:hatchery_im/business/login/register/register_page_detail.dart';
 
-class RegisterPage extends StatefulWidget {
-  @override
-  RegisterPageState createState() => RegisterPageState();
-}
-
-class RegisterPageState extends State<RegisterPage> {
+class RegisterPage extends StatelessWidget {
   final manager = App.manager<RegisterManager>();
-  File _imageFile = File('');
+  late File _imageFile = File('');
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +32,7 @@ class RegisterPageState extends State<RegisterPage> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
+          onTap: () => FocusScope.of(App.navState.currentContext!).unfocus(),
           child: Stack(
             children: <Widget>[
               mainBackGroundWidget(),
@@ -146,7 +141,7 @@ class RegisterPageState extends State<RegisterPage> {
 
   Widget _buildSignInBtn() {
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
+      onTap: () => Navigator.of(App.navState.currentContext!).pop(),
       child: RichText(
         text: TextSpan(
           children: [
@@ -244,7 +239,7 @@ class RegisterPageState extends State<RegisterPage> {
     if (type == "Gallery") {
       s = ImageSource.gallery;
     }
-    final pickedFile = await ImagePicker().getImage(source: s);
+    final pickedFile = await ImagePicker().pickImage(source: s);
     if (pickedFile == null) {
       return null;
     }
@@ -278,16 +273,12 @@ class RegisterPageState extends State<RegisterPage> {
         password != '' &&
         imageUrl != '' &&
         registerManager.uploadUrl != '') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
+      Navigator.push(App.navState.currentContext!,
+          MaterialPageRoute(builder: (context) {
         return RegisterPageDetail(account, nickName, password, imageUrl);
       }));
     } else {
       showToast('请填写完信息后点击下一步');
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
