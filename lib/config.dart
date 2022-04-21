@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
 import 'manager/devicesInfoCentre.dart';
 
 bool debugMode = kDebugMode;
@@ -18,6 +19,10 @@ class SPKey {
 class TimeConfig {
   static final int OTP_CODE_RESEND = debugMode ? 10 : 60;
   static final int recordVoiceTotalTime = debugMode ? 10 : 60;
+}
+
+class MediaConfig {
+  static const int VIDEO_SIZE = 8 * 1024;
 }
 
 const mainTabs = [
