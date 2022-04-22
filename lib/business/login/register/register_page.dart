@@ -1,23 +1,23 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hatchery_im/business/login/register/register_page_detail.dart';
+import 'package:hatchery_im/common/AppContext.dart';
+import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/common/widget/app_bar.dart';
-import 'package:provider/provider.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:hatchery_im/common/AppContext.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:hatchery_im/common/tools.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/manager/register_manager/registerManager.dart';
 import 'package:hatchery_im/common/widget/login_page/textForm_model.dart';
-import 'package:hatchery_im/business/login/register/register_page_detail.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:hatchery_im/manager/register_manager/registerManager.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class RegisterPage extends StatelessWidget {
   final manager = App.manager<RegisterManager>();
-  late File _imageFile = File('');
+  late final File _imageFile;
 
   @override
   Widget build(BuildContext context) {
@@ -29,49 +29,43 @@ class RegisterPage extends StatelessWidget {
       appBar: AppBarFactory.backButton('',
           backGroundColor: Flavors.colorInfo.mainColor,
           backBtnColor: Flavors.colorInfo.mainBackGroundColor),
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(App.navState.currentContext!).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              mainBackGroundWidget(),
-              Container(
-                  height: double.infinity,
-                  child: SingleChildScrollView(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 40.0,
-                      vertical: 20.0,
+      body: Stack(
+        children: <Widget>[
+          mainBackGroundWidget(),
+          Container(
+              height: Flavors.sizesInfo.screenHeight,
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 40.0,
+                  vertical: 20.0,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      '注册账号',
+                      style: Flavors.textStyles.loginMainTitleText,
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          '注册账号',
-                          style: Flavors.textStyles.loginMainTitleText,
-                        ),
-                        SizedBox(height: 20.0.h),
-                        _avatarView(),
-                        SizedBox(height: 10.0.h),
-                        Text(
-                          '添加照片',
-                          style: Flavors.textStyles.loginNormalText,
-                        ),
-                        SizedBox(height: 20.0.h),
-                        _buildAccountTF(manager),
-                        SizedBox(height: 10.0.h),
-                        _buildNickNameTF(manager),
-                        SizedBox(height: 10.0.h),
-                        _buildPasswordTF(manager),
-                        _buildNextBtn(manager),
-                        _buildSignInBtn(),
-                      ],
+                    SizedBox(height: 20.0.h),
+                    _avatarView(),
+                    SizedBox(height: 10.0.h),
+                    Text(
+                      '添加照片',
+                      style: Flavors.textStyles.loginNormalText,
                     ),
-                  ))
-            ],
-          ),
-        ),
+                    SizedBox(height: 20.0.h),
+                    _buildAccountTF(manager),
+                    SizedBox(height: 10.0.h),
+                    _buildNickNameTF(manager),
+                    SizedBox(height: 10.0.h),
+                    _buildPasswordTF(manager),
+                    _buildNextBtn(manager),
+                    _buildSignInBtn(),
+                  ],
+                ),
+              ))
+        ],
       ),
     );
   }

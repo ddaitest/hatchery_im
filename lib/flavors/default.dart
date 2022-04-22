@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hatchery_im/common/tools.dart';
-import 'dart:convert';
 import 'package:hatchery_im/config.dart';
 
 class AppID {
@@ -26,10 +24,10 @@ class StringsInfo {
 }
 
 class ApiInfo {
-  final String API_HOST = 'http://119.23.74.10:5858/api';
-  final String File_UPLOAD_PATH = 'http://119.23.74.10:5858/resources';
-  final int API_CONNECT_TIMEOUT = 600000;
-  final int API_RECEIVE_TIMEOUT = 600000;
+  final String API_HOST = 'http://im.admda.cn/api';
+  final String File_UPLOAD_PATH = 'http://im.admda.cn/resources';
+  final int API_CONNECT_TIMEOUT = debugMode ? 600000 : 150000;
+  final int API_RECEIVE_TIMEOUT = debugMode ? 600000 : 150000;
   final String CONTENT_TYPE = 'application/json';
 }
 
