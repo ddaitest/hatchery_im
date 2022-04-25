@@ -260,16 +260,12 @@ class RegisterPage extends StatelessWidget {
     String account = registerManager.accountController.text;
     String nickName = registerManager.nickNameController.text;
     String password = registerManager.codeController.text;
-    String imageUrl = registerManager.uploadUrl;
+    String? imageUrl = registerManager.uploadUrl;
     print("$account $password");
-    if (account != '' &&
-        nickName != '' &&
-        password != '' &&
-        imageUrl != '' &&
-        registerManager.uploadUrl != '') {
+    if (account != '' && nickName != '' && password != '') {
       Navigator.push(App.navState.currentContext!,
           MaterialPageRoute(builder: (context) {
-        return RegisterPageDetail(account, nickName, password, imageUrl);
+        return RegisterPageDetail(account, nickName, password, imageUrl ?? "");
       }));
     } else {
       showToast('请填写完信息后点击下一步');
