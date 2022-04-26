@@ -184,11 +184,13 @@ class RegisterPageDetailState extends State<RegisterPageDetail> {
     String address = registerManager.addressController.text ?? '';
     if (loginName != '' &&
         nickName != '' &&
-        avatarUrl != '' &&
-        password != '') {
+        password != '' &&
+        avatarUrl != '') {
       print("test ${widget.account}");
       App.manager<RegisterManager>().submit(loginName, nickName, avatarUrl,
           password, notes, phone, email, address);
+    } else {
+      showToast("请填写完整资料");
     }
   }
 }
