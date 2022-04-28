@@ -294,7 +294,6 @@ class LoginPageState extends State<LoginPage> {
     String account = manager.accountController.text;
     String password = manager.codeController.text;
     if (account != '' && password != '') {
-      print("$account $password");
       manager.submit(account, password);
     } else {
       showToast('账号或密码不能为空');

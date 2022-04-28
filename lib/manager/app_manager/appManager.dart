@@ -19,6 +19,7 @@ import '../settingCentre.dart';
 
 class AppManager extends ChangeNotifier {
   static CustomMenuInfo? customMenuInfo;
+  static List<ServersAddressInfo>? socketServers;
 
   /// 初始化
   void init() {
@@ -46,7 +47,14 @@ class AppManager extends ChangeNotifier {
   static Future<bool> _configToSP() async {
     ApiResult result = await API.getConfig();
     if (result.isSuccess()) {
-      SP.set(SPKey.CONFIG, jsonEncode(result.getData()));
+      CommonConfigResult? commonConfigResult = result.getData();
+      if (commonConfigResult != null) {
+        customMenuInfo = commonConfigResult.customMenuInfo;
+        if (customMenuInfo?.title == null ||
+            customMenuInfo?.url == null ||
+            customMenuInfo?.icon == null) customMenuInfo = null;
+        Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
+      }
       return result.isSuccess();
     } else {
       return false;
@@ -54,14 +62,13 @@ class AppManager extends ChangeNotifier {
   }
 
   _getConfigFromSP() async {
-    String? _configData = SP.getString(SPKey.CONFIG);
-    if (_configData != null) {
-      customMenuInfo =
-          CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);
-      if (customMenuInfo?.title == null ||
-          customMenuInfo?.url == null ||
-          customMenuInfo?.icon == null) customMenuInfo = null;
-      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
+    String? configFormSP = SP.getString(SPKey.CONFIG);
+    if (configFormSP != null) {
+      CommonConfigResult? commonConfigResult =
+          CommonConfigResult.fromJson(jsonDecode(SP.getString(SPKey.CONFIG)));
+      customMenuInfo = commonConfigResult.customMenuInfo;
+      socketServers = commonConfigResult.socketServers;
+      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo || $socketServers");
     }
   }
 
