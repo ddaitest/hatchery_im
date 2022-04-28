@@ -1,7 +1,9 @@
 import 'dart:convert';
-import 'package:just_audio/just_audio.dart';
-import 'package:dart_ipify/dart_ipify.dart';
+import 'dart:convert' as convert;
+
 import 'package:collection/collection.dart';
+import 'package:crypto/crypto.dart';
+import 'package:dart_ipify/dart_ipify.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
@@ -15,14 +17,14 @@ import 'package:hatchery_im/common/utils.dart';
 import 'package:hatchery_im/config.dart';
 import 'package:hatchery_im/manager/settingCentre.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
-import 'package:crypto/crypto.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:vibration/vibration.dart';
-import 'contacts_manager/Constants.dart';
+
 import '../store/LocalStore.dart';
 import 'MsgHelper.dart';
+import 'contacts_manager/Constants.dart';
 import 'devicesInfoCentre.dart';
 import 'login_manager/loginManager.dart';
-import 'dart:convert' as convert;
 
 typedef SessionListener = void Function(List<Session> news);
 typedef MessageListener = void Function(List<Message> news);
@@ -80,7 +82,7 @@ class MessageCentre {
       Log.red("MessageCentre.init error _token is $_token");
       return;
     }
-    engine?.init('ws://119.23.74.10:5889/ws', _userInfo?.userID ?? "",
+    engine?.init('ws://47.89.188.74:5889/ws', _userInfo?.userID ?? "",
         source: TARGET_PLATFORM);
     engine?.connect();
     engine?.setCallback(MyEngineHandler(centre));

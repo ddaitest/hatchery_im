@@ -1,16 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/backgroundListenModel.dart';
 import 'package:hatchery_im/common/log.dart';
-import 'package:flutter/services.dart';
 import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
+
 import '../../config.dart';
 import '../devicesInfoCentre.dart';
 import '../settingCentre.dart';
@@ -56,6 +58,9 @@ class AppManager extends ChangeNotifier {
     if (_configData != null) {
       customMenuInfo =
           CustomMenuInfo.fromJson(jsonDecode(_configData)['customMenu']);
+      if (customMenuInfo?.title == null ||
+          customMenuInfo?.url == null ||
+          customMenuInfo?.icon == null) customMenuInfo = null;
       Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
     }
   }
