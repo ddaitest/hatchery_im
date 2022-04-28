@@ -6,6 +6,39 @@ part of 'entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+CommonConfigResult _$CommonConfigResultFromJson(Map<String, dynamic> json) =>
+    CommonConfigResult(
+      customMenuInfo: json['customMenuInfo'] == null
+          ? null
+          : CustomMenuInfo.fromJson(
+              json['customMenuInfo'] as Map<String, dynamic>),
+      socketServers: (json['socketServers'] as List<dynamic>?)
+          ?.map((e) => ServersAddressInfo.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      webSocketServers: (json['webSocketServers'] as List<dynamic>?)
+          ?.map((e) => ServersAddressInfo.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$CommonConfigResultToJson(CommonConfigResult instance) =>
+    <String, dynamic>{
+      'customMenuInfo': instance.customMenuInfo,
+      'socketServers': instance.socketServers,
+      'webSocketServers': instance.webSocketServers,
+    };
+
+ServersAddressInfo _$ServersAddressInfoFromJson(Map<String, dynamic> json) =>
+    ServersAddressInfo(
+      host: json['host'] as String?,
+      port: json['port'] as String?,
+    );
+
+Map<String, dynamic> _$ServersAddressInfoToJson(ServersAddressInfo instance) =>
+    <String, dynamic>{
+      'host': instance.host,
+      'port': instance.port,
+    };
+
 CustomMenuInfo _$CustomMenuInfoFromJson(Map<String, dynamic> json) =>
     CustomMenuInfo(
       title: json['title'] as String?,

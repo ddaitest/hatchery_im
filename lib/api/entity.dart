@@ -6,6 +6,40 @@ part 'entity.g.dart';
 ///flutter pub run build_runner build
 
 @JsonSerializable()
+class CommonConfigResult {
+  CustomMenuInfo? customMenuInfo;
+  List<ServersAddressInfo>? socketServers = [];
+  List<ServersAddressInfo>? webSocketServers = [];
+
+  CommonConfigResult({
+    this.customMenuInfo,
+    this.socketServers,
+    this.webSocketServers,
+  });
+
+  factory CommonConfigResult.fromJson(Map<String, dynamic> json) =>
+      _$CommonConfigResultFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CommonConfigResultToJson(this);
+}
+
+@JsonSerializable()
+class ServersAddressInfo {
+  String? host;
+  String? port;
+
+  ServersAddressInfo({
+    this.host,
+    this.port,
+  });
+
+  factory ServersAddressInfo.fromJson(Map<String, dynamic> json) =>
+      _$ServersAddressInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ServersAddressInfoToJson(this);
+}
+
+@JsonSerializable()
 class CustomMenuInfo {
   final String? title;
   final String? url;
