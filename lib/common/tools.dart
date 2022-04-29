@@ -1,15 +1,17 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:crypto/crypto.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:video_compress/video_compress.dart';
-import 'package:crypto/crypto.dart';
-import '../config.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
+import '../config.dart';
 import 'log.dart';
 
 Future<String> compressionImage(filePath) async {
@@ -28,21 +30,24 @@ Future<String> compressionImage(filePath) async {
   }
 }
 
-Future<String> compressionVideo(filePath) async {
-  final MediaInfo? info = await VideoCompress.compressVideo(
-    filePath,
-    quality: VideoQuality.LowQuality,
-    deleteOrigin: true,
-  );
-  return info?.path ?? "";
-}
+// Future<String> compressionVideo(filePath) async {
+//   final MediaInfo? info = await VideoCompress.compressVideo(
+//     filePath,
+//     quality: VideoQuality.LowQuality,
+//     deleteOrigin: true,
+//   );
+//   return info?.path ?? "";
+// }
 
 Future<String?> getVideoThumb(String videoPath) async {
-  final thumbnailFile = await VideoCompress.getFileThumbnail(videoPath,
-      quality: 100, // default(100)
-      position: -1 // default(-1)
-      );
-  return thumbnailFile.path;
+  final fileName = await VideoThumbnail.thumbnailFile(
+    video:
+        "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+    thumbnailPath: (await getTemporaryDirectory()).path,
+    imageFormat: ImageFormat.WEBP,
+    quality: 100,
+  );
+  return fileName;
 }
 
 String? mediaTimeFormat(int seconds) {

@@ -1,39 +1,41 @@
 import 'dart:async';
+import 'dart:convert' as convert;
 import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hatchery_im/api/API.dart';
 import 'package:hatchery_im/api/ApiResult.dart';
 import 'package:hatchery_im/api/engine/Protocols.dart';
 import 'package:hatchery_im/api/engine/entity.dart';
+import 'package:hatchery_im/api/entity.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/Engine.dart';
 import 'package:hatchery_im/common/log.dart';
+import 'package:hatchery_im/common/tools.dart';
+import 'package:hatchery_im/common/utils.dart';
+import 'package:hatchery_im/config.dart';
+import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:hatchery_im/manager/MsgHelper.dart';
 import 'package:hatchery_im/manager/messageCentre.dart';
+import 'package:hatchery_im/manager/userCentre.dart';
+import 'package:hatchery_im/routers.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 import 'package:hive/hive.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:hatchery_im/api/API.dart';
-import 'package:hatchery_im/api/entity.dart';
-import 'package:flutter/material.dart';
-import 'package:hatchery_im/routers.dart';
-import 'package:hatchery_im/common/utils.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:hatchery_im/manager/userCentre.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
-import 'package:hatchery_im/config.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:hatchery_im/common/tools.dart';
-import 'dart:convert' as convert;
+import 'package:wechat_camera_picker/wechat_camera_picker.dart';
+
 import '../../common/widget/loading_Indicator.dart';
 import '../../config.dart';
-import 'package:wechat_camera_picker/wechat_camera_picker.dart';
 
 class ChatDetailManager extends ChangeNotifier {
   static Record _voiceRecord = Record();
@@ -304,30 +306,28 @@ class ChatDetailManager extends ChangeNotifier {
           });
         });
       } else if (contentType == "VIDEO") {
-        compressionVideo(filePath).then((compressionVideoPath) {
-          _uploadMediaFile(content["video_thum_url"], msgId)
-              .then((videoThumbUrl) {
-            _uploadMediaFile(compressionVideoPath, msgId).then((videoUrl) {
-              if (videoUrl != "") {
-                content["video_url"] = videoUrl;
-                content["video_thum_url"] = videoThumbUrl;
-                MessageCentre.sendMessageModel(
-                    term: content,
-                    chatType: _currentChatType!,
-                    messageType: contentType,
-                    otherName: _otherName ?? "",
-                    otherIcon: _otherIcon ?? "",
-                    currentGroupId: _currentGroupId,
-                    currentGroupName: _currentGroupName,
-                    currentGroupIcon: _currentGroupIcon,
-                    currentFriendId: _currentFriendId,
-                    msgId: msgId);
-              } else {
-                LocalStore.findCache(msgId)
-                  ?..progress = MSG_FAULT
-                  ..save();
-              }
-            });
+        _uploadMediaFile(content["video_thum_url"], msgId)
+            .then((videoThumbUrl) {
+          _uploadMediaFile(filePath, msgId).then((videoUrl) {
+            if (videoUrl != "") {
+              content["video_url"] = videoUrl;
+              content["video_thum_url"] = videoThumbUrl;
+              MessageCentre.sendMessageModel(
+                  term: content,
+                  chatType: _currentChatType!,
+                  messageType: contentType,
+                  otherName: _otherName ?? "",
+                  otherIcon: _otherIcon ?? "",
+                  currentGroupId: _currentGroupId,
+                  currentGroupName: _currentGroupName,
+                  currentGroupIcon: _currentGroupIcon,
+                  currentFriendId: _currentFriendId,
+                  msgId: msgId);
+            } else {
+              LocalStore.findCache(msgId)
+                ?..progress = MSG_FAULT
+                ..save();
+            }
           });
         });
       } else if (contentType == "VOICE") {
