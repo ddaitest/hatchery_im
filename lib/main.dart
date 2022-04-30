@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,9 +32,10 @@ import 'manager/chat_manager/chatSettingManager.dart';
 import 'manager/emojiModel_manager.dart';
 import 'manager/profile_manager/setting_manager/settingManager.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   JpushPlugin.initPush();
+  await ScreenUtil.ensureScreenSize();
   runApp(
     MultiProvider(
       providers: [
@@ -68,9 +71,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context,
-        designSize: Size(360, 690),
-        minTextAdapt: true,
-        orientation: Orientation.portrait);
+        minTextAdapt: true, orientation: Orientation.portrait);
     return MaterialApp(
       navigatorKey: App.navState,
       debugShowCheckedModeBanner: false,

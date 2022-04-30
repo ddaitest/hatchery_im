@@ -280,7 +280,8 @@ class ChatDetailManager extends ChangeNotifier {
       {required String? filePath,
       required String contentType,
       required Map<String, dynamic> content,
-      required String msgId}) {
+      required String msgId,
+      AssetEntity? assetEntity}) {
     if (filePath != null) {
       if (contentType == "IMAGE") {
         compressionImage(filePath).then((compressionValue) {

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,13 +12,13 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 
-import '../../config.dart';
 import '../devicesInfoCentre.dart';
 import '../settingCentre.dart';
 
 class AppManager extends ChangeNotifier {
   static CustomMenuInfo? customMenuInfo;
-  static List<ServersAddressInfo>? socketServers;
+  static List<ServersAddressInfo> apiServers = [];
+  static List<ServersAddressInfo> webSocketServers = [];
 
   /// 初始化
   void init() {
@@ -31,7 +30,7 @@ class AppManager extends ChangeNotifier {
     /// 后台监听初始化
     Log.log("app manager. init ");
     SP.init().then((sp) {
-      _getConfigFromSP();
+      // _getConfigFromSP();
       DeviceInfo.init();
       UserId.init();
       UserCentre.getInfo();
@@ -39,38 +38,39 @@ class AppManager extends ChangeNotifier {
       BackgroundListen().init();
       if (UserCentre.isLogin()) {
         LocalStore.init();
-        _configToSP();
+        _getCommonConfigData();
       }
     });
   }
 
-  static Future<bool> _configToSP() async {
+  static Future<bool> _getCommonConfigData() async {
     ApiResult result = await API.getConfig();
     if (result.isSuccess()) {
-      CommonConfigResult? commonConfigResult = result.getData();
-      if (commonConfigResult != null) {
-        customMenuInfo = commonConfigResult.customMenuInfo;
-        if (customMenuInfo?.title == null ||
-            customMenuInfo?.url == null ||
-            customMenuInfo?.icon == null) customMenuInfo = null;
-        Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
-      }
+      CommonConfigResult? commonConfigResult =
+          CommonConfigResult.fromJson(result.getData());
+      customMenuInfo = commonConfigResult.customMenuInfo;
+      webSocketServers = commonConfigResult.webSocketServers ?? [];
+      apiServers = commonConfigResult.socketServers ?? [];
+      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo");
+      if (customMenuInfo?.title == null ||
+          customMenuInfo?.url == null ||
+          customMenuInfo?.icon == null) customMenuInfo = null;
       return result.isSuccess();
     } else {
       return false;
     }
   }
 
-  _getConfigFromSP() async {
-    String? configFormSP = SP.getString(SPKey.CONFIG);
-    if (configFormSP != null) {
-      CommonConfigResult? commonConfigResult =
-          CommonConfigResult.fromJson(jsonDecode(SP.getString(SPKey.CONFIG)));
-      customMenuInfo = commonConfigResult.customMenuInfo;
-      socketServers = commonConfigResult.socketServers;
-      Log.yellow("DEBUG=> customMenuInfo $customMenuInfo || $socketServers");
-    }
-  }
+  // _getConfigFromSP() async {
+  //   String? configFormSP = SP.getString(SPKey.CONFIG);
+  //   Log.yellow("DEBUG=> configFormSP $configFormSP");
+  //   if (configFormSP != null) {
+  //     CommonConfigResult? commonConfigResult =
+  //         CommonConfigResult.fromJson(jsonDecode(SP.getString(SPKey.CONFIG)));
+  //     customMenuInfo = commonConfigResult.customMenuInfo;
+  //     Log.yellow("DEBUG=> customMenuInfo $customMenuInfo || $socketServers");
+  //   }
+  // }
 
   @override
   void dispose() {
