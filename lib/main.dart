@@ -35,7 +35,6 @@ import 'manager/profile_manager/setting_manager/settingManager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   JpushPlugin.initPush();
-  await ScreenUtil.ensureScreenSize();
   runApp(
     MultiProvider(
       providers: [
@@ -70,8 +69,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context,
-        minTextAdapt: true, orientation: Orientation.portrait);
+    ScreenUtil.ensureScreenSize().whenComplete(() {
+      ScreenUtil.init(context,
+          minTextAdapt: true, orientation: Orientation.portrait);
+    });
     return MaterialApp(
       navigatorKey: App.navState,
       debugShowCheckedModeBanner: false,

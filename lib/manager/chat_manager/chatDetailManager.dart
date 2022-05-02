@@ -202,11 +202,24 @@ class ChatDetailManager extends ChangeNotifier {
 
   Future<void> pickCamera(BuildContext context) async {
     Navigator.pop(App.navState.currentContext!);
-    AssetEntity? _entity = await CameraPicker.pickFromCamera(context);
+    final AssetEntity? _entity = await CameraPicker.pickFromCamera(context,
+        pickerConfig: const CameraPickerConfig(
+            enableRecording: true,
+            maximumRecordingDuration: const Duration(seconds: 10),
+            resolutionPreset: ResolutionPreset.low));
     if (_entity == null) {
       return null;
     } else {
-      _sendLocalMediaMessage(_entity);
+      _entity.file.then((value) {
+        value?.length().then((int? length) {
+          final int fileSize = length ?? 0;
+          if (fileSize <= MediaConfig.MAX_MEDIA_SIZE) {
+            _sendLocalMediaMessage(_entity);
+          } else {
+            showToast("文件大于10MB请重新选择");
+          }
+        });
+      });
     }
   }
 
@@ -236,6 +249,7 @@ class ChatDetailManager extends ChangeNotifier {
 
   void _sendLocalMediaMessage(AssetEntity? assetEntity) async {
     if (assetEntity != null) {
+      Log.red("assetEntity.size ${assetEntity.file}");
       assetEntity.file.then((fileValue) {
         Log.red("fileValue ${fileValue?.path}");
         if (assetEntity.type == AssetType.image) {
@@ -280,8 +294,7 @@ class ChatDetailManager extends ChangeNotifier {
       {required String? filePath,
       required String contentType,
       required Map<String, dynamic> content,
-      required String msgId,
-      AssetEntity? assetEntity}) {
+      required String msgId}) {
     if (filePath != null) {
       if (contentType == "IMAGE") {
         compressionImage(filePath).then((compressionValue) {
@@ -489,18 +502,23 @@ class ChatDetailManager extends ChangeNotifier {
   Future<void> pickFile() async {
     Navigator.pop(App.navState.currentContext!);
     FilePickerResult? result = await FilePicker.platform.pickFiles();
+    Log.green(" && result.count ${result?.files[0].size}");
     if (result != null) {
-      Map<String, dynamic> content = {
-        "name": "${result.files[0].name}",
-        "file_url": result.files[0].path!,
-        "content_length": result.files[0].size / 1024
-      };
-      String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "FILE");
-      _uploadMediaModel(
-          filePath: result.files[0].path!,
-          contentType: "FILE",
-          content: content,
-          msgId: msgId);
+      if (result.files[0].size <= MediaConfig.MAX_MEDIA_SIZE) {
+        Map<String, dynamic> content = {
+          "name": "${result.files[0].name}",
+          "file_url": result.files[0].path!,
+          "content_length": result.files[0].size / 1024
+        };
+        String? msgId = _fakeMediaMessage(convert.jsonEncode(content), "FILE");
+        _uploadMediaModel(
+            filePath: result.files[0].path!,
+            contentType: "FILE",
+            content: content,
+            msgId: msgId);
+      } else {
+        showToast("文件大于10MB请重新选择");
+      }
     }
   }
 

@@ -22,7 +22,7 @@ class TimeConfig {
 }
 
 class MediaConfig {
-  static const int VIDEO_SIZE = 8 * 1024;
+  static const int MAX_MEDIA_SIZE = 10485760; //单位：Bytes
 }
 
 const mainTabs = [

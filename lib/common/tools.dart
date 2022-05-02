@@ -41,8 +41,7 @@ Future<String> compressionImage(filePath) async {
 
 Future<String?> getVideoThumb(String videoPath) async {
   final fileName = await VideoThumbnail.thumbnailFile(
-    video:
-        "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+    video: videoPath,
     thumbnailPath: (await getTemporaryDirectory()).path,
     imageFormat: ImageFormat.WEBP,
     quality: 100,
