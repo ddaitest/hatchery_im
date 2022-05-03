@@ -13,16 +13,13 @@ class VideoPlayPage extends StatefulWidget {
 }
 
 class VideoPlayState extends State<VideoPlayPage> {
-  late VlcPlayerController _videoPlayerController;
-
-  Future<void> initializePlayer() async {}
+  late final VlcPlayerController _videoPlayerController;
 
   @override
   void initState() {
     super.initState();
-
     _videoPlayerController = VlcPlayerController.network(
-      'https://media.w3.org/2010/05/sintel/trailer.mp4',
+      'https://assets.blz-contentstack.com/v3/assets/blt9c12f249ac15c7ec/blta86655adc07874e8/625ed518c6d11125f3c9b13d/WOW-2020-15717_zhCN_HORZ_PK_LearnMore_compressed.mp4  ',
       hwAcc: HwAcc.auto,
       autoPlay: false,
       options: VlcPlayerOptions(),
