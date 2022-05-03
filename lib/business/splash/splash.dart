@@ -25,6 +25,9 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 素材比例适配，需放到第一个页面且只需要一次就行
+    ScreenUtil.init(App.navState.currentContext!,
+        minTextAdapt: true, orientation: Orientation.portrait);
     return Scaffold(
       body: _fullScreenBackgroundView(),
     );

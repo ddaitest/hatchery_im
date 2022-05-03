@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +11,7 @@ import 'package:hatchery_im/common/tools.dart';
 import 'package:hatchery_im/manager/userCentre.dart';
 import 'package:hatchery_im/store/LocalStore.dart';
 
+import '../../common/AppContext.dart';
 import '../devicesInfoCentre.dart';
 import '../settingCentre.dart';
 

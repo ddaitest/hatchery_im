@@ -25,7 +25,6 @@ import 'package:hatchery_im/manager/register_manager/registerManager.dart';
 import 'package:hatchery_im/manager/splash_manager/splashManager.dart';
 import 'package:hatchery_im/routers.dart';
 import 'package:provider/provider.dart';
-
 import 'common/AppContext.dart';
 import 'jpush_common.dart';
 import 'manager/chat_manager/chatSettingManager.dart';
@@ -33,6 +32,8 @@ import 'manager/emojiModel_manager.dart';
 import 'manager/profile_manager/setting_manager/settingManager.dart';
 
 void main() async {
+  // 素材自适应
+  await ScreenUtil.ensureScreenSize();
   WidgetsFlutterBinding.ensureInitialized();
   JpushPlugin.initPush();
   runApp(
@@ -69,10 +70,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.ensureScreenSize().whenComplete(() {
-      ScreenUtil.init(context,
-          minTextAdapt: true, orientation: Orientation.portrait);
-    });
     return MaterialApp(
       navigatorKey: App.navState,
       debugShowCheckedModeBanner: false,

@@ -129,7 +129,6 @@ class ChatDetailManager extends ChangeNotifier {
                 .compareTo(DateTime.fromMillisecondsSinceEpoch(a.createTime)));
         _clearUnReadStatus(tempList);
         _messageList = tempList;
-        notifyListeners();
         _clearReminderMeStatus();
         _syncSessionMessage(tempList);
         if (!firstLoad) notifyListeners();
