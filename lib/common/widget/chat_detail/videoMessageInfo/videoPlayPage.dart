@@ -1,9 +1,6 @@
-import 'dart:io';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 // import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:hatchery_im/flavors/Flavors.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 class VideoPlayPage extends StatefulWidget {
   final String videoUrl;
@@ -13,16 +10,23 @@ class VideoPlayPage extends StatefulWidget {
 }
 
 class VideoPlayState extends State<VideoPlayPage> {
-  late final VlcPlayerController _videoPlayerController;
+  late VlcPlayerController _videoPlayerController;
 
   @override
   void initState() {
     super.initState();
     _videoPlayerController = VlcPlayerController.network(
-      'https://assets.blz-contentstack.com/v3/assets/blt9c12f249ac15c7ec/blta86655adc07874e8/625ed518c6d11125f3c9b13d/WOW-2020-15717_zhCN_HORZ_PK_LearnMore_compressed.mp4  ',
-      hwAcc: HwAcc.auto,
+      widget.videoUrl,
+      hwAcc: HwAcc.full,
       autoPlay: false,
-      options: VlcPlayerOptions(),
+      options: VlcPlayerOptions(
+        advanced: VlcAdvancedOptions([
+          VlcAdvancedOptions.networkCaching(2000),
+        ]),
+        rtp: VlcRtpOptions([
+          VlcRtpOptions.rtpOverRtsp(true),
+        ]),
+      ),
     );
   }
 
