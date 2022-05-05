@@ -9,6 +9,7 @@ import 'package:hatchery_im/api/engine/entity.dart';
 import 'package:hatchery_im/api/entity.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:video_compress/video_compress.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import '../config.dart';
@@ -31,12 +32,24 @@ Future<String> compressionImage(filePath) async {
 }
 
 // Future<String> compressionVideo(filePath) async {
-//   final MediaInfo? info = await VideoCompress.compressVideo(
-//     filePath,
-//     quality: VideoQuality.LowQuality,
-//     deleteOrigin: true,
-//   );
-//   return info?.path ?? "";
+//   try {
+//     final MediaInfo? info = await VideoCompress.compressVideo(
+//       filePath,
+//       quality: VideoQuality.LowQuality,
+//       deleteOrigin: true,
+//     );
+//     final int fileSize = info?.filesize ?? 0;
+//     Log.green("fileSize $fileSize");
+//     if (fileSize <= MediaConfig.MAX_MEDIA_SIZE) {
+//       return info?.path ?? "";
+//     } else {
+//       showToast("文件大于10MB请重新选择");
+//       return "";
+//     }
+//   } catch (e) {
+//     showToast("视频压缩错误请重试");
+//     return "";
+//   }
 // }
 
 Future<String?> getVideoThumb(String videoPath) async {
