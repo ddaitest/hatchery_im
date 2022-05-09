@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:hatchery_im/flavors/Flavors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -111,17 +113,22 @@ class VoiceMessageWidget extends StatelessWidget {
                       StreamBuilder<Duration?>(
                           stream: _audioPlayer.positionStream,
                           builder: (context, positionDuration) {
-                            int positionTime = positionDuration.data!.inSeconds;
-                            if (positionTime < _totalTime!) {
-                              return Text(
-                                  '${(_totalTime! - positionTime).toString()}"',
-                                  style:
-                                      Flavors.textStyles.chatBubbleSenderText);
+                            int? positionTime =
+                                positionDuration.data?.inSeconds ?? null;
+                            if (positionTime != null) {
+                              if (positionTime < _totalTime!) {
+                                return Text(
+                                    '${(_totalTime! - positionTime).toString()}"',
+                                    style: Flavors
+                                        .textStyles.chatBubbleSenderText);
+                              } else {
+                                _stop();
+                                return Text('${_totalTime.toString()}"',
+                                    style: Flavors
+                                        .textStyles.chatBubbleSenderText);
+                              }
                             } else {
-                              _stop();
-                              return Text('${_totalTime.toString()}"',
-                                  style:
-                                      Flavors.textStyles.chatBubbleSenderText);
+                              return Container();
                             }
                           }),
                       StreamBuilder<PlayerState?>(

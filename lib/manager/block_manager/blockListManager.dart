@@ -8,19 +8,18 @@ import 'package:hatchery_im/common/utils.dart';
 
 class BlockListManager extends ChangeNotifier {
   //拉黑列表
-  late final List<BlockList>? _blockContactsList;
+  List<BlockList>? _blockContactsList;
   List<BlockList>? get blockContactsList => _blockContactsList;
+  static const int blockListSize = 999;
+  static const int blockListCurrent = 0;
 
   /// 初始化
   init() {
     _queryBlockListRes();
   }
 
-  _queryBlockListRes({
-    int size = 999,
-    int current = 0,
-  }) async {
-    API.getBlockList(size, current).then((value) {
+  void _queryBlockListRes() async {
+    await API.getBlockList(blockListSize, blockListCurrent).then((value) {
       print("DEBUG=> $value");
       if (value.isSuccess()) {
         _blockContactsList =

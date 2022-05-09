@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
+import '../../api/entity.dart';
+
 class BlockListPage extends StatefulWidget {
   @override
   _BlockListPageState createState() => _BlockListPageState();
@@ -28,26 +30,31 @@ class _BlockListPageState extends State<BlockListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (BuildContext context,
-        BlockListManager blockListManager, Widget? child) {
-      return Scaffold(
-        appBar: AppBarFactory.backButton('黑名单列表'),
-        body: _contactsListView(blockListManager),
-      );
-    });
+    return Scaffold(
+      appBar: AppBarFactory.backButton('黑名单列表'),
+      body: _contactsListView(),
+    );
   }
 
-  Widget _contactsListView(blockListManager) {
-    return Container(
-      padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-      child: blockListManager.blockContactsList != null
-          ? blockListManager.blockContactsList.length != 0
-              ? BlockListItem(blockListManager.blockContactsList)
-              : IndicatorView(
-                  tipsText: '没有被拉黑的联系人',
-                  showLoadingIcon: false,
-                )
-          : IndicatorView(),
-    );
+  Widget _contactsListView() {
+    return Selector<BlockListManager, List<BlockList>?>(
+        builder: (BuildContext context, List<BlockList>? value, Widget? child) {
+          if (value != null && value.isNotEmpty) {
+            return Container(
+              padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+              child: BlockListItem(value),
+            );
+          } else {
+            return Center(
+                child: IndicatorView(
+              tipsText: '没有被拉黑的联系人',
+              showLoadingIcon: false,
+            ));
+          }
+        },
+        selector: (BuildContext context, BlockListManager blockListManager) {
+          return blockListManager.blockContactsList ?? [];
+        },
+        shouldRebuild: (pre, next) => (pre != next));
   }
 }
