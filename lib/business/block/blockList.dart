@@ -8,6 +8,7 @@ import 'package:hatchery_im/common/AppContext.dart';
 import 'package:hatchery_im/common/widget/loading_Indicator.dart';
 
 import '../../api/entity.dart';
+import '../../common/log.dart';
 
 class BlockListPage extends StatefulWidget {
   @override
@@ -39,21 +40,30 @@ class _BlockListPageState extends State<BlockListPage> {
   Widget _contactsListView() {
     return Selector<BlockListManager, List<BlockList>?>(
         builder: (BuildContext context, List<BlockList>? value, Widget? child) {
-          if (value != null && value.isNotEmpty) {
-            return Container(
-              padding: const EdgeInsets.only(top: 10.0, bottom: 10),
-              child: BlockListItem(value),
-            );
+          Log.green("BlockList $value");
+          if (value != null) {
+            if (value.isNotEmpty) {
+              return Container(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                child: BlockListItem(value),
+              );
+            } else {
+              return Center(
+                child: IndicatorView(
+                  tipsText: '没有被拉黑的联系人',
+                  showLoadingIcon: false,
+                ),
+              );
+            }
           } else {
             return Center(
                 child: IndicatorView(
-              tipsText: '没有被拉黑的联系人',
-              showLoadingIcon: false,
+              showLoadingIcon: true,
             ));
           }
         },
         selector: (BuildContext context, BlockListManager blockListManager) {
-          return blockListManager.blockContactsList ?? [];
+          return blockListManager.blockContactsList;
         },
         shouldRebuild: (pre, next) => (pre != next));
   }
